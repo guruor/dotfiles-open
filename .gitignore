@@ -1,1 +1,11 @@
-/home/govind/.dotfiles/.gitignore
+!.vim
+!vifm/vifmrc
+!.copyq/copyq.conf
+!.moc/config
+*.dat
+*.log
+.mutt/com.gmail.connectgovinds
+vifm/*
+.copyq/*
+.moc/*
+cache/
