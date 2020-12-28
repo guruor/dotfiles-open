@@ -1,0 +1,39 @@
+[
+    { "keys": [":"], "type": "function", "command": "enter_command_line_mode" },
+    { "keys": ["q"], "type": "prompt", "command": "exit", "cursorPosition": -1 },
+    { "keys": ["/"], "type": "prompt", "command": "search \"\"", "cursorPosition": -2 },
+
+    { "keys": ["l", "TAB"], "type": "function", "command": "focus_next" },
+    { "keys": ["h", "SHIFT_TAB"], "type": "function", "command": "focus_previous" },
+    { "keys": ["k", "UP"], "type": "function", "command": "move_up" },
+    { "keys": ["j", "DOWN"], "type": "function", "command": "move_down" },
+    { "keys": ["K", "PAGE_UP"], "type": "function", "command": "page_up" },
+    { "keys": ["J", "PAGE_DOWN"], "type": "function", "command": "page_down" },
+    { "keys": ["i", "ENTER"], "type": "function", "command": "activate" },
+
+    { "keys": ["t", "cd"], "command": "todo clear $n" },
+    { "keys": ["cs"], "command": "sync" },
+
+    { "keys": ["d", "x", "DELETE", "BACKSPACE"], "type": "function", "command": "delete" },
+
+    { "keys": ["mn"], "type": "prompt", "command": "mknote \"\"", "cursorPosition": -2 },
+    { "keys": ["mt"], "type": "prompt", "command": "mktodo \"\"", "cursorPosition": -2 },
+    { "keys": ["mb"], "type": "prompt", "command": "mkbook \"\"", "cursorPosition": -2 },
+    { "keys": ["mg"], "type": "prompt", "command": "tag add \"\" $n", "cursorPosition": -5 },
+
+    { "keys": ["oR"], "command": "config notes.sortOrder.reverse \"true\"" },
+    { "keys": ["or"], "command": "config notes.sortOrder.reverse \"false\"" },
+    { "keys": ["ot"], "command": "config notes.sortOrder.field \"title\"" },
+    { "keys": ["oc"], "command": "config notes.sortOrder.field \"user_created_time\"" },
+    { "keys": ["ou"], "command": "config notes.sortOrder.field \"user_updated_time\"" },
+
+    { "keys": ["sg"], "command": "tag notetags $n" },
+    { "keys": ["ss"], "type": "prompt", "command": "status", "cursorPosition": -1 },
+
+    { "keys": ["c", "tc"], "type": "function", "command": "toggle_console" },
+    { "keys": [" ", "td"], "command": "todo toggle $n" },
+    { "keys": ["tm"], "type": "function", "command": "toggle_metadata" },
+
+    { "keys": ["y", "yn"], "type": "prompt", "command": "cp $n \"\"", "cursorPosition": -2 },
+    { "keys": ["mv", "yN"], "type": "prompt", "command": "mv $n \"\"", "cursorPosition": -2 }
+]
