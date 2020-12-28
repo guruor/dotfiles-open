@@ -1,0 +1,429 @@
+[main]
+
+# Enables context sensitive auto-completion. If this is disabled the all
+# possible completions will be listed.
+smart_completion = True
+
+# Multi-line mode allows breaking up the sql statements into multiple lines. If
+# this is set to True, then the end of the statements must have a semi-colon.
+# If this is set to False then sql statements can't be split into multiple
+# lines. End of line (return) is considered as the end of the statement.
+multi_line = False
+
+# Destructive warning mode will alert you before executing a sql statement
+# that may cause harm to the database such as "drop table", "drop database"
+# or "shutdown".
+destructive_warning = True
+
+# log_file location.
+log_file = ~/.mycli.log
+
+# Default log level. Possible values: "CRITICAL", "ERROR", "WARNING", "INFO"
+# and "DEBUG". "NONE" disables logging.
+log_level = INFO
+
+# Log every query and its results to a file. Enable this by uncommenting the
+# line below.
+# audit_log = ~/.mycli-audit.log
+
+# Timing of sql statments and table rendering.
+timing = True
+
+# Table format. Possible values: ascii, double, github,
+# psql, plain, simple, grid, fancy_grid, pipe, orgtbl, rst, mediawiki, html,
+# latex, latex_booktabs, textile, moinmoin, jira, vertical, tsv, csv.
+# Recommended: ascii
+table_format = ascii
+
+# Syntax coloring style. Possible values (many support the "-dark" suffix):
+# manni, igor, xcode, vim, autumn, vs, rrt, native, perldoc, borland, tango, emacs,
+# friendly, monokai, paraiso, colorful, murphy, bw, pastie, paraiso, trac, default,
+# fruity.
+# Screenshots at http://mycli.net/syntax
+syntax_style = default
+
+# Keybindings: Possible values: emacs, vi.
+# Emacs mode: Ctrl-A is home, Ctrl-E is end. All emacs keybindings are available in the REPL.
+# When Vi mode is enabled you can use modal editing features offered by Vi in the REPL.
+key_bindings = vi
+
+# Enabling this option will show the suggestions in a wider menu. Thus more items are suggested.
+wider_completion_menu = False
+
+# MySQL prompt
+# \D - The full current date
+# \d - Database name
+# \h - Hostname of the server
+# \m - Minutes of the current time
+# \n - Newline
+# \P - AM/PM
+# \p - Port
+# \R - The current time, in 24-hour military time (0–23)
+# \r - The current time, standard 12-hour time (1–12)
+# \s - Seconds of the current time
+# \t - Product type (Percona, MySQL, MariaDB)
+# \A - DSN alias name (from the [alias_dsn] section)
+# \u - Username
+prompt = "\t \u@\h:\d> "
+prompt_continuation = ->
+
+# Skip intro info on startup and outro info on exit
+less_chatty = False
+
+# Use alias from --login-path instead of host name in prompt
+login_path_as_host = False
+
+# Cause result sets to be displayed vertically if they are too wide for the current window,
+# and using normal tabular format otherwise. (This applies to statements terminated by ; or \G.)
+auto_vertical_output = False
+
+# keyword casing preference. Possible values "lower", "upper", "auto"
+keyword_casing = auto
+
+# disabled pager on startup
+enable_pager = True
+[colors]
+completion-menu.completion.current = "bg:#ffffff #000000"
+completion-menu.completion = "bg:#008888 #ffffff"
+completion-menu.meta.completion.current = "bg:#44aaaa #000000"
+completion-menu.meta.completion = "bg:#448888 #ffffff"
+completion-menu.multi-column-meta = "bg:#aaffff #000000"
+scrollbar.arrow = "bg:#003333"
+scrollbar = "bg:#00aaaa"
+selected = "#ffffff bg:#6666aa"
+search = "#ffffff bg:#4444aa"
+search.current = "#ffffff bg:#44aa44"
+bottom-toolbar = "bg:#222222 #aaaaaa"
+bottom-toolbar.off = "bg:#222222 #888888"
+bottom-toolbar.on = "bg:#222222 #ffffff"
+search-toolbar = noinherit bold
+search-toolbar.text = nobold
+system-toolbar = noinherit bold
+arg-toolbar = noinherit bold
+arg-toolbar.text = nobold
+bottom-toolbar.transaction.valid = "bg:#222222 #00ff5f bold"
+bottom-toolbar.transaction.failed = "bg:#222222 #ff005f bold"
+
+# style classes for colored table output
+output.header = "#00ff5f bold"
+output.odd-row = ""
+output.even-row = ""
+[favorite_queries]
+get_invoice_details_by_docnumber = '''
+SELECT ai.id,
+       ai.external_ref_id,
+       ai.franchisee_id,
+       ai.biz_id,
+       ai.net_amount,
+       ai.final_amount,
+       ai.status,
+       ai.invoice_date,
+       ai.due_date,
+       ai.currency,
+       ai.created,
+       ai.updated
+FROM   atlas_invoice AS ai
+WHERE  ai.external_ref_id = $1
+'''
+get_invoice_complete_details_by_invoice_id = '''
+ SELECT ai.id,
+       ai.external_ref_id,
+       ai.franchisee_id,
+       ai.biz_id,
+       ai.net_amount,
+       ai.final_amount,
+       ai.status,
+       ai.invoice_date,
+       ai.due_date,
+       ai.currency,
+       ai.created,
+       ai.updated
+FROM   atlas_invoice AS ai
+WHERE  ai.id =$1;
+
+SELECT ais.*
+FROM atlas_invoicestatus ais
+WHERE ais.invoice_id = $1;
+
+SELECT ai.id,
+       ai.external_ref_id,
+       ai.franchisee_id,
+       bf.display_name,
+       bf.contact_emails,
+       bf.contact_phones
+FROM   atlas_invoice ai
+JOIN common_bizfranchisee AS bf on
+bf.id=ai.franchisee_id
+WHERE  ai.id =$1;
+
+
+SELECT i.id      AS invoice_id,
+       i.external_ref_id AS doc_number,
+       gk.name as `key`,
+       gvt.value AS qb_invoice_id
+FROM   atlas_invoice i
+       INNER JOIN django_content_type invoice_ct ON invoice_ct.app_label='atlas' and invoice_ct.model='invoice'
+       INNER JOIN django_content_type valueinteger_ct ON valueinteger_ct.app_label='common' and valueinteger_ct.model='valueinteger'
+       INNER JOIN common_genericmodelkeyvalue gkv
+              ON gkv.owner_content_type_id = invoice_ct.id
+                 AND gkv.owner_object_id = i.id
+       INNER JOIN (SELECT *
+                  FROM   common_genericmodelkey
+                  WHERE  NAME = 'qb_entity_id') gk
+              ON gkv.key_id = gk.id
+       INNER JOIN common_valueinteger gvt
+              ON gkv.value_content_type_id = valueinteger_ct.id
+                 AND gvt.id = gkv.value_object_id
+WHERE  i.id = $1;
+
+ SELECT ii.id              AS item_id,
+       ii.type,
+       ii.unit_price,
+       ii.quantity,
+       ii.net_amount,
+       ii.gross_amount,
+       ii.total_tax,
+       ii.discount,
+       be.id              AS be_id,
+       be.external_ref_id AS be_ext_ref_id,
+       be.description     AS be_desc,
+       be.unit_type       AS be_unit_type,
+       be.unit_price      AS be_unit_price,
+       be.quantity        AS be_qty,
+       be.net_amount      AS be_net_amount,
+       be.gross_amount    AS be_gross_amount,
+       be.total_tax       AS be_total_tax,
+       be.discount        AS be_discount,
+       be.created         AS be_created,
+       be.updated         AS be_updated,
+       ic.id              AS invoice_component_id,
+       ic.rate_applied    AS component_rate,
+       ic.value,
+       t.id               AS tax_id,
+       t.title            AS tax_title,
+       t.description      AS tax_desc,
+       t.value
+FROM   atlas_invoiceitem ii
+       JOIN atlas_billingentity be
+         ON be.id = ii.object_id
+       LEFT JOIN atlas_invoicecomponent ic
+         ON ic.object_id = ii.id
+       LEFT JOIN atlas_tax t
+         ON t.id = ic.bill_component_id
+WHERE  ii.invoice_id = $1;
+
+SELECT i.id      AS invoice_id,
+       gk.name as `key`,
+       gvt.value AS link_info
+FROM   atlas_invoice i
+       INNER JOIN django_content_type invoice_ct ON invoice_ct.app_label='atlas' and invoice_ct.model='invoice'
+       INNER JOIN django_content_type valuetext_ct ON valuetext_ct.app_label='common' and valuetext_ct.model='valuetext'
+       INNER JOIN common_genericmodelkeyvalue gkv
+              ON gkv.owner_content_type_id = invoice_ct.id
+                 AND gkv.owner_object_id = i.id
+       INNER JOIN (SELECT *
+                  FROM   common_genericmodelkey
+                  WHERE  NAME = 'razorpay_link') gk
+              ON gkv.key_id = gk.id
+       INNER JOIN common_valuetext gvt
+              ON gkv.value_content_type_id = valuetext_ct.id
+                 AND gvt.id = gkv.value_object_id
+WHERE  i.id = $1;
+
+SELECT `ppt`.`txn_id`,
+       `ppt`.`gw_txn_id`,
+       `ppt`.`user_id`,
+       `ppt`.`biz_id`,
+       `ppt`.`store_id`,
+       `ppt`.`gw_name`,
+       `ppt`.`amount`,
+       `ppt`.`state`,
+       `ppt`.`refund_id`,
+       `ppt`.`created`,
+       `ppt`.`updated`,
+       `ppt`.`post_processed`,
+       `ppt`.`comments`,
+       `ppt`.`channel`,
+       `ppt`.`redirect_url`,
+       `ppt`.`commission`,
+       `ppt`.`currency`
+FROM   payments_paymenttransaction ppt
+WHERE  ( `ppt`.`purpose` = 'biz_service_payment'
+         AND `ppt`.`purpose_id` = $1 );
+
+SELECT id,
+       invoice_id,
+       external_ref_id AS payment_id,
+       amount,
+       is_deleted
+FROM   atlas_invoicepayment
+WHERE  invoice_id = $1
+'''
+get_invoice_details_by_invoice_id = '''
+ SELECT ai.id,
+       ai.external_ref_id,
+       ai.biz_id,
+       ai.net_amount,
+       ai.final_amount,
+       ai.status,
+       ai.invoice_date,
+       ai.due_date,
+       ai.created,
+       ai.updated
+FROM   atlas_invoice AS ai
+WHERE  ai.id = $1
+'''
+get_invoice_items_details_by_invoice_id = '''
+SELECT ii.id              AS item_id,
+       ii.type,
+       ii.unit_price,
+       ii.quantity,
+       ii.net_amount,
+       ii.gross_amount,
+       ii.total_tax,
+       ii.discount,
+       be.id              AS be_id,
+       be.external_ref_id AS be_ext_ref_id,
+       be.description     AS be_desc,
+       be.unit_type       AS be_unit_type,
+       be.unit_price      AS be_unit_price,
+       be.quantity        AS be_qty,
+       be.net_amount      AS be_net_amount,
+       be.gross_amount    AS be_gross_amount,
+       be.total_tax       AS be_total_tax,
+       be.discount        AS be_discount,
+       be.created         AS be_created,
+       be.updated         AS be_updated,
+       ic.id              AS invoice_component_id,
+       ic.rate_applied    AS component_rate,
+       ic.value,
+       t.id               AS tax_id,
+       t.title            AS tax_title,
+       t.description      AS tax_desc,
+       t.value
+FROM   atlas_invoiceitem ii
+       JOIN atlas_billingentity be
+         ON be.id = ii.object_id
+       LEFT JOIN atlas_invoicecomponent ic
+         ON ic.object_id = ii.id
+       LEFT JOIN atlas_tax t
+         ON t.id = ic.bill_component_id
+WHERE  ii.invoice_id = $1;
+'''
+get_transactions_by_invoice_id = '''
+ SELECT `ppt`.`txn_id`,
+       `ppt`.`gw_txn_id`,
+       `ppt`.`user_id`,
+       `ppt`.`biz_id`,
+       `ppt`.`store_id`,
+       `ppt`.`gw_name`,
+       `ppt`.`amount`,
+       `ppt`.`state`,
+       `ppt`.`refund_id`,
+       `ppt`.`created`,
+       `ppt`.`updated`,
+       `ppt`.`post_processed`,
+       `ppt`.`comments`,
+       `ppt`.`channel`,
+       `ppt`.`redirect_url`,
+       `ppt`.`commission`,
+       `ppt`.`currency`
+FROM   payments_paymenttransaction ppt
+WHERE  ( `ppt`.`purpose` = 'biz_service_payment'
+         AND `ppt`.`purpose_id` = $1 )
+'''
+get_invoice_payments_by_invoice_id = '''
+SELECT id,
+       invoice_id,
+       external_ref_id AS payment_id,
+       amount,
+       is_deleted
+FROM   atlas_invoicepayment
+WHERE  invoice_id = $1
+'''
+get_paid_invoices_with_final_amount_greater_than_zero = '''
+ SELECT ai.id,
+       ai.external_ref_id,
+       ai.biz_id,
+       ai.net_amount,
+       ai.final_amount,
+       ai.status,
+       ai.invoice_date,
+       ai.due_date,
+       ai.created,
+       ai.updated,
+       ais.status,
+       ais.created
+FROM   atlas_invoice AS ai
+       JOIN atlas_invoicestatus AS ais
+         ON ais.invoice_id = ai.id
+WHERE  ais.status = 'paid'
+       AND ai.final_amount > 0
+       AND ai.type = "standard"
+       AND ai.source = "quickbook"
+'''
+get_payment_links_by_invoice_id = '''
+SELECT i.id      AS invoice_id,
+       gk.name as `key`,
+       gvt.value AS link_info
+FROM   atlas_invoice i
+       INNER JOIN django_content_type invoice_ct ON invoice_ct.app_label='atlas' and invoice_ct.model='invoice'
+       INNER JOIN django_content_type valuetext_ct ON valuetext_ct.app_label='common' and valuetext_ct.model='valuetext'
+       INNER JOIN common_genericmodelkeyvalue gkv
+              ON gkv.owner_content_type_id = invoice_ct.id
+                 AND gkv.owner_object_id = i.id
+       INNER JOIN (SELECT *
+                  FROM   common_genericmodelkey
+                  WHERE  NAME = 'razorpay_link') gk
+              ON gkv.key_id = gk.id
+       INNER JOIN common_valuetext gvt
+              ON gkv.value_content_type_id = valuetext_ct.id
+                 AND gvt.id = gkv.value_object_id
+WHERE  i.id = $1;
+'''
+get_invoices_with_payment_discripencies = 'select ai.id, ai.external_ref_id, ai.biz_id, ai.net_amount, ai.final_amount, cip.total_amount as payments, IFNULL( ii.net_amount, 0) as tds, ((SELECT payments) + (SELECT tds)) as total, (ai.net_amount - (SELECT total)) as diff, ai.status, ai.invoice_date, ai.due_date, ai.created, ai.updated from atlas_invoice as ai JOIN (select ip.invoice_id, SUM(ip.amount) as total_amount from atlas_invoicepayment ip where ip.is_deleted = 0 GROUP BY ip.invoice_id) cip ON cip.invoice_id=ai.id LEFT JOIN atlas_invoiceitem ii ON ii.invoice_id=ai.id and ii.type="billing_entity_tds" where ai.status = "paid" and ai.source="quickbook" and ai.type in ("standard", "reactivation") group by ai.id having diff > 1 limit $1'
+get_biz_status = "select b.biz_id, b.biz_name, b.billing_emails, b.billing_phones, b.primary_contact from common_biz as b where b.biz_id=$1; select bsu.id, bsu.prev_state, bsu.current_state, bsu.message from common_bizstatusupdate bsu where bsu.biz_id=$1; select id, external_ref_id, type, net_amount, final_amount, status, created, updated, due_date from atlas_invoice where biz_id=$1 order by status, final_amount;"
+get_biz_qb_key_values = '''
+SELECT `common_keyvalue`.`id`, `common_keyvalue`.`key`,
+`common_keyvalue`.`value`, `common_keyvalue`.`biz_id`,
+`common_keyvalue`.`biz_location_id`, `common_keyvalue`.`biz_franchisee_id`
+FROM `common_keyvalue` WHERE (`common_keyvalue`.`key` IN
+("franchisee_qb_customer_id", "qb_customer_id", "franchisee_qb_linked_biz_ids",
+"qb_linked_biz_ids") AND `common_keyvalue`.`biz_id` = $1)'''
+get_ist = 'select "$1", CONVERT_TZ("$1", "-08:00" ,"+05:30");'
+monthly_credit_reloads = '''select t1.biz_id,t3.biz_name,t1.created as date,t2.net_amount,t1.credits from atlas_bizcreditstransaction as t1
+left join atlas_invoice as t2 on t1.purpose_id = t2.txn_id
+left join common_biz as t3 on t1.biz_id = t3.biz_id
+where t1.biz_id!=76720224 and t1.purpose='online_reload' and YEAR(t1.created)=$1 and MONTH(t1.created)=$2;'''
+monthly_campaign_stats = '''select t1.biz_id,t2.biz_name,count(1) as number_of_campaigns,sum(total_users_complete) as total_sms_send from atlas_campaignv3 as t1
+left join common_biz as t2 on t1.biz_id = t2.biz_id
+where t1.medium="sms" and t1.status="completed" and YEAR(t1.run_time)=$1 and MONTH(t1.run_time)=$2
+group by biz_id;'''
+monthly_deactivated_merchants = "select bsu.created as `deactivated on`, bsu.biz_id, cb.biz_name, bsu.current_state, bsu.message from common_bizstatusupdate bsu JOIN common_biz cb on cb.biz_id=bsu.biz_id where bsu.created=(select MAX(created) from common_bizstatusupdate bsu2 where bsu2.biz_id=bsu.biz_id) and current_state in ('pending_deactivation', 'inactive') and YEAR(bsu.created) = $1 and MONTH(bsu.created) = $2 order by bsu.created desc"
+monthly_reactivated_merchants = "select bsu.created as `deactivated on`, bsu.biz_id, cb.biz_name, bsu.current_state, bsu.message from common_bizstatusupdate bsu JOIN common_biz cb on cb.biz_id=bsu.biz_id where bsu.created=(select MAX(created) from common_bizstatusupdate bsu2 where bsu2.biz_id=bsu.biz_id) and prev_state in ('pending_deactivation', 'inactive') and current_state in ('active') and YEAR(bsu.created) = $1 and MONTH(bsu.created) = $2 order by bsu.created desc"
+monthly_successful_rzp_txns = '''select ai.external_ref_id, ai.biz_id, cb.biz_name, pt.amount/100, cb.biz_currency as currency, pt.currency as billing_currency, pt.created, pt.gw_txn_id, pt.state from payments_paymenttransaction pt JOIN atlas_invoice ai ON ai.id=pt.purpose_id JOIN common_biz cb on cb.biz_id=ai.biz_id where pt.purpose='biz_service_payment' and pt.state='3' and  pt.purpose_id IS NOT NULL and pt.gw_name="razorpay" and YEAR(pt.created)=$1 and MONTH(pt.created)=$2 order by pt.created'''
+get_all_qb_customers_contact_details = '''(
+    select kv.value as "QBO Ref ID", cb.biz_registered_name as "Customer Name", CONCAT_WS(",", ga.address_1, ga.address_2, ga.city, ga.state, ga.country, ga.pin) as Address, kv_gst.value as "GSTIN",
+    cb.primary_contact as "Contact Person", cb.billing_phones as "Phone No", cb.billing_emails as "Email Id" from common_keyvalue kv
+    JOIN common_biz cb ON cb.biz_id=kv.biz_id
+    LEFT JOIN common_keyvalue kv_gst ON kv_gst.key = "business_info_config_gst_no" and kv_gst.biz_id=cb.biz_id
+    LEFT JOIN common_genericaddress ga ON ga.tag="billing" and ga.object_id=cb.biz_id and ga.content_type_id=13
+    where kv.key="qb_customer_id"
+)
+UNION
+(
+    select kv.value as "QBO Ref ID", cbf.regd_name as "Customer Name", CONCAT_WS(",", ga.address_1, ga.address_2, ga.city, ga.state, ga.country, ga.pin) as Address, cbf.gstin as "GSTIN",
+    cbf.display_name as "Contact Person", cbf.contact_phones as "Phone No", cbf.contact_emails as "Email Id" from common_keyvalue kv
+    JOIN common_biz cb ON cb.biz_id=kv.biz_id
+    JOIN common_bizfranchisee cbf ON cbf.id=kv.biz_franchisee_id
+    LEFT JOIN common_genericaddress ga ON ga.tag="billing" and ga.object_id=cbf.biz_id and ga.content_type_id=273
+    where kv.key="franchisee_qb_customer_id"
+)'''
+get_all_qb_customers = '(select kv.biz_id as "Biz ID", cb.biz_name as "Biz Name", kv.biz_franchisee_id as "Franchisee ID", null as "Store IDs", kv.value as "QBO Ref ID" from common_keyvalue kv JOIN common_biz cb ON cb.biz_id=kv.biz_id  where kv.key="qb_customer_id") UNION (select kv.biz_id as "Biz ID", cb.biz_name as "Biz Name", kv.biz_franchisee_id as "Franchisee ID", group_concat(cbfl.bizlocation_id) as "Store IDs", kv.value as "QBO Ref ID" from common_keyvalue kv JOIN common_biz cb ON cb.biz_id=kv.biz_id JOIN common_bizfranchisee cbf ON cbf.id=kv.biz_franchisee_id LEFT JOIN common_bizfranchisee_locations cbfl ON cbfl.bizfranchisee_id=cbf.id  where kv.key="franchisee_qb_customer_id" group by cbfl.bizfranchisee_id)'
+getting_deactivated_in_n_days = 'select ai.external_ref_id, ai.biz_id, cb.biz_name, ai.final_amount, ai.status, ai.due_date, DATEDIFF(ai.due_date, curdate()) as deactivate_in_days from atlas_invoice ai JOIN common_biz cb ON cb.biz_id=ai.biz_id where ai.status in ("pending", "overdue") and DATEDIFF(ai.due_date, curdate()) > -1 and DATEDIFF(ai.due_date, curdate()) < $1 and ai.biz_id not in (select ckv.biz_id from common_keyvalue ckv where ckv.key="business_info_config_is_exempted" and ckv.value="1") order by ai.due_date;'
+DB_SIZE_BY_TABLES = '''SELECT table_name AS "Table",
+ROUND(((data_length + index_length) / 1024 / 1024), 2) AS "Size (MB)"
+FROM information_schema.TABLES
+WHERE table_schema = $1
+ORDER BY (data_length + index_length) DESC;'''
+[alias_dsn]
