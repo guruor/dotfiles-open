@@ -63,6 +63,37 @@ lfcd () {
 }
 bindkey -s '^o' 'lfcd\n'
 
+__fzf_use_tmux__() {
+  [ -n "$TMUX_PANE" ] && [ "${FZF_TMUX:-0}" != 0 ] && [ ${LINES:-40} -gt 15 ]
+}
+
+__fzfcmd() {
+  __fzf_use_tmux__ &&
+    echo "fzf-tmux -d${FZF_TMUX_HEIGHT:-40%}" || echo "fzf"
+}
+
+# Use to search command from history into the command line
+fzf-history-widget() {
+  local selected num
+  setopt localoptions noglobsubst noposixbuiltins pipefail 2> /dev/null
+  selected=( $(fc -rl 1 |
+    FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} $FZF_DEFAULT_OPTS -n2..,.. --tiebreak=index --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)) )
+  local ret=$?
+  if [ -n "$selected" ]; then
+    num=$selected[1]
+    if [ -n "$num" ]; then
+      zle vi-fetch-history -n $num
+    fi
+  fi
+  zle reset-prompt
+  return $ret
+}
+zle     -N   fzf-history-widget
+# Ctrl+R will trigger history search
+bindkey '^R' fzf-history-widget
+# Backward search in vi mode will also trigger history search
+bindkey -a '?' fzf-history-widget
+
 bindkey -s '^a' 'bc -lq\n'
 
 bindkey -s '^f' 'cd "$(dirname "$(fzf)")"\n'
@@ -75,3 +106,7 @@ bindkey '^e' edit-command-line
 
 # Load syntax highlighting; should be last.
 source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh 2>/dev/null
+
+# Initializing pyev
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
