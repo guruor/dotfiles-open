@@ -1,0 +1,3 @@
+#!/bin/bash
+
+$TERMINAL -t GVim -e nvim "$@"
