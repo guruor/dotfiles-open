@@ -32,16 +32,15 @@ set nobackup                            " This is recommended by coc
 set nowritebackup                       " This is recommended by coc
 set shortmess+=c                        " Don't pass messages to |ins-completion-menu|.
 set signcolumn=yes                      " Always show the signcolumn, otherwise it would shift the text each time
-set updatetime=300                      " Faster completion
-set timeoutlen=100                      " By default timeoutlen is 1000 ms
+set updatetime=250                      " Faster completion
+set timeoutlen=250                      " By default timeoutlen is 1000 ms
 set clipboard=unnamedplus               " Copy paste between vim and everything else
 set incsearch
 set ignorecase
 set smartcase
 set hlsearch
 set showcmd
-set showmode
-set list listchars=trail:»,tab:»-
+" set list listchars=trail:»,tab:»-
 set fillchars+=vert:\
 set nowrap
 set breakindent
@@ -51,19 +50,20 @@ set colorcolumn=120
 set termguicolors
 set noswapfile
 set undofile
-set undodir=~/.vim/undodir
 set scrolloff=5
 set completeopt-=preview                " Disable documentation window
-
-cmap w!! w !sudo tee %                  " You can't stop me
 
 """ netrw settings
 let g:netrw_banner=0
 let g:netrw_browse_split=2
 let g:netrw_winsize=25
 
+set undodir=~/.cache/vim/undo
+set directory=~/.cache/vim/swap
+set backupdir=~/.cache/vim/backup
+set viewdir=~/.cache/vim/view
 " Sesstion directory
-let session_directory = '~/.vim/session/'
+let session_directory='~/.cache/vim/session/'
 
 """ Python3 VirtualEnv
 let g:python3_host_prog = expand('~/.pyenv/versions/nvim/bin/python')

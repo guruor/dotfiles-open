@@ -33,8 +33,9 @@ function! StartifyEntryFormat()
 
 let g:startify_bookmarks = [
             \ { 'i': '~/.config/nvim/init.vim' },
-            \ { 'z': '~/.zshrc' },
-            \ '~/development',
+            \ { 'z': '~/.config/zsh/.zshrc' },
+            \ '~/Workspace/up/atlas_server',
+            \ '~/Workspace/up/codex',
             \ ]
 
 let g:startify_enable_special = 0
