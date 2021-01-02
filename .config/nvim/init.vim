@@ -14,5 +14,4 @@ source $HOME/.config/nvim/source/keys/which-key.vim
 source $HOME/.config/nvim/source/plug-conf/startify.vim
 source $HOME/.config/nvim/source/plug-conf/coc.vim
 source $HOME/.config/nvim/source/plug-conf/fzf.vim
-source $HOME/.config/nvim/source/plug-conf/vim-commentary.vim
 source $HOME/.config/nvim/source/plug-conf/misc.vim

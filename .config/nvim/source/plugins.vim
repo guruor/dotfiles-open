@@ -1,4 +1,5 @@
-
+set rtp +=~/.config/nvim
+set rtp +=~/.vim
 if ! filereadable(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autoload/plug.vim"'))
 	echo "Downloading junegunn/vim-plug to manage plugins..."
 	silent !mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autoload/
@@ -28,7 +29,6 @@ Plug 'tpope/vim-fugitive'
 " Syntax, formatting and auto-completion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'junegunn/rainbow_parentheses.vim'
-Plug 'jiangmiao/auto-pairs'
 Plug 'alvan/vim-closetag'
 Plug 'Yggdroot/indentLine',         { 'on': 'IndentLinesToggle' }
 
@@ -48,21 +48,22 @@ Plug 'dhruvasagar/vim-prosession'
 Plug 'junegunn/goyo.vim',           { 'on': 'Goyo' }
 Plug 'junegunn/limelight.vim',      { 'on': 'LimeLight!!'}
 
-" Yet to explorer
+" Good to have
+Plug 'vimwiki/vimwiki'
 Plug 'tpope/vim-sensible'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+
+" Yet to explorer
 Plug 'tpope/vim-abolish'
 Plug 'sheerun/vim-polyglot'
 Plug 'chrisbra/Colorizer'
 Plug 'heavenshell/vim-pydocstring', { 'do': 'make install' }
 Plug 'vim-scripts/loremipsum'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
 Plug 'metakirby5/codi.vim'
 Plug 'dkarter/bullets.vim'
 Plug 'junegunn/vim-easy-align',       { 'on': ['EasyAlign'] }
 " Plugings from Luke smith's dotfiles, confirm if still needed
-Plug 'jreybert/vimagit'
-Plug 'vimwiki/vimwiki'
 
 " Plug 'godlygeek/tabular'
 " Plug 'plasticboy/vim-markdown'
