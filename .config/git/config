@@ -21,14 +21,10 @@
     sclone = clone --depth 1
     undo = reset HEAD~1
 
-[user]
-    email = govind@urbanpiper.com
-    name = govind-up
-
 [core]
     editor = vim
     autocrlf = false
-	excludesfile = /home/govind/.gitignore_global
+    excludesfile = ~/.config/git/ignore
 
 [push]
     default = simple
@@ -88,3 +84,5 @@
 [url "git@gitlab.com:"]
     insteadOf = "gl:"
     pushInsteadOf = "gl:"
+[pull]
+    ff = only
