@@ -46,6 +46,13 @@ export AWS_CONFIG_FILE="${XDG_CONFIG_HOME}/aws/config"
 export GNUPGHOME="${XDG_CONFIG_HOME}/gnupg"
 export PYTHONHISTORY="${XDG_DATA_HOME}/python"
 
+# Clipmenu
+export CM_DEBUG=1
+export CM_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/clipmenu"
+export CM_MAX_CLIPS=100
+export CM_SELECTIONS="clipboard primary"
+export CM_IGNORE_WINDOW="dmenu"
+
 # Other program settings:
 export DICS="/usr/share/stardict/dic/"
 export SUDO_ASKPASS="$HOME/.local/bin/dmenupass"
