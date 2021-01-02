@@ -5,7 +5,7 @@ red='\e[1;31m'
 white='\e[0;37m'
 dotfiles_repo_dir=$(pwd)
 backup_dir="$HOME/.dotfiles.orig"
-dotfiles_home_dir=(.config .local .ssh .editorconfig .myclirc .profile .ripgreprc .xinitrc .xprofile .zprofile)
+dotfiles_home_dir=(.config .local .ssh .editorconfig .profile .ripgreprc .xinitrc .xprofile .zprofile)
 dotfiles_xdg_config_dir=()
 
 # Print usage message.
