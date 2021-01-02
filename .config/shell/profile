@@ -5,10 +5,6 @@
 # If you don't plan on reverting to bash, you can remove the link in ~/.profile
 # to clean up.
 
-# Initializing pyev
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
 # Adds `~/.local/bin` to $PATH
 export PATH="$PATH:$(du "$HOME/.local/bin" | cut -f2 | paste -sd ':' -)"
 
@@ -47,7 +43,8 @@ export WEECHAT_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/weechat"
 export GIT_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/git"
 export AWS_SHARED_CREDENTIALS_FILE="${XDG_CONFIG_HOME}/aws/credentials"
 export AWS_CONFIG_FILE="${XDG_CONFIG_HOME}/aws/config"
-export GNUPGHOME="${XDG_DATA_HOME}/gnupg"
+export GNUPGHOME="${XDG_CONFIG_HOME}/gnupg"
+export PYTHONHISTORY="${XDG_DATA_HOME}/python"
 
 # Other program settings:
 export DICS="/usr/share/stardict/dic/"
