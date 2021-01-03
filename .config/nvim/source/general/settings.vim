@@ -33,7 +33,8 @@ set nowritebackup                       " This is recommended by coc
 set shortmess+=c                        " Don't pass messages to |ins-completion-menu|.
 set signcolumn=yes                      " Always show the signcolumn, otherwise it would shift the text each time
 set updatetime=250                      " Faster completion
-set timeoutlen=250                      " By default timeoutlen is 1000 ms
+set timeoutlen=500                      " By default timeoutlen is 1000 ms
+set ttimeoutlen=0                      " By default ttimeoutlen is 1000 ms
 set clipboard=unnamedplus               " Copy paste between vim and everything else
 set incsearch
 set ignorecase
@@ -127,9 +128,25 @@ endif
 " Runs a script that cleans out tex build files whenever I close out of a .tex file.
 	autocmd VimLeave *.tex !texclear %
 
-" Ensure files are read as what I want:
+" Ensure files are read as what "Multiple Wikis
+" https://opensource.com/article/18/6/vimwiki-gitlab-notes
+"
+" Use wiki names via :h vimwiki-option-name
+" Clone off a default https://github.com/vimwiki/vimwiki/issues/365
+    let myWikiDefault = {}
+    let myWikiDefault.syntax = 'markdown'
+    let myWikiDefault.ext = 'md'
+
+    let myWikiPersonal = copy(myWikiDefault)
+    let myWikiPersonal.path = $VIMWIKI_DIR_PERSONAL . "/wiki/"
+    let myWikiPersonal.name = 'myWikiPersonal'
+
+    let myWikiWork = copy(myWikiDefault)
+    let myWikiWork.path = $VIMWIKI_DIR_WORK . "/wiki/"
+    let myWikiWork.name = 'myWikiWork'
+
+    let g:vimwiki_list = [myWikiWork, myWikiPersonal]
 	let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
-	let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'markdown', 'ext': '.md'}]
 	autocmd BufRead,BufNewFile /tmp/calcurse*,~/.calcurse/notes/* set filetype=markdown
 	autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
 	autocmd BufRead,BufNewFile *.tex set filetype=tex

@@ -53,6 +53,11 @@ export CM_MAX_CLIPS=100
 export CM_SELECTIONS="clipboard primary"
 export CM_IGNORE_WINDOW="dmenu"
 
+# VimWiki
+export VIMWIKI_DIR="$HOME/Documents/vimWiki"
+export VIMWIKI_DIR_PERSONAL="${VIMWIKI_DIR}/Personal"
+export VIMWIKI_DIR_WORK="${VIMWIKI_DIR}/Work"
+
 # Other program settings:
 export DICS="/usr/share/stardict/dic/"
 export SUDO_ASKPASS="$HOME/.local/bin/dmenupass"
