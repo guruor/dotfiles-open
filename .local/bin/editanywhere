@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# This is the active window
+W="$(xdotool getactivewindow)"
+
+# Get window class
+WM_CLASS="$(xprop -id "$W" | awk -F '"' '/WM_CLASS/{print $4}')"
+
+# Succeed if the WM_CLASS is of terminal
+is_terminal() {
+    [ "$WM_CLASS" == "St" ] || [ "$WM_CLASS" == "Alacritty" ]
+}
+
+send_key() {
+    keytosend=$1
+    # echo "$WM_CLASS, $1" >> /tmp/edit-anywhere.log
+    xdotool key --clearmodifiers --window "$W" "$keytosend"
+}
+
+# Sending copy command
+if is_terminal; then
+    send_key alt+c
+else
+    send_key ctrl+c
+fi
+
+tmpfile="/tmp/edit-anywhere.txt"
+xclip -out -selection pri > "$tmpfile"    # initialize file with clipboard contents
+$TERMINAL -n spedit -g "120x34" -e nvim "$tmpfile" && xclip -in -selection clip "$tmpfile"      # push file to clipboard
+
+
+# Sending paste command
+if is_terminal; then
+    send_key alt+v
+else
+    send_key ctrl+v
+fi
