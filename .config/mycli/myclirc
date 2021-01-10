@@ -264,6 +264,7 @@ get_invoice_details_by_invoice_id = '''
        ai.external_ref_id,
        ai.biz_id,
        ai.net_amount,
+       ai.currency,
        ai.final_amount,
        ai.status,
        ai.invoice_date,
@@ -346,6 +347,7 @@ get_paid_invoices_with_final_amount_greater_than_zero = '''
        ai.external_ref_id,
        ai.biz_id,
        ai.net_amount,
+       ai.currency,
        ai.final_amount,
        ai.status,
        ai.invoice_date,
@@ -391,7 +393,7 @@ FROM `common_keyvalue` WHERE (`common_keyvalue`.`key` IN
 ("franchisee_qb_customer_id", "qb_customer_id", "franchisee_qb_linked_biz_ids",
 "qb_linked_biz_ids") AND `common_keyvalue`.`biz_id` = $1)'''
 get_ist = 'select "$1", CONVERT_TZ("$1", "-08:00" ,"+05:30");'
-monthly_credit_reloads = '''select t1.biz_id,t3.biz_name,t1.created as date,t2.net_amount,t1.credits from atlas_bizcreditstransaction as t1
+monthly_credit_reloads = '''select t1.biz_id,t3.biz_name,t1.created as date,t2.net_amount,t2.currency,t1.credits from atlas_bizcreditstransaction as t1
 left join atlas_invoice as t2 on t1.purpose_id = t2.txn_id
 left join common_biz as t3 on t1.biz_id = t3.biz_id
 where t1.biz_id!=76720224 and t1.purpose='online_reload' and YEAR(t1.created)=$1 and MONTH(t1.created)=$2;'''
@@ -401,7 +403,7 @@ where t1.medium="sms" and t1.status="completed" and YEAR(t1.run_time)=$1 and MON
 group by biz_id;'''
 monthly_deactivated_merchants = "select bsu.created as `deactivated on`, bsu.biz_id, cb.biz_name, bsu.current_state, bsu.message from common_bizstatusupdate bsu JOIN common_biz cb on cb.biz_id=bsu.biz_id where bsu.created=(select MAX(created) from common_bizstatusupdate bsu2 where bsu2.biz_id=bsu.biz_id) and current_state in ('pending_deactivation', 'inactive') and YEAR(bsu.created) = $1 and MONTH(bsu.created) = $2 order by bsu.created desc"
 monthly_reactivated_merchants = "select bsu.created as `deactivated on`, bsu.biz_id, cb.biz_name, bsu.current_state, bsu.message from common_bizstatusupdate bsu JOIN common_biz cb on cb.biz_id=bsu.biz_id where bsu.created=(select MAX(created) from common_bizstatusupdate bsu2 where bsu2.biz_id=bsu.biz_id) and prev_state in ('pending_deactivation', 'inactive') and current_state in ('active') and YEAR(bsu.created) = $1 and MONTH(bsu.created) = $2 order by bsu.created desc"
-monthly_successful_rzp_txns = '''select ai.external_ref_id, ai.biz_id, cb.biz_name, pt.amount/100, cb.biz_currency as currency, pt.currency as billing_currency, pt.created, pt.gw_txn_id, pt.state from payments_paymenttransaction pt JOIN atlas_invoice ai ON ai.id=pt.purpose_id JOIN common_biz cb on cb.biz_id=ai.biz_id where pt.purpose='biz_service_payment' and pt.state='3' and  pt.purpose_id IS NOT NULL and pt.gw_name="razorpay" and YEAR(pt.created)=$1 and MONTH(pt.created)=$2 order by pt.created'''
+monthly_successful_rzp_txns = '''select ai.external_ref_id, ai.biz_id, cb.biz_name, pt.amount/100, ai.currency as currency, pt.currency as billing_currency, pt.created, pt.gw_txn_id, pt.state from payments_paymenttransaction pt JOIN atlas_invoice ai ON ai.id=pt.purpose_id JOIN common_biz cb on cb.biz_id=ai.biz_id where pt.purpose='biz_service_payment' and pt.state='3' and  pt.purpose_id IS NOT NULL and pt.gw_name="razorpay" and YEAR(pt.created)=$1 and MONTH(pt.created)=$2 order by pt.created'''
 get_all_qb_customers_contact_details = '''(
     select kv.value as "QBO Ref ID", cb.biz_registered_name as "Customer Name", CONCAT_WS(",", ga.address_1, ga.address_2, ga.city, ga.state, ga.country, ga.pin) as Address, kv_gst.value as "GSTIN",
     cb.primary_contact as "Contact Person", cb.billing_phones as "Phone No", cb.billing_emails as "Email Id" from common_keyvalue kv
@@ -420,7 +422,7 @@ UNION
     where kv.key="franchisee_qb_customer_id"
 )'''
 get_all_qb_customers = '(select kv.biz_id as "Biz ID", cb.biz_name as "Biz Name", kv.biz_franchisee_id as "Franchisee ID", null as "Store IDs", kv.value as "QBO Ref ID" from common_keyvalue kv JOIN common_biz cb ON cb.biz_id=kv.biz_id  where kv.key="qb_customer_id") UNION (select kv.biz_id as "Biz ID", cb.biz_name as "Biz Name", kv.biz_franchisee_id as "Franchisee ID", group_concat(cbfl.bizlocation_id) as "Store IDs", kv.value as "QBO Ref ID" from common_keyvalue kv JOIN common_biz cb ON cb.biz_id=kv.biz_id JOIN common_bizfranchisee cbf ON cbf.id=kv.biz_franchisee_id LEFT JOIN common_bizfranchisee_locations cbfl ON cbfl.bizfranchisee_id=cbf.id  where kv.key="franchisee_qb_customer_id" group by cbfl.bizfranchisee_id)'
-getting_deactivated_in_n_days = 'select ai.external_ref_id, ai.biz_id, cb.biz_name, ai.final_amount, ai.status, ai.due_date, DATEDIFF(ai.due_date, curdate()) as deactivate_in_days from atlas_invoice ai JOIN common_biz cb ON cb.biz_id=ai.biz_id where ai.status in ("pending", "overdue") and DATEDIFF(ai.due_date, curdate()) > -1 and DATEDIFF(ai.due_date, curdate()) < $1 and ai.biz_id not in (select ckv.biz_id from common_keyvalue ckv where ckv.key="business_info_config_is_exempted" and ckv.value="1") order by ai.due_date;'
+getting_deactivated_in_n_days = 'select ai.external_ref_id, ai.biz_id, cb.biz_name, ai.final_amount, ai.currency, ai.status, ai.due_date, DATEDIFF(ai.due_date, curdate()) as deactivate_in_days from atlas_invoice ai JOIN common_biz cb ON cb.biz_id=ai.biz_id where ai.status in ("pending", "overdue") and DATEDIFF(ai.due_date, curdate()) > -1 and DATEDIFF(ai.due_date, curdate()) < $1 and ai.biz_id not in (select ckv.biz_id from common_keyvalue ckv where ckv.key="business_info_config_is_exempted" and ckv.value="1") order by ai.due_date;'
 DB_SIZE_BY_TABLES = '''SELECT table_name AS "Table",
 ROUND(((data_length + index_length) / 1024 / 1024), 2) AS "Size (MB)"
 FROM information_schema.TABLES
