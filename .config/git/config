@@ -85,4 +85,5 @@
     insteadOf = "gl:"
     pushInsteadOf = "gl:"
 [pull]
-    ff = only
+    ; ff = only
+    rebase = false
