@@ -112,5 +112,5 @@ eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
 if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-    exec tmux
+    stty -echo && sleep 0.2 && xdotool type --delay 15 'tmux' && stty echo
 fi
