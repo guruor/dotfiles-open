@@ -13,8 +13,8 @@ call plug#begin(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/plugged"
 " Editor look and feel
 Plug 'morhetz/gruvbox'
 Plug 'chriskempson/tomorrow-theme', { 'rtp': 'vim' }
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'itchyny/lightline.vim'
+Plug 'shinchu/lightline-gruvbox.vim'
 Plug 'ryanoasis/vim-devicons'
 
 " Easy search, navigation

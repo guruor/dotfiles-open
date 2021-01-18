@@ -3,13 +3,9 @@ let g:session_directory = session_directory
 let g:prosession_dir = session_directory
 let g:prosession_last_session_dir = session_directory
 
-" Airline
-let g:airline_theme = 'gruvbox'
-let g:airline_powerline_fonts = 1
-let g:airline_section_z = ' %{strftime("%-I:%M %p")}'
-let g:airline_section_warning = ''
-let g:airline#extensions#tagbar#flags = 'f'  " show full tag hierarchy
-" let g:airline#extensions#tabline#enabled = 1
+" LightLine
+let g:lightline = {}
+let g:lightline.colorscheme = 'gruvbox'
 
 " vim-pydocstring
 let g:pydocstring_doq_path = '~/.pyenv/versions/neovim/bin/doq'
