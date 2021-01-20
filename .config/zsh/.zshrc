@@ -6,24 +6,53 @@ autoload -U colors && colors	# Load colors
 # Adding git status to the prompt
 autoload -Uz vcs_info
 setopt prompt_subst
-zstyle ':vcs_info:*' stagedstr 'M'
-zstyle ':vcs_info:*' unstagedstr 'M'
-zstyle ':vcs_info:*' check-for-changes true
-zstyle ':vcs_info:*' actionformats '%F{5}[%F{2}%b%F{3}|%F{1}%a%F{5}]%f '
-zstyle ':vcs_info:*' formats ' %F{2}%b %F{2}%c%F{3}%u%f'
-zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
-zstyle ':vcs_info:*' enable git
-+vi-git-untracked() {
-  if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
-  [[ $(git ls-files --other --directory --exclude-standard | sed q | wc -l | tr -d ' ') == 1 ]] ; then
-  hook_com[unstaged]+='%F{1}??%f'
-fi
+
+# Initializing pyev
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+
+
+# Adds vcs info like current branch and changes to the Prompt
+function updateVSCPrompt {
+    vcs_info
+    zstyle ':vcs_info:*' stagedstr 'M'
+    zstyle ':vcs_info:*' unstagedstr 'M'
+    zstyle ':vcs_info:*' check-for-changes true
+    zstyle ':vcs_info:*' actionformats '%F{5}[%F{2}%b%F{3}|%F{1}%a%F{5}]%f '
+    zstyle ':vcs_info:*' formats ' %F{2}%b %F{2}%c%F{3}%u%f'
+    zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
+    zstyle ':vcs_info:*' enable git
+    +vi-git-untracked() {
+      if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
+          [[ $(git ls-files --other --directory --exclude-standard | sed q | wc -l | tr -d ' ') == 1 ]] ; then
+          hook_com[unstaged]+='%F{1}??%f'
+        fi
+    }
+    PS1=$PS1" ${vcs_info_msg_0_} "
 }
 
-precmd () { vcs_info }
+# Adds active virtualenv name before prompt
+function updatePyenvPrompt {
+    PYENV_VER=$(pyenv version-name)
+    if [[ "${PYENV_VER}" != "$(pyenv global | paste -sd ':' -)" ]]; then
+      PS1="(${PYENV_VER%%:*}) "$PS1
+    fi
+}
 
-
-PROMPT='%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}] ${vcs_info_msg_0_} %f$%b '
+# Updates base prompt to look like this: [govind@pc ~ ]   $
+# Refer: http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Prompt-Expansion
+function updatePrompt {
+    # Prompt colors: 0	Black, 1	Red, 2	Green, 3	Yellow, 4	Blue, 5	Magenta, 6	Cyan, 7	White
+    BASE_PROMPT='%B%F{1}[%F{3}%n%F{2}@%F{4}%M %F{5}%c %F{1}] '
+    PROMPT_SUFFIX='%f$%b '
+    PS1=${BASE_PROMPT}
+    updateVSCPrompt
+    updatePyenvPrompt
+    PS1=${PS1}${PROMPT_SUFFIX}
+}
+export PROMPT_COMMAND='updatePrompt'
+precmd() { eval '$PROMPT_COMMAND' } # this line is necessary for zsh
 
 setopt autocd		# Automatically cd into typed directory.
 stty stop undef		# Disable ctrl-s to freeze terminal.
@@ -128,10 +157,6 @@ bindkey '^e' edit-command-line
 
 # Load syntax highlighting; should be last.
 source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh 2>/dev/null
-
-# Initializing pyev
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
 
 # Auto type tmux when zsh is loaded
 # if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
