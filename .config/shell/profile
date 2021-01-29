@@ -45,6 +45,7 @@ export AWS_SHARED_CREDENTIALS_FILE="${XDG_CONFIG_HOME}/aws/credentials"
 export AWS_CONFIG_FILE="${XDG_CONFIG_HOME}/aws/config"
 export GNUPGHOME="${XDG_CONFIG_HOME}/gnupg"
 export PYTHONHISTORY="${XDG_DATA_HOME}/python"
+export RIPGREP_CONFIG_PATH="${XDG_CONFIG_HOME}/.ripgreprc"
 
 # Clipmenu
 export CM_DEBUG=1
@@ -61,7 +62,10 @@ export VIMWIKI_DIR_WORK="${VIMWIKI_DIR}/Work"
 # Other program settings:
 export DICS="/usr/share/stardict/dic/"
 export SUDO_ASKPASS="$HOME/.local/bin/dmenupass"
-export FZF_DEFAULT_OPTS="--layout=reverse --height 40%"
+export FZF_DEFAULT_OPTS="--layout=reverse --height 40%  --inline-info"
+export FZF_DEFAULT_COMMAND='fd --hidden --follow --type f'
+
+
 # export LESS=-R
 export LESS="-XFR"
 export LESS_TERMCAP_mb="$(printf '%b' '[1;31m')"
