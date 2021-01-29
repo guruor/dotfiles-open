@@ -6,6 +6,10 @@
     c = commit -m
     ca = commit -am
     co = checkout
+    # git checkout fzf
+    cof = !git branch -a --color=always --sort=-committerdate | grep -v '/HEAD\\s'  | fzf --ansi | sed 's/^..//' | awk '{print $1}' | sed "s#^remotes/[^/]*/##" | xargs git checkout
+    # git checkout fzf with last commit details
+	cofv = !git branch -a --color=always --sort=-committerdate -vv | grep -v '/HEAD\\s'  | fzf --ansi | sed 's/^..//' | awk '{print $1}' | sed "s#^remotes/[^/]*/##" | xargs git checkout
     contributors = shortlog -nse
     d = diff --patch-with-stat
     df = diff --patch-with-stat --color-words
