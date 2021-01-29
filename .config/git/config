@@ -1,8 +1,8 @@
 [alias]
     a = add
     aa = add -A
-    b = branch
-    ba = branch -a
+    b = branch --sort=-committerdate
+    ba = branch -a --sort=-committerdate
     c = commit -m
     ca = commit -am
     co = checkout
