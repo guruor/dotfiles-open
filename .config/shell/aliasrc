@@ -11,7 +11,10 @@ alias \
 	mkd="mkdir -pv" \
 	yt="youtube-dl --add-metadata -i" \
 	yta="yt -x -f bestaudio/best" \
-	ffmpeg="ffmpeg -hide_banner"
+	ffmpeg="ffmpeg -hide_banner" \
+    fda='fd -IH' \
+    rga='rg -uuu' \
+    :q='exit'
 
 # Colorize commands when possible.
 alias \
