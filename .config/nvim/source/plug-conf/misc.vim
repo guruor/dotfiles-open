@@ -36,3 +36,15 @@ let g:limelight_paragraph_span = 0
 
 " Goyo
 let g:goyo_width=125
+
+" Replace filename component of Lightline statusline
+let g:lightline = {
+      \ 'component_function': {
+      \   'filename': 'FilenameForLightline'
+      \ }
+      \ }
+
+" Show full path of filename
+function! FilenameForLightline()
+    return expand('%')
+endfunction
