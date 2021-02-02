@@ -26,5 +26,5 @@
     xnoremap K :move '<-2<CR>gv-gv
     xnoremap J :move '>+1<CR>gv-gv
 
-" Save file as sudo on files that require root permission
-	cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+" Allow saving of files as sudo when I forgot to start vim using sudo.
+    cmap w!! w !sudo tee > /dev/null %

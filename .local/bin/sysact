@@ -1,6 +1,8 @@
 #!/bin/sh
 
 # A dmenu wrapper script for system functions.
+# To lock system on laptop lid close put https://gist.github.com/ryukinix/bd0c1ddcbbafdb4149ae70e41b7c822b
+# this script in /lib/elogind/system-sleep/lock.sh, don't forget to change the username
 
 # For non-systemd init systems.
 case "$(readlink -f /sbin/init)" in
