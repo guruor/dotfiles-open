@@ -3,15 +3,18 @@
 nnoremap <silent> <leader> :silent <c-u> :silent WhichKey '<Space>'<CR>
 vnoremap <silent> <leader> :silent <c-u> :silent WhichKeyVisual '<Space>'<CR>
 nnoremap <silent> <localleader> :silent <c-u> :silent WhichKey  ','<CR>
+vnoremap <silent> <localleader> :silent <c-u> :silent WhichKeyVisual  ','<CR>
 
 " No search highlight
 	nnoremap <silent> <leader><Space> :noh<CR>
+	nnoremap <silent> <localleader><,> :noh<CR>
 
 " " Trigger custom method comment defined in functions.vim
 " 	vnoremap <silent> <space>/ :call Comment()
 
 " Create map to add keys to
 let g:which_key_map =  {}
+let g:which_key_local_map =  {}
 " Define a separator
 let g:which_key_sep = '→'
 
@@ -31,36 +34,39 @@ autocmd  FileType which_key set laststatus=0 noshowmode noruler
             \| autocmd BufLeave <buffer> set laststatus=2 noshowmode ruler
 
 
+" Single local leader mappings, mostly will cover current tab and buffer related operations
+let g:which_key_local_map['<Tab>'] = [ ':tabnext'						  , 'Jump to next tab' ]
+let g:which_key_local_map['1'] = [ '1gt'								  , 'which_key_ignore' ]
+let g:which_key_local_map['2'] = [ '2gt'								  , 'which_key_ignore' ]
+let g:which_key_local_map['3'] = [ '3gt'								  , 'which_key_ignore' ]
+let g:which_key_local_map['4'] = [ '4gt'								  , 'which_key_ignore' ]
+let g:which_key_local_map['5'] = [ '5gt'								  , 'which_key_ignore' ]
+let g:which_key_local_map['6'] = [ '6gt'								  , 'which_key_ignore' ]
+let g:which_key_local_map['7'] = [ '7gt'								  , 'which_key_ignore' ]
+let g:which_key_local_map['8'] = [ '8gt'								  , 'which_key_ignore' ]
+let g:which_key_local_map['9'] = [ '9gt'								  , 'which_key_ignore' ]
+let g:which_key_local_map['0'] = [ ':tabp'							      , 'Jump to previous active tab' ]
+let g:which_key_local_map['w'] = [ 'w'							          , 'write' ]
+let g:which_key_local_map['x'] = [ ':q!'						          , 'Close without save' ]
+let g:which_key_local_map['q'] = [ 'q'                                    , 'quit' ]
+let g:which_key_local_map['Q'] = [ 'qa'                                   , 'quit all' ]
+let g:which_key_local_map['d'] = [ ':bd'                                  , 'delete buffer']
+let g:which_key_local_map[','] = 'No Highlight'
+
 " Single mappings
-let g:which_key_map['1'] = [ '1gt'								  , 'which_key_ignore' ]
-let g:which_key_map['2'] = [ '2gt'								  , 'which_key_ignore' ]
-let g:which_key_map['3'] = [ '3gt'								  , 'which_key_ignore' ]
-let g:which_key_map['4'] = [ '4gt'								  , 'which_key_ignore' ]
-let g:which_key_map['5'] = [ '5gt'								  , 'which_key_ignore' ]
-let g:which_key_map['6'] = [ '6gt'								  , 'which_key_ignore' ]
-let g:which_key_map['7'] = [ '7gt'								  , 'which_key_ignore' ]
-let g:which_key_map['8'] = [ '8gt'								  , 'which_key_ignore' ]
-let g:which_key_map['9'] = [ '9gt'								  , 'which_key_ignore' ]
-let g:which_key_map['0'] = [ ':tabp'							  , 'Jump to previous active tab' ]
 let g:which_key_map['\'] = [ ':TagbarToggle'                      , 'Toggle tagbar' ]
 let g:which_key_map['/'] = [ ':call Comment()'                    , 'comment' ]
 let g:which_key_map[';'] = [ ':Commands'                          , 'commands' ]
 let g:which_key_map['='] = [ '<C-W>='                             , 'balance windows' ]
 let g:which_key_map[','] = [ 'Startify'                           , 'start screen' ]
 let g:which_key_map['C'] = [ ':Codi!!'                            , 'virtual repl']
-let g:which_key_map['d'] = [ ':bd'                                , 'delete buffer']
 let g:which_key_map['e'] = [ ':CocCommand explorer'               , 'explorer' ]
-let g:which_key_map['W'] = [ 'w'                                  , 'write' ]
-let g:which_key_map['q'] = [ 'q'                                  , 'quit' ]
-let g:which_key_map['Q'] = [ 'qa'                                 , 'quit all' ]
 let g:which_key_map['p'] = [ ':Files'                             , 'search files' ]
 let g:which_key_map['P'] = [ ':!opout <c-r>%<CR><CR>'             , 'Preview file' ]
 let g:which_key_map['f'] = [ ':Rg'                                , 'search text' ]
 let g:which_key_map['_'] = [ '<C-W>s'                             , 'split below']
 let g:which_key_map['|'] = [ '<C-W>v'                             , 'split right']
-let g:which_key_map['v'] = [ ':VimwikiIndex'                      , 'VimwikiIndex']
 let g:which_key_map['c'] = [ ':w! \| !compiler "<c-r>%"<CR>'      , 'Compile' ]
-let g:which_key_map['x'] = [ ':q!'								  , 'Close without save' ]
 let g:which_key_map['X'] = [ ':split | term'                      , 'Terminal' ]
 let g:which_key_map['L'] = [ ':Limelight!!'                       , 'Limelight toggle' ]
 let g:which_key_map['z'] = [ 'Goyo'                               , 'zen' ]
@@ -68,7 +74,6 @@ let g:which_key_map['.'] = [ ':tabnew $MYVIMRC'                   , 'open init' 
 let g:which_key_map['R'] = [ ':source $MYVIMRC'                   , 'Reload vimrc' ]
 let g:which_key_map['U'] = [ ':UndotreeToggle'                    , 'Undo Tree' ]
 let g:which_key_map[' '] = 'No Highlight'
-
 
 " Group mappings
 
@@ -212,3 +217,4 @@ let g:which_key_map.m = {
 
 " Register which key map
 call which_key#register('<Space>', "g:which_key_map")
+call which_key#register(',', "g:which_key_local_map")

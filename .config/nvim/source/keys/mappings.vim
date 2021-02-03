@@ -1,6 +1,6 @@
 " g Leader key
 	let mapleader=" "
-	let localleader=","
+	let maplocalleader=","
 
 " Better indenting
 	vnoremap < <gv
