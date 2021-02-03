@@ -7,7 +7,6 @@ vnoremap <silent> <localleader> :silent <c-u> :silent WhichKeyVisual  ','<CR>
 
 " No search highlight
 	nnoremap <silent> <leader><Space> :noh<CR>
-	nnoremap <silent> <localleader><,> :noh<CR>
 
 " " Trigger custom method comment defined in functions.vim
 " 	vnoremap <silent> <space>/ :call Comment()
@@ -51,7 +50,6 @@ let g:which_key_local_map['x'] = [ ':q!'						          , 'Close without save' ]
 let g:which_key_local_map['q'] = [ 'q'                                    , 'quit' ]
 let g:which_key_local_map['Q'] = [ 'qa'                                   , 'quit all' ]
 let g:which_key_local_map['d'] = [ ':bd'                                  , 'delete buffer']
-let g:which_key_local_map[','] = 'No Highlight'
 
 " Single mappings
 let g:which_key_map['\'] = [ ':TagbarToggle'                      , 'Toggle tagbar' ]
