@@ -1,0 +1,22 @@
+# User cron jobs
+# Can be backed up using `crontab -l > $HOME/.local/bin/cron/jobs-backup.text`
+# Can be restored back using `crontab $HOME/.local/bin/cron/jobs-backup.text`
+
+
+# Job to fetch new emails using mutt wizard
+*/15 * * * *            /usr/bin/mw -Y
+
+# Job to update the newsboat database
+*/15 * * * *            $HOME/.local/bin/cron/newsup
+
+# Job to notify if any task is getting overdue in 4 hours
+0 */4 * * *             $HOME/.local/bin/cron/twnotify 4h
+
+# Job to check system/application updates
+0 */12 * * *            /usr/bin/mpc update
+
+# Job to backup current cron job list
+0 12 * * *              /usr/bin/crontab -l > $HOME/.local/bin/cron/jobs-backup.text
+
+# Job to check system/application updates
+0 12 * * *              $HOME/.local/bin/cron/checkup
