@@ -9,3 +9,13 @@ export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $USER)/bus; export D
 ```
 
 This ensures that notifications will display, xdotool commands will function and environmental variables will work as well.
+
+To backup user cron jobs to a file
+```
+crontab -l > $HOME/.local/bin/cron/jobs-backup.text
+```
+
+To restore user cron jobs from a file
+```
+crontab $HOME/.local/bin/cron/jobs-backup.text
+```
