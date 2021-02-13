@@ -7,7 +7,7 @@
         "--max-line-length=120",
         //"--load-plugins",
         // "pylint_django",
-        "--disable=E0213,E1101,E1102,E1136,C0103,C0114,C0115,C0116,C0202,C0415,W0105,W0212,W0613,R0903,R0913"
+        "--disable=E0101,E0213,E1101,E1102,E1111,E1136,C0103,C0114,C0115,C0116,C0202,C0415,W0105,W0212,W0613,W0622,R0903,R0913,R1720"
     ],
     "python.linting.pep8Enabled": true,
     "python.linting.pep8Args": [
