@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# System sound files can be found at /usr/share/sounds/
+mpv $HOME/.local/share/complete.oga
