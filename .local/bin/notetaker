@@ -1,13 +1,22 @@
-#!/bin/sh
+#!/bin/sh +x
 
-filename="note-$(date +%Y-%m-%d).md"
-noteFilename="${VIMWIKI_DIR_WORK}/wiki/${filename}"
+noteFilename="${VIMWIKI_DIR}/QuickNote.md"
+todayHeading="# Notes for $(date +%Y-%m-%d)"
 
+# Create file if doesn't exists, add
 if [ ! -f $noteFilename ]; then
-  echo "# Notes for $(date +%Y-%m-%d)" > $noteFilename
+  echo -e "$todayHeading" > $noteFilename
 fi
 
-nvim -c "norm Go" \
+# Check if note file has a header for today's date, if not add it
+if ! grep -q "$todayHeading" "$noteFilename"; then
+  echo -e "\n---\n" >> $noteFilename
+  echo -e "$todayHeading" >> $noteFilename
+fi
+
+# Creates a timestamp and changes the working directory for vim session to vim wiki directory
+nvim -c "cd $VIMWIKI_DIR" \
+  -c "norm Go" \
   -c "norm Go## $(date +%H:%M)" \
   -c "norm G2o" \
   -c "norm zz" \
