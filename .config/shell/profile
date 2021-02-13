@@ -59,6 +59,11 @@ export VIMWIKI_DIR="$HOME/Documents/vimWiki"
 export VIMWIKI_DIR_PERSONAL="${VIMWIKI_DIR}/Personal"
 export VIMWIKI_DIR_WORK="${VIMWIKI_DIR}/Work"
 
+# Taskwarrior
+export TASKRC="$HOME/.config/taskwarrior/task/.taskrc"
+export VIT_DIR="$HOME/.config/taskwarrior/vit"
+export TASKDATA="$HOME/Documents/taskwarrior"
+
 # Other program settings:
 export DICS="/usr/share/stardict/dic/"
 export SUDO_ASKPASS="$HOME/.local/bin/dmenupass"
