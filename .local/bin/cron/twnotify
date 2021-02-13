@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Set as a cron job to check if any taskwarrior task is overduing in every 4 hour
+
+$HOME/.local/bin/taskwarrior-notify 4h
