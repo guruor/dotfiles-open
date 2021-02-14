@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Displays number of tasks overdue today
+# When clicked, brings up `taskwarrior-tui`.
+
+case $BLOCK_BUTTON in
+	1) setsid -f "$TERMINAL" -e taskwarrior-tui ;;
+	2) setsid -f task _ids due:eod | wc -l >/dev/null ;;
+    3) notify-send "💀 Taskwarrior module" "\- Shows  pending tasks
+- Shows 🔃 if getting task status
+- Left click opens taskwarrior-tui
+- Middle click checks for tasks getting overdue" ;;
+	6) "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+active_task=$(task _get $(task +ACTIVE limit:1 | tail -n +4 | head -n 1 | sed 's/^ //' | cut -d ' ' -f1).description)
+overdue=$(task _ids due:eod | wc -l)
+
+[ "$overdue" = "0" ] && [ "$icon" = "" ] || echo "💀$overdue ${active_task##*( )}"
