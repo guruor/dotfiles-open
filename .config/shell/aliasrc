@@ -37,7 +37,8 @@ alias \
 	xi="sudo xbps-install" \
 	xr="sudo xbps-remove -R" \
 	xq="xbps-query" \
-	z="zathura"
+	z="zathura" \
+    tt="taskwarrior-tui"
 
 alias \
 	magit="nvim -c MagitOnly" \
