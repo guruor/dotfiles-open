@@ -9,6 +9,9 @@
 # Job to update the newsboat database
 */15 * * * *            $HOME/.local/bin/cron/newsup
 
+# Job to update pull tasks from remote issue trackers like github, trello
+*/15 * * * *            $HOME/.local/bin/bugwarrior-pull
+
 # Job to notify if any task is getting overdue in 4 hours
 0 */4 * * *             $HOME/.local/bin/cron/twnotify 4h
 
