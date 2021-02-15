@@ -1,6 +1,10 @@
 #!/bin/sh
 
-filter() { mpc | sed "/^volume:/d;s/\\&/&amp;/g;s/\\[paused\\].*/⏸/g;/\\[playing\\].*/d" | paste -sd ' ' -;}
+# To show song name along with emojis
+# filter() { mpc | sed "/^volume:/d;s/\\&/&amp;/g;s/\\[paused\\].*/⏸/g;/\\[playing\\].*/d" | paste -sd ' ' -;}
+
+# To only show emojis showing if musing is playing on not
+filter() { mpc status | awk 'NR==2' | grep -w 'playing\|paused' | cut -d "[" -f2 | cut -d "]" -f1 | sed 's|playing|🎵|;s|paused|⏸|;' | paste -sd ' ' -;}
 
 pidof -x mpdup >/dev/null 2>&1 || mpdup >/dev/null 2>&1 &
 
