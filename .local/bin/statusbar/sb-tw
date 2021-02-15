@@ -16,4 +16,6 @@ esac
 active_task=$(task _get $(task +ACTIVE limit:1 | tail -n +4 | head -n 1 | sed 's/^ //' | cut -d ' ' -f1).description)
 overdue=$(task _ids due:eod | wc -l)
 
-[ "$overdue" = "0" ] && [ "$icon" = "" ] || echo "💀$overdue ${active_task##*( )}"
+# There a unicode pipe(U+019A) separator, might not be visible in browser
+separator=" ƚ "
+[ "$overdue" = "0" ] && [ "$icon" = "" ] || echo "📌 $overdue$separator⏳ ${active_task##*( )}"
