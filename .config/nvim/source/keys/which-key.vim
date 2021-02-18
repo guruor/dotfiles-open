@@ -211,6 +211,9 @@ let g:which_key_map.m = {
             \ 'name' : '+Macros' ,
             \ '{' : [':%s/\%V{/{{/g | %s/\%V}/}}/g'                , 'Replace braces with double braces for multiline formatted string'],
             \ 'j' : [":'<,'>!jq ."                                 , 'Format selection as json'],
+            \ 'n' : [':%s/\\n/\r/g'                                , 'Replace \n with newline charFormat sqlalchemy query from logs'],
+            \ '"' : [":%s/'/\"/g"                                  , "Replace ' with \""],
+            \ "\'" : [":%s/\"/'/g"                                 , "Replace \" with '"],
             \ }
 
 " Register which key map
