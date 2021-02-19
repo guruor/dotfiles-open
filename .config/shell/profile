@@ -44,8 +44,14 @@ export GIT_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/git"
 export AWS_SHARED_CREDENTIALS_FILE="${XDG_CONFIG_HOME}/aws/credentials"
 export AWS_CONFIG_FILE="${XDG_CONFIG_HOME}/aws/config"
 export GNUPGHOME="${XDG_CONFIG_HOME}/gnupg"
+export PYTHONSTARTUP="${XDG_CONFIG_HOME}/python/pythonstartup.py"
+export IPYTHONDIR="${XDG_CONFIG_HOME}/python/ipython"
+export PYLINTHOME="${XDG_CACHE_HOME}/pylint"
 export PYTHONHISTORY="${XDG_DATA_HOME}/python"
 export RIPGREP_CONFIG_PATH="${XDG_CONFIG_HOME}/.ripgreprc"
+export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
+export NODE_REPL_HISTORY="${XDG_DATA_HOME}/node_repl_history"
+export npm_config_devdir="${XDG_CACHE_HOME}/node-gyp" # For node-gyp
 
 # Clipmenu
 export CM_DEBUG=1
