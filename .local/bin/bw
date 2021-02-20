@@ -1,3 +1,0 @@
-#!/bin/bash
-
-bitwarden-dmenu --dmenu-args='-i' --clear-clipboard 30 --session-timeout 600 --sync-vault-after 3600 --on-error 'xargs notify-send --urgency=low'
