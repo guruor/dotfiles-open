@@ -1,0 +1,1 @@
+/home/govind/voidrice/Private/.config/weechat/python/autoload/buffer_autoset.py
