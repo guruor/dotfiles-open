@@ -1,0 +1,1 @@
+/home/govind/voidrice/Private/.config/weechat/python/notify_send.py

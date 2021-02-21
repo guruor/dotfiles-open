@@ -1,0 +1,1 @@
+/home/govind/voidrice/Private/.config/weechat/perl/autoload/chanmon.pl

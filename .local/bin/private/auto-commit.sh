@@ -1,0 +1,1 @@
+/home/govind/voidrice/Private/.local/bin/private/auto-commit.sh
