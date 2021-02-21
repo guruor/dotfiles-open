@@ -1,3 +1,6 @@
 [submodule ".config/mpv/scripts/mpvSockets"]
 	path = .config/mpv/scripts/mpvSockets
-	url = https://github.com/wis/mpvSockets.git
+    url = https://github.com/wis/mpvSockets.git
+[submodule "Private Dotfiles"]
+	path = Private
+	url = https://github.com/G0V1NDS/dotfiles.git
