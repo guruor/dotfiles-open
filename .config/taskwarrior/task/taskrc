@@ -1,21 +1,30 @@
-# [Created by task 2.5.3 2/11/2021 15:03:35]
 # Taskwarrior program configuration file.
 # For more documentation, see http://taskwarrior.org or try 'man task', 'man task-color',
 # 'man task-sync' or 'man taskrc'
-
-# Here is an example of entries that use the default, override and blank values
-#   variable=foo   -- By specifying a value, this overrides the default
-#   variable=      -- By specifying no value, this means no default
-#   #variable=foo  -- By commenting out the line, or deleting it, this uses the default
-
 # Use the command 'task show' to see all defaults and overrides
+
+#=========#
+# URGENCY #
+#=========#
+uda.priority.values=H,M,,L
+urgency.blocking.coefficient=1
+urgency.project.coefficient=0
+urgency.uda.priority.L.coefficient=-1.8
+urgency.user.tag.waiting.coefficient=-10.0
 
 # Color theme (uncomment one to use)
 # include /usr/share/doc/task/rc/dark-256.theme
-#include /usr/share/doc/task/rc/dark-16.theme
+# include /usr/share/doc/task/rc/dark-16.theme
+# Task state
+color.active=color1 on rgb035
+color.blocked=bold gray10 on gray4
+color.blocking=gray18 on gray6
 
 # Excluding few fields from verbose details like - header
 verbose=blank,footnote,label,new-id,affected,edit,special,project,sync,unwait,override,recur
+
+# Context
 context.work=+work or +freelance
 context.personal=-work -freelance
-context=work
+
+search.case.sensitive=no
