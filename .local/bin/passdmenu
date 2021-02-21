@@ -13,15 +13,15 @@ sync_keepass_with_bitwarden(){
     tmp_dir=$(mktemp -d -t bw-XXXXXXXXXX)
     # Importing bitwarden json dump
     dump_file=$tmp_dir/bw.json
-    password=$(dmenupass)
+    password="$(dmenupass) 'Bitwarden Masterpassword'"
     # As per ongoing bug bitwarden-cli can't export non-interactively, https://github.com/bitwarden/cli/issues/200
     printf '%s\n%s\n' "$password" "$password" | bw export "$password" --format json --output $dump_file
 
     # Exporting the dump to keepass, while making a backup of existing db
     keepass_db=$HOME/Dropbox/KeePass/Passwords.kdbx
-    keepass_db_secret=$HOME/Dropbox/KeePass/s3cr3t.key
+    keepass_db_secret=$HOME/.ssh/s3cr3t.key
     cp $keepass_db $keepass_db.bak
-    password=$(dmenupass)
+    password="$(dmenupass) 'KeePassXC Masterpassword'"
     printf '%s\n' "$password" | pimport keepassxc bitwarden $dump_file --out $keepass_db -k $keepass_db_secret
 
     # Deleting the temporary files
