@@ -7,6 +7,9 @@
 
 # Adds `~/.local/bin` to $PATH
 export PATH="$PATH:$(du "$HOME/.local/bin" | cut -f2 | paste -sd ':' -)"
+# Adds `NPM_CONFIG_PREFIX` to $PATH
+export PATH="$PATH:${XDG_DATA_HOME}/npm/bin"
+
 
 unsetopt PROMPT_SP
 
@@ -50,6 +53,7 @@ export PYLINTHOME="${XDG_CACHE_HOME}/pylint"
 export PYTHONHISTORY="${XDG_DATA_HOME}/python"
 export RIPGREP_CONFIG_PATH="${XDG_CONFIG_HOME}/.ripgreprc"
 export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
+export NPM_CONFIG_PREFIX="${XDG_DATA_HOME}/npm"
 export NODE_REPL_HISTORY="${XDG_DATA_HOME}/node_repl_history"
 export npm_config_devdir="${XDG_CACHE_HOME}/node-gyp" # For node-gyp
 
