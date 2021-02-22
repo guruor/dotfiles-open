@@ -14,7 +14,7 @@ bw export --format json --output $dump_file
 keepass_db=$PASSWORD_STORE_DIR/KeePass/Passwords.kdbx
 keepass_db_secret=$HOME/.ssh/s3cr3t.key
 cp $keepass_db $keepass_db.bak
-pimport keepassxc bitwarden $dump_file --out $keepass_db -k $keepass_db_secret
+pimport -af keepassxc bitwarden $dump_file --out $keepass_db -k $keepass_db_secret
 
 # Deleting the temporary files
 # Securely delete the file once it is restored in keepass,
