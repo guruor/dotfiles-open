@@ -3,35 +3,11 @@
 # KeePassXC local db or in Bitwarden cloud
 # Also provedes feature to sync with KeePassXC/Pass with Bitwarden data
 
-chosen=$(echo -e "Offline\nOnline\nSync"| dmenu)
-
-# Exit if none chosen.
-[ -z "$chosen" ] && exit
-
-sync_keepass_with_bitwarden(){
-    # Ceating temp directory to store dump file
-    tmp_dir=$(mktemp -d -t bw-XXXXXXXXXX)
-    # Importing bitwarden json dump
-    dump_file=$tmp_dir/bw.json
-    password="$(dmenupass) 'Bitwarden Masterpassword'"
-    # As per ongoing bug bitwarden-cli can't export non-interactively, https://github.com/bitwarden/cli/issues/200
-    printf '%s\n%s\n' "$password" "$password" | bw export "$password" --format json --output $dump_file
-
-    # Exporting the dump to keepass, while making a backup of existing db
-    keepass_db=$HOME/Dropbox/KeePass/Passwords.kdbx
-    keepass_db_secret=$HOME/.ssh/s3cr3t.key
-    cp $keepass_db $keepass_db.bak
-    password="$(dmenupass) 'KeePassXC Masterpassword'"
-    printf '%s\n' "$password" | pimport keepassxc bitwarden $dump_file --out $keepass_db -k $keepass_db_secret
-
-    # Deleting the temporary files
-    # Securely delete the file once it is restored in keepass,
-    # https://www.howtogeek.com/425232/how-to-securely-delete-files-on-linux/
-    rm -rf $tmp_dir
-}
+chosen=$(echo -e "keepassxc\npass\nbitwarden\nsync"| dmenu)
 
 case $chosen in
-	Offline) keepmenu ;;
-	Online) bitwarden-dmenu --dmenu-args='-i' --clear-clipboard 30 --session-timeout 600 --sync-vault-after 3600 --on-error 'xargs notify-send --urgency=low' ;;
-    Sync) sync_keepass_with_bitwarden ;;
+	keepassxc) keepmenu ;;
+	pass) passmenu ;;
+	bitwarden) bitwarden-dmenu --dmenu-args='-i' --clear-clipboard 30 --session-timeout 600 --sync-vault-after 3600 --on-error 'xargs notify-send --urgency=low' ;;
+    sync) $TERMINAL -e syncpass ;;
 esac
