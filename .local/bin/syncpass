@@ -3,26 +3,36 @@
 # KeePassXC local db or in Bitwarden cloud
 # Also provedes feature to sync with KeePassXC/Pass with Bitwarden data
 
-# Ceating temp directory to store dump file
+blue='\e[1;34m'
+red='\e[1;31m'
+white='\e[0;37m'
 tmp_dir=$(mktemp -d -t bw-XXXXXXXXXX)
-# Importing bitwarden json dump
 dump_file=$tmp_dir/bw.json
+keepass_db=~/Dropbox/KeePass/Passwords.kdbx
+keepass_db_secret=$HOME/.ssh/s3cr3t.key
+echo -e "${blue}Starting keepass-bitwarden sync${white}"
+
+# Ceating temp directory to store dump file
+# Importing bitwarden json dump
 # As per ongoing bug bitwarden-cli can't export non-interactively, https://github.com/bitwarden/cli/issues/200
-echo -n "Bitwarden Password: "; read -s password
+echo -e -n "\n\n${blue}Bitwarden Password: ${white}"; read -s password
+echo -e "\n\n${red}Wait while latest bitwarden dump is fetched...${white}"
+printf '%s\n%s\n' "$password" "$password" | bw sync "$password"
 printf '%s\n%s\n' "$password" "$password" | bw export "$password" --format json --output $dump_file
 
 # Exporting the dump to keepass, while making a backup of existing db
-keepass_db=~/Dropbox/KeePass/Passwords.kdbx
-keepass_db_secret=$HOME/.ssh/s3cr3t.key
-echo -e -n "\n\nKeePass Password: "; read -s password
-# Backing up previous db
-mv $keepass_db $keepass_db.bak
+echo -e -n "\n\n${blue}KeePass Password: ${white}"; read -s password
+if [[ -f "$keepass_db" ]]; then
+    echo -e "\n\n${blue}Backing up existing db${white}\n\n"
+    mv $keepass_db $keepass_db.bak
+fi
 printf '%s\n%s\n' "$password" "$password" | keepassxc-cli db-create -p -k $keepass_db_secret $keepass_db
 
-# Exporting bitwarden dump to newly created keepass db
+
+echo -e "\n\n${blue}Exporting bitwarden dump to newly created keepass db${white}\n\n"
 pimport -af keepassxc bitwarden $dump_file --out $keepass_db -k $keepass_db_secret
 
-# Deleting the temporary files
+echo -e "\n\n${blue}Removing temp files${white}"
 # Securely delete the file once it is restored in keepass,
 # https://www.howtogeek.com/425232/how-to-securely-delete-files-on-linux/
 rm -rf $tmp_dir
