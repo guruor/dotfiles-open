@@ -1,6 +1,22 @@
 # User cron jobs
-# Can be backed up using `crontab -l > $HOME/.local/bin/cron/jobs-backup.text`
-# Can be restored back using `crontab $HOME/.local/bin/cron/jobs-backup.text`
+# Can be backed up using `crontab -l > /home/govind/.local/bin/cron/jobs-backup.text`
+# Can be restored back using `crontab /home/govind/.local/bin/cron/jobs-backup.text`
+#
+# ```
+# export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $USER)/bus; export DISPLAY=:0; . $HOME/.zprofile;  then_command_goes_here
+# ```
+
+DISPLAY=:0.0
+XAUTHORITY=/home/govind/.Xauthority
+XDG_RUNTIME_DIR=/run/user/$(id -u govind)
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u govind)/bus
+
+# To test cron
+# * * * * * 	            env >> /tmp/cron.log
+# * * * * *                 sudo -u govind /usr/bin/notify-send "Hi" "Test notification" >> /tmp/cron.log
+* * * * *             sudo -u $USER $HOME/.local/bin/cron/twnotify 2d
+
+
 
 
 # Job to fetch new emails using mutt wizard
@@ -10,10 +26,10 @@
 */15 * * * *            $HOME/.local/bin/cron/newsup
 
 # Job to update pull tasks from remote issue trackers like github, trello
-*/15 * * * *            $HOME/.local/bin/bugwarrior-pull
+*/15 * * * *            sudo -u $USER $HOME/.local/bin/bugwarrior-pull
 
-# Job to notify if any task is getting overdue in 4 hours
-0 */4 * * *             $HOME/.local/bin/cron/twnotify 4h
+# Job to notify if any task is getting overdue in 1 hour
+0 */1 * * *             sudo -u $USER $HOME/.local/bin/cron/twnotify 1h
 
 # Job to check system/application updates
 0 */12 * * *            /usr/bin/mpc update
@@ -23,3 +39,12 @@
 
 # Job to check system/application updates
 0 12 * * *              $HOME/.local/bin/cron/checkup
+
+# Job to check system/application updates
+0 23 * * *            	mv -f /tmp/cron.log /tmp/cron-rotate.log
+
+# Job to backup current cron job list
+0 12 * * *              /usr/bin/crontab -l > $HOME/.local/bin/cron/jobs-backup.text
+
+# Job to check system/application updates
+# 0 12 * * *              $HOME/.local/bin/cron/checkup

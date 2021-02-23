@@ -3,13 +3,18 @@
 # By default notifying for tasks overduing withing 4 hrs
 duration=${1:-4h}
 
-# Fetching pending tasks for without notified tag
-task status:pending tags.hasnt:notified due.before:now+$duration    export |
-jq -r ".[].description" |
-while IFS= read -r line
-do
-   notify-send "A task is due in less than $duration" "$line"
-done
+count=$(/usr/bin/task status:pending tags.hasnt:notified due.before:now+$duration count)
+if [[ $count -eq 0 ]]; then
+    /usr/bin/notify-send "No pending task" ""
+else
+    /usr/bin/notify-send "$count TASK PENDING" "Pick next task"
+    # Fetching pending tasks for without notified tag
+    /usr/bin/task status:pending tags.hasnt:notified due.before:now+$duration export | /usr/bin/jq -r ".[].description" |
+    while IFS= read -r line
+    do
+       /usr/bin/notify-send "A task is due in less than $duration" "$line"
+    done
 
-# Adding notified tag to notified tasks
-task rc.confirmation=off rc.recurrence.confirmation=off rc.bulk=0 status:pending tags.hasnt:notified due.before:now+$duration modify +notified
+    # Adding notified tag to notified tasks
+    # /usr/bin/task rc.confirmation=off rc.recurrence.confirmation=off rc.bulk=0 status:pending tags.hasnt:notified due.before:now+$duration modify +notified
+fi
