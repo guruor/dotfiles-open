@@ -2,7 +2,9 @@
 
 # This file runs when a DM logs you into a graphical session.
 # If you use startx/xinit like a Chad, this file will also be sourced.
-
+if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"; then
+    eval "$(dbus-launch --sh-syntax --exit-with-session)"
+fi
 mpd &                   # music player daemon-you might prefer it as a service though
 remaps &                # run the remaps script, switching caps/esc and more; check it for more info
 setbg &                 # set the background with the `setbg` script

@@ -5,37 +5,38 @@
 # ```
 # export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $USER)/bus; export DISPLAY=:0; . $HOME/.zprofile;  then_command_goes_here
 # ```
-
+# Required for notify-send or dunstify to display notification at specific display
 DISPLAY=:0.0
+# Using this will avoid exporing DBUS_SESSION_BUS_ADDRESS or XDG_RUNTIME_DIR
 XAUTHORITY=/home/govind/.Xauthority
-XDG_RUNTIME_DIR=/run/user/$(id -u govind)
-DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u govind)/bus
 
 # To test cron
 # * * * * * 	            env >> /tmp/cron.log
 # * * * * *                 sudo -u govind /usr/bin/notify-send "Hi" "Test notification" >> /tmp/cron.log
+# * * * * *                 sudo -u govind /usr/bin/notify-send "Hi" "Test notification" >> /tmp/cron.log
+# * * * * *                 /usr/bin/notify-send "Hi" "Test notification2" >> /tmp/cron.log
 
 
 # Job to fetch new emails using mutt wizard
-* */1 * * *            /usr/bin/mw -Y
+0 */1 * * *             /usr/bin/mw -Y >> /tmp/cron.log
 
 # Job to notify if any task is getting overdue in 1 hour
-0 */1 * * *             sudo -u $USER $HOME/.local/bin/cron/twnotify 1h
+0 */1 * * *             $HOME/.local/bin/cron/twnotify 1h >> /tmp/cron.log
 
 # Job to update pull tasks from remote issue trackers like github, trello
-* */2 * * *            sudo -u $USER $HOME/.local/bin/bugwarrior-pull
+0 */2 * * *             $HOME/.local/bin/bugwarrior-pull >> /tmp/cron.log
 
 # Job to update the newsboat database
-* */6 * * *            $HOME/.local/bin/cron/newsup
+0 */6 * * *             $HOME/.local/bin/cron/newsup >> /tmp/cron.log
 
 # Job to check system/application updates
-0 */12 * * *            /usr/bin/mpc update
+0 */12 * * *            /usr/bin/mpc update >> /tmp/cron.log
 
 # Job to backup current cron job list
-0 */12 * * *            /usr/bin/crontab -l > $HOME/.local/bin/cron/jobs-backup.text
+0 */12 * * *            /usr/bin/crontab -l > $HOME/.local/bin/cron/jobs-backup.text >> /tmp/cron.log
 
-# Job to check system/application updates
+# Job to rotate cron logs
 0 23 * * *            	mv -f /tmp/cron.log /tmp/cron-rotate.log
 
 # Job to check system/application updates
-0 18 */5 * *            sudo -u $USER $HOME/.local/bin/cron/checkup
+0 18 */15 * *           $HOME/.local/bin/cron/checkup >> /tmp/cron.log
