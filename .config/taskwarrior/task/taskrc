@@ -7,9 +7,13 @@
 # URGENCY #
 #=========#
 uda.priority.values=H,M,,L
-urgency.blocking.coefficient=1
+urgency.blocking.coefficient=2
 urgency.project.coefficient=0
 urgency.uda.priority.L.coefficient=-1.8
+# urgency coefficients for tags
+urgency.user.tag.work.coefficient = 10.0
+urgency.user.tag.bug.coefficient = 2.0
+urgency.user.tag.personal.coefficient = 0
 urgency.user.tag.waiting.coefficient=-10.0
 
 # Color theme (uncomment one to use)
@@ -28,3 +32,50 @@ context.work=+work or +freelance
 context.personal=-work -freelance
 
 search.case.sensitive=no
+
+weekstart=monday
+urgency.inherit=on
+
+# Reports
+# Next
+report.next.filter=status:pending limit:page -BLOCKED +work
+report.next.columns=id,description,tags,due
+report.next.labels=ID,Description,Tags,Due
+# Summary
+report.summary.filter=limit:1 status:pending -BLOCKED
+# gimme just one thing to do
+report.top.description=The Top Task - Do it now!
+report.top.columns=id,description,project,due
+report.top.labels=ID,Description,Project,Due
+report.top.sort=urgency-
+report.top.filter=limit:1 status:pending -BLOCKED
+
+
+# Bugwarrior UDAs
+uda.githubtitle.type=string
+uda.githubtitle.label=Github Title
+uda.githubbody.type=string
+uda.githubbody.label=Github Body
+uda.githubcreatedon.type=date
+uda.githubcreatedon.label=Github Created
+uda.githubupdatedat.type=date
+uda.githubupdatedat.label=Github Updated
+uda.githubclosedon.type=date
+uda.githubclosedon.label=GitHub Closed
+uda.githubmilestone.type=string
+uda.githubmilestone.label=Github Milestone
+uda.githubrepo.type=string
+uda.githubrepo.label=Github Repo Slug
+uda.githuburl.type=string
+uda.githuburl.label=Github URL
+uda.githubtype.type=string
+uda.githubtype.label=Github Type
+uda.githubnumber.type=numeric
+uda.githubnumber.label=Github Issue/PR #
+uda.githubuser.type=string
+uda.githubuser.label=Github User
+uda.githubnamespace.type=string
+uda.githubnamespace.label=Github Namespace
+uda.githubstate.type=string
+uda.githubstate.label=GitHub State
+# END Bugwarrior UDAs
