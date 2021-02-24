@@ -5,11 +5,10 @@
 
 comphelp() {
     echo "Composition Manager:"
-    echo "   (re)start: COMP"
-    echo "   stop:      COMP -s"
-    echo "   query:     COMP -q"
-    echo "              returns 0 if composition manager is running, else 1"
-    exit
+    echo "   toggle:    COMP"
+    echo "   start:     COMP on"
+    echo "   stop:      COMP off"
+    echo "   status:     COMP status"
 }
 
 togglecomp() {
@@ -20,7 +19,6 @@ togglecomp() {
         echo "Turning xcompmgr ON"
         xcompmgr -c -C -t-5 -l-5 -r4.2 -o.55 &
     fi
-    exit
 }
 
 checkcomp() {
@@ -33,15 +31,16 @@ stopcomp() {
 
 startcomp() {
     stopcomp
-    # Example settings only. Replace with your own.
-    xcompmgr -CcfF -I-.015 -O-.03 -D6 -t-1 -l-3 -r4.2 -o.5 &
-    exit
+    # Needed to throw the output away, to avoid issue with other dependent scripts
+    # Refer https://oracle-base.com/articles/linux/linux-scripts-running-in-the-background
+    # xcompmgr -CcfF -I-.015 -O-.03 -D6 -t-1 -l-3 -r4.2 -o.5 >> /dev/null 2>&1 &
+    xcompmgr -c -C -t-5 -l-5 -r4.2 -o.55 >> /dev/null 2>&1 &
 }
 
 case "$1" in
-    "")   togglecomp ;;
-    "-s") startcomp ;;
-    "-q") checkcomp ;;
-    "-S") stopcomp; exit ;;
-    *) comphelp ;;
+    "")         togglecomp; exit ;;
+    "on")       startcomp; exit ;;
+    "off")      stopcomp; exit ;;
+    "status")   checkcomp; exit ;;
+    *)          comphelp; exit ;;
 esac
