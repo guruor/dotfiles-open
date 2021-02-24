@@ -6,30 +6,43 @@
 # * No gaps
 # * Hidden dwm bar
 
-choice=${1:-"toggle"}
-tmp_file="/tmp/focuse.mode"
-if [[ -f $tmp_file && $choice == "toggle" ]]; then
-    prev_state=$(cat $tmp_file)
-    if [[ $prev_state == "on" ]]; then
-        choice="off"
-    else
-        choice="on"
-    fi
-else
-    touch $tmp_file
-    choice="on"
-fi
+help() {
+    echo "Focus Mode"
+    echo "   toggle:    FOCUS"
+    echo "   start:     FOCUS on"
+    echo "   stop:      FOCUS off"
+    exit
+}
 
-if [[ $choice == "on" ]]; then
-    # comp -s
-    dunstctl set-paused true
-    xdotool key Super+a
-    xdotool key Super+b
-elif [[ $choice == "off" ]]; then
-    # comp -S
+focus_flag="/tmp/focus.on"
+
+togglefocus() {
+    if [[ -f $focus_flag ]]; then
+        stopfocus
+    else
+        startfocus
+    fi
+}
+
+stopfocus() {
+    comp on
     dunstctl set-paused false
     xdotool key Super+a
     xdotool key Super+b
-fi
+    rm -f $focus_flag
+}
 
-echo $choice > $tmp_file
+startfocus() {
+    comp off
+    dunstctl set-paused true
+    xdotool key Super+a
+    xdotool key Super+b
+    touch $focus_flag
+}
+
+case "$1" in
+    "")    togglefocus; exit ;;
+    "on")  startfocus; exit ;;
+    "off") stopfocus; exit ;;
+    *)     help ;;
+esac
