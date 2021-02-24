@@ -1,0 +1,35 @@
+#!/bin/bash
+# Script to enable, disable focus mode
+# Focus mode includes followings:
+# * No dunst notifications
+# * Compositor disabled, no transparancy
+# * No gaps
+# * Hidden dwm bar
+
+choice=${1:-"toggle"}
+tmp_file="/tmp/focuse.mode"
+if [[ -f $tmp_file && $choice == "toggle" ]]; then
+    prev_state=$(cat $tmp_file)
+    if [[ $prev_state == "on" ]]; then
+        choice="off"
+    else
+        choice="on"
+    fi
+else
+    touch $tmp_file
+    choice="on"
+fi
+
+if [[ $choice == "on" ]]; then
+    # comp -s
+    dunstctl set-paused true
+    xdotool key Super+a
+    xdotool key Super+b
+elif [[ $choice == "off" ]]; then
+    # comp -S
+    dunstctl set-paused false
+    xdotool key Super+a
+    xdotool key Super+b
+fi
+
+echo $choice > $tmp_file
