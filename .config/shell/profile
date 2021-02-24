@@ -60,19 +60,21 @@ export npm_config_devdir="${XDG_CACHE_HOME}/node-gyp" # For node-gyp
 # Clipmenu
 export CM_DEBUG=1
 export CM_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/clipmenu"
-export CM_MAX_CLIPS=100
+export CM_MAX_CLIPS=200
 export CM_SELECTIONS="clipboard primary"
 export CM_IGNORE_WINDOW="dmenu"
 
 # VimWiki
-export VIMWIKI_DIR="$HOME/Documents/vimWiki"
+export VIMWIKI_DIR="$HOME/Dropbox/vimWiki"
 export VIMWIKI_DIR_PERSONAL="${VIMWIKI_DIR}/Personal"
 export VIMWIKI_DIR_WORK="${VIMWIKI_DIR}/Work"
 
 # Taskwarrior
 export TASKRC="$HOME/.config/taskwarrior/task/taskrc"
-export VIT_DIR="$HOME/.config/taskwarrior/vit"
-export TASKDATA="$HOME/Documents/taskwarrior"
+export TASKDATA="$HOME/Dropbox/taskwarrior"
+export BUGWARRIORRC="$HOME/.config/taskwarrior/bugwarrior/bugwarriorrc"
+export TIMEWARRIORDB="$HOME/Dropbox/timewarrior"
+
 
 # Other program settings:
 export DICS="/usr/share/stardict/dic/"
