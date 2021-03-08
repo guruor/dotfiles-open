@@ -9,6 +9,7 @@
 uda.priority.values=H,M,,L
 urgency.blocking.coefficient=2
 urgency.project.coefficient=0
+urgency.active.coefficient=0
 urgency.uda.priority.L.coefficient=-1.8
 # urgency coefficients for tags
 urgency.user.tag.work.coefficient = 10.0
