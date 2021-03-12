@@ -1,1 +1,0 @@
-/home/govind/voidrice/Private/.config/weechat/perl/autoload/highmon.pl
