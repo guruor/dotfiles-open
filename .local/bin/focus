@@ -30,7 +30,7 @@ stopfocus() {
     dunstctl set-paused false
     xdotool key Super+a
     xdotool key Super+b
-    echo -e "*/buffer urbanpiper.slack.com" > ~/.config/weechat/weechat_fifo
+    echo -e "*/buffer slack.urbanpiper" > ~/.config/weechat/weechat_fifo
     echo -e "*/slack back" > ~/.config/weechat/weechat_fifo
     rm -f $focus_flag
 }
@@ -40,7 +40,7 @@ startfocus() {
     dunstctl set-paused true
     xdotool key Super+a
     xdotool key Super+b
-    echo -e "*/buffer urbanpiper.slack.com" > ~/.config/weechat/weechat_fifo
+    echo -e "*/buffer slack.urbanpiper" > ~/.config/weechat/weechat_fifo
     echo -e "*/slack away" > ~/.config/weechat/weechat_fifo
     touch $focus_flag
 }
