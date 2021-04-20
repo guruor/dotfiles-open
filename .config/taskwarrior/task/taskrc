@@ -39,7 +39,7 @@ urgency.inherit=on
 
 # Reports
 # Next
-report.next.filter=status:pending limit:page -BLOCKED +work
+report.next.filter=status:pending limit:page -BLOCKED -PR +work
 report.next.columns=id,description,tags,due
 report.next.labels=ID,Description,Tags,Due
 # Summary
