@@ -15,8 +15,10 @@ echo -e "${blue}Starting keepass-bitwarden sync${white}"
 # Ceating temp directory to store dump file
 # Importing bitwarden json dump
 # As per ongoing bug bitwarden-cli can't export non-interactively, https://github.com/bitwarden/cli/issues/200
+echo -e -n "\n\n${blue}Bitwarden Email: ${white}"; read -s bw_email
 echo -e -n "\n\n${blue}Bitwarden Password: ${white}"; read -s password
 echo -e "\n\n${red}Wait while latest bitwarden dump is fetched...${white}"
+printf '%s\n%s\n' "$password" "$password" | bw login "$bw_email" "$password"
 printf '%s\n%s\n' "$password" "$password" | bw sync "$password"
 printf '%s\n%s\n' "$password" "$password" | bw export "$password" --format json --output $dump_file
 
