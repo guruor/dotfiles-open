@@ -28,12 +28,12 @@ Plug 'tpope/vim-fugitive'
 
 " Syntax, formatting and auto-completion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'junegunn/rainbow_parentheses.vim'
+
 Plug 'alvan/vim-closetag'
 Plug 'Yggdroot/indentLine',         { 'on': 'IndentLinesToggle' }
 
 " Additional Functionalities
-Plug 'mhinz/vim-startify'
+" Plug 'mhinz/vim-startify'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'mbbill/undotree',             { 'on': 'UndotreeToggle'   }
 Plug 'tpope/vim-repeat'

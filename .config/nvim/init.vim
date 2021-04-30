@@ -11,7 +11,7 @@ source $HOME/.config/nvim/source/keys/mappings.vim
 source $HOME/.config/nvim/source/keys/which-key.vim
 
 " Plugin config
-source $HOME/.config/nvim/source/plug-conf/startify.vim
+" source $HOME/.config/nvim/source/plug-conf/startify.vim
 source $HOME/.config/nvim/source/plug-conf/coc.vim
 source $HOME/.config/nvim/source/plug-conf/fzf.vim
 source $HOME/.config/nvim/source/plug-conf/misc.vim

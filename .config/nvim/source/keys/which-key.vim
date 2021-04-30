@@ -56,7 +56,6 @@ let g:which_key_map['\'] = [ ':TagbarToggle'                      , 'Toggle tagb
 let g:which_key_map['/'] = [ ':call Comment()'                    , 'comment' ]
 let g:which_key_map[';'] = [ ':Commands'                          , 'commands' ]
 let g:which_key_map['='] = [ '<C-W>='                             , 'balance windows' ]
-let g:which_key_map[','] = [ 'Startify'                           , 'start screen' ]
 let g:which_key_map['C'] = [ ':Codi!!'                            , 'virtual repl']
 let g:which_key_map['e'] = [ ':CocCommand explorer'               , 'explorer' ]
 let g:which_key_map['p'] = [ ':Files'                             , 'search files' ]
@@ -64,7 +63,7 @@ let g:which_key_map['P'] = [ ':!opout <c-r>%<CR><CR>'             , 'Preview fil
 let g:which_key_map['f'] = [ ':Rg'                                , 'search text' ]
 let g:which_key_map['_'] = [ '<C-W>s'                             , 'split below']
 let g:which_key_map['|'] = [ '<C-W>v'                             , 'split right']
-let g:which_key_map['c'] = [ ':w! \| !compiler "<c-r>%"<CR>'      , 'Compile' ]
+let g:which_key_map['c'] = [ ':w! | !compiler "<c-r>%"<CR>'      , 'Compile' ]
 let g:which_key_map['X'] = [ ':split | term'                      , 'Terminal' ]
 let g:which_key_map['L'] = [ ':Limelight!!'                       , 'Limelight toggle' ]
 let g:which_key_map['z'] = [ 'Goyo'                               , 'zen' ]
@@ -90,7 +89,6 @@ let g:which_key_map.b = {
             \ '2' : ['b2'                                         , 'buffer 2'],
             \ 'd' : ['bd'                                         , 'delete-buffer'],
             \ 'f' : ['bfirst'                                     , 'first-buffer'],
-            \ 'h' : ['Startify'                                   , 'home-buffer'],
             \ 'l' : ['blast'                                      , 'last-buffer'],
             \ 'n' : ['bnext'                                      , 'next-buffer'],
             \ 'p' : ['bprevious'                                  , 'previous-buffer'],
