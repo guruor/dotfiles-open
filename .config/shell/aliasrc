@@ -14,7 +14,8 @@ alias \
 	ffmpeg="ffmpeg -hide_banner" \
     fda='fd -IH' \
     rga='rg -uuu' \
-    :q='exit'
+    :q='exit' \
+    ,q='exit'
 
 # Colorize commands when possible.
 alias \
@@ -38,7 +39,8 @@ alias \
 	xr="sudo xbps-remove -R" \
 	xq="xbps-query" \
 	z="zathura" \
-    tt="taskwarrior-tui"
+    tt="taskwarrior-tui" \
+	code="$EDITOR -u $MYVIMRCLSP" \
 
 alias \
 	magit="nvim -c MagitOnly" \
