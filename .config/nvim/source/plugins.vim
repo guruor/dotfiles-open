@@ -1,5 +1,6 @@
 set rtp +=~/.config/nvim
-set rtp +=~/.vim
+set rtp +=~/.config/vim
+
 if ! filereadable(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autoload/plug.vim"'))
 	echo "Downloading junegunn/vim-plug to manage plugins..."
 	silent !mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autoload/
@@ -27,13 +28,17 @@ Plug 'majutsushi/tagbar',           { 'on': 'TagbarToggle'      }
 Plug 'tpope/vim-fugitive'
 
 " Syntax, formatting and auto-completion
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neovim/nvim-lspconfig'
+Plug 'hrsh7th/nvim-compe'
+
+" Debugging
+Plug 'mfussenegger/nvim-dap'
 
 Plug 'alvan/vim-closetag'
 Plug 'Yggdroot/indentLine',         { 'on': 'IndentLinesToggle' }
 
 " Additional Functionalities
-" Plug 'mhinz/vim-startify'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'mbbill/undotree',             { 'on': 'UndotreeToggle'   }
 Plug 'tpope/vim-repeat'

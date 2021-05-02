@@ -13,3 +13,10 @@ source $HOME/.config/nvim/source/keys/which-key.vim
 " Plugin config
 source $HOME/.config/nvim/source/plug-conf/fzf.vim
 source $HOME/.config/nvim/source/plug-conf/misc.vim
+
+" LSP related config
+" source $HOME/.config/nvim/source/plug-conf/coc.vim
+lua << EOF
+    require("compeconf")
+    require("lsp")
+EOF
