@@ -1,9 +1,7 @@
 local M = {}
 
 M.merge = function(t1, t2)
-    for k, v in pairs(t2) do
-        t1[k] = v
-    end
+    for k, v in pairs(t2) do t1[k] = v end
     return t1
 end
 
@@ -16,22 +14,11 @@ M._if = function(bool, a, b)
 end
 
 M.map = function(modes, key, result, options)
-    options =
-        M.merge(
-        {
-            noremap = true,
-            silent = false,
-            expr = false,
-            nowait = false
-        },
-        options or {}
-    )
+    options = M.merge({noremap = true, silent = false, expr = false, nowait = false}, options or {})
     local buffer = options.buffer
     options.buffer = nil
 
-    if type(modes) ~= "table" then
-        modes = {modes}
-    end
+    if type(modes) ~= "table" then modes = {modes} end
 
     for i = 1, #modes do
         if buffer then
@@ -43,18 +30,12 @@ M.map = function(modes, key, result, options)
 end
 
 function _G.copy(obj, seen)
-    if type(obj) ~= "table" then
-        return obj
-    end
-    if seen and seen[obj] then
-        return seen[obj]
-    end
+    if type(obj) ~= "table" then return obj end
+    if seen and seen[obj] then return seen[obj] end
     local s = seen or {}
     local res = {}
     s[obj] = res
-    for k, v in next, obj do
-        res[copy(k, s)] = copy(v, s)
-    end
+    for k, v in next, obj do res[copy(k, s)] = copy(v, s) end
     return setmetatable(res, getmetatable(obj))
 end
 
@@ -113,9 +94,7 @@ M.ansi_codes = {
 }
 
 M.shorten_string = function(string, length)
-    if #string < length then
-        return string
-    end
+    if #string < length then return string end
     local start = string:sub(1, (length / 2) - 2)
     local _end = string:sub(#string - (length / 2) + 1, #string)
     return start .. "..." .. _end
@@ -128,9 +107,7 @@ M.wrap_lines = function(input, width)
         while #line > width + 2 do
             local trimmed_line = string.sub(line, 1, width)
             local index = trimmed_line:reverse():find(" ")
-            if index == nil or index > #trimmed_line / 2 then
-                break
-            end
+            if index == nil or index > #trimmed_line / 2 then break end
             table.insert(output, string.sub(line, 1, width - index))
             line = vim.o.showbreak .. string.sub(line, width - index + 2, #line)
         end
