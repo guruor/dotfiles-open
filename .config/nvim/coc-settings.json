@@ -1,6 +1,6 @@
 {
-    "python.pythonPath": "~/.pyenv/versions/atlas-venv/bin/python",
     "coc.preferences.formatOnSaveFiletypes": [],
+    "python.pythonPath": "~/.pyenv/versions/atlas-venv/bin/python",
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": true,
     "python.linting.pylintArgs": [
@@ -17,7 +17,9 @@
     "python.formatting.provider": "autopep8",
     "python.formatting.autopep8Args": [
         "--max-line-length=120"
-    ],"snippets.ultisnips.directories": [
+    ],
+    "python.jediEnabled": true,
+    "snippets.ultisnips.directories": [
         "UltiSnips",
         "~/.config/nvim/utils/snips"
     ]
