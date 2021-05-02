@@ -21,7 +21,7 @@ Plug 'ryanoasis/vim-devicons'
 " Easy search, navigation
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'liuchengxu/vim-which-key'
+Plug 'folke/which-key.nvim'
 Plug 'majutsushi/tagbar',           { 'on': 'TagbarToggle'      }
 
 " Git stuff

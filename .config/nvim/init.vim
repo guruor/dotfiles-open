@@ -8,8 +8,12 @@ source $HOME/.config/nvim/source/plugins.vim
 source $HOME/.config/nvim/source/general/settings.vim
 source $HOME/.config/nvim/source/general/functions.vim
 source $HOME/.config/nvim/source/keys/mappings.vim
-source $HOME/.config/nvim/source/keys/which-key.vim
 
 " Plugin config
 source $HOME/.config/nvim/source/plug-conf/fzf.vim
 source $HOME/.config/nvim/source/plug-conf/misc.vim
+
+
+lua << EOF
+    require("whichkeyconf")
+EOF
