@@ -7,6 +7,7 @@ let g:prosession_last_session_dir = session_directory
 let g:pydocstring_doq_path = '~/.pyenv/versions/neovim/bin/doq'
 
 " Ultisnips
+let g:UltiSnipsSnippetDirectories=["ultisnips"]
 let g:UltiSnipsExpandTrigger="<C-Space>"
 let g:UltiSnipsJumpForwardTrigger="<Tab>"
 let g:UltiSnipsJumpBackwardTrigger="<C-x>"
