@@ -8,12 +8,7 @@ local format_options_var = function()
     return string.format("format_options_%s", vim.bo.filetype)
 end
 
-local format_options_prettier = {
-    tabWidth = 4,
-    singleQuote = true,
-    trailingComma = "all",
-    configPrecedence = "prefer-file"
-}
+local format_options_prettier = {tabWidth = 4, singleQuote = true, trailingComma = "all", configPrecedence = "prefer-file"}
 vim.g.format_options_typescript = format_options_prettier
 vim.g.format_options_javascript = format_options_prettier
 vim.g.format_options_typescriptreact = format_options_prettier

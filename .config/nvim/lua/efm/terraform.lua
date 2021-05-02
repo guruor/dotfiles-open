@@ -1,4 +1,1 @@
-return {
-    formatCommand = "terraform fmt -",
-    formatStdin = true
-}
+return {formatCommand = "terraform fmt -", formatStdin = true}

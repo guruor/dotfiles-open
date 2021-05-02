@@ -5,31 +5,9 @@ local utils = require "utils"
 local M = {}
 
 vim.lsp.protocol.CompletionItemKind = {
-    " [text]",
-    " [method]",
-    " [function]",
-    " [constructor]",
-    "ﰠ [field]",
-    " [variable]",
-    " [class]",
-    " [interface]",
-    " [module]",
-    " [property]",
-    " [unit]",
-    " [value]",
-    " [enum]",
-    " [key]",
-    "﬌ [snippet]",
-    " [color]",
-    " [file]",
-    " [reference]",
-    " [folder]",
-    " [enum member]",
-    " [constant]",
-    " [struct]",
-    "⌘ [event]",
-    " [operator]",
-    "♛ [type]"
+    " [text]", " [method]", " [function]", " [constructor]", "ﰠ [field]", " [variable]", " [class]", " [interface]",
+    " [module]", " [property]", " [unit]", " [value]", " [enum]", " [key]", "﬌ [snippet]", " [color]", " [file]",
+    " [reference]", " [folder]", " [enum member]", " [constant]", " [struct]", "⌘ [event]", " [operator]", "♛ [type]"
 }
 
 M.symbol_kind_icons = {
@@ -71,19 +49,10 @@ local on_attach = function(client)
         -- vim.cmd [[augroup END]]
         utils.map({"n", "v"}, "FF", "<cmd> update | lua require'lsp.formatting'.format()<CR>", opts)
     end
-    if client.resolved_capabilities.goto_definition then
-        utils.map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", {buffer = true})
-    end
-    if client.resolved_capabilities.hover then
-        utils.map("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", {buffer = true})
-    end
+    if client.resolved_capabilities.goto_definition then utils.map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", {buffer = true}) end
+    if client.resolved_capabilities.hover then utils.map("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", {buffer = true}) end
     if client.resolved_capabilities.find_references then
-        utils.map(
-            "n",
-            "gr",
-            ":lua require('lists').change_active('Quickfix')<CR>:lua vim.lsp.buf.references()<CR>",
-            {buffer = true}
-        )
+        utils.map("n", "gr", ":lua require('lists').change_active('Quickfix')<CR>:lua vim.lsp.buf.references()<CR>", {buffer = true})
     end
     if client.resolved_capabilities.rename then
         utils.map("n", "<Space>rn", "<cmd>lua require'lsp.rename'.rename()<CR>", {silent = true, buffer = true})
@@ -94,16 +63,12 @@ end
 
 function _G.activeLSP()
     local servers = {}
-    for _, lsp in pairs(vim.lsp.get_active_clients()) do
-        table.insert(servers, {name = lsp.name, id = lsp.id})
-    end
+    for _, lsp in pairs(vim.lsp.get_active_clients()) do table.insert(servers, {name = lsp.name, id = lsp.id}) end
     _G.P(servers)
 end
 function _G.bufferActiveLSP()
     local servers = {}
-    for _, lsp in pairs(vim.lsp.buf_get_clients()) do
-        table.insert(servers, {name = lsp.name, id = lsp.id})
-    end
+    for _, lsp in pairs(vim.lsp.buf_get_clients()) do table.insert(servers, {name = lsp.name, id = lsp.id}) end
     _G.P(servers)
 end
 
@@ -146,7 +111,7 @@ lspconfig.rls.setup {on_attach = on_attach}
 lspconfig.tsserver.setup {
     on_attach = function(client)
         client.resolved_capabilities.document_formatting = false
-        require "nvim-lsp-ts-utils".setup {}
+        require"nvim-lsp-ts-utils".setup {}
         on_attach(client)
     end
 }
@@ -155,9 +120,7 @@ local function get_lua_runtime()
     local result = {}
     for _, path in pairs(vim.api.nvim_list_runtime_paths()) do
         local lua_path = path .. "/lua/"
-        if vim.fn.isdirectory(lua_path) then
-            result[lua_path] = true
-        end
+        if vim.fn.isdirectory(lua_path) then result[lua_path] = true end
     end
     result[vim.fn.expand("$VIMRUNTIME/lua")] = true
     result[vim.fn.expand("~/build/neovim/src/nvim/lua")] = true
@@ -169,32 +132,17 @@ lspconfig.sumneko_lua.setup {
     cmd = {"lua-language-server"},
     settings = {
         Lua = {
-            runtime = {
-                version = "LuaJIT"
-            },
-            completion = {
-                keywordSnippet = "Disable"
-            },
+            runtime = {version = "LuaJIT"},
+            completion = {keywordSnippet = "Disable"},
             diagnostics = {
                 enable = true,
                 globals = {
                     -- Neovim
-                    "vim",
-                    -- Busted
-                    "describe",
-                    "it",
-                    "before_each",
-                    "after_each",
-                    "teardown",
-                    "pending",
-                    -- packer
+                    "vim", -- Busted
+                    "describe", "it", "before_each", "after_each", "teardown", "pending", -- packer
                     "use"
                 },
-                workspace = {
-                    library = get_lua_runtime(),
-                    maxPreload = 1000,
-                    preloadFileSize = 1000
-                }
+                workspace = {library = get_lua_runtime(), maxPreload = 1000, preloadFileSize = 1000}
             }
         }
     }
@@ -204,10 +152,7 @@ lspconfig.sumneko_lua.setup {
 lspconfig.vimls.setup {on_attach = on_attach}
 
 -- https://github.com/vscode-langservers/vscode-json-languageserver
-lspconfig.jsonls.setup {
-    on_attach = on_attach,
-    cmd = {"vscode-json-languageserver", "--stdio"}
-}
+lspconfig.jsonls.setup {on_attach = on_attach, cmd = {"vscode-json-languageserver", "--stdio"}}
 
 -- https://github.com/redhat-developer/yaml-language-server
 lspconfig.yamlls.setup {on_attach = on_attach}
@@ -228,11 +173,7 @@ lspconfig.bashls.setup {on_attach = on_attach}
 lspconfig.dockerls.setup {on_attach = on_attach}
 
 -- https://github.com/hashicorp/terraform-ls
-lspconfig.terraformls.setup {
-    on_attach = on_attach,
-    cmd = {"terraform-ls", "serve"},
-    filetypes = {"tf"}
-}
+lspconfig.terraformls.setup {on_attach = on_attach, cmd = {"terraform-ls", "serve"}, filetypes = {"tf"}}
 
 local vint = require "efm/vint"
 local luafmt = require "efm/luafmt"
