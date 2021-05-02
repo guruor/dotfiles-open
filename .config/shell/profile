@@ -15,7 +15,10 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export PATH="$PATH:$(du "$HOME/.local/bin" | cut -f2 | paste -sd ':' -)"
 # Adds `NPM_CONFIG_PREFIX` to $PATH
 export PATH="$PATH:${XDG_DATA_HOME}/npm/bin"
-
+# Adds `CARGO_HOME` to $PATH
+export PATH="$PATH:${XDG_DATA_HOME}/cargo/bin"
+# Adds `GOPATH` to $PATH
+export PATH="$PATH:${XDG_DATA_HOME}/go/bin"
 
 unsetopt PROMPT_SP
 
@@ -57,6 +60,9 @@ export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
 export NPM_CONFIG_PREFIX="${XDG_DATA_HOME}/npm"
 export NODE_REPL_HISTORY="${XDG_DATA_HOME}/node_repl_history"
 export npm_config_devdir="${XDG_CACHE_HOME}/node-gyp" # For node-gyp
+export RUSTUP_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/rustup"
+export MYVIMRC="${XDG_CONFIG_HOME:-$HOME/.config}/nvim/init.vim"
+export MYVIMRCLSP="${XDG_CONFIG_HOME:-$HOME/.config}/nvim/initlsp.vim"
 
 # Clipmenu
 export CM_DEBUG=1
@@ -192,3 +198,4 @@ fi
 
 # Switch escape and caps if tty and no passwd required:
 sudo -n loadkeys ${XDG_DATA_HOME:-$HOME/.local/share}/larbs/ttymaps.kmap 2>/dev/null
+. "/home/govind/.local/share/cargo/env"
