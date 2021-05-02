@@ -12,11 +12,10 @@ endif
 call plug#begin(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/plugged"'))
 
 " Editor look and feel
-Plug 'morhetz/gruvbox'
-Plug 'chriskempson/tomorrow-theme', { 'rtp': 'vim' }
-Plug 'itchyny/lightline.vim'
-Plug 'shinchu/lightline-gruvbox.vim'
-Plug 'ryanoasis/vim-devicons'
+Plug 'rktjmp/lush.nvim'
+Plug 'npxbr/gruvbox.nvim'
+Plug 'glepnir/galaxyline.nvim'
+Plug 'kyazdani42/nvim-web-devicons'
 
 " Easy search, navigation
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }

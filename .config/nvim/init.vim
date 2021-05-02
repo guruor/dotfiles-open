@@ -9,11 +9,11 @@ source $HOME/.config/nvim/source/general/settings.vim
 source $HOME/.config/nvim/source/general/functions.vim
 source $HOME/.config/nvim/source/keys/mappings.vim
 
+lua << EOF
+    require("whichkeyconf")
+    require("statusline")
+EOF
+
 " Plugin config
 source $HOME/.config/nvim/source/plug-conf/fzf.vim
 source $HOME/.config/nvim/source/plug-conf/misc.vim
-
-
-lua << EOF
-    require("whichkeyconf")
-EOF
