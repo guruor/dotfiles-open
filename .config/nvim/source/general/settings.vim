@@ -31,7 +31,7 @@ set noshowmode                          " We don't need to see things like -- IN
 set noshowcmd                           " Prvent showing last command
 set nobackup                            " This is recommended by coc
 set nowritebackup                       " This is recommended by coc
-set shortmess+=atF                      " Don't pass messages to |ins-completion-menu|., reduces status message
+set shortmess+=atFc                     " Don't pass messages to |ins-completion-menu|., reduces status message
 set signcolumn=yes                      " Always show the signcolumn, otherwise it would shift the text each time
 set updatetime=250                      " Faster completion
 set timeoutlen=500                      " By default timeoutlen is 1000 ms
@@ -55,9 +55,8 @@ set scrolloff=5
 " Set completeopt to have a better completion experience
 " :help completeopt
 " menuone: popup even when there's only one match
-" noinsert: Do not insert text until a selection is made
 " noselect: Do not select, force user to select one from the menu
-set completeopt=menuone,noinsert,noselect
+set completeopt=menuone,noselect
 
 """ netrw settings
 let g:netrw_banner=0
