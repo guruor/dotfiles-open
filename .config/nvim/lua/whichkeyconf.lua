@@ -24,7 +24,7 @@ wk.register({
 
 wk.register({
     ["\\"] = {":TagbarToggle<CR>", "Toggle tagbar"},
-    ["/"] = {":call Comment()<CR>", "Comment"},
+    ["/"] = {":'<,'>call Comment()<CR>", "Comment"},
     ["C"] = {":Code!!<CR>", "Virtual REPL"},
     ["p"] = {":Files<CR>", "Find files"},
     ["P"] = {":!opout <c-r>%<CR><CR>", "Preview files"},
@@ -40,6 +40,10 @@ wk.register({
     [" "] = {":noh<CR>", "No Highlight"},
     ["L"] = {":Limelight<CR>", "Limelight activate"}
 }, {prefix = leader})
+
+wk.register({
+    ["/"] = {":'<,'>call Comment()<CR>", "Comment"},
+}, {prefix = leader, mode = 'v'})
 
 wk.register({
     g = {
