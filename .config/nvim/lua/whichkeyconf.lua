@@ -3,7 +3,7 @@ local wk = require("which-key")
 local leader = "<Space>"
 local localleader = ","
 
-wk.register({
+local keys = {
     ["<Tab>"] = {":tabnext<CR>", "Jump to next tab"},
     ["0"] = {":tabp<CR>", "Jump to previous active tab"},
     ["1"] = {"1gt", "which_key_ignore"},
@@ -20,9 +20,11 @@ wk.register({
     ["q"] = {":q<CR>", "Quit"},
     ["x"] = {":q!<CR>", "Close without saving"},
     ["Q"] = {":qa!<CR>", "Quit all"}
-}, {prefix = localleader})
+}
+wk.register(keys, {prefix = localleader})
+wk.register(keys, {prefix = localleader, mode = 'v'})
 
-wk.register({
+keys = {
     ["\\"] = {":TagbarToggle<CR>", "Toggle tagbar"},
     ["/"] = {":'<,'>call Comment()<CR>", "Comment"},
     ["C"] = {":Code!!<CR>", "Virtual REPL"},
@@ -39,13 +41,11 @@ wk.register({
     ["U"] = {":UndotreeToggle<CR>", "Undo Tree"},
     [" "] = {":noh<CR>", "No Highlight"},
     ["L"] = {":Limelight<CR>", "Limelight activate"}
-}, {prefix = leader})
+}
+wk.register(keys, {prefix = leader})
+wk.register(keys, {prefix = leader, mode = 'v'})
 
-wk.register({
-    ["/"] = {":'<,'>call Comment()<CR>", "Comment"},
-}, {prefix = leader, mode = 'v'})
-
-wk.register({
+keys = {
     g = {
         name = 'Git',
         ["b"] = {":Git blame<CR>", "Blame"},
@@ -59,9 +59,11 @@ wk.register({
         ["p"] = {":Git push<CR>", "Push"},
         ["P"] = {":Git pull<CR>", "Pull"}
     }
-}, {prefix = leader})
+}
+wk.register(keys, {prefix = leader})
+wk.register(keys, {prefix = leader, mode = 'v'})
 
-wk.register({
+keys = {
     l = {
         name = 'LSP',
         ["f"] = {":update | lua require'lsp.formatting'.format()<CR>", "Format"},
@@ -74,9 +76,11 @@ wk.register({
         ["r"] = {"", "Rename"},
         ["R"] = {"", "References"}
     }
-}, {prefix = leader})
+}
+wk.register(keys, {prefix = leader})
+wk.register(keys, {prefix = leader, mode = 'v'})
 
-wk.register({
+keys = {
     t = {
         name = 'Toggle',
         ["n"] = {":set nonumber!<CR>", "Line numbers"},
@@ -88,9 +92,11 @@ wk.register({
         ["u"] = {":UndotreeToggle<CR>", "Undo Tree"},
         ["h"] = {":call ToggleHiddenAll()<CR>", "Hide"}
     }
-}, {prefix = leader})
+}
+wk.register(keys, {prefix = leader})
+wk.register(keys, {prefix = leader, mode = 'v'})
 
-wk.register({
+keys = {
     m = {
         name = 'Macro',
         ["j"] = {":'<,'>!jq .", "Format selection as json"},
@@ -99,4 +105,6 @@ wk.register({
         ["\""] = {":%s/'/\"/g", "Replace ' with \""},
         ["\\"] = {":%s/\"/'/g", "Replace \" with '"}
     }
-}, {prefix = leader})
+}
+wk.register(keys, {prefix = leader})
+wk.register(keys, {prefix = leader, mode = 'v'})
