@@ -26,7 +26,7 @@ wk.register(keys, {prefix = localleader, mode = 'v'})
 
 keys = {
     ["\\"] = {":TagbarToggle<CR>", "Toggle tagbar"},
-    ["/"] = {":'<,'>call Comment()<CR>", "Comment"},
+    ["/"] = {":call Comment()<CR>", "Comment"},
     ["C"] = {":Code!!<CR>", "Virtual REPL"},
     ["p"] = {":Files<CR>", "Find files"},
     ["P"] = {":!opout <c-r>%<CR><CR>", "Preview files"},
@@ -40,7 +40,8 @@ keys = {
     ["R"] = {":source $MYVIMRC<CR>", "Reload Init"},
     ["U"] = {":UndotreeToggle<CR>", "Undo Tree"},
     [" "] = {":noh<CR>", "No Highlight"},
-    ["L"] = {":Limelight<CR>", "Limelight activate"}
+    ["L"] = {":Limelight<CR>", "Limelight activate"},
+    ["o"] = {":terminal lf<CR>", "Open file explorer"},
 }
 wk.register(keys, {prefix = leader})
 wk.register(keys, {prefix = leader, mode = 'v'})
@@ -67,14 +68,12 @@ keys = {
     l = {
         name = 'LSP',
         ["f"] = {":update | lua require'lsp.formatting'.format()<CR>", "Format"},
-        ["d"] = {"", "Diagnostic"},
-        ["n"] = {"", "Next diagnostic"},
-        ["N"] = {"", "Next error"},
-        ["p"] = {"", "Prev diagnostic"},
-        ["p"] = {"", "Prev error"},
-        ["q"] = {"", "Quick fix"},
-        ["r"] = {"", "Rename"},
-        ["R"] = {"", "References"}
+        ["d"] = {":lua require'lsp.diagnostics'.line_diagnostics()<CR>", "Diagnostic"},
+        ["n"] = {":lua vim.lsp.diagnostic.goto_next()<CR>", "Next diagnostic"},
+        ["p"] = {":lua vim.lsp.diagnostic.goto_prev()<CR>", "Prev diagnostic"},
+        ["q"] = {":lua require('lists').change_active('Quickfix')<CR>", "Quick fix"},
+        ["r"] = {":lua require'lsp.rename'.rename()<CR>", "Rename"},
+        ["R"] = {":lua require('lists').change_active('Quickfix')<CR>:lua vim.lsp.buf.references()<CR>", "References"}
     }
 }
 wk.register(keys, {prefix = leader})
