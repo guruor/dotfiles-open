@@ -101,6 +101,7 @@ autocmd FileType journal setlocal shiftwidth=2 tabstop=2 softtabstop=2
 
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 autocmd BufWinEnter,WinEnter term://* startinsert
+autocmd TermOpen * startinsert
 
 autocmd BufLeave term://* stopinsert
 
