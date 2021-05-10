@@ -15,11 +15,10 @@ require'compe'.setup {
   documentation = true;
 
   source = {
-    path = true;
-    buffer = true;
-    calc = true;
+    ultisnips = true;
     nvim_lsp = true;
     nvim_lua = true;
-    vsnip = true;
+    path = true;
+    buffer = true;
   };
 }
