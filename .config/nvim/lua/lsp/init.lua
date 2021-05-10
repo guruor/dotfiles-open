@@ -36,29 +36,19 @@ M.symbol_kind_colors = {
     Class = "red"
 }
 
-vim.fn.sign_define("LspDiagnosticsSignError", {text = "", numhl = "LspDiagnosticsDefaultError"})
-vim.fn.sign_define("LspDiagnosticsSignWarning", {text = "", numhl = "LspDiagnosticsDefaultWarning"})
-vim.fn.sign_define("LspDiagnosticsSignInformation", {text = "", numhl = "LspDiagnosticsDefaultInformation"})
-vim.fn.sign_define("LspDiagnosticsSignHint", {text = "", numhl = "LspDiagnosticsDefaultHint"})
+vim.fn.sign_define("LspDiagnosticsSignError", {text = "", numhl = "LspDiagnosticsDefaultError"})
+vim.fn.sign_define("LspDiagnosticsSignWarning", {text = "", numhl = "LspDiagnosticsDefaultWarning"})
+vim.fn.sign_define("LspDiagnosticsSignInformation", {text = "", numhl = "LspDiagnosticsDefaultInformation"})
+vim.fn.sign_define("LspDiagnosticsSignHint", {text = "", numhl = "LspDiagnosticsDefaultHint"})
 
 local on_attach = function(client)
-    if client.resolved_capabilities.document_formatting or client.resolved_capabilities.document_range_formatting then
-        -- vim.cmd [[augroup Format]]
-        -- vim.cmd [[autocmd! * <buffer>]]
-        -- vim.cmd [[autocmd BufWritePost <buffer> lua require'lsp.formatting'.format()]]
-        -- vim.cmd [[augroup END]]
-        utils.map({"n", "v"}, "FF", "<cmd> update | lua require'lsp.formatting'.format()<CR>", opts)
-    end
-    if client.resolved_capabilities.goto_definition then utils.map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", {buffer = true}) end
-    if client.resolved_capabilities.hover then utils.map("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", {buffer = true}) end
-    if client.resolved_capabilities.find_references then
-        utils.map("n", "gr", ":lua require('lists').change_active('Quickfix')<CR>:lua vim.lsp.buf.references()<CR>", {buffer = true})
-    end
-    if client.resolved_capabilities.rename then
-        utils.map("n", "<Space>rn", "<cmd>lua require'lsp.rename'.rename()<CR>", {silent = true, buffer = true})
-    end
-
-    utils.map("n", "<Space><CR>", "<cmd>lua require'lsp.diagnostics'.line_diagnostics()<CR>", {buffer = true})
+    utils.map('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', {buffer = true})
+    utils.map('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', {buffer = true})
+    utils.map('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', {buffer = true})
+    utils.map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', {buffer = true})
+    utils.map('n', 'gs', '<Cmd>lua vim.lsp.buf.signature_help()<CR>', {buffer = true})
+    utils.map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', {buffer = true})
+    utils.map('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', {buffer = true})
 end
 
 function _G.activeLSP()
@@ -104,6 +94,14 @@ lspconfig.pyright.setup {
         on_attach(client)
     end
 }
+
+-- https://github.com/pappasam/jedi-language-server
+-- lspconfig.jedi_language_server.setup {
+-- on_attach = function(client)
+-- client.resolved_capabilities.document_formatting = false
+-- on_attach(client)
+-- end
+-- }
 
 lspconfig.rls.setup {on_attach = on_attach}
 
@@ -182,6 +180,8 @@ local goimports = require "efm/goimports"
 local black = require "efm/black"
 local isort = require "efm/isort"
 local flake8 = require "efm/flake8"
+local pylint = require "efm/pylint"
+local autopep8 = require "efm/autopep8"
 local mypy = require "efm/mypy"
 local prettier = require "efm/prettier"
 local eslint = require "efm/eslint"
@@ -189,6 +189,7 @@ local shellcheck = require "efm/shellcheck"
 local terraform = require "efm/terraform"
 local misspell = require "efm/misspell"
 -- https://github.com/mattn/efm-langserver
+-- python = {black, isort, flake8, mypy},
 lspconfig.efm.setup {
     on_attach = function(client)
         client.resolved_capabilities.document_formatting = true
@@ -204,7 +205,8 @@ lspconfig.efm.setup {
             vim = {vint},
             lua = {luafmt},
             go = {golint, goimports},
-            python = {black, isort, flake8, mypy},
+            python = {autopep8, flake8},
+            -- python = {black, isort, flake8, mypy},
             typescript = {prettier, eslint},
             javascript = {prettier, eslint},
             typescriptreact = {prettier, eslint},

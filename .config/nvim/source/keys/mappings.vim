@@ -11,9 +11,10 @@
 	inoremap <expr> <c-k> ("\<C-p>")
 
 " Alternate way to save
-	nnoremap <silent> <C-s> :w<CR>
+	noremap <silent> <C-s> :w<CR>
+	inoremap <silent> <C-s> <C-O>:w<CR>
 " Alternate way to quit
-	nnoremap <silent> <C-Q> :wq!<CR>
+	nnoremap <silent> <C-q> :wq!<CR>
 " Alternate way to escape
 	nnoremap <silent> <C-c> <Esc>
 
@@ -28,3 +29,6 @@
 
 " Allow saving of files as sudo when I forgot to start vim using sudo.
     cmap w!! w !sudo tee > /dev/null %
+
+
+inoremap <silent><expr> <CR>      compe#confirm('<CR>')

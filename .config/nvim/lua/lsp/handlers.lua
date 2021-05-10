@@ -17,7 +17,15 @@ vim.lsp.handlers["textDocument/formatting"] = format_handler
 vim.lsp.handlers["textDocument/rangeFormatting"] = format_handler
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = function(...)
-    vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {underline = true, update_in_insert = false})(...)
+    vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics,
+        {
+        underline = false,
+        update_in_insert = false,
+        signs = {
+            severity_limit = 'Warning',
+        },
+        virtual_text = false,
+    })(...)
     pcall(vim.lsp.diagnostic.set_loclist, {open_loclist = false})
 end
 

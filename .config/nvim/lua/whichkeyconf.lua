@@ -41,7 +41,7 @@ keys = {
     ["U"] = {":UndotreeToggle<CR>", "Undo Tree"},
     [" "] = {":noh<CR>", "No Highlight"},
     ["L"] = {":Limelight<CR>", "Limelight activate"},
-    ["o"] = {":terminal lf<CR>", "Open file explorer"},
+    ["o"] = {":terminal lf<CR>", "Open file explorer"}
 }
 wk.register(keys, {prefix = leader})
 wk.register(keys, {prefix = leader, mode = 'v'})
@@ -67,8 +67,22 @@ wk.register(keys, {prefix = leader, mode = 'v'})
 keys = {
     l = {
         name = 'LSP',
-        ["f"] = {":update | lua require'lsp.formatting'.format()<CR>", "Format"},
-        ["d"] = {":lua require'lsp.diagnostics'.line_diagnostics()<CR>", "Diagnostic"},
+        ["gd"] = {"<Cmd>lua vim.lsp.buf.definition()<CR>", "Definition"},
+        ["gD"] = {"<Cmd>lua vim.lsp.buf.declaration()<CR>", "Declaration"},
+        ["gr"] = {"<cmd>lua vim.lsp.buf.references()<CR>", "References"},
+        ["gs"] = {"<Cmd>lua vim.lsp.buf.signature_help()<CR>", "Signature"},
+        ["gi"] = {"<cmd>lua vim.lsp.buf.implementation()<CR>", "Implementation"},
+        ["gt"] = {"<cmd>lua vim.lsp.buf.type_definition()<CR>", "Type definition"},
+        ["gw"] = {"<cmd>lua vim.lsp.buf.document_symbol()<CR>", "Document symbol"},
+        ["gW"] = {"<cmd>lua vim.lsp.buf.workspace_symbol()<CR>", "Workspace symbol"},
+        ["ai"] = {"<cmd>lua vim.lsp.buf.incoming_calls()<CR>", "Incoming calls"},
+        ["ao"] = {"<cmd>lua vim.lsp.buf.outgoing_calls()<CR>", "Outgoing calls"},
+        ["a"] = {":lua vim.lsp.buf.code_action()<CR>", "Action"},
+        ["k"] = {":lua vim.lsp.buf.hover()<CR>", "Hover"},
+        ["="] = {":update | lua require'lsp.formatting'.format()<CR>", "Format"},
+        ["d"] = {":lua vim.lsp.diagnostic.set_loclist()<CR>", "Diagnostic"},
+        ["D"] = {":lua vim.lsp.util.show_line_diagnostics()<CR>", "Diagnostic"},
+        ["dd"] = {":lua require'lsp.diagnostics'.line_diagnostics()<CR>", "Diagnostic"},
         ["n"] = {":lua vim.lsp.diagnostic.goto_next()<CR>", "Next diagnostic"},
         ["p"] = {":lua vim.lsp.diagnostic.goto_prev()<CR>", "Prev diagnostic"},
         ["q"] = {":lua require('lists').change_active('Quickfix')<CR>", "Quick fix"},
