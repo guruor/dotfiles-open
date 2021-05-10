@@ -72,7 +72,7 @@ let session_directory='~/.cache/vim/session/'
 
 """ Python3 VirtualEnv
 let g:python3_host_prog = expand('~/.pyenv/versions/nvim/bin/python')
-
+all
 """ Coloring
 highlight Pmenu guibg=white guifg=black gui=bold
 highlight Comment gui=bold
@@ -125,12 +125,14 @@ autocmd BufLeave term://* stopinsert
 	autocmd BufWritePost ~/.local/src/dwmblocks/config.h !cd ~/.local/src/dwmblocks/; sudo make install && { killall -q dwmblocks;setsid -f dwmblocks }
 	autocmd BufWritePost ~/.local/src/dwm/config.h !cd ~/.local/src/dwm/; sudo make install && kill -HUP $(pgrep -u $USER "\bdwm$")
 
+" Auto show diagnostics for a line when curson is on the line
+    autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()
+    autocmd CursorHoldI * silent! lua vim.lsp.buf.signature_help()
+
 " Turns off highlighting on the bits of code that are changed, so the line that is changed is highlighted but the actual text that has changed stands out on the line and is readable.
 if &diff
     highlight! link DiffText MatchParen
 endif
-
-highlight link CompeDocumentation NormalFloat
 
 " Runs a script that cleans out tex build files whenever I close out of a .tex file.
 	autocmd VimLeave *.tex !texclear %
