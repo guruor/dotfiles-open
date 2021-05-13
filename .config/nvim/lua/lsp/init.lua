@@ -103,13 +103,31 @@ lspconfig.pyright.setup {
 -- end
 -- }
 
-lspconfig.rls.setup {on_attach = on_attach}
+-- lspconfig.rls.setup {on_attach = on_attach}
+
+lspconfig.rust_analyzer.setup({
+    on_attach=on_attach,
+    settings = {
+        ["rust-analyzer"] = {
+            assist = {
+                importMergeBehavior = "last",
+                importPrefix = "by_self",
+            },
+            cargo = {
+                loadOutDirsFromCheck = true
+            },
+            procMacro = {
+                enable = true
+            },
+        }
+    }
+})
 
 -- https://github.com/theia-ide/typescript-language-server
 lspconfig.tsserver.setup {
     on_attach = function(client)
         client.resolved_capabilities.document_formatting = false
-        require"nvim-lsp-ts-utils".setup {}
+        -- require"nvim-lsp-ts-utils".setup {}
         on_attach(client)
     end
 }
