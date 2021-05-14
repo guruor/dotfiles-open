@@ -1,19 +1,19 @@
 ###########
 #   IT    #
 ###########
-https://www.itsfoss.com/rss "~Nyheder              It's FOSS"
-http://www.phoronix.com/rss.php                                         "~Linux                Phoronix"
-https://opensource.com/feed "~Linux                OpenSource.com"
-https://www.archlinux.org/feeds/news/ "~Linux                Arch-Linux"
-https://www.gamingonlinux.com/article_rss.php "~Linux                Gaming On Linux"
-http://www.osnews.com/files/recent.xml "~Linux                OSnews"
-http://www.linux-magazine.com/rss/feed/lmi_news "~Linux                Linux-Magazine"
-https://feeds.feedburner.com/linuxtoday/linux "~Linux                Linux Today"
-https://www.linuxinsider.com/perl/syndication/rssfull.pl "~Linux                Linuxnsider"
-https://www.networkworld.com/author/Sandra-Henry_Stocker/index.rss "~Linux                Networkworld"
-https://www.ghacks.net/feed/ "~Linux                gHacks"
-https://lwn.net/headlines/html "~Linux                Lwn"
-https://www.linux.com/feeds/rss "~Linux                Linux.com"
+# https://www.itsfoss.com/rss "~Nyheder              It's FOSS"
+# http://www.phoronix.com/rss.php                                         "~Linux                Phoronix"
+# https://opensource.com/feed "~Linux                OpenSource.com"
+# https://www.archlinux.org/feeds/news/ "~Linux                Arch-Linux"
+# https://www.gamingonlinux.com/article_rss.php "~Linux                Gaming On Linux"
+# http://www.osnews.com/files/recent.xml "~Linux                OSnews"
+# http://www.linux-magazine.com/rss/feed/lmi_news "~Linux                Linux-Magazine"
+# https://feeds.feedburner.com/linuxtoday/linux "~Linux                Linux Today"
+# https://www.linuxinsider.com/perl/syndication/rssfull.pl "~Linux                Linuxnsider"
+# https://www.networkworld.com/author/Sandra-Henry_Stocker/index.rss "~Linux                Networkworld"
+# https://www.ghacks.net/feed/ "~Linux                gHacks"
+# https://lwn.net/headlines/html "~Linux                Lwn"
+# https://www.linux.com/feeds/rss "~Linux                Linux.com"
 ###########
 #  News   #
 ###########
@@ -24,19 +24,19 @@ https://www.linux.com/feeds/rss "~Linux                Linux.com"
 ###########
 #  Games  #
 ###########
-https://openxcom.org/feed/ "~Games                OpenXcom"
-http://feeds.feedburner.com/openmw "~Games                OpenMW"
+# https://openxcom.org/feed/ "~Games                OpenXcom"
+# http://feeds.feedburner.com/openmw "~Games                OpenMW"
 ###########
 #  Apps   #
 ###########
-http://feeds.kodi.tv/xbmc "~Apps                 Kodi"
-http://blog.qutebrowser.org/feeds/all.rss.xml "~Apps                 Qutebrowser"
+# http://feeds.kodi.tv/xbmc "~Apps                 Kodi"
+# http://blog.qutebrowser.org/feeds/all.rss.xml "~Apps                 Qutebrowser"
 ###########
 # Youtube #
 ###########
 https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA "~Youtube              Luke Smith"
-https://www.youtube.com/feeds/videos.xml?user=gotbletu "~Youtube              Gotbletu"
-https://www.youtube.com/feeds/videos.xml?channel_id=UCFzGyNKXPAglNq28qWYTDFA "~Youtube              Kai Hendry"
+# https://www.youtube.com/feeds/videos.xml?user=gotbletu "~Youtube              Gotbletu"
+# https://www.youtube.com/feeds/videos.xml?channel_id=UCFzGyNKXPAglNq28qWYTDFA "~Youtube              Kai Hendry"
 ##########
 # Reddit #
 ##########
@@ -50,27 +50,28 @@ https://www.youtube.com/feeds/videos.xml?channel_id=UCFzGyNKXPAglNq28qWYTDFA "~Y
 # copy(mySubRedditRssLinks)
 
 
-https://www.reddit.com/r/antiXLinux/.rss "~Reddit               antiXLinux"
-https://www.reddit.com/r/linux/.rss "~Reddit               Linux, GNU/Linux, free software..."
-https://www.reddit.com/r/productivity/.rss "~Reddit               Productivity"
-https://www.reddit.com/r/browsers/.rss "~Reddit               Browsers &amp; Browser technology"
-https://www.reddit.com/r/vim/.rss "~Reddit               VIM - Vi IMproved"
+https://www.reddit.com/r/rust/.rss "~Reddit               The Rust Programming Language"
+https://www.reddit.com/r/fdroid/.rss "~Reddit               F-Droid | Free and Open Source Android App Repository"
 https://www.reddit.com/r/hacking/.rss "~Reddit               hacking"
-https://www.reddit.com/r/dotfiles/.rss "~Reddit               dotfiles"
-https://www.reddit.com/r/archlinux/.rss "~Reddit               r/archlinux"
-https://www.reddit.com/r/announcements/.rss "~Reddit               Announcements"
-https://www.reddit.com/r/linuxquestions/.rss "~Reddit               Linux Questions"
-https://www.reddit.com/r/dwm/.rss "~Reddit               dwm - As in the window manager"
 https://www.reddit.com/r/commandline/.rss "~Reddit               Command Line"
-https://www.reddit.com/r/suckless/.rss "~Reddit               suckless - use, design and development of minimalist/modular software"
-https://www.reddit.com/r/fossdroid/.rss "~Reddit               FOSS for Android"
-https://www.reddit.com/r/HowToHack/.rss "~Reddit               Your Hacking Tutorial by Zempirians"
-https://www.reddit.com/r/MuttEmailClient/.rss "~Reddit               MuttEmailClient"
-https://www.reddit.com/r/dmenu/.rss "~Reddit               /r/dmenu"
-https://www.reddit.com/r/IndianStockMarket/.rss "~Reddit               A place to discuss all things related to the Indian Stock Market!"
-https://www.reddit.com/r/neovim/.rss "~Reddit               vim out of the box — http"
-https://www.reddit.com/r/mpv/.rss "~Reddit               MPV Player"
-https://www.reddit.com/r/graphql/.rss "~Reddit               GraphQL"
-https://www.reddit.com/r/qutebrowser/.rss "~Reddit               qutebrowser"
-https://www.reddit.com/r/MXLinux/.rss "~Reddit               MX Linux"
-https://www.reddit.com/r/artixlinux/.rss "~Reddit               Artix linux"
+# https://www.reddit.com/r/antiXLinux/.rss "~Reddit               antiXLinux"
+# https://www.reddit.com/r/linux/.rss "~Reddit               Linux, GNU/Linux, free software..."
+# https://www.reddit.com/r/productivity/.rss "~Reddit               Productivity"
+# https://www.reddit.com/r/browsers/.rss "~Reddit               Browsers &amp; Browser technology"
+# https://www.reddit.com/r/privacy/.rss "~Reddit               Privacy &amp; Freedom in the Information Age"
+# https://www.reddit.com/r/vim/.rss "~Reddit               VIM - Vi IMproved"
+# https://www.reddit.com/r/dotfiles/.rss "~Reddit               dotfiles"
+# https://www.reddit.com/r/archlinux/.rss "~Reddit               r/archlinux"
+# https://www.reddit.com/r/announcements/.rss "~Reddit               Announcements"
+# https://www.reddit.com/r/linuxquestions/.rss "~Reddit               Linux Questions"
+# https://www.reddit.com/r/dwm/.rss "~Reddit               dwm - As in the window manager"
+# https://www.reddit.com/r/suckless/.rss "~Reddit               suckless - use, design and development of minimalist/modular software"
+# https://www.reddit.com/r/fossdroid/.rss "~Reddit               FOSS for Android"
+# https://www.reddit.com/r/HowToHack/.rss "~Reddit               Your Hacking Tutorial by Zempirians"
+# https://www.reddit.com/r/MuttEmailClient/.rss "~Reddit               MuttEmailClient"
+# https://www.reddit.com/r/dmenu/.rss "~Reddit               /r/dmenu"
+# https://www.reddit.com/r/IndianStockMarket/.rss "~Reddit               A place to discuss all things related to the Indian Stock Market!"
+# https://www.reddit.com/r/neovim/.rss "~Reddit               vim out of the box — http"
+# https://www.reddit.com/r/Syncthing/.rss "~Reddit               Syncthing"
+# https://www.reddit.com/r/mpv/.rss "~Reddit               MPV Player"
+# https://www.reddit.com/r/graphql/.rss "~Reddit               GraphQL"
