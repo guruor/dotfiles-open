@@ -20,6 +20,12 @@ export PATH="$PATH:${XDG_DATA_HOME}/cargo/bin"
 # Adds `GOPATH` to $PATH
 export PATH="$PATH:${XDG_DATA_HOME}/go/bin"
 
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init --path)"
+fi
+
 unsetopt PROMPT_SP
 
 # Default programs:
