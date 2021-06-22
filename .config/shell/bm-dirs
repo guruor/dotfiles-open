@@ -13,6 +13,10 @@ src $HOME/.local/src
 vv  ${XDG_VIDEOS_DIR:-$HOME/Videos}
 dot  ${XDG_VIDEOS_DIR:-$HOME/voidrice}
 pdot  ${XDG_VIDEOS_DIR:-$HOME/voidrice/Private}
+work   $HOME/Workspace
+up   $HOME/Workspace/up
+prac   $HOME/Workspace/practice
+rust  $HOME/Workspace/practice/rust
 vw   ${VIMWIKI_DIR:-$HOME/Dropbox/vimWiki}
 vww  "${VIM_WIKI_DIR_WORK:-$HOME/Dropbox}/vimWiki/Work"
 vwp  "${VIM_WIKI_DIR_PERSONAL:-$HOME/Dropbox}/vimWiki/Personal"
