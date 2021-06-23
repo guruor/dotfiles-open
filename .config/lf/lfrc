@@ -11,22 +11,13 @@ set hidden
 set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
 
 # Vars that depend on environmental variables
-$lf -remote "send $id set previewer ${XDG_CONFIG_HOME:-$HOME/.config}/lf/scope"
+$lf -remote "send $id set cleaner ${XDG_CONFIG_HOME:-$HOME/.config}/lf/cleaner"
+$lf -remote "send $id set previewer ${XDG_CONFIG_HOME:-$HOME/.config}/lf/previewer"
+
 
 # cmds/functions
-cmd open ${{
-    case $(file --mime-type $f -b) in
-	image/vnd.djvu|application/pdf|application/octet-stream) setsid -f zathura $fx >/dev/null 2>&1 ;;
-        text/*) $EDITOR $fx;;
-	image/x-xcf) setsid -f gimp $f >/dev/null 2>&1 ;;
-	image/svg+xml) display -- $f ;;
-	image/*) rotdir $f | grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|tif\|ico\)\(_large\)*$" | sxiv -aio 2>/dev/null | lf-select ;;
-	audio/*) mpv --audio-display=no $f ;;
-	video/*) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
-	application/pdf|application/vnd*|application/epub*) setsid -f zathura $fx >/dev/null 2>&1 ;;
-        *) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>&1; done;;
-    esac
-}}
+cmd open $$OPENER $fx
+cmd open-choose $OPENER_CHOOSE="true" $OPENER $fx
 
 cmd mkdir $mkdir -p "$(echo $* | tr ' ' '\ ')"
 
@@ -77,8 +68,9 @@ map <c-r> reload
 map <enter> shell
 map x $$f
 map X !$f
-map o &mimeopen $f
-map O $mimeopen --ask $f
+
+map o open
+map O open-choose
 
 map A rename # at the very end
 map I push A<c-a> # at the very beginning
