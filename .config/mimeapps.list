@@ -7,9 +7,10 @@ text/x-shellscript=text.desktop;
 x-scheme-handler/magnet=torrent.desktop;
 application/x-bittorrent=torrent.desktop;
 x-scheme-handler/mailto=mail.desktop;
+text/csv=sheet.desktop;
+text/x-csv=sheet.desktop;
+application/csv=sheet.desktop;
 text/plain=text.desktop;
-text/csv=text.desktop;
-application/csv=text.desktop;
 text/json=text.desktop;
 application/json=text.desktop;
 application/postscript=pdf.desktop;
@@ -21,3 +22,7 @@ application/rss+xml=rss.desktop
 video/x-matroska=video.desktop
 x-scheme-handler/lbry=lbry.desktop
 inode/directory=file.desktop
+x-scheme-handler/tg=userapp-Telegram Desktop-TY1E10.desktop
+
+[Added Associations]
+x-scheme-handler/tg=userapp-Telegram Desktop-TY1E10.desktop;
