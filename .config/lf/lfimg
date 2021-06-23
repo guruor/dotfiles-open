@@ -1,4 +1,7 @@
 #!/bin/sh
+# https://github.com/gokcehan/lf/wiki/Previews
+# https://github.com/neeshy/lfimg
+
 set -e
 
 if [ -n "$DISPLAY" ]; then
