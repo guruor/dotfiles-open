@@ -90,7 +90,8 @@ case "$(file -Lb --mime-type -- "$1")" in
   text/*)
     #highlight -q -O ansi -- "$1" || cat -- "$1"
     #pygmentize -f terminal -- "$1" || cat -- "$1"
-    source-highlight -q --outlang-def=esc.outlang --style-file=esc.style -i "$1" || cat -- "$1"
+    # source-highlight -q --outlang-def=esc.outlang --style-file=esc.style -i "$1" || cat -- "$1"
+    bat --color=always "$1" || cat -- "$1"
     exit 0
     ;;
   image/*)
