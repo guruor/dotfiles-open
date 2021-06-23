@@ -41,6 +41,7 @@ alias \
 	z="zathura" \
     tt="taskwarrior-tui" \
 	code="$EDITOR -u $MYVIMRCLSP" \
+    lf="lfimg" \
 
 alias \
 	magit="nvim -c MagitOnly" \
