@@ -126,7 +126,8 @@ autocmd BufLeave term://* stopinsert
 	autocmd BufWritePost ~/.local/src/dwm/config.h !cd ~/.local/src/dwm/; sudo make install && kill -HUP $(pgrep -u $USER "\bdwm$")
 
 " Auto show diagnostics for a line when curson is on the line
-    autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()
+    " Show diagnostic hover after 'updatetime' and don't steal focus
+    autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics({focusable = false})
     autocmd CursorHoldI * silent! lua vim.lsp.buf.signature_help()
 
 " Turns off highlighting on the bits of code that are changed, so the line that is changed is highlighted but the actual text that has changed stands out on the line and is readable.
