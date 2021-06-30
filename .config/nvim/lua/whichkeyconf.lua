@@ -1,3 +1,4 @@
+local utils = require "utils"
 local wk = require("which-key")
 
 local leader = "<Space>"
@@ -17,7 +18,7 @@ local keys = {
     ["9"] = {"9gt", "which_key_ignore"},
     ["u"] = {":update<CR>", "Save file"},
     ["d"] = {":bd<CR>", "Delete buffer"},
-    ["q"] = {":q<CR>", "Quit"},
+    ["q"] = {":lua require'utils'.close_floating_windows();vim.api.nvim_command('quit')<CR>", "Quit"},
     ["x"] = {":q!<CR>", "Close without saving"},
     ["Q"] = {":qa!<CR>", "Quit all"}
 }
@@ -41,7 +42,7 @@ keys = {
     ["U"] = {":UndotreeToggle<CR>", "Undo Tree"},
     [" "] = {":noh<CR>", "No Highlight"},
     ["L"] = {":Limelight<CR>", "Limelight activate"},
-    ["o"] = {":terminal lf<CR>", "Open file explorer"}
+    ["o"] = {":tabnew | terminal lf<CR>", "Open file explorer"}
 }
 wk.register(keys, {prefix = leader})
 wk.register(keys, {prefix = leader, mode = 'v'})
