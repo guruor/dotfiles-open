@@ -1,4 +1,6 @@
 #!/bin/bash
+# Logging alerts received from dunst to persist the notifications
+echo $@ >> ~/.cache/alerts.txt
 
 # System sound files can be found at /usr/share/sounds/
 mpv --volume=100 $HOME/.local/share/complete.oga
