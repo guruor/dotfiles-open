@@ -1,0 +1,8 @@
+# Looks really nice with Solarized color scheme
+color "type=HEADINGS fg=DEFAULT_COLOR bg=BLACK bold=0"
+color "type=CELL_SELECTION fg=WHITE bg=GREEN bold=1"set autocalc
+
+set numeric
+set numeric_decimal=0
+set overlap
+set xlsx_readformulas
