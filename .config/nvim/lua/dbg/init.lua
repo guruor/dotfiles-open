@@ -48,7 +48,7 @@ dap.configurations.lua = {
     }
 }
 
-dap.configurations.cpp = {
+dap.configurations.rust = {
     {
         name = "Launch",
         type = "lldb",
@@ -58,8 +58,10 @@ dap.configurations.cpp = {
         end,
         cwd = '${workspaceFolder}',
         stopOnEntry = false,
-        args = {},
-
+        args = function()
+            local filter = vim.fn.input('Enter args: ')
+            return {filter}
+        end,
         -- if you change `runInTerminal` to true, you might need to change the yama/ptrace_scope setting:
         --
         --    echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
@@ -74,8 +76,8 @@ dap.configurations.cpp = {
     }
 }
 
-dap.configurations.c = dap.configurations.cpp
-dap.configurations.rust = dap.configurations.cpp
+dap.configurations.c = dap.configurations.rust
+dap.configurations.cpp = dap.configurations.rust
 
 -- Enable virutal text, requires theHamsta/nvim-dap-virutal-text
 vim.g.dap_virtual_text = true
