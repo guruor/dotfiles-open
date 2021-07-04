@@ -163,4 +163,4 @@ endif
 
 
 " Disabling syntax highlighting for larger files
-    autocmd Filetype * if getfsize(@%) > 100000 | setlocal syntax=OFF | endif
+    autocmd Filetype * if getfsize(@%) > 1000000 | setlocal syntax=OFF | endif
