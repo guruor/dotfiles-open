@@ -160,3 +160,7 @@ endif
 	autocmd BufRead,BufNewFile *.md  set filetype=markdown
 	autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
 	autocmd BufRead,BufNewFile *.tex set filetype=tex
+
+
+" Disabling syntax highlighting for larger files
+    autocmd Filetype * if getfsize(@%) > 100000 | setlocal syntax=OFF | endif
