@@ -33,6 +33,10 @@ Plug 'hrsh7th/nvim-compe'
 
 " Debugging
 Plug 'mfussenegger/nvim-dap'
+Plug 'theHamsta/nvim-dap-virtual-text'
+Plug 'rcarriga/nvim-dap-ui'
+Plug 'jbyuki/one-small-step-for-vimkind'
+Plug 'mfussenegger/nvim-dap-python'
 
 Plug 'alvan/vim-closetag'
 Plug 'Yggdroot/indentLine',         { 'on': 'IndentLinesToggle' }

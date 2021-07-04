@@ -66,6 +66,30 @@ wk.register(keys, {prefix = leader})
 wk.register(keys, {prefix = leader, mode = 'v'})
 
 keys = {
+    d = {
+        name = 'Debug',
+        ["S"] = {"<cmd>lua require\'dap\'.stop()<CR>", "Stop"},
+        ["c"] = {"<cmd>lua require\'dap\'.continue()<CR>", "Continue"},
+        ["n"] = {"<cmd>lua require\'dap\'.step_over()<CR>", "Step Over"},
+        ["s"] = {"<cmd>lua require\'dap\'.step_into()<CR>", "Step Into"},
+        ["u"] = {"<cmd>lua require\'dap\'.step_out()<CR>", "Step Out"},
+        ["b"] = {"<cmd>lua require\'dap\'.toggle_breakpoint()<CR>", "Toggle Breakpoint"},
+        ["B"] = {"<cmd>lua require\'dap\'.toggle_breakpoint(vim.fn.input(\'Breakpoint Condition: \'), nil, nil, true)<CR>", "Condition"},
+        ["l"] = {"<cmd>lua require\'dap\'.toggle_breakpoint(nil, nil, vim.fn.input(\'Log point message: \'), true)<CR>", "Log"},
+        ["r"] = {"<cmd>lua require\'dap\'.repl.toggle({height=15})<CR>", "Toggle REPL"},
+        ["Vt"] = {"<cmd>lua require\'dapui\'.toggle()<CR>", "DAP UI Toggle"},
+        ["Us"] = {"<cmd>lua require\'dap.ui.variables\'.scopes()<CR>", "Scopes"},
+        ["Uh"] = {"<cmd>lua require\'dap.ui.variables\'.hover()<CR>", "Hover"},
+        ["Uv"] = {"<cmd>lua require\'dap.ui.variables\'.visual_hover()<CR>", "Visual hover"},
+        ["Uu"] = {"<cmd>lua require\'dap.ui.widgets\'.hover()<CR>", "Widget Hover"},
+        ["Uf"] = {"<cmd>lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>", "Widget Scopes"},
+
+    }
+}
+wk.register(keys, {prefix = leader})
+wk.register(keys, {prefix = leader, mode = 'v'})
+
+keys = {
     l = {
         name = 'LSP',
         ["gd"] = {"<Cmd>lua vim.lsp.buf.definition()<CR>", "Definition"},
