@@ -87,7 +87,7 @@ case "$1" in
 esac
 
 case "$(file -Lb --mime-type -- "$1")" in
-  text/*)
+  text/*|application/json)
     #highlight -q -O ansi -- "$1" || cat -- "$1"
     #pygmentize -f terminal -- "$1" || cat -- "$1"
     # source-highlight -q --outlang-def=esc.outlang --style-file=esc.style -i "$1" || cat -- "$1"
