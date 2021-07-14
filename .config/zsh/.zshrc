@@ -62,6 +62,16 @@ setopt interactive_comments
 HISTSIZE=10000000
 SAVEHIST=10000000
 HISTFILE=~/.cache/zsh/history
+# Doesn't save listed commands in history
+HISTORY_IGNORE="(ls|cd|pwd|exit|cd ..|history|code|vim|dot|pdot)"
+# Ignores commands starting with space
+setopt HIST_IGNORE_SPACE
+# Immediately saved to history file instead of waiting for session end
+setopt INC_APPEND_HISTORY
+# Ignores duplicates while listing
+setopt HIST_FIND_NO_DUPS
+# Removes the previous copy of the command in history
+setopt HIST_IGNORE_ALL_DUPS
 
 # Load aliases and shortcuts if existent.
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc"
