@@ -1,0 +1,11 @@
+# Use vi mode
+bind -v
+
+# Tab to complete
+bind \\t rl_complete
+
+# Reverse search through history
+bind "^R" em-inc-search-prev
+
+# Clear the screen
+bind "^L" ed-clear-screen
