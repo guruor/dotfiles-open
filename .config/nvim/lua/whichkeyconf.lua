@@ -68,21 +68,24 @@ wk.register(keys, {prefix = leader, mode = 'v'})
 keys = {
     d = {
         name = 'Debug',
-        ["S"] = {"<cmd>lua require\'dap\'.stop()<CR>", "Stop"},
+
+        ["b"] = {"<cmd>lua require\'dap\'.toggle_breakpoint()<CR>", "Toggle Breakpoint"},
+        ["B"] = {"<cmd>lua require\'dap\'.toggle_breakpoint(vim.fn.input(\'Breakpoint Condition: \'), nil, nil, true)<CR>", "Condition"},
+        ["j"] = {"<cmd>lua require\'dap\'.down()<CR>", "Down in stack trace"},
+        ["k"] = {"<cmd>lua require\'dap\'.up()<CR>", "Up in stack trace"},
         ["c"] = {"<cmd>lua require\'dap\'.continue()<CR>", "Continue"},
         ["n"] = {"<cmd>lua require\'dap\'.step_over()<CR>", "Step Over"},
         ["s"] = {"<cmd>lua require\'dap\'.step_into()<CR>", "Step Into"},
         ["u"] = {"<cmd>lua require\'dap\'.step_out()<CR>", "Step Out"},
-        ["b"] = {"<cmd>lua require\'dap\'.toggle_breakpoint()<CR>", "Toggle Breakpoint"},
-        ["B"] = {"<cmd>lua require\'dap\'.toggle_breakpoint(vim.fn.input(\'Breakpoint Condition: \'), nil, nil, true)<CR>", "Condition"},
         ["l"] = {"<cmd>lua require\'dap\'.toggle_breakpoint(nil, nil, vim.fn.input(\'Log point message: \'), true)<CR>", "Log"},
         ["r"] = {"<cmd>lua require\'dap\'.repl.toggle({height=15})<CR>", "Toggle REPL"},
-        ["Vt"] = {"<cmd>lua require\'dapui\'.toggle()<CR>", "DAP UI Toggle"},
-        ["Us"] = {"<cmd>lua require\'dap.ui.variables\'.scopes()<CR>", "Scopes"},
-        ["Uh"] = {"<cmd>lua require\'dap.ui.variables\'.hover()<CR>", "Hover"},
-        ["Uv"] = {"<cmd>lua require\'dap.ui.variables\'.visual_hover()<CR>", "Visual hover"},
-        ["Uu"] = {"<cmd>lua require\'dap.ui.widgets\'.hover()<CR>", "Widget Hover"},
-        ["Uf"] = {"<cmd>lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>", "Widget Scopes"},
+        ["x"] = {"<cmd>lua require\'dap\'.stop()<CR>", "Stop"},
+        ["t"] = {"<cmd>lua require\'dapui\'.toggle()<CR>", "DAP UI Toggle"},
+        ["S"] = {"<cmd>lua require\'dap.ui.variables\'.scopes()<CR>", "Scopes"},
+        ["h"] = {"<cmd>lua require\'dap.ui.variables\'.hover()<CR>", "Hover"},
+        ["H"] = {"<cmd>lua require\'dap.ui.variables\'.visual_hover()<CR>", "Visual hover"},
+        ["w"] = {"<cmd>lua require\'dap.ui.widgets\'.hover()<CR>", "Widget Hover"},
+        ["W"] = {"<cmd>lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>", "Widget Scopes"},
 
     }
 }
@@ -137,11 +140,11 @@ wk.register(keys, {prefix = leader, mode = 'v'})
 keys = {
     m = {
         name = 'Macro',
-        ["j"] = {":'<,'>!jq .", "Format selection as json"},
-        ["n"] = {":%s/\\n/\r/g", "Replace \n with newline charFormat sqlalchemy query from logs"},
-        ["{"] = {":%s/\\%V{/{{/g | %s/\\%V}/}}/g", "Replace braces with double braces for multiline formatted string"},
-        ["\""] = {":%s/'/\"/g", "Replace ' with \""},
-        ["\\"] = {":%s/\"/'/g", "Replace \" with '"}
+        ["j"] = {":!jq .<CR>", "Format selection as json"},
+        ["n"] = {":%s/\\n/\r/g<CR>", "Replace \n with newline charFormat sqlalchemy query from logs"},
+        ["{"] = {":%s/\\%V{/{{/g | %s/\\%V}/}}/g<CR>", "Replace braces with double braces for multiline formatted string"},
+        ["\""] = {":%s/'/\"/g<CR>", "Replace ' with \""},
+        ["\\"] = {":%s/\"/'/g<CR>", "Replace \" with '"}
     }
 }
 wk.register(keys, {prefix = leader})
