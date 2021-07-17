@@ -10,11 +10,15 @@
 # string "xelatex" somewhere in a comment/command in the first 5 lines.
 
 file=$(readlink -f "$1")
+args=${@:2}
+echo -e "Executable path is: $1"
+echo -e "Args are: $args"
 dir=${file%/*}
 base="${file%.*}"
 ext="${file##*.}"
 
-cd "$dir" || exit 1
+# TODO: Check if this change directory is required
+# cd "$dir" || exit 1
 
 textype() { \
 	command="pdflatex"
@@ -48,7 +52,7 @@ case "$ext" in
 	org) emacs "$file" --batch -u "$USER" -f org-latex-export-to-pdf ;;
 	py) python "$file" ;;
 	[rR]md) Rscript -e "rmarkdown::render('$file', quiet=TRUE)" ;;
-	rs) cargo run ;;
+	rs) cargo run -- $args ;;
 	sass) sassc -a "$file" "$base.css" ;;
 	scad) openscad -o "$base".stl "$file" ;;
 	sent) setsid -f sent "$file" 2>/dev/null ;;
