@@ -86,7 +86,7 @@ keys = {
         ["H"] = {"<cmd>lua require\'dap.ui.variables\'.visual_hover()<CR>", "Visual hover"},
         ["w"] = {"<cmd>lua require\'dap.ui.widgets\'.hover()<CR>", "Widget Hover"},
         ["W"] = {"<cmd>lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>", "Widget Scopes"},
-        ["dr"] = {':exec ":vs | :te cargo build; rust-lldb ".input("Path to executable: ", getcwd() .. "/target/debug/")." ".input("Enter args: ")<CR>', "rust-lldb"},
+        ["dr"] = {':exec ":vs | :te cargo build; rust-lldb ".input("Path to executable: ", getcwd() .. "/target/debug/", "file")." ".input("Enter args: ")<CR>', "rust-lldb"},
     }
 }
 wk.register(keys, {prefix = leader})
