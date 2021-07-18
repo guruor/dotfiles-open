@@ -9,3 +9,8 @@ bind "^R" em-inc-search-prev
 
 # Clear the screen
 bind "^L" ed-clear-screen
+
+# LLDB specific config
+lldb:bind -v
+lldb:bind ^I lldb_complete
+lldb:bind ^P ed-command
