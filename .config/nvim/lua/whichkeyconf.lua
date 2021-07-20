@@ -5,8 +5,11 @@ local leader = "<Space>"
 local localleader = ","
 
 local keys = {
-    ["<Tab>"] = {":tabnext<CR>", "Jump to next tab"},
-    ["0"] = {":tabp<CR>", "Jump to previous active tab"},
+    ["k"] = {":tabnext<CR>", "Jump to right tab"},
+    ["j"] = {":tabprev<CR>", "Jump to left tab"},
+    ["<"] = {":tabmove -1<CR>", "Move tab left"},
+    [">"] = {":tabmove +1<CR>", "Move tab right"},
+    ["\\"] = {":exe 'tabn '.g:lasttab<CR>", "Last tab"},
     ["1"] = {"1gt", "which_key_ignore"},
     ["2"] = {"2gt", "which_key_ignore"},
     ["3"] = {"3gt", "which_key_ignore"},
