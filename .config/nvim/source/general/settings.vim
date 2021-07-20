@@ -164,3 +164,6 @@ endif
 
 " Disabling syntax highlighting for larger files
     autocmd Filetype * if getfsize(@%) > 1000000 | setlocal syntax=OFF | endif
+
+" Storing last visited tab
+    au TabLeave * let g:lasttab = tabpagenr()
