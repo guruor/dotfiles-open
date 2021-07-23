@@ -20,7 +20,9 @@ local keys = {
     ["8"] = {"8gt", "which_key_ignore"},
     ["9"] = {"9gt", "which_key_ignore"},
     ["u"] = {":update<CR>", "Save file"},
-    ["d"] = {":bd<CR>", "Delete buffer"},
+    -- Closing float windows before deleting the current buffer
+    ["d"] = {":lua require'utils'.close_floating_windows();vim.api.nvim_command('bdelete')<CR>", "Delete buffer"},
+    -- Closing float windows before closing the current window
     ["q"] = {":lua require'utils'.close_floating_windows();vim.api.nvim_command('quit')<CR>", "Quit"},
     ["x"] = {":q!<CR>", "Close without saving"},
     ["Q"] = {":qa!<CR>", "Quit all"}
@@ -112,7 +114,7 @@ keys = {
         ["k"] = {":lua vim.lsp.buf.hover()<CR>", "Hover"},
         ["="] = {":update | lua require'lsp.formatting'.format()<CR>", "Format"},
         ["d"] = {":lua vim.lsp.diagnostic.set_loclist()<CR>", "Diagnostic"},
-        ["D"] = {":lua vim.lsp.util.show_line_diagnostics()<CR>", "Diagnostic"},
+        ["D"] = {":lua vim.lsp.diagnostic.show_line_diagnostics({focusable = false})<CR>", "Diagnostic"},
         ["dd"] = {":lua require'lsp.diagnostics'.line_diagnostics()<CR>", "Diagnostic"},
         ["n"] = {":lua vim.lsp.diagnostic.goto_next()<CR>", "Next diagnostic"},
         ["p"] = {":lua vim.lsp.diagnostic.goto_prev()<CR>", "Prev diagnostic"},
