@@ -8,9 +8,9 @@ let g:pydocstring_doq_path = '~/.pyenv/versions/neovim/bin/doq'
 
 " Ultisnips
 let g:UltiSnipsSnippetDirectories=["ultisnips"]
-" let g:UltiSnipsExpandTrigger = "<C-space>"
-" let g:UltiSnipsJumpForwardTrigger = "<C-j>"
-" let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
+let g:UltiSnipsExpandTrigger = "<C-space>"
+let g:UltiSnipsJumpForwardTrigger = "<C-j>"
+let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
 
 " TagBar
 let g:tagbar_width = 30
