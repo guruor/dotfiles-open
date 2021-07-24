@@ -1,0 +1,11 @@
+# Brave
+**/Feature Engagement Tracker/*
+**/Local Storage/*
+**/CacheStorage/*
+**/Session Storage/*
+**/Safe Browsing/*
+**/ShaderCache/*
+**/GrShaderCache/*
+**/GPUCache/*
+**/ScriptCache/*
+**/Temp/*

@@ -1,0 +1,51 @@
+#!/bin/sh
+# Backup or restore Brave browser files as encrypted tar file
+# Excludes files mentioned in $HOME/.config/exclude.txt and files mentioned vcs ignore files like .gitignore
+
+source_dir="${HOME}/.config"
+dir_to_backup="BraveSoftware"
+backup_name="brave-browser-backup.tar.gz"
+target_dir="${HOME}/Sync"
+exclude_file="${HOME}/.config/exclude.txt"
+
+help() {
+    echo "Securly Backup-Restore directory"
+    echo "   backup:        Backs up directory"
+    echo "   restore:       Restores directory"
+    exit
+}
+
+backup() {
+    # Backup
+    cd $source_dir
+    # Making a tar backup
+    tar --exclude-vcs --exclude-from=$exclude_file -czvf $backup_name $dir_to_backup
+
+    # Encryping the backup and removing the tar file
+    gpg -c $backup_name
+    rm $backup_name
+
+    # Moving the backup to syncthing or dropbox
+    mv "${backup_name}.gpg" $target_dir
+}
+
+restore() {
+    # Restore
+    cd $target_dir
+
+    # Decrypting the backup file
+    gpg "${backup_name}.gpg"
+
+    # Extracting the archive
+    tar xvf $backup_name -C $source_dir
+
+    # Removing the decrypted archive, don't worry we still have encrypted backup
+    rm $backup_name
+}
+
+
+case "$1" in
+    "backup")  backup; exit ;;
+    "restore") restore; exit ;;
+    *)     help ;;
+esac
