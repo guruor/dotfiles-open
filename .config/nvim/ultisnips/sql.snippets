@@ -1,0 +1,86 @@
+snippet f "f"
+from ${1}
+endsnippet
+
+snippet g "g"
+group by ${1}
+endsnippet
+
+snippet l "l"
+limit ${1:100}
+endsnippet
+
+snippet lj "lj"
+left join ${1} on ${2}
+endsnippet
+
+snippet o "o"
+order by ${1:created_at DESC}
+endsnippet
+
+snippet s "select"
+select ${1};
+endsnippet
+
+snippet sd "sd"
+select distinct ${1}
+endsnippet
+
+snippet sel "select"
+select
+*
+from ${1:}
+where 1=1
+order by created_at desc
+limit 100;
+endsnippet
+
+snippet w "w"
+where ${1}
+endsnippet
+
+snippet c "count"
+count(${1:*})
+endsnippet
+
+snippet sgc "select group count"
+select
+${1:type},
+count(*) c
+from ${2}
+where 1=1
+group by $1
+order by c desc
+limit 100;
+endsnippet
+
+snippet sid "select by id"
+SELECT * FROM ${1} WHERE id = ${2};
+endsnippet
+
+snippet u "update"
+UPDATE
+endsnippet
+
+snippet up "update"
+UPDATE ${1} SET ${2} WHERE 1=1 AND ${3}
+endsnippet
+
+snippet inn "is not null"
+IS NOT NULL
+endsnippet
+
+
+snippet tbl "Create table"
+	create table ${1} (
+		${2}
+	);
+endsnippet
+
+snippet ind
+	create index ${1} on ${2}(${3});
+endsnippet
+
+snippet csv
+\T csv; \o -o /tmp/output.csv; ${1}
+endsnippet
