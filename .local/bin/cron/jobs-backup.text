@@ -27,7 +27,7 @@ XAUTHORITY=/home/govind/.Xauthority
 0 */2 * * *             $HOME/.local/bin/bugwarrior-pull >> /tmp/cron.log
 
 # Job to update the newsboat database
-0 */6 * * *             $HOME/.local/bin/cron/newsup >> /tmp/cron.log
+0 0 */2 * *             $HOME/.local/bin/cron/newsup >> /tmp/cron.log
 
 # Job to check system/application updates
 0 */12 * * *            /usr/bin/mpc update >> /tmp/cron.log
@@ -40,3 +40,6 @@ XAUTHORITY=/home/govind/.Xauthority
 
 # Job to check system/application updates
 0 18 */15 * *           $HOME/.local/bin/cron/checkup >> /tmp/cron.log
+
+# Job to backup brave settings and profiles
+0 16 */15 * *           $HOME/.local/bin/brave-backup backup >> /tmp/cron.log
