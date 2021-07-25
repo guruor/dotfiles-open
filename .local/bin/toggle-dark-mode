@@ -17,6 +17,8 @@ dark_mode_flag="/tmp/dark-mode.off"
 change_xresources_theme() {
     echo -e "Requested xresource theme is: $1"
     theme=$1
+    echo -e "Merging $HOME/.config/x11/${theme}.xres"
+    xrdb ~/.Xresources
     xrdb -merge "$HOME/.config/x11/${theme}.xres"
 }
 
@@ -32,7 +34,6 @@ change_alacritty_theme() {
     # sed doesn't like symlinks, get the absolute path
     config_path=$(readlink -f $alacritty_color_config)
 
-    echo -e "Original alacritty config path: $config_path"
     sed -i -e "s|^colors: \*.*|colors: *$theme|g" $config_path
 
     echo -e "switched to $theme."
@@ -66,7 +67,6 @@ change_bat_theme() {
     # sed doesn't like symlinks, get the absolute path
     config_path=$(readlink -f $bat_config)
 
-    echo -e "Original bat config path: $config_path"
     sed -i -e "s|^--theme=.*|--theme=\"$theme\"|g" $config_path
 
     echo -e "switched to $theme."
