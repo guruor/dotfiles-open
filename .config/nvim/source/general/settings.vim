@@ -3,7 +3,6 @@
 set formatoptions-=cro                  " Stop newline continution of comments
 
 syntax enable                           " Enables syntax highlighing
-colorscheme gruvbox
 
 set hidden                              " Required to keep multiple buffers open multiple buffers
 set encoding=utf-8                      " The encoding displayed
@@ -14,7 +13,6 @@ set cmdheight=1                         " More space for displaying messages
 set mouse=a                             " Enable your mouse
 set splitbelow                          " Horizontal splits will automatically be below
 set splitright                          " Vertical splits will automatically be to the right
-set t_Co=256                            " Support 256 colors
 set conceallevel=0                      " So that I can see `` in markdown files
 set tabstop=4                           " Insert 2 spaces for a tab
 set softtabstop=4
@@ -25,7 +23,6 @@ set smartindent                         " Makes indenting smart
 set autoindent                          " Good auto indent
 set laststatus=2                        " Always display the status line
 set cursorline                          " Enable highlighting of the current line
-set background=dark                     " tell vim what the background color looks like
 set showtabline=2                       " Always show tabs
 set noshowmode                          " We don't need to see things like -- INSERT -- anymore
 set noshowcmd                           " Prvent showing last command
@@ -48,10 +45,28 @@ set breakindent
 set title
 set number relativenumber
 set colorcolumn=120
-set termguicolors
 set noswapfile
 set undofile
 set scrolloff=5
+
+" Setting colorschema after setting up background
+set t_Co=256                            " Support 256 colors
+set termguicolors
+set background=dark                     " tell vim what the background color looks like
+colorscheme gruvbox
+
+""" Coloring
+" highlight Pmenu guibg=white guifg=black gui=bold
+" highlight Comment gui=bold
+" highlight Normal gui=none
+" highlight NonText guibg=none
+
+" Transparent Background (For i3 and compton)
+" highlight Normal guibg=NONE ctermbg=NONE
+" highlight LineNr guibg=NONE ctermbg=NONE
+
+
+
 " Set completeopt to have a better completion experience
 " :help completeopt
 " menuone: popup even when there's only one match
@@ -72,16 +87,6 @@ let session_directory='~/.cache/vim/session/'
 
 """ Python3 VirtualEnv
 let g:python3_host_prog = expand('~/.pyenv/versions/nvim/bin/python')
-all
-""" Coloring
-highlight Pmenu guibg=white guifg=black gui=bold
-highlight Comment gui=bold
-highlight Normal gui=none
-highlight NonText guibg=none
-
-" Transparent Background (For i3 and compton)
-highlight Normal guibg=NONE ctermbg=NONE
-highlight LineNr guibg=NONE ctermbg=NONE
 
 """ Filetype-Specific Configurations
 filetype plugin indent on
