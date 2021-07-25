@@ -18,7 +18,7 @@ change_xresources_theme() {
     echo -e "Requested xresource theme is: $1"
     theme=$1
     echo -e "Merging $HOME/.config/x11/${theme}.xres"
-    xrdb ~/.Xresources
+    xrdb $HOME/.config/x11/xresources
     xrdb -merge "$HOME/.config/x11/${theme}.xres"
 }
 
