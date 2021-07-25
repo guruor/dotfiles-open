@@ -38,3 +38,13 @@ function! ToggleHiddenAll()
         set showcmd
     endif
 endfunction
+
+function! ToggleBackground(...)
+    if a:0 == 0
+        let l:new_bg = &background == "light"? "dark": "light"
+    else
+        let l:new_bg = a:1
+    endif
+
+    let &background=l:new_bg
+endfunction

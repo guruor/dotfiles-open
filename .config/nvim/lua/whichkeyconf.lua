@@ -129,6 +129,7 @@ wk.register(keys, {prefix = leader, mode = 'v'})
 keys = {
     t = {
         name = 'Toggle',
+        ["b"] = {":!toggle-dark-mode<CR>", "Toggle background"},
         ["n"] = {":set nonumber!<CR>", "Line numbers"},
         ["r"] = {":set norelativenumber!<CR>", "Relative line numbers"},
         ["w"] = {":set wrap!<CR>", "Word wrap"},
