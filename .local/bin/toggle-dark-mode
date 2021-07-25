@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to enable, disable dark mode
 # Changes background for following applications
-# alacritty, tmux, vim, bat
+# xresources, alacritty, tmux, vim, bat
 
 
 help() {
@@ -12,7 +12,13 @@ help() {
     exit
 }
 
-dark_mode_flag="/tmp/dark-mode.on"
+dark_mode_flag="/tmp/dark-mode.off"
+
+change_xresources_theme() {
+    echo -e "Requested xresource theme is: $1"
+    theme=$1
+    xrdb -merge "$HOME/.config/x11/${theme}.xres"
+}
 
 
 change_alacritty_theme() {
@@ -68,24 +74,26 @@ change_bat_theme() {
 
 toggledark() {
     if [[ -f $dark_mode_flag ]]; then
-        stopdark
-    else
         startdark
+    else
+        stopdark
     fi
 }
 
 stopdark() {
+    change_xresources_theme gruvbox-light
     change_alacritty_theme gruvbox_light
     change_vim_background light
     change_bat_theme gruvbox-light
-    rm -f $dark_mode_flag
+    touch $dark_mode_flag
 }
 
 startdark() {
+    change_xresources_theme gruvbox-dark
     change_alacritty_theme gruvbox_dark
     change_vim_background dark
     change_bat_theme gruvbox-dark
-    touch $dark_mode_flag
+    rm -f $dark_mode_flag
 }
 
 case "$1" in
