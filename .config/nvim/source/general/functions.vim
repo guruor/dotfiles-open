@@ -47,4 +47,9 @@ function! ToggleBackground(...)
     endif
 
     let &background=l:new_bg
+    if l:new_bg == "dark"
+        call v:lua.self_color_gruvbox_dark()
+    else
+        call v:lua.self_color_gruvbox_light()
+    endif
 endfunction

@@ -1,209 +1,537 @@
-local gl = require('galaxyline')
-local colors = require('galaxyline.theme').default
-local condition = require('galaxyline.condition')
-local gls = gl.section
-gl.short_line_list = {'NvimTree','vista','dbui','packer'}
-
-gls.left[1] = {
-  RainbowRed = {
-    provider = function() return '▊ ' end,
-    highlight = {colors.blue,colors.bg}
-  },
-}
-gls.left[2] = {
-  ViMode = {
-    provider = function()
-      -- auto change color according the vim mode
-      local mode_color = {n = colors.red, i = colors.green,v=colors.blue,
-                          [''] = colors.blue,V=colors.blue,
-                          c = colors.magenta,no = colors.red,s = colors.orange,
-                          S=colors.orange,[''] = colors.orange,
-                          ic = colors.yellow,R = colors.violet,Rv = colors.violet,
-                          cv = colors.red,ce=colors.red, r = colors.cyan,
-                          rm = colors.cyan, ['r?'] = colors.cyan,
-                          ['!']  = colors.red,t = colors.red}
-      vim.api.nvim_command('hi GalaxyViMode guifg='..mode_color[vim.fn.mode()] ..' guibg='..colors.bg)
-      return '  '
-    end,
-  },
-}
-gls.left[3] = {
-  FileSize = {
-    provider = 'FileSize',
-    condition = condition.buffer_not_empty,
-    highlight = {colors.fg,colors.bg}
-  }
-}
-gls.left[4] ={
-  FileIcon = {
-    provider = 'FileIcon',
-    condition = condition.buffer_not_empty,
-    highlight = {require('galaxyline.provider_fileinfo').get_file_icon_color,colors.bg},
-  },
+require ('galaxyline').short_line_list = {
+  'Mundo',
+  'MundoDiff',
+  'NvimTree',
+  'fugitive',
+  'fugitiveblame',
+  'help',
+  'minimap',
+  'qf',
+  'tabman',
+  'tagbar',
+  'toggleterm'
 }
 
-gls.left[5] = {
-  FileName = {
-    provider = 'FileName',
-    condition = condition.buffer_not_empty,
-    highlight = {colors.fg,colors.bg,'bold'}
-  }
+local vi_mode_mapping = {
+  ['']   = {'Empty',        '-'},
+  ['!']  = {'Shell',        '-'},
+  ['^V'] = {'CommonVisual', 'B'}, -- NOTE: You'll have to remove '^V' and input a 'real' '^V' sequence. You can do that with the following key sequence: <SHIFT-i> + <CTRL-v> + <CTRL-v> (don't be slow with the double <CTRL-v>)
+  ['R']  = {'Replace',      'R'},
+  ['Rv'] = {'Normal',       '-'},
+  ['S']  = {'Normal',       '-'},
+  ['V']  = {'CommonVisual', 'L'},
+  ['c']  = {'Command',      'C'},
+  ['ce'] = {'Normal',       '-'},
+  ['cv'] = {'Normal',       '-'},
+  ['i']  = {'Insert',       'I'},
+  ['ic'] = {'Normal',       '-'},
+  ['n']  = {'Normal',       'N'},
+  ['no'] = {'Normal',       '-'},
+  ['r']  = {'Normal',       '-'},
+  ['r?'] = {'Normal',       '-'},
+  ['rm'] = {'Normal',       '-'},
+  ['s']  = {'Normal',       '-'},
+  ['t']  = {'Terminal',     'T'},
+  ['v']  = {'CommonVisual', 'V'}
 }
 
-gls.left[6] = {
-  LineInfo = {
-    provider = 'LineColumn',
-    separator = ' ',
-    separator_highlight = {'NONE',colors.bg},
-    highlight = {colors.fg,colors.bg},
-  },
-}
-
-gls.left[7] = {
-  PerCent = {
-    provider = 'LinePercent',
-    separator = ' ',
-    separator_highlight = {'NONE',colors.bg},
-    highlight = {colors.fg,colors.bg,'bold'},
-  }
-}
-
-gls.left[8] = {
-  DiagnosticError = {
-    provider = 'DiagnosticError',
-    icon = '  ',
-    highlight = {colors.red,colors.bg}
-  }
-}
-gls.left[9] = {
-  DiagnosticWarn = {
-    provider = 'DiagnosticWarn',
-    icon = '  ',
-    highlight = {colors.yellow,colors.bg},
-  }
-}
-
-gls.left[10] = {
-  DiagnosticHint = {
-    provider = 'DiagnosticHint',
-    icon = '  ',
-    highlight = {colors.cyan,colors.bg},
-  }
-}
-
-gls.left[11] = {
-  DiagnosticInfo = {
-    provider = 'DiagnosticInfo',
-    icon = '  ',
-    highlight = {colors.blue,colors.bg},
-  }
-}
-
-gls.mid[1] = {
-  ShowLspClient = {
-    provider = 'GetLspClient',
-    condition = function ()
-      local tbl = {['dashboard'] = true,['']=true}
-      if tbl[vim.bo.filetype] then
-        return false
+require ('galaxyline').section.left = {
+  {
+    LeftViModeColourSet = {
+      provider = function()
+        if vi_mode_mapping[vim.fn.mode()] == nil then
+          vim.api.nvim_command("highlight link GalaxyViModeColourUnturned GalaxyViModeEmptyUnturned")
+          vim.api.nvim_command("highlight link GalaxyViModeColourInverted GalaxyViModeEmptyInverted")
+        else
+          vim.api.nvim_command("highlight link GalaxyViModeColourUnturned GalaxyViMode" .. vi_mode_mapping[vim.fn.mode()][1] .. "Unturned")
+          vim.api.nvim_command("highlight link GalaxyViModeColourInverted GalaxyViMode" .. vi_mode_mapping[vim.fn.mode()][1] .. "Inverted")
+        end
       end
-      return true
-    end,
-    icon = ' LSP:',
-    highlight = {colors.yellow,colors.bg,'bold'}
-  }
-}
+    }
+  },
+  {
+    LeftViModeSeparator = {
+      highlight = 'GalaxyViModeColourUnturned',
+      provider = function()
+        return ' '
+      end
+    }
+  },
+  {
+    LeftViMode = {
+      highlight = 'GalaxyViModeColourUnturned',
+      provider = function()
+        if vi_mode_mapping[vim.fn.mode()] == nil then
+          return ' -'
+        else
+          return ' ' .. string.format('%s', vi_mode_mapping[vim.fn.mode()][2])
+        end
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyViModeColourUnturned'
+    }
+  },
+  {
+    LeftWindowNumberSeparator = {
+      highlight = 'GalaxyViModeColourUnturned',
+      provider = function()
+        return ''
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyViModeColourUnturned'
+    }
+  },
+  {
+    LeftWindowNumber = {
+      highlight = 'GalaxyViModeColourUnturned',
+      provider = function()
+        return '  ' .. vim.api.nvim_win_get_number(vim.api.nvim_get_current_win())
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyViModeColourUnturned'
+    }
+  },
+  {
+    LeftStatusSeparator = {
+      highlight = 'GalaxyViModeColourInverted',
+      provider = function()
+        return ''
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyViModeColourInverted'
+    }
+  },
+  {
+    LeftStatusPaste = {
+      highlight = 'GalaxyMapperCommon6',
+      provider = function()
+        if vim.o.paste then
+          return ''
+        else
+          return ''
+        end
+      end,
+      separator = '  ',
+      separator_highlight = 'GalaxyMapperCommon6',
+    }
+  },
+  {
+    LeftStatusSpell = {
+      highlight = 'GalaxyMapperCommon6',
+      provider = function()
+        if vim.wo.spell then
+          return '暈'
+        else
+          return ' '
+        end
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon6'
+    }
+  },
+  {
+    LeftStatusMixedIndentWhiteSpace = {
+      provider = function()
+        vim.cmd('match none /\t/')
 
-gls.right[1] = {
-  FileEncode = {
-    provider = 'FileEncode',
-    condition = condition.hide_in_width,
-    separator = ' ',
-    separator_highlight = {'NONE',colors.bg},
-    highlight = {colors.green,colors.bg,'bold'}
-  }
-}
+        if vim.fn.search([[\v(^\t+)]], 'nw') ~= 0 and vim.fn.search([[\v(^ +)]], 'nw') ~= 0 then
+          vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon6')
+          vim.cmd('match ErrorMsg /\t/')
+          return ' '
+        end
 
-gls.right[2] = {
-  FileFormat = {
-    provider = 'FileFormat',
-    condition = condition.hide_in_width,
-    separator = ' ',
-    separator_highlight = {'NONE',colors.bg},
-    highlight = {colors.green,colors.bg,'bold'}
-  }
-}
+        if vim.fn.search('\\s$', 'nw') ~= 0 then
+          vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon6')
+          return 'ﲕ '
+        end
 
-gls.right[3] = {
-  GitIcon = {
-    provider = function() return '  ' end,
-    condition = condition.check_git_workspace,
-    separator = ' ',
-    separator_highlight = {'NONE',colors.bg},
-    highlight = {colors.violet,colors.bg,'bold'},
-  }
-}
+        if vim.fn.search([[\v(^\t+)]], 'nw') ~= 0 then
+          vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon8')
+        else
+          vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon6')
+        end
 
-gls.right[4] = {
-  GitBranch = {
-    provider = 'GitBranch',
-    condition = condition.check_git_workspace,
-    highlight = {colors.violet,colors.bg,'bold'},
-  }
-}
-
-gls.right[5] = {
-  DiffAdd = {
-    provider = 'DiffAdd',
-    condition = condition.hide_in_width,
-    icon = '  ',
-    highlight = {colors.green,colors.bg},
-  }
-}
-gls.right[6] = {
-  DiffModified = {
-    provider = 'DiffModified',
-    condition = condition.hide_in_width,
-    icon = ' 柳',
-    highlight = {colors.orange,colors.bg},
-  }
-}
-gls.right[7] = {
-  DiffRemove = {
-    provider = 'DiffRemove',
-    condition = condition.hide_in_width,
-    icon = '  ',
-    highlight = {colors.red,colors.bg},
-  }
-}
-
-gls.right[8] = {
-  RainbowBlue = {
-    provider = function() return ' ▊' end,
-    highlight = {colors.blue,colors.bg}
+        return ' '
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon6'
+    }
+  },
+  {
+    LeftGitSeparator = {
+      highlight = 'GalaxyMapperCommon6',
+      provider = function()
+        return ''
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon6'
+    }
+  },
+  {
+    LeftGitBranch = {
+      highlight = 'GalaxyMapperCommon6',
+      provider = function()
+        if require('galaxyline.condition').check_git_workspace() then
+          return ' ' .. require('galaxyline.provider_vcs').get_git_branch()
+        else
+          return ' '
+        end
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon6'
+    }
+  },
+  {
+    LeftGitDiffSeparator = {
+      highlight = 'GalaxyMapperCommon1',
+      provider = function()
+        return ''
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon1',
+    }
+  },
+  {
+    LeftGitDiffAdd = {
+      condition = require("galaxyline.condition").check_git_workspace,
+      provider = function()
+        if require('galaxyline.provider_vcs').diff_add() then
+          vim.cmd('highlight link GalaxyLeftGitDiffAdd GalaxyLeftGitDiffAddActive')
+          return '+' .. require('galaxyline.provider_vcs').diff_add()
+        else
+          vim.cmd('highlight link GalaxyLeftGitDiffAdd GalaxyLeftGitDiffInactive')
+          return '+0 '
+        end
+      end
+    }
+  },
+  {
+    LeftGitDiffModified= {
+      condition = require("galaxyline.condition").check_git_workspace,
+      provider = function()
+        if require('galaxyline.provider_vcs').diff_modified() then
+          vim.cmd('highlight link GalaxyLeftGitDiffModified GalaxyLeftGitDiffModifiedActive')
+          return '~' .. require('galaxyline.provider_vcs').diff_modified()
+        else
+          vim.cmd('highlight link GalaxyLeftGitDiffModified GalaxyLeftGitDiffInactive')
+          return '~0 '
+        end
+      end
+    }
+  },
+  {
+    LeftGitDiffRemove = {
+      condition = require("galaxyline.condition").check_git_workspace,
+      provider = function()
+        if require('galaxyline.provider_vcs').diff_remove() then
+          vim.cmd('highlight link GalaxyLeftGitDiffRemove GalaxyLeftGitDiffRemoveActive')
+          return '-' .. require('galaxyline.provider_vcs').diff_remove()
+        else
+          vim.cmd('highlight link GalaxyLeftGitDiffRemove GalaxyLeftGitDiffInactive')
+          return '-0 '
+        end
+      end
+    }
   },
 }
 
-gls.short_line_left[1] = {
-  BufferType = {
-    provider = 'FileTypeName',
-    separator = ' ',
-    separator_highlight = {'NONE',colors.bg},
-    highlight = {colors.blue,colors.bg,'bold'}
+require ('galaxyline').section.mid = {
+  {
+    MidFileStatus = {
+      provider = function()
+        if vim.bo.modified then
+          vim.cmd('highlight link GalaxyMidFileStatus GalaxyMidFileStatusModified')
+        elseif not vim.bo.modifiable then
+          vim.cmd('highlight link GalaxyMidFileStatus GalaxyMidFileStatusRestricted')
+        elseif vim.bo.readonly then
+          vim.cmd('highlight link GalaxyMidFileStatus GalaxyMidFileStatusReadonly')
+        elseif not vim.bo.modified then
+          vim.cmd('highlight link GalaxyMidFileStatus GalaxyMidFileStatusUnmodified')
+        end
+
+        if require('nvim-web-devicons').get_icon(vim.fn.expand('%:e')) then
+          return require('nvim-web-devicons').get_icon(vim.fn.expand('%:e')) .. ' '
+        elseif not vim.bo.modified then
+          return ' '
+        end
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon5'
+    }
+  },
+  {
+    MidFileName = {
+      highlight = 'GalaxyMapperCommon5',
+      provider = function()
+        if #vim.fn.expand '%:p' == 0 then
+          return '-'
+        end
+        if vim.fn.winwidth(0) > 150 then
+          return vim.fn.expand '%:~'
+        else
+          return vim.fn.expand '%:t'
+        end
+      end
+    }
   }
 }
 
-gls.short_line_left[2] = {
-  SFileName = {
-    provider =  'SFileName',
-    condition = condition.buffer_not_empty,
-    highlight = {colors.fg,colors.bg,'bold'}
+require ('galaxyline').section.right = {
+  {
+    RightLspError = {
+      provider = function()
+        if #vim.tbl_keys(vim.lsp.buf_get_clients()) <= 0 then
+           return
+        end
+
+        if vim.lsp.diagnostic.get_count(0, 'Error') == 0 then
+          vim.cmd('highlight link GalaxyRightLspError GalaxyLeftLspInactive')
+        else
+          vim.cmd('highlight link GalaxyRightLspError GalaxyRightLspErrorActive')
+        end
+
+        return '!' .. vim.lsp.diagnostic.get_count(0, 'Error') .. ' '
+      end
+    }
+  },
+  {
+    RightLspWarning = {
+      provider = function()
+        if #vim.tbl_keys(vim.lsp.buf_get_clients()) <= 0 then
+           return
+        end
+
+        if vim.lsp.diagnostic.get_count(0, 'Warning') == 0 then
+          vim.cmd('highlight link GalaxyRightLspWarning GalaxyLeftLspInactive')
+        else
+          vim.cmd('highlight link GalaxyRightLspWarning GalaxyRightLspWarningActive')
+        end
+
+        return '?' .. vim.lsp.diagnostic.get_count(0, 'Warning') .. ' '
+      end
+    }
+  },
+  {
+    RightLspInformation = {
+      provider = function()
+        if #vim.tbl_keys(vim.lsp.buf_get_clients()) <= 0 then
+           return
+        end
+
+        if vim.lsp.diagnostic.get_count(0, 'Information') == 0 then
+          vim.cmd('highlight link GalaxyRightLspInformation GalaxyLeftLspInactive')
+        else
+          vim.cmd('highlight link GalaxyRightLspInformation GalaxyRightLspInformationActive')
+        end
+
+        return '+' .. vim.lsp.diagnostic.get_count(0, 'Information') .. ' '
+      end
+    }
+  },
+  {
+    RightLspHint = {
+      provider = function()
+        if #vim.tbl_keys(vim.lsp.buf_get_clients()) <= 0 then
+           return
+        end
+
+        if vim.lsp.diagnostic.get_count(0, 'Hint') == 0 then
+          vim.cmd('highlight link GalaxyRightLspHint GalaxyLeftLspInactive')
+        else
+          vim.cmd('highlight link GalaxyRightLspHint GalaxyRightLspHintActive')
+        end
+
+        return '-' .. vim.lsp.diagnostic.get_count(0, 'Hint') .. ' '
+      end
+    }
+  },
+  {
+    RightLspHintSeparator = {
+      highlight = 'GalaxyMapperCommon1',
+      provider = function()
+        return ''
+      end,
+    }
+  },
+  {
+    RightLspClient = {
+      highlight = 'GalaxyMapperCommon4',
+      provider = function()
+        if #vim.tbl_keys(vim.lsp.buf_get_clients()) >= 1 then
+          local lsp_client_name_first = vim.lsp.get_client_by_id(tonumber(vim.inspect(vim.tbl_keys(vim.lsp.buf_get_clients())):match('%d+'))).name:match('%l+')
+
+          if lsp_client_name_first == nil then
+            return #vim.tbl_keys(vim.lsp.buf_get_clients()) .. ': '
+          else
+            return #vim.tbl_keys(vim.lsp.buf_get_clients()) .. ':' .. lsp_client_name_first .. ' '
+          end
+        else
+          return ' '
+        end
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon4'
+    }
+  },
+  {
+    RightLspClientSeparator = {
+      highlight = 'GalaxyMapperCommon4',
+      provider = function()
+        return ''
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon4'
+    }
+  },
+  {
+    RightFileSize = {
+      highlight = 'GalaxyMapperCommon4',
+      provider = 'FileSize',
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon4'
+    }
+  },
+  {
+    RightTabStop = {
+      highlight = 'GalaxyMapperCommon4',
+      provider = function()
+        return string.format('%s', vim.bo.tabstop) .. ':'
+      end,
+    }
+  },
+  {
+    RightFileType = {
+      provider = function()
+        if vim.bo.fileencoding == 'utf-8' then
+          vim.cmd('highlight link GalaxyRightFileType GalaxyMapperCommon4')
+        else
+          vim.cmd('highlight link GalaxyRightFileType GalaxyMapperCommon8')
+        end
+
+        return string.format('%s', vim.bo.filetype)
+      end,
+    }
+  },
+  {
+    RightFileEncoding = {
+      highlight = 'GalaxyMapperCommon4',
+      provider = function()
+        local icons = {
+          dos = '',
+          mac  = '',
+          unix = ''
+        }
+        if icons[vim.bo.fileformat] then
+          return icons[vim.bo.fileformat]
+        else
+          return ''
+        end
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon4'
+    }
+  },
+  {
+    RightFileEncodingSeparator = {
+      highlight = 'GalaxyMapperCommon7',
+      provider = function()
+        return ''
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon7'
+    }
+  },
+  {
+    RightPositionNumerical = {
+      highlight = 'GalaxyMapperCommon2',
+      provider = function()
+        return string.format('%s:%s  ', vim.fn.line('.'), vim.fn.col('.'))
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon2'
+    }
+  },
+  {
+    RightPositionPercentage = {
+      highlight = 'GalaxyMapperCommon2',
+      provider = function ()
+        local percent = math.floor(100 * vim.fn.line('.') / vim.fn.line('$'))
+        return string.format('%s%s ☰', percent, '%')
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon2'
+    }
+  },
+  {
+    RightPositionSeparator = {
+      highlight = 'GalaxyMapperCommon2',
+      provider = function()
+        return '  '
+      end
+    }
   }
 }
 
-gls.short_line_right[1] = {
-  BufferIcon = {
-    provider= 'BufferIcon',
-    highlight = {colors.fg,colors.bg}
+require ('galaxyline').section.short_line_left = {
+  {
+    ShortLineLeftBufferType = {
+      highlight = 'GalaxyMapperCommon2',
+      provider = function ()
+        local BufferTypeMap = {
+          ['Mundo'] = 'Mundo History',
+          ['MundoDiff'] = 'Mundo Diff',
+          ['NvimTree'] = 'Nvim Tree',
+          ['fugitive'] = 'Fugitive',
+          ['fugitiveblame'] = 'Fugitive Blame',
+          ['help'] = 'Help',
+          ['minimap'] = 'Minimap',
+          ['qf'] = 'Quick Fix',
+          ['tabman'] = 'Tab Manager',
+          ['tagbar'] = 'Tagbar',
+          ['toggleterm'] = 'Terminal'
+        }
+        local name = BufferTypeMap[vim.bo.filetype] or 'Editor'
+        return string.format('  %s ', name)
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon7'
+    }
+  },
+  {
+    ShortLineLeftWindowNumber = {
+      highlight = 'GalaxyMapperCommon6',
+      provider = function()
+        return '  ' .. vim.api.nvim_win_get_number(vim.api.nvim_get_current_win()) .. ' '
+      end,
+      separator = '',
+      separator_highlight = 'GalaxyMapperCommon1'
+    }
+  }
+}
+
+require ('galaxyline').section.short_line_right = {
+  {
+    ShortLineRightBlank = {
+      highlight = 'GalaxyMapperCommon6',
+      provider = function()
+        if vim.bo.filetype == 'toggleterm' then
+          return ' ' .. vim.api.nvim_buf_get_var(0, 'toggle_number') .. ' '
+        else
+          return '  '
+        end
+      end,
+      separator = '',
+      separator_highlight = 'GalaxyMapperCommon1'
+    }
+  },
+  {
+    ShortLineRightInformational = {
+      highlight = 'GalaxyMapperCommon2',
+      provider = function()
+        return ' Neovim '
+      end,
+      separator = '',
+      separator_highlight = 'GalaxyMapperCommon7'
+    }
   }
 }

@@ -12,6 +12,7 @@ source $HOME/.config/nvim/source/keys/mappings.vim
 lua << EOF
     require("whichkeyconf")
     require("statusline")
+    require("gruvbox-statusline")
     require("compeconf")
 EOF
 
