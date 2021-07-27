@@ -52,10 +52,6 @@ set scrolloff=5
 " Setting colorschema after setting up background
 set t_Co=256                            " Support 256 colors
 set termguicolors
-set background=dark                     " tell vim what the background color looks like
-if !empty(glob("/tmp/dark-mode.off"))
-    set background=light                     " tell vim what the background color looks like
-endif
 colorscheme gruvbox
 
 """ Coloring
