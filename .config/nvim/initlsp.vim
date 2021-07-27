@@ -10,6 +10,5 @@ source $HOME/.config/nvim/init.vim
 " source $HOME/.config/nvim/source/plug-conf/coc.vim
 lua << EOF
     require("dbg")
-    require("compeconf")
     require("lsp")
 EOF

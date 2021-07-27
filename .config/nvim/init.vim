@@ -12,6 +12,7 @@ source $HOME/.config/nvim/source/keys/mappings.vim
 lua << EOF
     require("whichkeyconf")
     require("statusline")
+    require("compeconf")
 EOF
 
 " Plugin config
