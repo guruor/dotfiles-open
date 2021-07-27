@@ -23,3 +23,11 @@ let g:indentLine_color_gui = '#363949'
 
 " Goyo
 let g:goyo_width=125
+
+
+set background=dark
+call v:lua.self_color_gruvbox_dark()
+if !empty(glob("/tmp/dark-mode.off"))
+    set background=light
+    call v:lua.self_color_gruvbox_light()
+endif
