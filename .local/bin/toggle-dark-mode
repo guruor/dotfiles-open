@@ -20,6 +20,10 @@ change_xresources_theme() {
     echo -e "Merging $HOME/.config/x11/${theme}.xres"
     xrdb $HOME/.config/x11/xresources
     xrdb -merge "$HOME/.config/x11/${theme}.xres"
+
+    # TODO: Fix this, light-to-dark transition not working
+    # Reloading all active instances of `st`
+    # pidof st | xargs kill -SIGUSR1
 }
 
 
@@ -37,6 +41,12 @@ change_alacritty_theme() {
     sed -i -e "s|^colors: \*.*|colors: *$theme|g" $config_path
 
     echo -e "switched to $theme."
+}
+
+change_tmux_theme() {
+    echo -e "Requested tmux theme is: $1"
+    theme=$1
+    tmux source-file $HOME/.config/tmux/tmux.$theme.conf
 }
 
 change_vim_background() {
@@ -80,11 +90,14 @@ toggledark() {
     fi
 }
 
+# TODO: Change fzf theme
+# TODO: Handle colorterm for light background
 stopdark() {
     change_xresources_theme gruvbox-light
     change_alacritty_theme gruvbox_light
     change_vim_background light
     change_bat_theme gruvbox-light
+    change_tmux_theme light
     touch $dark_mode_flag
 }
 
@@ -93,6 +106,7 @@ startdark() {
     change_alacritty_theme gruvbox_dark
     change_vim_background dark
     change_bat_theme gruvbox-dark
+    change_tmux_theme dark
     rm -f $dark_mode_flag
 }
 
