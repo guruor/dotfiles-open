@@ -29,18 +29,11 @@ change_xresources_theme() {
 
 change_alacritty_theme() {
     echo -e "Requested alacritty theme is: $1"
-    alacritty_color_config="$HOME/.config/alacritty/color.yml"
+    config_file="$HOME/.config/alacritty/color.yml"
     theme=$1
-    if [[ ! -f $alacritty_color_config ]]; then
-        echo -e "file ${alacritty_color_config} doesn't exist"
-        return
-    fi
-    # sed doesn't like symlinks, get the absolute path
-    config_path=$(readlink -f $alacritty_color_config)
+    get_actual_path_if_symlink $config_file
 
-    sed -i -e "s|^colors: \*.*|colors: *$theme|g" $config_path
-
-    echo -e "switched to $theme."
+    sed -i -e "s|^colors: \*.*|colors: *$theme|g" $config_file
 }
 
 change_tmux_theme() {
@@ -68,18 +61,31 @@ change_vim_background() {
 
 change_bat_theme() {
     echo -e "Requested bat theme is: $1"
-    bat_config="$HOME/.config/bat/config"
+    config_file="$HOME/.config/bat/config"
     theme=$1
-    if [[ ! -f $bat_config ]]; then
-        echo -e "file ${bat_config} doesn't exist"
+    get_actual_path_if_symlink $config_file
+
+    sed -i -e "s|^--theme=.*|--theme=\"$theme\"|g" $config_file
+}
+
+change_taskwarrior_theme() {
+    echo -e "Requested taskwarrior theme is: $1"
+    config_file="$HOME/.config/taskwarrior/task/taskrc"
+    theme=$1
+    get_actual_path_if_symlink $config_file
+    theme_name="include /usr/share/doc/task/rc/${theme}-256.theme"
+
+    sed -i -e "s|^include .*theme$|$theme_name|g" $config_file
+}
+
+get_actual_path_if_symlink(){
+    if [[ ! -f $config_file ]]; then
+        echo -e "File ${config_file} doesn't exist"
         return
     fi
     # sed doesn't like symlinks, get the absolute path
-    config_path=$(readlink -f $bat_config)
-
-    sed -i -e "s|^--theme=.*|--theme=\"$theme\"|g" $config_path
-
-    echo -e "switched to $theme."
+    config_file=$(readlink -f $config_file)
+    echo $config_file
 }
 
 toggledark() {
@@ -98,6 +104,7 @@ stopdark() {
     change_vim_background light
     change_bat_theme gruvbox-light
     change_tmux_theme light
+    change_taskwarrior_theme light
     touch $dark_mode_flag
 }
 
@@ -107,6 +114,7 @@ startdark() {
     change_vim_background dark
     change_bat_theme gruvbox-dark
     change_tmux_theme dark
+    change_taskwarrior_theme dark
     rm -f $dark_mode_flag
 }
 
