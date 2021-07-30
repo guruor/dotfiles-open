@@ -120,6 +120,10 @@
     summary = "*"
     script = ~/.local/bin/alert
 
+[action]
+    summary = "*"
+    script = ~/.local/bin/notification_actions
+
 [history-ignore]
    # This notification will not be saved in history
    summary = "test-dunst:*"
