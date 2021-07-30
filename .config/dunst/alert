@@ -1,0 +1,79 @@
+#!/bin/bash
+# Alerts for notifications generated, this script is being triggered from dunst
+# Usual sound path: /usr/share/sounds/
+# https://dunst-project.org/documentation/#SCRIPTING
+# To trigger this from command line, send following: required following dunst args "appname", "summary", "body", "icon", "urgency"
+# dunstify -u "normal" -a "weechat" -i "weechat" "test-dunst: Hello" "How are you"
+
+# Avoid triggering this script on notification replay by checking DUNST_TIMESTAMP
+# Dunst marks the notification with the uptime timestamp
+uptime_mili=$(awk '{print $1*1000}' /proc/uptime)
+# Allowed difference in miliseconds
+allowed_difference=10000
+is_old_notification=$(((uptime_mili - DUNST_TIMESTAMP) > $allowed_difference))
+if [[ $is_old_notification == 1 ]]; then
+   exit
+fi
+
+# Logging alerts received from dunst to persist the notifications
+MAX_ROW_LIMIT=1000
+LOG_FILE="$HOME/.cache/notifications.txt"
+now=`date`
+echo "$now | DUNST_TIMESTAMP: ${DUNST_TIMESTAMP} | $@" >> $LOG_FILE
+# Deleting the first row if reached the max row limit
+if [[ $(wc -l < $LOG_FILE) > $MAX_ROW_LIMIT ]]; then
+    sed -i '1d' $LOG_FILE
+fi
+
+
+NAME_MENTIONED="govind,error"
+NAME_MENTIONED_STRICT="@govind"
+PLAYER_CMD="mpv --volume=100 "
+
+# Sound files
+SOUND_DIR="${HOME}/.local/share/sounds"
+###############################
+DEFAULT="${SOUND_DIR}/default.ogg"
+MENTIONED="${SOUND_DIR}/hey.ogg"
+MENTIONED_STRICT="${SOUND_DIR}/mentioned.ogg"
+CRITICAL_ERROR="${SOUND_DIR}/critical.ogg"
+TIME_PASSED="${SOUND_DIR}/clock.ogg"
+TASK_DUE="${SOUND_DIR}/hurry-up.ogg"
+TASK_DONE="${SOUND_DIR}/done.ogg"
+
+# Deciding the sound file based on notification content
+sound_file=$CRITICAL_ERROR
+# System sound files can be found at /usr/share/sounds/
+if [[ $DUNST_URGENCY == "NORMAL" ]] || [[ $DUNST_URGENCY == "LOW" ]]; then
+    sound_file=$DEFAULT
+
+    # keywords from NAME_MENTIONED in message
+    for keyword in $(echo $NAME_MENTIONED | sed "s/,/ /g")
+    do
+        if [[ $DUNST_BODY =~ $keyword ]]; then
+            sound_file=$MENTIONED
+            break
+        fi
+    done
+
+    # keywords from NAME_MENTIONED_STRICT in message
+    for keyword in $(echo $NAME_MENTIONED_STRICT | sed "s/,/ /g")
+    do
+        if [[ $DUNST_BODY =~ $keyword  ]]; then
+            sound_file=$MENTIONED_STRICT
+            break
+        fi
+    done
+
+    if [[ $DUNST_APP_NAME == "taskwarrior" ]] ; then
+        if [[ $DUNST_SUMMARY == "No pending task" ]] ; then
+            sound_file=$TIME_PASSED
+        fi
+
+        if [[ $DUNST_SUMMARY =~ "task pending" ]]; then
+            sound_file=$TASK_DUE
+        fi
+    fi
+fi
+
+eval $PLAYER_CMD $sound_file
