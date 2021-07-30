@@ -73,9 +73,12 @@ change_taskwarrior_theme() {
     config_file="$HOME/.config/taskwarrior/task/taskrc"
     theme=$1
     get_actual_path_if_symlink $config_file
+
+    # theme_name="include /usr/share/doc/task/rc/solarized-${theme}-256.theme"
     theme_name="include /usr/share/doc/task/rc/${theme}-256.theme"
 
     sed -i -e "s|^include .*theme$|$theme_name|g" $config_file
+    pkill taskwarrior-tui
 }
 
 get_actual_path_if_symlink(){
