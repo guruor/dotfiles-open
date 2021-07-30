@@ -114,10 +114,16 @@
 # to "".
 # NOTE: It might be helpful to run dunst -print in a terminal in order
 # to find fitting options for rules.
+# https://dunst-project.org/documentation/#SCRIPTING
 
 [play_sound]
     summary = "*"
     script = ~/.local/bin/alert
+
+[history-ignore]
+   # This notification will not be saved in history
+   summary = "test-dunst:*"
+   history_ignore = yes
 
 
 #[espeak]
@@ -132,11 +138,6 @@
 #    # This notification will not be displayed
 #    summary = "foobar"
 #    format = ""
-
-#[history-ignore]
-#    # This notification will not be saved in history
-#    summary = "foobar"
-#    history_ignore = yes
 
 #[signed_on]
 #    appname = Pidgin
