@@ -1,0 +1,64 @@
+#!/bin/bash
+# Script to simulate different notification to test the alerts and the actions
+# Usual path ~/.config/dunst/test-notifications
+# Dunstify params, check: dunstify --help
+# -a, --appname=NAME          Name of your application
+# -u, --urgency=URG           The urgency of this notification, low,normal,critical
+# -t, --timeout=TIMEOUT       The time until the notification expires
+# -i, --icon=ICON             An Icon that should be displayed with the notification
+# -r, --replace=ID            Set id of this notification.
+# Using dunstify here, notify-send can also be used
+
+# Test msg id start range
+id=8000
+delay=1
+# Dunst is configured to avoid history for notifications starting with below prefix
+summary_prefix="test-dunst:"
+
+# Critical notification triggered from `cronbat` script
+summary="Battery critically low."
+body=""
+dunstify -r $((id++)) -u "critical" -a "cronbat" "${summary_prefix}${summary}" "${body}"
+sleep $delay
+
+# Rgular slack notification from browser
+summary="New message from X <a href=\"https://app.slack.com/\">app.slack.com</a>"
+body="Hey, man"
+dunstify -r $((id++)) -u "normal" -a "Brave" "${summary_prefix}${summary}" "${body}"
+sleep $delay
+
+# Slack notification from browser, with mention
+summary="New message from Y <a href=\"https://app.slack.com/\">app.slack.com</a>"
+body="Hey, govind"
+dunstify -r $((id++)) -u "normal" -a "Brave" "${summary_prefix}${summary}" "${body}"
+sleep $delay
+
+# Slack notification from browser, with mention, urgent attention
+summary="New message from Z <a href=\"https://app.slack.com/\">app.slack.com</a>"
+body="@govind can you please check this?"
+dunstify -r $((id++)) -u "normal" -a "Brave" "${summary_prefix}${summary}" "${body}"
+sleep $delay
+
+# Slack notification from browser, with specific command
+summary="New message from A <a href=\"https://app.slack.com/\">app.slack.com</a>"
+body="getmedata get_payment_links_for_invoice 21079033"
+dunstify -r $((id++)) -u "normal" -a "Brave" "${summary_prefix}${summary}" "${body}"
+sleep $delay
+
+# Periodic alert every hour, triggered from `taskwarrior-notify` script
+summary="No pending task"
+body=""
+dunstify -r $((id++)) -u "normal" -a "taskwarrior" -i "alarm-symbolic.symbolic" -t 10000 "${summary_prefix}${summary}" "${body}"
+sleep $delay
+
+# Task pending, triggered from `taskwarrior-notify` script
+summary="1 task pending"
+body="Pick next task"
+dunstify -r $((id++)) -u "normal" -a "taskwarrior" -i "task-past-due" -t 10000 "${summary_prefix}${summary}" "${body}"
+sleep $delay
+
+# Notification without `test-dunst:` prefix, should be stored in history
+summary="Store this notification in history"
+body="Hope dunst did it."
+dunstify -r $((id++)) -u "normal" -i weechat -a "weechat" "${summary}" "${body}"
+sleep $delay
