@@ -39,12 +39,6 @@ body="@govind can you please check this?"
 dunstify -r $((id++)) -u "normal" -a "Brave" "${summary_prefix}${summary}" "${body}"
 sleep $delay
 
-# Slack notification from browser, with specific command
-summary="New message from A <a href=\"https://app.slack.com/\">app.slack.com</a>"
-body="getmedata get_payment_links_for_invoice 21079033"
-dunstify -r $((id++)) -u "normal" -a "Brave" "${summary_prefix}${summary}" "${body}"
-sleep $delay
-
 # Periodic alert every hour, triggered from `taskwarrior-notify` script
 summary="No pending task"
 body=""
@@ -57,8 +51,23 @@ body="Pick next task"
 dunstify -r $((id++)) -u "normal" -a "taskwarrior" -i "task-past-due" -t 10000 "${summary_prefix}${summary}" "${body}"
 sleep $delay
 
-# Notification without `test-dunst:` prefix, should be stored in history
-summary="Store this notification in history"
-body="Hope dunst did it."
-dunstify -r $((id++)) -u "normal" -i weechat -a "weechat" "${summary}" "${body}"
+# Notification for action triggered
+summary="Task started"
+body="cmd xyz"
+dunstify -r $((id++)) -u "normal" -a "notification_actions" "${summary_prefix}${summary}" "${body}"
+sleep $delay
+
+# Notification for completed action
+summary="Task completed"
+body=""
+dunstify -u "normal" -a "notification_actions" "Task completed" "${summary_prefix}${summary}" "${body}"
+sleep $delay
+
+
+# To test `notification_actions` script
+
+# Slack notification from browser, with specific command
+summary="New message from govind <a href=\"https://app.slack.com/\">app.slack.com</a>"
+body="getmedata get_payment_links_for_invoice 21079033"
+dunstify -r $((id++)) -u "normal" -a "Brave" "${summary_prefix}${summary}" "${body}"
 sleep $delay
