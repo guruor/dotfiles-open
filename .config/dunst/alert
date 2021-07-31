@@ -47,33 +47,37 @@ sound_file=$CRITICAL_ERROR
 if [[ $DUNST_URGENCY == "NORMAL" ]] || [[ $DUNST_URGENCY == "LOW" ]]; then
     sound_file=$DEFAULT
 
-    # keywords from NAME_MENTIONED in message
-    for keyword in $(echo $NAME_MENTIONED | sed "s/,/ /g")
-    do
-        if [[ $DUNST_BODY =~ $keyword ]]; then
-            sound_file=$MENTIONED
-            break
-        fi
-    done
+    case $DUNST_APP_NAME in
+        taskwarrior)
+            if [[ $DUNST_SUMMARY == "No pending task" ]] ; then
+                sound_file=$TIME_PASSED
+            fi
 
-    # keywords from NAME_MENTIONED_STRICT in message
-    for keyword in $(echo $NAME_MENTIONED_STRICT | sed "s/,/ /g")
-    do
-        if [[ $DUNST_BODY =~ $keyword  ]]; then
-            sound_file=$MENTIONED_STRICT
-            break
-        fi
-    done
+            if [[ $DUNST_SUMMARY =~ "task pending" ]]; then
+                sound_file=$TASK_DUE
+            fi
+            ;;
+        Brave | weechat)
+                # keywords from NAME_MENTIONED in message
+                for keyword in $(echo $NAME_MENTIONED | sed "s/,/ /g")
+                do
+                    if [[ $DUNST_BODY =~ $keyword ]]; then
+                        sound_file=$MENTIONED
+                        break
+                    fi
+                done
 
-    if [[ $DUNST_APP_NAME == "taskwarrior" ]] ; then
-        if [[ $DUNST_SUMMARY == "No pending task" ]] ; then
-            sound_file=$TIME_PASSED
-        fi
+                # keywords from NAME_MENTIONED_STRICT in message
+                for keyword in $(echo $NAME_MENTIONED_STRICT | sed "s/,/ /g")
+                do
+                    if [[ $DUNST_BODY =~ $keyword  ]]; then
+                        sound_file=$MENTIONED_STRICT
+                        break
+                    fi
+                done
+            ;;
+    esac
 
-        if [[ $DUNST_SUMMARY =~ "task pending" ]]; then
-            sound_file=$TASK_DUE
-        fi
-    fi
 fi
 
 eval $PLAYER_CMD $sound_file
