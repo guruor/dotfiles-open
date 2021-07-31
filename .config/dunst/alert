@@ -6,13 +6,15 @@
 # dunstify -u "normal" -a "weechat" -i "weechat" "test-dunst: Hello" "How are you"
 
 # Avoid triggering this script on notification replay by checking DUNST_TIMESTAMP
-# Dunst marks the notification with the uptime timestamp
-uptime_mili=$(awk '{print $1*1000}' /proc/uptime)
-# Allowed difference in miliseconds
-allowed_difference=10000
-is_old_notification=$(((uptime_mili - DUNST_TIMESTAMP) > $allowed_difference))
-if [[ $is_old_notification == 1 ]]; then
-   exit
+if [[ -n $DUNST_TIMESTAMP ]]; then
+    # Dunst marks the notification with the uptime timestamp
+    uptime_mili=$(awk '{print $1*1000}' /proc/uptime)
+    # Allowed difference in miliseconds
+    allowed_difference=10000
+    is_old_notification=$(((uptime_mili - DUNST_TIMESTAMP) > $allowed_difference))
+    if [[ $is_old_notification == 1 ]]; then
+       exit
+    fi
 fi
 
 # Logging alerts received from dunst to persist the notifications
@@ -39,6 +41,9 @@ MENTIONED_STRICT="${SOUND_DIR}/mentioned.ogg"
 CRITICAL_ERROR="${SOUND_DIR}/critical.ogg"
 TIME_PASSED="${SOUND_DIR}/clock.ogg"
 TASK_DUE="${SOUND_DIR}/hurry-up.ogg"
+TASK_START="${SOUND_DIR}/ok.ogg"
+TASK_IN_PROCESS="${SOUND_DIR}/processing.ogg"
+TASK_COMPLETED="${SOUND_DIR}/completed.ogg"
 TASK_DONE="${SOUND_DIR}/done.ogg"
 
 # Deciding the sound file based on notification content
@@ -76,6 +81,19 @@ if [[ $DUNST_URGENCY == "NORMAL" ]] || [[ $DUNST_URGENCY == "LOW" ]]; then
                     fi
                 done
             ;;
+        *)
+            if [[ $DUNST_SUMMARY =~ "Task started"  ]]; then
+                sound_file=$TASK_START
+            fi
+
+            if [[ $DUNST_SUMMARY =~ "Processing..."  ]]; then
+                sound_file=$TASK_IN_PROCESS
+            fi
+
+            if [[ $DUNST_SUMMARY =~ "Task completed"  ]]; then
+                sound_file=$TASK_COMPLETED
+            fi
+        ;;
     esac
 
 fi
