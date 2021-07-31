@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Set as a cron job to check if any taskwarrior task is overduing in every $1
 $HOME/.local/bin/taskwarrior-notify $1
