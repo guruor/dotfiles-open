@@ -50,9 +50,11 @@ fi;
 if [[ "$TERM" = "screen"* ]] && [[ -n "$TMUX" ]]; then
     tmux select-pane -P "bg=$BG_COLOR"
     tmux select-pane -P "fg=$FG_COLOR"
+
 else
     printf "\033]11;$BG_COLOR\007"
     printf "\033]10;$FG_COLOR\007"
+    printf "\033]12;$FG_COLOR\007"
 fi
 
 exit 0
