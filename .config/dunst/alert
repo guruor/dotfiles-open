@@ -21,7 +21,7 @@ fi
 MAX_ROW_LIMIT=1000
 LOG_FILE="$HOME/.cache/notifications.txt"
 now=`date`
-echo "$now | DUNST_TIMESTAMP: ${DUNST_TIMESTAMP} | $@" >> $LOG_FILE
+echo "==>> $now | DUNST_TIMESTAMP: ${DUNST_TIMESTAMP} | $DUNST_URGENCY | $DUNST_APP_NAME | $DUNST_SUMMARY | $DUNST_BODY" >> $LOG_FILE
 # Deleting the first row if reached the max row limit
 if [[ $(wc -l < $LOG_FILE) > $MAX_ROW_LIMIT ]]; then
     sed -i '1d' $LOG_FILE
