@@ -21,9 +21,8 @@ change_xresources_theme() {
     xrdb $HOME/.config/x11/xresources
     xrdb -merge "$HOME/.config/x11/${theme}.xres"
 
-    # TODO: Fix this, light-to-dark transition not working
     # Reloading all active instances of `st`
-    # pidof st | xargs kill -SIGUSR1
+    pidof st | xargs kill -SIGUSR1
 }
 
 
@@ -100,7 +99,6 @@ toggledark() {
 }
 
 # TODO: Change fzf theme
-# TODO: Handle colorterm for light background
 stopdark() {
     change_xresources_theme gruvbox-light
     change_alacritty_theme gruvbox_light
