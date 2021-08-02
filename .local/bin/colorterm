@@ -6,7 +6,8 @@
 # Sets terminal screen to color based on keywords or hex code (no #, for some reason that breaks)
 #
 # For SSH magic, add following to ~/.zshrc:
-#
+# To check more about escape sequences: https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h3-Operating-System-Commands
+# To get current xterm colors use: https://gist.github.com/blueyed/c8470c2aad3381c33ea3
 : <<'END_COMMENT'
 color-ssh() {
 	trap "colorterm.sh" INT EXIT
@@ -24,31 +25,34 @@ compdef _ssh color-ssh=ssh
 alias ssh=color-ssh
 END_COMMENT
 
+# Need to change foreground color for text
+FG_COLOR="#ebdbb2"
+
+#Background colors
+DEFAULT_BG="#1d2021"
+PROD_BG="#331C1F"
+STAGING_BG="#253320"
+OTHER_BG="#282c34"
+
+# Check if the hax color is passed for the background
+if [ ! -z `expr match "$1" '\([A-Fa-f0-9]\{6\}\|#[A-Fa-f0-9]\{3\}\)'` ]; then
+    BG_COLOR=$1
+elif [[ "$1" =~ prod ]]; then
+    BG_COLOR=$PROD_BG
+elif [[ "$1" =~ staging|dev ]]; then
+    BG_COLOR=$STAGING_BG
+elif [[ "$1" =~ other ]]; then
+    BG_COLOR=$OTHER_BG
+else
+    BG_COLOR=$DEFAULT_BG
+fi;
 
 if [[ "$TERM" = "screen"* ]] && [[ -n "$TMUX" ]]; then
-  if [ ! -z `expr match "$1" '\([A-Fa-f0-9]\{6\}\|#[A-Fa-f0-9]\{3\}\)'` ]; then
-  	tmux select-pane -P "bg=#$1"
-  elif [[ "$1" =~ prod ]]; then
-    tmux select-pane -P 'bg=#331C1F'
-  elif [[ "$1" =~ staging|dev ]]; then
-    tmux select-pane -P 'bg=#253320'
-  elif [[ "$1" =~ other ]]; then
-    tmux select-pane -P 'bg=#192436'
-  else
-    tmux select-pane -P 'bg=#282c34'
-  fi;
+    tmux select-pane -P "bg=$BG_COLOR"
+    tmux select-pane -P "fg=$FG_COLOR"
 else
-  if [ ! -z `expr match "$1" '\([A-Fa-f0-9]\{6\}\|#[A-Fa-f0-9]\{3\}\)'` ]; then
-  	printf "\033]11;#$1\007"
-  elif [[ "$1" =~ prod ]]; then
-    printf '\033]11;#331C1F\007'
-  elif [[ "$1" =~ staging|dev ]]; then
-    printf '\033]11;#253320\007'
-  elif [[ "$1" =~ other ]]; then
-    printf '\033]11;#192436\007'
-  else
-    printf '\033]11;#282c34\007'
-  fi
+    printf "\033]11;$BG_COLOR\007"
+    printf "\033]10;$FG_COLOR\007"
 fi
 
 exit 0
