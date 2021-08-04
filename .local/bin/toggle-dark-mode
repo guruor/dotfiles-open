@@ -17,9 +17,17 @@ dark_mode_flag="/tmp/dark-mode.off"
 change_xresources_theme() {
     echo -e "Requested xresource theme is: $1"
     theme=$1
-    echo -e "Merging $HOME/.config/x11/${theme}.xres"
+    config_file="$HOME/.config/x11/xresources"
+    get_actual_path_if_symlink $config_file
+
+    theme_file="$HOME/.config/x11/$theme.xres"
+    sed -i -e "s|^#include .*gruvbox.*.xres\"|#include \"$theme_file\"|g" $config_file
+
+    # Reloading xresource databases
     xrdb $HOME/.config/x11/xresources
-    xrdb -merge "$HOME/.config/x11/${theme}.xres"
+
+    # echo -e "Merging $theme_file"
+    # xrdb -merge "$theme_file"
 
     # Reloading all active instances of `st`
     pidof st | xargs kill -SIGUSR1
