@@ -12,48 +12,6 @@ eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
-
-# Adds vcs info like current branch and changes to the Prompt
-# function updateVSCPrompt {
-    # vcs_info
-    # zstyle ':vcs_info:*' stagedstr 'M'
-    # zstyle ':vcs_info:*' unstagedstr 'M'
-    # zstyle ':vcs_info:*' check-for-changes true
-    # zstyle ':vcs_info:*' actionformats '%F{5}[%F{2}%b%F{3}|%F{1}%a%F{5}]%f '
-    # zstyle ':vcs_info:*' formats ' %F{2}%b %F{2}%c%F{3}%u%f'
-    # zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
-    # zstyle ':vcs_info:*' enable git
-    # +vi-git-untracked() {
-      # if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
-          # [[ $(git ls-files --other --directory --exclude-standard | sed q | wc -l | tr -d ' ') == 1 ]] ; then
-          # hook_com[unstaged]+='%F{1}??%f'
-        # fi
-    # }
-    # PS1=$PS1" ${vcs_info_msg_0_} "
-# }
-
-# Adds active virtualenv name before prompt
-# function updatePyenvPrompt {
-    # PYENV_VER=$(pyenv version-name)
-    # if [[ "${PYENV_VER}" != "$(pyenv global | paste -sd ':' -)" ]]; then
-      # PS1="(${PYENV_VER%%:*}) "$PS1
-    # fi
-# }
-
-# Updates base prompt to look like this: [govind@pc ~ ]   $
-# Refer: http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Prompt-Expansion
-# function updatePrompt {
-    # Prompt colors: 0	Black, 1	Red, 2	Green, 3	Yellow, 4	Blue, 5	Magenta, 6	Cyan, 7	White
-    # BASE_PROMPT='%B%F{1}[%F{3}%n%F{2}@%F{4}%M %F{5}%c %F{1}] '
-    # PROMPT_SUFFIX='%f$%b '
-    # PS1=${BASE_PROMPT}
-    # updateVSCPrompt
-    # updatePyenvPrompt
-    # PS1=${PS1}${PROMPT_SUFFIX}
-# }
-# export PROMPT_COMMAND='updatePrompt'
-# precmd() { eval '$PROMPT_COMMAND' } # this line is necessary for zsh
-
 setopt autocd		# Automatically cd into typed directory.
 stty stop undef		# Disable ctrl-s to freeze terminal.
 setopt interactive_comments
@@ -76,6 +34,7 @@ setopt HIST_IGNORE_ALL_DUPS
 # Load aliases and shortcuts if existent.
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc"
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc"
 
 # Basic auto/tab complete:
