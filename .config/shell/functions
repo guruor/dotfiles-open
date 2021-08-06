@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Add global functions here
+
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions-private" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions-private"
