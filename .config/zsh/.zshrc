@@ -136,3 +136,5 @@ source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
 eval "$(starship init zsh)"
+eval "$(zoxide init zsh)"
+eval "$(navi widget zsh)"
