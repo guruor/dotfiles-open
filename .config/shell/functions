@@ -1,5 +1,34 @@
 #!/bin/sh
 
 # Add global functions here
+function docker_ip() {
+    container_name=$1
+    docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $container_name
+}
+
+
+function is_docker_container_running() {
+    container_name=$1
+    if [[ $(docker ps -f "name=$container_name" --format '{{.Names}}') == $container_name ]]; then
+        true
+    else
+        false
+    fi
+}
+
+
+function docker_start_service() {
+    compose_file="$1"
+    service_name="$2"
+    compose_file_dir=$(basename $(dirname "${compose_file}"))
+    container_name="${compose_file_dir}_${service_name}_1"
+    if is_docker_container_running $container_name ; then
+        echo -e "Container ${container_name} is already running"
+    else
+        echo -e "Starting container ${container_name}..."
+        docker-compose -f "$compose_file"  up -d "$service_name"
+    fi
+}
+
 
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions-private" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions-private"
