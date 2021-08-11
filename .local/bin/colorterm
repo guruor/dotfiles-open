@@ -25,36 +25,30 @@ compdef _ssh color-ssh=ssh
 alias ssh=color-ssh
 END_COMMENT
 
-# Need to change foreground color for text
-FG_COLOR="#ebdbb2"
-
-#Background colors
-DEFAULT_BG="#1d2021"
-PROD_BG="#331C1F"
-STAGING_BG="#253320"
-OTHER_BG="#282c34"
+is_dark=1
+# Checking current color scheme
+if [[ -f "/tmp/dark-mode.off" ]]; then
+    is_dark=0
+fi
 
 # Check if the hax color is passed for the background
 if [ ! -z `expr match "$1" '\([A-Fa-f0-9]\{6\}\|#[A-Fa-f0-9]\{3\}\)'` ]; then
     BG_COLOR=$1
 elif [[ "$1" =~ prod ]]; then
-    BG_COLOR=$PROD_BG
+    BG_COLOR=$([[ $is_dark == 1 ]] && echo "#331C1F" || echo "#CCE3E0")
 elif [[ "$1" =~ staging|dev ]]; then
-    BG_COLOR=$STAGING_BG
+    BG_COLOR=$([[ $is_dark == 1 ]] && echo "#253320" || echo "#DACCDF")
 elif [[ "$1" =~ other ]]; then
-    BG_COLOR=$OTHER_BG
+    BG_COLOR=$([[ $is_dark == 1 ]] && echo "#282C34" || echo "#D7D3CB")
 else
-    BG_COLOR=$DEFAULT_BG
+    BG_COLOR=$([[ $is_dark == 1 ]] && echo "#1D2021" || echo "#F2E5BC")
 fi;
 
 if [[ "$TERM" = "screen"* ]] && [[ -n "$TMUX" ]]; then
     tmux select-pane -P "bg=$BG_COLOR"
-    tmux select-pane -P "fg=$FG_COLOR"
 
 else
     printf "\033]11;$BG_COLOR\007"
-    printf "\033]10;$FG_COLOR\007"
-    printf "\033]12;$FG_COLOR\007"
 fi
 
 exit 0
