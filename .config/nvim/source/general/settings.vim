@@ -52,7 +52,6 @@ set scrolloff=5
 " Setting colorschema after setting up background
 set t_Co=256                            " Support 256 colors
 set termguicolors
-colorscheme gruvbox
 
 """ Coloring
 " highlight Pmenu guibg=white guifg=black gui=bold
@@ -167,7 +166,7 @@ endif
     autocmd BufRead,BufNewFile *.md UltiSnipsAddFiletypes markdown
 	autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
 	autocmd BufRead,BufNewFile *.tex set filetype=tex
-
+    autocmd FileType markdown setlocal commentstring=<!--\ %s\ -->
 
 " Disabling syntax highlighting for larger files
     autocmd Filetype * if getfsize(@%) > 1000000 | setlocal syntax=OFF | endif
