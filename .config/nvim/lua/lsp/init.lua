@@ -206,6 +206,7 @@ local eslint = require "efm/eslint"
 local shellcheck = require "efm/shellcheck"
 local terraform = require "efm/terraform"
 local misspell = require "efm/misspell"
+local proselint = require "efm/proselint"
 -- https://github.com/mattn/efm-langserver
 -- python = {black, isort, flake8, mypy},
 lspconfig.efm.setup {
@@ -219,7 +220,7 @@ lspconfig.efm.setup {
     settings = {
         rootMarkers = {".git/"},
         languages = {
-            ["="] = {misspell},
+            ["="] = {proselint, misspell},
             vim = {vint},
             lua = {luafmt},
             go = {golint, goimports},
