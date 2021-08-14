@@ -1,7 +1,5 @@
 #!/bin/bash
-# Provides dmenu option to fine the password either in local
-# KeePassXC local db or in Bitwarden cloud
-# Also provedes feature to sync with KeePassXC/Pass with Bitwarden data
+# Syncs bitwarden passwords with KeePassXC data
 
 blue='\e[1;34m'
 red='\e[1;31m'
@@ -12,8 +10,8 @@ keepass_db=~/Dropbox/KeePass/Passwords.kdbx
 keepass_db_secret=$HOME/.ssh/s3cr3t.key
 echo -e "${blue}Starting keepass-bitwarden sync${white}"
 
-# Ceating temp directory to store dump file
-# Importing bitwarden json dump
+# Creating temp directory to store dump file
+# Importing bitwarden JSON dump
 # As per ongoing bug bitwarden-cli can't export non-interactively, https://github.com/bitwarden/cli/issues/200
 echo -e -n "\n\n${blue}Bitwarden Email: ${white}"; read -s bw_email
 echo -e -n "\n\n${blue}Bitwarden Password: ${white}"; read -s password
@@ -31,7 +29,7 @@ fi
 printf '%s\n%s\n' "$password" "$password" | keepassxc-cli db-create -p -k $keepass_db_secret $keepass_db
 
 
-echo -e "\n\n${blue}Exporting bitwarden dump to newly created keepass db${white}\n\n"
+echo -e "\n\n${blue}Importing bitwarden dump to newly created keepass db${white}\n\n"
 pimport -af keepassxc bitwarden $dump_file --out $keepass_db -k $keepass_db_secret
 
 echo -e "\n\n${blue}Removing temp files${white}"
