@@ -20,5 +20,6 @@ require'compe'.setup {
     nvim_lua = true;
     path = true;
     buffer = true;
+    spell = true;
   };
 }
