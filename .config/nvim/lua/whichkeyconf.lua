@@ -41,7 +41,6 @@ keys = {
     ["|"] = {"<C-W>v", "Split right"},
     ["c"] = {':exec ":w! | :vs | :te compiler % ".input("Enter args: ")<CR>', "Compile"},
     ["X"] = {":split | term<CR>", "Terminal"},
-    ["z"] = {"Goyo", "Goyo"},
     ["."] = {":tabnew $MYVIMRC<CR>", "Open Init"},
     ["R"] = {":source $MYVIMRC<CR>", "Reload Init"},
     ["U"] = {":UndotreeToggle<CR>", "Undo Tree"},
@@ -137,7 +136,8 @@ keys = {
         ["l"] = {":Limelight!!<CR>", "Limelight"},
         ["i"] = {":IndentLinesToggle<CR>", "Indent lines"},
         ["u"] = {":UndotreeToggle<CR>", "Undo Tree"},
-        ["h"] = {":call ToggleHiddenAll()<CR>", "Hide"}
+        ["h"] = {":call ToggleHiddenAll()<CR>", "Hide"},
+        ["z"] = {":Goyo<CR>", "Goyo"},
     }
 }
 wk.register(keys, {prefix = leader})
