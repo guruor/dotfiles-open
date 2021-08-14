@@ -71,6 +71,10 @@ set termguicolors
 " noselect: Do not select, force user to select one from the menu
 set completeopt=menuone,noselect
 
+" Spell check
+set complete+=kspell
+set spell spelllang=en_us
+
 """ netrw settings
 let g:netrw_banner=0
 let g:netrw_browse_split=2
@@ -167,9 +171,13 @@ endif
 	autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
 	autocmd BufRead,BufNewFile *.tex set filetype=tex
     autocmd FileType markdown setlocal commentstring=<!--\ %s\ -->
+    autocmd BufRead,BufNewFile *.md setlocal spell
 
 " Disabling syntax highlighting for larger files
     autocmd Filetype * if getfsize(@%) > 1000000 | setlocal syntax=OFF | endif
 
 " Storing last visited tab
     au TabLeave * let g:lasttab = tabpagenr()
+
+" Enabling spell check for gitcommit
+    autocmd FileType gitcommit setlocal spell
