@@ -3,11 +3,13 @@
 # KeePassXC local db or in Bitwarden cloud
 # Also provedes feature to sync with KeePassXC/Pass with Bitwarden data
 
-chosen=$(echo -e "keepassxc\npass\nbitwarden\nsync"| dmenu)
+chosen=$(echo -e "keepassxc\npass\npass-otp\nbitwarden\nsync\nsync2fa"| dmenu)
 
 case $chosen in
 	keepassxc) keepmenu ;;
 	pass) passmenu ;;
+	pass-otp) passmenu-otp ;;
 	bitwarden) bitwarden-dmenu --dmenu-args='-i' --clear-clipboard 30 --session-timeout 600 --sync-vault-after 3600 --on-error 'xargs notify-send --urgency=low' ;;
     sync) $TERMINAL -e syncpass ;;
+    sync2fa) $TERMINAL -e sync2fa ;;
 esac
