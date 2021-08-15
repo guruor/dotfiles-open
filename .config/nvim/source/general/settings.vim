@@ -75,6 +75,25 @@ set completeopt=menuone,noselect
 set complete+=kspell
 set spell spelllang=en_us
 
+if ! filereadable(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/thesaurus/words.txt"'))
+    echo "Downloading dictionary ..."
+    silent !sudo pacman -S words --noconfirm
+    echo "Downloading thesaurus ..."
+    silent !mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/thesaurus/
+    silent !curl "https://www.gutenberg.org/files/3202/files/mthesaur.txt" > ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/thesaurus/mthesaur.txt
+
+    " Other alternatives
+    " silent !curl "https://raw.githubusercontent.com/words/moby/master/words.txt" > ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/thesaurus/words.txt
+    " silent !curl "https://raw.githubusercontent.com/moshahmed/vim/master/thesaurus/thesaurii.txt" > ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/thesaurus/thesaurii.txt
+endif
+
+set thesaurus='~/.config/nvim/thesaurus/mthesaur.txt'
+let g:tq_mthesaur_file="~/.config/nvim/thesaurus/mthesaur.txt"
+set dictionary='/usr/share/dict/words'
+
+" Preventing thesaurus_query from binding any keys, will map custom keys using whichkey
+let g:tq_map_keys=0
+
 """ netrw settings
 let g:netrw_banner=0
 let g:netrw_browse_split=2
@@ -177,7 +196,7 @@ endif
     autocmd Filetype * if getfsize(@%) > 1000000 | setlocal syntax=OFF | endif
 
 " Storing last visited tab
-    au TabLeave * let g:lasttab = tabpagenr()
+    autocmd TabLeave * let g:lasttab = tabpagenr()
 
 " Enabling spell check for gitcommit
     autocmd FileType gitcommit setlocal spell

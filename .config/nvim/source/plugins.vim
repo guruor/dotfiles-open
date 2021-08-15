@@ -61,6 +61,7 @@ Plug 'vimwiki/vimwiki'
 Plug 'tpope/vim-sensible'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+Plug 'ron89/thesaurus_query.vim'
 
 " Yet to explorer
 Plug 'tpope/vim-abolish'
@@ -72,9 +73,5 @@ Plug 'metakirby5/codi.vim'
 Plug 'dkarter/bullets.vim'
 Plug 'junegunn/vim-easy-align',       { 'on': ['EasyAlign'] }
 " Plugings from Luke smith's dotfiles, confirm if still needed
-
-" Plug 'godlygeek/tabular'
-" Plug 'plasticboy/vim-markdown'
-
 
 call plug#end()

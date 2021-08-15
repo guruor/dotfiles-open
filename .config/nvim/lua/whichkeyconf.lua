@@ -153,5 +153,17 @@ keys = {
         ["\\"] = {":%s/\"/'/g<CR>", "Replace \" with '"}
     }
 }
+
+
+wk.register(keys, {prefix = leader})
+wk.register(keys, {prefix = leader, mode = 'v'})
+keys = {
+    a = {
+        name = 'Authoring',
+        ["c"] = {"1z=", "Correct misspelled word"},
+        ["t"] = {":ThesaurusQueryReplaceCurrentWord<CR>", "Replace word under cursor with synonym"},
+        ["T"] = {"y:ThesaurusQueryReplace<CR>", "Replace visual selection with synonym"},
+    }
+}
 wk.register(keys, {prefix = leader})
 wk.register(keys, {prefix = leader, mode = 'v'})
