@@ -38,7 +38,7 @@ urgency.inherit=on
 
 # Reports
 # Next
-report.next.filter=status:pending limit:page -BLOCKED -PR +work
+report.next.filter=status:pending limit:page -BLOCKED -PR
 report.next.columns=id,description,tags,due
 report.next.labels=ID,Description,Tags,Due
 # Summary
@@ -79,3 +79,4 @@ uda.githubnamespace.label=Github Namespace
 uda.githubstate.type=string
 uda.githubstate.label=GitHub State
 # END Bugwarrior UDAs
+context=work
