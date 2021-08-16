@@ -72,6 +72,7 @@ export MYVIMRC="${XDG_CONFIG_HOME:-$HOME/.config}/nvim/init.vim"
 export MYVIMRCLSP="${XDG_CONFIG_HOME:-$HOME/.config}/nvim/initlsp.vim"
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 export MBSYNCRC="${XDG_CONFIG_HOME:-$HOME/.config}/isync/mbsyncrc"
+export SVDIR="/run/runit/service"
 
 # Clipmenu
 export CM_DEBUG=1
