@@ -91,6 +91,7 @@ endif
 
 set thesaurus='~/.config/nvim/thesaurus/mthesaur.txt'
 let g:tq_mthesaur_file="~/.config/nvim/thesaurus/mthesaur.txt"
+let tq_enabled_backends=["openoffice_en", "datamuse_com", "mthesaur_txt"]
 set dictionary='/usr/share/dict/words'
 
 " Preventing thesaurus_query from binding any keys, will map custom keys using whichkey
