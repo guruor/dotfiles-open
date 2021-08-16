@@ -63,7 +63,9 @@ set termguicolors
 " highlight Normal guibg=NONE ctermbg=NONE
 " highlight LineNr guibg=NONE ctermbg=NONE
 
-
+" Reducing the time out to avoid sluggishness
+let g:matchparen_timeout = 20
+let g:matchparen_insert_timeout = 20
 
 " Set completeopt to have a better completion experience
 " :help completeopt
