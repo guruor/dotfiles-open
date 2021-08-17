@@ -203,3 +203,7 @@ endif
 
 " Enabling spell check for gitcommit
     autocmd FileType gitcommit setlocal spell
+
+
+" Allowing opening of quick fix entries in new tab
+    autocmd FileType qf nnoremap <buffer> <Enter> <C-W><Enter><C-W>T
