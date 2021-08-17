@@ -90,7 +90,10 @@ keys = {
         ["H"] = {"<cmd>lua require\'dap.ui.variables\'.visual_hover()<CR>", "Visual hover"},
         ["w"] = {"<cmd>lua require\'dap.ui.widgets\'.hover()<CR>", "Widget Hover"},
         ["W"] = {"<cmd>lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>", "Widget Scopes"},
-        ["dr"] = {':exec ":vs | :te cargo build; rust-lldb ".input("Path to executable: ", getcwd() .. "/target/debug/", "file")." ".input("Enter args: ")<CR>', "rust-lldb"},
+        ["dr"] = {
+            ':exec ":vs | :te cargo build; rust-lldb ".input("Path to executable: ", getcwd() .. "/target/debug/", "file")." ".input("Enter args: ")<CR>',
+            "rust-lldb"
+        }
     }
 }
 wk.register(keys, {prefix = leader})
@@ -137,7 +140,7 @@ keys = {
         ["i"] = {":IndentLinesToggle<CR>", "Indent lines"},
         ["u"] = {":UndotreeToggle<CR>", "Undo Tree"},
         ["h"] = {":call ToggleHiddenAll()<CR>", "Hide"},
-        ["z"] = {":Goyo<CR>", "Goyo"},
+        ["z"] = {":Goyo<CR>", "Goyo"}
     }
 }
 wk.register(keys, {prefix = leader})
@@ -147,13 +150,13 @@ keys = {
     m = {
         name = 'Macro',
         ["j"] = {":!jq .<CR>", "Format selection as json"},
+        ["q"] = {":'<,'>!sqlformat --reindent --keywords upper --identifiers lower -<CR>", "Format SQL query"},
         ["n"] = {":%s/\\n/\r/g<CR>", "Replace \n with newline charFormat sqlalchemy query from logs"},
         ["{"] = {":%s/\\%V{/{{/g | %s/\\%V}/}}/g<CR>", "Replace braces with double braces for multiline formatted string"},
         ["\""] = {":%s/'/\"/g<CR>", "Replace ' with \""},
         ["\\"] = {":%s/\"/'/g<CR>", "Replace \" with '"}
     }
 }
-
 
 wk.register(keys, {prefix = leader})
 wk.register(keys, {prefix = leader, mode = 'v'})
@@ -162,7 +165,7 @@ keys = {
         name = 'Authoring',
         ["c"] = {"1z=", "Correct misspelled word"},
         ["t"] = {":ThesaurusQueryReplaceCurrentWord<CR>", "Replace word under cursor with synonym"},
-        ["T"] = {"y:ThesaurusQueryReplace<CR>", "Replace visual selection with synonym"},
+        ["T"] = {"y:ThesaurusQueryReplace<CR>", "Replace visual selection with synonym"}
     }
 }
 wk.register(keys, {prefix = leader})
