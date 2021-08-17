@@ -7,13 +7,9 @@ count=$(/usr/bin/task status:pending tags.hasnt:notified due.before:now+$duratio
 if [[ $count -eq 0 ]]; then
     /usr/bin/notify-send -a "taskwarrior" -i "alarm-symbolic.symbolic" "No pending task" ""
 else
-    /usr/bin/notify-send -a "taskwarrior" -i "task-past-due" -t 3000 "$count task pending" "Pick next task"
     # Fetching pending tasks for without notified tag
-    /usr/bin/task status:pending tags.hasnt:notified due.before:now+$duration export | /usr/bin/jq -r ".[].description" |
-    while IFS= read -r line
-    do
-       /usr/bin/notify-send -a "taskwarrior" -i "task-past-due" -t 3000 "A task is due in less than $duration" "$line"
-    done
+    tasks=$(/usr/bin/task status:pending tags.hasnt:notified due.before:now+$duration export | /usr/bin/jq -r ".[].description")
+    /usr/bin/notify-send -a "taskwarrior" -i "task-past-due" -t 3000 "Task(s) due in less than $duration" "$tasks"
 
     # Adding notified tag to notified tasks
     # /usr/bin/task rc.confirmation=off rc.recurrence.confirmation=off rc.bulk=0 status:pending tags.hasnt:notified due.before:now+$duration modify +notified
