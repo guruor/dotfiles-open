@@ -58,7 +58,7 @@ if [[ $DUNST_URGENCY == "NORMAL" ]] || [[ $DUNST_URGENCY == "LOW" ]]; then
                 sound_file=$TIME_PASSED
             fi
 
-            if [[ $DUNST_SUMMARY =~ "task pending" ]]; then
+            if [[ $DUNST_SUMMARY =~ "Task(s) due in less than" ]]; then
                 sound_file=$TASK_DUE
             fi
             ;;
