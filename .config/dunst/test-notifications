@@ -46,7 +46,7 @@ dunstify -r $((id++)) -u "normal" -a "taskwarrior" -i "alarm-symbolic.symbolic" 
 sleep $delay
 
 # Task pending, triggered from `taskwarrior-notify` script
-summary="1 task pending"
+summary="Task(s) due in less than 1h"
 body="Pick next task"
 dunstify -r $((id++)) -u "normal" -a "taskwarrior" -i "task-past-due" -t 10000 "${summary_prefix}${summary}" "${body}"
 sleep $delay
