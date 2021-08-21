@@ -37,6 +37,7 @@ keys = {
     ["p"] = {":Files<CR>", "Find files"},
     ["P"] = {":!opout %<CR>", "Preview files"},
     ["f"] = {":Rg<CR>", "Find text"},
+    ["F"] = {':exec ":RgRaw ".input("Enter rg command: ")<CR>', "Find text with raw rg command"},
     ["_"] = {"<C-W>s", "Split below"},
     ["|"] = {"<C-W>v", "Split right"},
     ["c"] = {':exec ":w! | :vs | :te compiler % ".input("Enter args: ")<CR>', "Compile"},
