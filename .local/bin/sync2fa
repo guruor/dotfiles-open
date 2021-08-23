@@ -1,17 +1,33 @@
 #!/bin/bash
 # Imports Aegis encrypted backup to KeePassXC
+# Dependent on https://github.com/beemdevelopment/Aegis/blob/master/docs/decrypt.py, renamed as aegis-decrypt
+# example usage: sync2fa $HOME/aegis-backup.json $HOME/passdb.kdbx $HOME/secret.txt
 
 blue='\e[1;34m'
 red='\e[1;31m'
 white='\e[0;37m'
 tmp_dir=$(mktemp -d -t aegis-XXXXXXXXXX)
+
+help() {
+    echo "Import Aegis encrypted backup to KeePassXC"
+    echo "   Ex:    sync2fa <path_to_aegis_backup> <path_to_keepass_db> <path_to_keepass_secret> "
+    exit
+}
+
+if [[ $# -eq 0 ]] ; then
+    help
+fi
+
+aegis_backup_file=$1
 dump_file=$tmp_dir/aegis.json
-keepass_db=~/Dropbox/KeePass/2FA.kdbx
-keepass_db_secret=$HOME/.ssh/s3cr3t.key
-aegis_backup_file=~/aegis-backup.json
+keepass_db=$2
+keepass_db_secret=$3
+
 echo -e "${blue}Starting keepass-aegis sync${white}"
 
 # Creating temp directory to store decrypted Aegis backup
+echo -e "${blue}Creating temp directory and decrypting aegis backup ${white}"
+echo -e "${blue}Enter Aegis password: ${white}"
 aegis-decrypt --input $aegis_backup_file > $dump_file
 
 # Exporting the dump to keepass, while making a backup of existing db
@@ -20,11 +36,14 @@ if [[ -f "$keepass_db" ]]; then
     echo -e "\n\n${blue}Backing up existing db${white}\n\n"
     mv $keepass_db $keepass_db.bak
 fi
+echo -e "\n\n${blue}Creating new KeePass DB${white}\n\n"
 printf '%s\n%s\n' "$password" "$password" | keepassxc-cli db-create -p -k $keepass_db_secret $keepass_db
 
 
 echo -e "\n\n${blue}Importing aegis backup to newly created keepass db${white}\n\n"
+echo -e -n "\n\n${blue}KeePass Password again: ${white}\n\n";
 pimport -af keepassxc aegis $dump_file --out $keepass_db -k $keepass_db_secret -vvv
+pass import -af aegis $dump_file
 
 echo -e "\n\n${blue}Removing temp files${white}"
 # Securely delete the file once it is restored in keepass,
