@@ -129,34 +129,35 @@ require ('galaxyline').section.left = {
       separator_highlight = 'GalaxyMapperCommon6'
     }
   },
-  {
-    LeftStatusMixedIndentWhiteSpace = {
-      provider = function()
-        vim.cmd('match none /\t/')
+  -- {
+  --   -- Commenting due to slow performance in large files
+  --   LeftStatusMixedIndentWhiteSpace = {
+  --     provider = function()
+  --       vim.cmd('match none /\t/')
 
-        if vim.fn.search([[\v(^\t+)]], 'nw') ~= 0 and vim.fn.search([[\v(^ +)]], 'nw') ~= 0 then
-          vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon6')
-          vim.cmd('match ErrorMsg /\t/')
-          return ' '
-        end
+  --       if vim.fn.search([[\v(^\t+)]], 'nw') ~= 0 and vim.fn.search([[\v(^ +)]], 'nw') ~= 0 then
+  --         vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon6')
+  --         vim.cmd('match ErrorMsg /\t/')
+  --         return ' '
+  --       end
 
-        if vim.fn.search('\\s$', 'nw') ~= 0 then
-          vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon6')
-          return 'ﲕ '
-        end
+  --       if vim.fn.search('\\s$', 'nw') ~= 0 then
+  --         vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon6')
+  --         return 'ﲕ '
+  --       end
 
-        if vim.fn.search([[\v(^\t+)]], 'nw') ~= 0 then
-          vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon8')
-        else
-          vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon6')
-        end
+  --       if vim.fn.search([[\v(^\t+)]], 'nw') ~= 0 then
+  --         vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon8')
+  --       else
+  --         vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon6')
+  --       end
 
-        return ' '
-      end,
-      separator = ' ',
-      separator_highlight = 'GalaxyMapperCommon6'
-    }
-  },
+  --       return ' '
+  --     end,
+  --     separator = ' ',
+  --     separator_highlight = 'GalaxyMapperCommon6'
+  --   }
+  -- },
   {
     LeftGitSeparator = {
       highlight = 'GalaxyMapperCommon6',
