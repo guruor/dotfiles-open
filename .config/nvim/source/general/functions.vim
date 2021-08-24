@@ -53,3 +53,28 @@ function! ToggleBackground(...)
         call v:lua.self_color_gruvbox_light()
     endif
 endfunction
+
+function ProfileStart()
+    :set verbose=9
+    :set verbosefile=/tmp/verbose.txt
+    " :verbose {some action}
+    :set noshowmatch
+    :set norelativenumber
+    :set nocursorline
+    :set nocursorcolumn
+    :set syntax=off
+    :set re=1
+    :LspStop
+    " :NoMatchParen
+    " let g:loaded_matchparen=1
+    " call FuckThatMatchParen()
+    :profile start /tmp/profile.log
+    :profile func *
+    :profile file *
+endfunction
+
+
+function ProfileStop()
+     :profile stop
+     :q!
+endfunction
