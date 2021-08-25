@@ -155,7 +155,8 @@ keys = {
         ["n"] = {":%s/\\n/\r/g<CR>", "Replace \n with newline charFormat sqlalchemy query from logs"},
         ["{"] = {":%s/\\%V{/{{/g | %s/\\%V}/}}/g<CR>", "Replace braces with double braces for multiline formatted string"},
         ["\""] = {":%s/'/\"/g<CR>", "Replace ' with \""},
-        ["\\"] = {":%s/\"/'/g<CR>", "Replace \" with '"}
+        ["\\"] = {":%s/\"/'/g<CR>", "Replace \" with '"},
+        ["e"] = {":!date -d @<C-R><C-W><CR>", "Epoch to System time"}
     }
 }
 
