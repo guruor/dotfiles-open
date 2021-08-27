@@ -28,6 +28,7 @@ Plug 'majutsushi/tagbar',           { 'on': 'TagbarToggle'      }
 Plug 'tpope/vim-fugitive'
 
 " Syntax, formatting and auto-completion
+Plug 'sheerun/vim-polyglot'
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-compe'
@@ -59,14 +60,13 @@ Plug 'junegunn/limelight.vim',      { 'on': 'LimeLight!!'}
 
 " Good to have
 Plug 'vimwiki/vimwiki'
-Plug 'tpope/vim-sensible'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'ron89/thesaurus_query.vim'
 
 " Yet to explorer
+" Plug 'tpope/vim-sensible'
 " Plug 'tpope/vim-abolish'
-" Plug 'sheerun/vim-polyglot'
 " Plug 'chrisbra/Colorizer'
 " Plug 'heavenshell/vim-pydocstring', { 'do': 'make install' }
 " Plug 'vim-scripts/loremipsum'
