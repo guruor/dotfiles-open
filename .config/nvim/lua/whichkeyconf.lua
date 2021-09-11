@@ -64,7 +64,9 @@ keys = {
         ["s"] = {":Git<CR>", "Status"},
         ["l"] = {":Git log<CR>", "Log"},
         ["p"] = {":Git push<CR>", "Push"},
-        ["P"] = {":Git pull<CR>", "Pull"}
+        ["P"] = {":Git pull<CR>", "Pull"},
+        ["<"] = {":diffget //3<CR>", "Get changes from right"},
+        [">"] = {":diffget //2<CR>", "Get changes from left"}
     }
 }
 wk.register(keys, {prefix = leader})
