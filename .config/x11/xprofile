@@ -16,6 +16,7 @@ unclutter &		        # Remove mouse when idle
 clipmenud &		        # Enables clipmenu, clipboard manager
 maestral start &        # Enables dropbox on boot
 syncthing &             # Enables syncthing web
+xsettingsd &            # For live reload of GTK themes
 
 # This line autostarts an instance of Pulseaudio that does not exit on idle.
 # This is "necessary" on Artix due to a current bug between PA and
