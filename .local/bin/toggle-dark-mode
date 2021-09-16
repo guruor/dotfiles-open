@@ -92,6 +92,34 @@ change_taskwarrior_theme() {
     pkill taskwarrior-tui
 }
 
+change_gtk_theme() {
+    echo -e "Requested gtk theme is: $1"
+    theme=$1
+
+    theme1="Pop-gruvbox"
+    theme2="Arc-Gruvbox"
+
+    if [[ $theme == "light" ]]; then
+        temp=$theme1
+        theme1=$theme2
+        theme2=$temp
+    fi
+
+    config_file="$HOME/.config/gtk-2.0/gtkrc-2.0"
+    get_actual_path_if_symlink $config_file
+    sed -i "s/$theme1/$theme2/g" $config_file
+
+    config_file="$HOME/.config/gtk-3.0/settings.ini"
+    get_actual_path_if_symlink $config_file
+    sed -i "s/$theme1/$theme2/g" $config_file
+
+    config_file="$HOME/.config/xsettingsd/xsettingsd.conf"
+    get_actual_path_if_symlink $config_file
+    sed -i "s/$theme1/$theme2/g" $config_file
+
+    pkill -1 xsettingsd
+}
+
 get_actual_path_if_symlink(){
     if [[ ! -f $config_file ]]; then
         echo -e "File ${config_file} doesn't exist"
@@ -118,6 +146,7 @@ stopdark() {
     change_bat_theme gruvbox-light
     change_tmux_theme light
     change_taskwarrior_theme light
+    change_gtk_theme light
     touch $dark_mode_flag
 }
 
@@ -128,6 +157,7 @@ startdark() {
     change_bat_theme gruvbox-dark
     change_tmux_theme dark
     change_taskwarrior_theme dark
+    change_gtk_theme dark
     rm -f $dark_mode_flag
 }
 
