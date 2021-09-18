@@ -62,7 +62,7 @@ if [[ $DUNST_URGENCY == "NORMAL" ]] || [[ $DUNST_URGENCY == "LOW" ]]; then
                 sound_file=$TASK_DUE
             fi
             ;;
-        Brave | weechat)
+        Brave | weechat | Firefox)
                 # keywords from NAME_MENTIONED in message
                 for keyword in $(echo $NAME_MENTIONED | sed "s/,/ /g")
                 do
