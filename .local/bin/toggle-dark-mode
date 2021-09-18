@@ -29,6 +29,8 @@ change_xresources_theme() {
     # echo -e "Merging $theme_file"
     # xrdb -merge "$theme_file"
 
+    # Reloading xrdb colors for dwm
+    dwmc xrdb
     # Reloading all active instances of `st`
     pidof st | xargs kill -SIGUSR1
 }
