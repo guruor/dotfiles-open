@@ -122,6 +122,28 @@ change_gtk_theme() {
     pkill -1 xsettingsd
 }
 
+change_dunst_theme() {
+    echo -e "Requested dunst theme is: $1"
+    theme=$1
+    config_file="$HOME/voidrice/.config/dunst/dunstrc"
+    get_actual_path_if_symlink $config_file
+
+    theme1=$theme
+    if [[ $theme == "light" ]]; then
+        theme2="dark"
+    else
+        theme2="light"
+    fi
+
+    # Commenting old theme
+    sed -i -e "/^## $theme1-theme-start/,/^## $theme1-theme-end/{s/^#//g}" $config_file
+    # Applying old theme
+    sed -i -e "/^# $theme2-theme-start/,/^# $theme2-theme-end/{s/^/#/g}" $config_file
+    killall dunst
+    dunst &
+    dunstify -u "normal" -a "System" "Dark mode toggled" "Theme changed"
+}
+
 get_actual_path_if_symlink(){
     if [[ ! -f $config_file ]]; then
         echo -e "File ${config_file} doesn't exist"
@@ -149,6 +171,7 @@ stopdark() {
     change_tmux_theme light
     change_taskwarrior_theme light
     change_gtk_theme light
+    change_dunst_theme light
     touch $dark_mode_flag
 }
 
@@ -160,6 +183,7 @@ startdark() {
     change_tmux_theme dark
     change_taskwarrior_theme dark
     change_gtk_theme dark
+    change_dunst_theme dark
     rm -f $dark_mode_flag
 }
 
