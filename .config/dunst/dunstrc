@@ -74,28 +74,6 @@
     history = ctrl+grave
     context = ctrl+shift+period
 
-[urgency_low]
-    # IMPORTANT: colors have to be defined in quotation marks.
-    # Otherwise the "#" and following would be interpreted as a comment.
-    background = "#2b2b2b"
-    foreground = "#ffffff"
-    timeout = 5
-    # Icon for notifications with low urgency, uncomment to enable
-    icon = ~/.config/dunst/normal.png
-
-[urgency_normal]
-    background = "#2b2b2b"
-    foreground = "#ffffff"
-    timeout = 5
-    icon = ~/.config/dunst/normal.png
-
-[urgency_critical]
-    background = "#900000"
-    foreground = "#ffffff"
-    frame_color = "#ff0000"
-    timeout = 0
-    icon = ~/.config/dunst/critical.png
-
 # Every section that isn't one of the above is interpreted as a rules to
 # override settings for certain messages.
 # Messages can be matched by "appname", "summary", "body", "icon", "category",
@@ -164,3 +142,52 @@
 #    urgency = normal
 #
 # vim: ft=cfg
+
+
+
+## dark-theme-start
+#[urgency_low]
+#timeout = 2
+#background = "#282828"
+#foreground = "#ebdbb2"
+#frame_color = "#ebdbb2"
+#icon = ~/.config/dunst/normal.png
+#
+#[urgency_normal]
+#timeout = 5
+#background = "#282828"
+#foreground = "#fbf1c7"
+#frame_color = "#fbf1c7"
+#icon = ~/.config/dunst/normal.png
+#
+#[urgency_critical]
+#timeout = 0
+#background = "#212B30"
+#foreground = "#fb4934"
+#frame_color = "#fb4934"
+#icon = ~/.config/dunst/critical.png
+## dark-theme-end
+
+
+# light-theme-start
+[urgency_low]
+timeout = 2
+background = "#ebdbb2"
+foreground = "#282828"
+frame_color = "#3c3836"
+icon = ~/.config/dunst/normal.png
+
+[urgency_normal]
+timeout = 5
+background = "#fbf1c7"
+foreground = "#504945"
+frame_color = "#665c54"
+icon = ~/.config/dunst/normal.png
+
+[urgency_critical]
+timeout = 0
+background = "#f9f5d7"
+foreground = "#cc241d"
+frame_color = "#9d0006"
+icon = ~/.config/dunst/critical.png
+# light-theme-end
