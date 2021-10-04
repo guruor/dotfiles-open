@@ -21,7 +21,7 @@ function docker_start_service() {
     compose_file="$1"
     service_name="$2"
     compose_file_dir=$(basename $(dirname "${compose_file}"))
-    container_name="${compose_file_dir}_${service_name}_1"
+    container_name="${compose_file_dir}-${service_name}-1"
     if is_docker_container_running $container_name ; then
         echo -e "Container ${container_name} is already running"
     else
