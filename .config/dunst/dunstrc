@@ -1,11 +1,30 @@
 [global]
     monitor = 0
     follow = keyboard
-    geometry = "500x0-0+24"
+
+    # dynamic width from 0 to 300
+    # width = (0, 300)
+    # constant width of 300
+    width = 350
+
+    # The maximum height of a single notification, excluding the frame.
+    height = 300
+
+    # Position the notification in the top right corner
+    origin = top-right
+
+    # Offset from the origin
+    offset = 10x50
+
+    # Scale factor. It is auto-detected if value is 0.
+    scale = 0
+
+    # Maximum number of notification (0 means no limit)
+    notification_limit = 0
+
     indicate_hidden = yes
     shrink = yes
     transparency = 20
-    notification_height = 0
     separator_height = 2
     padding = 0
     horizontal_padding = 8
@@ -61,18 +80,10 @@
 
     title = Dunst
     class = Dunst
-    startup_notification = false
-    verbosity = mesg
     corner_radius = 5
     force_xinerama = false
 [experimental]
     per_monitor_dpi = false
-
-[shortcuts]
-    close = ctrl+space
-    close_all = ctrl+shift+space
-    history = ctrl+grave
-    context = ctrl+shift+period
 
 # Every section that isn't one of the above is interpreted as a rules to
 # override settings for certain messages.
