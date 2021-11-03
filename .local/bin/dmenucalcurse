@@ -1,0 +1,10 @@
+#!/bin/bash
+
+choice=$(echo -e "personal\nwork\nquit"| dmenu -i -p 'Open Calendar: ')
+
+[ $choice == quit ] && echo "Program terminated." && exit 1
+
+PROFILE=$choice;
+CALCURSE_CONFIG_DIR="$HOME/.config/calcurse/${PROFILE}";
+CALCURSE_DATA_DIR="$HOME/.cache/calcurse/${PROFILE}";
+st -c st-calcurse -t "$choice" calcurse -C "$CALCURSE_CONFIG_DIR" -D "$CALCURSE_DATA_DIR"
