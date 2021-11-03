@@ -1,3 +1,11 @@
+#
+# Calcurse keys configuration file
+#
+# In this file the keybindings used by Calcurse are defined.
+# It is generated automatically by Calcurse and is maintained
+# via the key configuration menu of the interactive user
+# interface. It should not be edited directly.
+
 generic-cancel  ESC
 generic-select  SPC
 generic-credits  @

@@ -1,0 +1,32 @@
+#!/bin/sh
+#
+# This is an example hook. It synchronizes calcurse with a CalDAV server before
+# loading the data files.
+#
+# In order to install this hook, copy this file to ~/.calcurse/hooks/.
+
+PROFILE="example"
+CALCURSE_CONFIG_DIR="$HOME/.config/calcurse/${PROFILE}"
+CALCURSE_DATA_DIR="$HOME/.cache/calcurse/${PROFILE}"
+
+cd $CALCURSE_DATA_DIR
+# Do not do anything when synchronizing with a CalDAV server.
+[ -f caldav/lock ] && exit
+
+# Activating current profile for caldav sync, uses profile based oauth2_cred
+CALDAV_DEFAULT_CRED_DIR="${HOME}/.config/calcurse/caldav"
+CALDAV_PROFILE_CRED_DIR="${HOME}/.config/calcurse/caldav.${PROFILE}"
+if [ -d $CALDAV_PROFILE_CRED_DIR ]; then
+    rm -rf $CALDAV_DEFAULT_CRED_DIR
+    cp -rf $CALDAV_PROFILE_CRED_DIR $CALDAV_DEFAULT_CRED_DIR
+fi
+
+# Run the CalDAV synchronization script in the background.
+if [ -d caldav -a -x "$(which calcurse-caldav)" ]; then
+	(
+		date="$(date +'%b %d %H:%M:%S')"
+		echo "$date Running calcurse-caldav from the pre-load hook..."
+		calcurse-caldav --config=$CALCURSE_CONFIG_DIR/config --syncdb=$CALCURSE_DATA_DIR/sync.db --datadir=$CALCURSE_DATA_DIR
+		echo
+	) >>caldav/log 2>&1 &
+fi
