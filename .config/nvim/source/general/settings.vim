@@ -77,7 +77,7 @@ set completeopt=menuone,noselect
 set complete+=kspell
 set spell spelllang=en_us
 
-if ! filereadable(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/thesaurus/words.txt"'))
+if ! isdirectory(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/thesaurus"'))
     echo "Downloading dictionary ..."
     silent !sudo pacman -S words --noconfirm
     echo "Downloading thesaurus ..."
