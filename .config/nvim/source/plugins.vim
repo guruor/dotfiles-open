@@ -7,7 +7,7 @@ if ! filereadable(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autolo
 	silent !curl "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" > ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autoload/plug.vim
 	autocmd VimEnter * PlugInstall
 
-    # Setting up python virtual environment for neovim
+    " Setting up python virtual environment for neovim
     if ! isdirectory(system('echo -n "${HOME}/.pyenv/versions/nvim"'))
         echo "Creating virtual environment ..."
         " Check if python or pip needs to be installed
