@@ -4,7 +4,7 @@ let g:prosession_dir = session_directory
 let g:prosession_last_session_dir = session_directory
 
 " vim-pydocstring
-let g:pydocstring_doq_path = '~/.pyenv/versions/neovim/bin/doq'
+let g:pydocstring_doq_path = '~/.pyenv/versions/nvim/bin/doq'
 
 " Ultisnips
 let g:UltiSnipsSnippetDirectories=["ultisnips"]
