@@ -23,9 +23,17 @@ export PATH="$PATH:${XDG_DATA_HOME}/go/bin"
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
-  eval "$(pyenv virtualenv-init -)"
+  eval "$(pyenv init --path)"
 fi
+
+unameOut="$(uname -s)"
+case "${unameOut}" in
+    Linux*)     machine=Linux;;
+    Darwin*)    machine=Mac;;
+    CYGWIN*)    machine=Cygwin;;
+    MINGW*)     machine=MinGw;;
+    *)          machine="UNKNOWN:${unameOut}"
+esac
 
 unsetopt PROMPT_SP
 
@@ -195,18 +203,27 @@ ex=🎯:\
 *.java=♨:\
 "
 
-[ ! -f ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ] && shortcuts >/dev/null 2>&1 &
+if [[ ${machine} == "Linux" ]]; then
+	if $(pacman -Qs libxft-bgra >/dev/null 2>&1); then
+		# Start graphical server on user's current tty if not already running.
+		[ "$(tty)" = "/dev/tty1" ] && ! pidof -s Xorg >/dev/null 2>&1 && exec startx
+	else
+		echo "\033[31mIMPORTANT\033[0m: Note that \033[32m\`libxft-bgra\`\033[0m must be installed for this build of dwm.
+	Please run:
+		\033[32myay -S libxft-bgra-git\033[0m
+	and replace \`libxft\`. Afterwards, you may start the graphical server by running \`startx\`."
+	fi
 
-if pacman -Qs libxft-bgra >/dev/null 2>&1; then
-	# Start graphical server on user's current tty if not already running.
-	[ "$(tty)" = "/dev/tty1" ] && ! pidof -s Xorg >/dev/null 2>&1 && exec startx
-else
-	echo "\033[31mIMPORTANT\033[0m: Note that \033[32m\`libxft-bgra\`\033[0m must be installed for this build of dwm.
-Please run:
-	\033[32myay -S libxft-bgra-git\033[0m
-and replace \`libxft\`. Afterwards, you may start the graphical server by running \`startx\`."
+	# Switch escape and caps if tty and no passwd required:
+	sudo -n loadkeys ${XDG_DATA_HOME:-$HOME/.local/share}/larbs/ttymaps.kmap 2>/dev/null
+	. "$HOME/.local/share/cargo/env"
 fi
 
-# Switch escape and caps if tty and no passwd required:
-sudo -n loadkeys ${XDG_DATA_HOME:-$HOME/.local/share}/larbs/ttymaps.kmap 2>/dev/null
-. "/home/govind/.local/share/cargo/env"
+if [[ ${machine} == "Mac" ]]; then
+    export HOMEBREW_NO_AUTO_UPDATE=1
+	if ! $(command -v brew 1>/dev/null 2>&1); then
+		  eval "$(/opt/homebrew/bin/brew shellenv)"
+	fi
+fi
+
+[ ! -f ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ] && shortcuts >/dev/null 2>&1 &
