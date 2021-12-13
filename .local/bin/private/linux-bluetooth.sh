@@ -1,1 +1,0 @@
-/home/govind/voidrice/Private/.local/bin/private/linux-bluetooth.sh
