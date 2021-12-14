@@ -8,7 +8,7 @@ autoload -Uz vcs_info
 setopt prompt_subst
 
 # Initializing pyev
-eval "$(pyenv init -)"
+eval "$(pyenv init --path)"
 eval "$(pyenv virtualenv-init -)"
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
@@ -133,7 +133,12 @@ source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.
 #     stty -echo && sleep 0.2 && xdotool type --delay 15 'tmux' && stty echo
 # fi
 
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+if [[ $MACHINE == "Linux" ]]; then
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+else
+    source $(brew --prefix nvm)/nvm.sh
+fi
+
 
 eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"

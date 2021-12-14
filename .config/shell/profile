@@ -35,6 +35,8 @@ case "${unameOut}" in
     *)          machine="UNKNOWN:${unameOut}"
 esac
 
+export MACHINE=$machine
+
 unsetopt PROMPT_SP
 
 # Default programs:
@@ -220,6 +222,9 @@ if [[ ${machine} == "Linux" ]]; then
 fi
 
 if [[ ${machine} == "Mac" ]]; then
+    export CARGO_HOME="$HOME/.cargo"
+    export PATH="$PATH:${CARGO_HOME}/bin"
+	. "$HOME/.cargo/env"
     export HOMEBREW_NO_AUTO_UPDATE=1
 	if ! $(command -v brew 1>/dev/null 2>&1); then
 		  eval "$(/opt/homebrew/bin/brew shellenv)"
