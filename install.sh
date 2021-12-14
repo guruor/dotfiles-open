@@ -121,14 +121,20 @@ uninstall_dotfiles() {
 symlink_only_dir_files(){
     source_dir=${1}
     target_dir=${2}
-    mkdir -p ${target_dir}; cd ${target_dir};
+    mkdir -p ${target_dir}; 
     # Creating empty directory structure if path is of directory
     echo -e "${blue}Creating directory structure and symlink for ${source_dir}\n${white}" >&2
     echo -e "${blue}Creating directory structure for ${source_dir}\n${white}" >&2
-    find -L ${source_dir} -mindepth 1 -depth -type d -printf "%P\n" | while read dir; do mkdir -p "${dir}"; done
+    cd ${source_dir}
+    dirs_to_symlink=$(find -L . -mindepth 1 -depth -type d | cut -d/ -f2- )
+    files_to_symlink=$(find -L . -type f | cut -d/ -f2- )
+    cd ${target_dir}
+    echo -e "Directories to symlink \n\n ${dirs_to_symlink}"
+    echo -e "Files to symlink \n\n ${files_to_symlink}"
+    echo "$dirs_to_symlink" | while read dir; do mkdir -p "${dir}"; done
     # Symlnking only files
     echo -e "${blue}Creating symlink for ${source_dir}\n${white}" >&2
-    find -L ${source_dir} -type f -printf "%P\n" | while read file; do ln -sf "${source_dir}/${file}" "${file}"; done
+    echo "$files_to_symlink" | while read file; do ln -sf "${source_dir}/${file}" "${file}"; done
 }
 
 symlink(){
