@@ -7,9 +7,6 @@ autoload -U colors && colors	# Load colors
 autoload -Uz vcs_info
 setopt prompt_subst
 
-# Initializing pyev
-eval "$(pyenv init --path)"
-eval "$(pyenv virtualenv-init -)"
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 setopt autocd		# Automatically cd into typed directory.
@@ -139,7 +136,10 @@ else
     source $(brew --prefix nvm)/nvm.sh
 fi
 
-
 eval "$(starship init zsh)"
+# Initializing pyev
+eval "$(pyenv init --path)"
+# eval "$(pyenv virtualenv-init -)" # Slowing down the shell
+
 eval "$(zoxide init zsh)"
 eval "$(navi widget zsh)"
