@@ -27,7 +27,7 @@ END_COMMENT
 
 is_dark=1
 # Checking current color scheme
-if [[ -f "/tmp/dark-mode.off" ]]; then
+if [[ -f "~/.cache/dark-mode.off" ]]; then
     is_dark=0
 fi
 

@@ -12,7 +12,7 @@ help() {
     exit
 }
 
-dark_mode_flag="/tmp/dark-mode.off"
+dark_mode_flag="~/.cache/dark-mode.off"
 
 change_xresources_theme() {
     echo -e "Requested xresource theme is: $1"
