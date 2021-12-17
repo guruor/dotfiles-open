@@ -1,5 +1,9 @@
 # opens iTerm2
 alt - return : "${HOME}"/.config/yabai/scripts/open_iterm2.sh
+alt - q : \
+    nextwinid=$(bash -c 'yabai -m query --windows --window east 2>/dev/null || yabai -m query --windows --window west 2>/dev/null' | jq -r .id) \
+    bash -c 'yabai -m window --close && yabai -m window --focus $nextwinid'
+
 
 # Show system statistics
 fn + lalt - 1 : "${HOME}"/.config/yabai/scripts/show_cpu.sh
@@ -17,14 +21,22 @@ alt - l : yabai -m window --focus east
 # Move window to left and focus
 cmd - space : yabai -m window --warp east; yabai -m window --focus west
 
-# Notetaker
-# https://github.com/Granitosaurus/bin/blob/master/dropdown
-shift + cmd + alt + ctrl - n : old_notetaker_id=$(yabai -m query --windows | jq 'map(select((.app == "alacritty") and .title == "Notes").id)[0]'); [[ $old_notetaker_id == "null" ]] && alacritty --title "Notes" -e $SHELL -lc "notetaker" &; note_taker_window=$(yabai -m query --windows | jq 'map(select((.app == "alacritty") and .title == "Notes"))[0]'); [[ ! $old_notetaker_id == "null" ]] && (([[ $(echo $note_taker_window | jq '.minimized') == "1" ]] && yabai -m window --focus $(echo $note_taker_window | jq '.id')) || ([[ $(echo $note_taker_window | jq '.minimized') == "0" ]] && yabai -m window $(echo $note_taker_window | jq '.id') --minimize ));
-# Switch space
-lctrl - 1 : yabai -m space --focus 1
-lctrl - 2 : yabai -m space --focus 2
-lctrl - 3 : yabai -m space --focus 3
-lctrl - 4 : yabai -m space --focus 4
+# Shortcuts with hyper key
+# Notetaker, Reference for floating window with yabai (https://github.com/Granitosaurus/bin/blob/master/dropdown)
+shift + cmd + alt + ctrl - n : old_notetaker_id=$(yabai -m query --windows | jq 'map(select((.app == "alacritty") and .title == "Notes").id)[0]'); [[ $old_notetaker_id == "null" ]] && alacritty --title "Notes" -e $SHELL -lc "notetaker" &; note_taker_window=$(yabai -m query --windows | jq 'map(select((.app == "alacritty") and .title == "Notes"))[0]'); [[ ! $old_notetaker_id == "null" ]] && (([[ $(echo $note_taker_window | jq '.minimized') == "1" ]] && yabai -m window $(echo $note_taker_window | jq '.id') --space mouse && yabai -m window --focus $(echo $note_taker_window | jq '.id')) || ([[ $(echo $note_taker_window | jq '.minimized') == "0" ]] && yabai -m window $(echo $note_taker_window | jq '.id') --minimize && yabai -m window --focus mouse 2>/dev/null ));
+shift + cmd + alt + ctrl - r : alacritty --title "Bottom" -e $SHELL -lc "btm -b" & # Opens process monitoring tool
+shift + cmd + alt + ctrl - m : alacritty --title "Ncmpcpp" -e $SHELL -lc "ncmpcpp" & # Opens music player
+shift + cmd + alt + ctrl - p : mpc toggle # Toggle play/pause for mpd
+shift + cmd + alt + ctrl - 0x21 : mpc seek -10 # Seek music 10 seconds backward with hyper + [
+shift + cmd + alt + ctrl - 0x1E : mpc seek +10 # Seek music 10 seconds forward with hyper + ]
+shift + cmd + alt + ctrl - 0x1B : osascript -e 'set volume output volume (output volume of (get volume settings)) - 10' # Volume down with hyper + -
+shift + cmd + alt + ctrl - 0x18 : osascript -e 'set volume output volume (output volume of (get volume settings)) + 10' # Volume down with hyper + +
+
+# Switch space, requires SIP to be disabled, handling the same with mac keyboard shortcuts for mission control
+# lctrl - 1 : yabai -m space --focus 1
+# lctrl - 2 : yabai -m space --focus 2
+# lctrl - 3 : yabai -m space --focus 3
+# lctrl - 4 : yabai -m space --focus 4
 
 # Moving windows
 shift + alt - h : yabai -m window --warp west
