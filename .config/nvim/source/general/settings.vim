@@ -153,6 +153,8 @@ autocmd BufLeave term://* stopinsert
 " Recompile dwmblocks on config edit.
 	autocmd BufWritePost ~/.local/src/dwmblocks/config.h !cd ~/.local/src/dwmblocks/; sudo make install && { killall -q dwmblocks;setsid -f dwmblocks }
 	autocmd BufWritePost ~/.local/src/dwm/config.h !cd ~/.local/src/dwm/; sudo make install && kill -HUP $(pgrep -u $USER "\bdwm$")
+" Restart yabai when yabai config is changed
+	autocmd BufWritePost ~/.config/yabai/yabairc !brew services restart yabai; killall Dock
 
 " Auto show diagnostics for a line when curson is on the line
     " Show diagnostic hover after 'updatetime' and don't steal focus
