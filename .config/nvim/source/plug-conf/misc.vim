@@ -24,7 +24,7 @@ let g:indentLine_color_gui = '#363949'
 " Goyo
 let g:goyo_width=125
 
-if !empty(glob("/tmp/dark-mode.off"))
+if !empty(glob("~/.cache/dark-mode.off"))
     call v:lua.self_color_gruvbox_light()
 else
     call v:lua.self_color_gruvbox_dark()
