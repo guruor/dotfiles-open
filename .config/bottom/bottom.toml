@@ -52,7 +52,7 @@ basic = false
 # Disable mouse clicks
 #disable_click = false
 # Built-in themes.  Valid values are "default", "default-light", "gruvbox", "gruvbox-light", "nord", "nord-light"
-#color = "default"
+color = "gruvbox-light"
 # Show memory values in the processes widget as values by default
 mem_as_value = true
 # Show tree mode by default in the processes widget.
