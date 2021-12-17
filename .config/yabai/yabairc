@@ -68,6 +68,7 @@ yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info
 yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
 yabai -m rule --add label="macfeh" app="^macfeh$" manage=off
 yabai -m rule --add label="System Preferences" app="^System Preferences$" title=".*" manage=off
+yabai -m rule --add label="Alfred Preferences" app="^Alfred Preferences$" title=".*" manage=off
 yabai -m rule --add label="App Store" app="^App Store$" manage=off
 yabai -m rule --add label="Activity Monitor" app="^Activity Monitor$" manage=off
 yabai -m rule --add label="KeePassXC" app="^KeePassXC$" manage=off
@@ -86,6 +87,15 @@ yabai -m signal --add event=window_created action="${ubersicht_spaces_refresh_co
 yabai -m signal --add event=window_destroyed action="${ubersicht_spaces_refresh_command}"
 yabai -m signal --add event=window_focused action="${ubersicht_spaces_refresh_command}"
 yabai -m signal --add event=window_title_changed action="${ubersicht_spaces_refresh_command}"
+
+# Signal to focus on active widnow when a window is closed or minimized
+focus_under_cursor="yabai -m query --windows --window &> /dev/null || yabai -m window --focus mouse"
+yabai -m signal --add event=window_destroyed action="${focus_under_cursor}"
+yabai -m signal --add event=window_minimized action="${focus_under_cursor}"
+yabai -m signal --add event=application_hidden action="${focus_under_cursor}"
+yabai -m signal --add event=application_terminated action="${focus_under_cursor}"
+
+
 
 set +x
 printf "yabai: configuration loaded...\\n"
