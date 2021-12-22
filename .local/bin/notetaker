@@ -1,4 +1,4 @@
-#!/bin/sh +x
+#!/bin/bash
 
 noteFilename="${VIMWIKI_DIR}/QuickNote.md"
 todayHeading="# Notes for $(date +%Y-%m-%d)"
