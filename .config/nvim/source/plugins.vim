@@ -26,6 +26,7 @@ Plug 'rktjmp/lush.nvim'
 Plug 'npxbr/gruvbox.nvim'
 Plug 'glepnir/galaxyline.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
+Plug 'romgrk/barbar.nvim'
 
 " Easy search, navigation
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
