@@ -164,12 +164,28 @@ keys = {
 
 wk.register(keys, {prefix = leader})
 wk.register(keys, {prefix = leader, mode = 'v'})
+
 keys = {
     a = {
         name = 'Authoring',
         ["c"] = {"1z=", "Correct misspelled word"},
         ["t"] = {":ThesaurusQueryReplaceCurrentWord<CR>", "Replace word under cursor with synonym"},
         ["T"] = {"y:ThesaurusQueryReplace<CR>", "Replace visual selection with synonym"}
+    }
+}
+wk.register(keys, {prefix = leader})
+wk.register(keys, {prefix = leader, mode = 'v'})
+
+keys = {
+    r = {
+        name = 'REST client',
+        ["e"] = {"<Plug>RestNvim", "run the request under the cursor"},
+        ["p"] = {"<Plug>RestNvimPreview", "preview the request cURL command"},
+        ["l"] = {"<Plug>RestNvimLast", "re-run the last request"},
+        ["E"] = {"", "Change environment"},
+        ["El"] = {":!ln -sf localenv .env<CR>", "Local env"},
+        ["Es"] = {":!ln -sf stageenv .env<CR>", "Stage env"},
+        ["Ep"] = {":!ln -sf prodenv .env<CR>", "Prod env"},
     }
 }
 wk.register(keys, {prefix = leader})
