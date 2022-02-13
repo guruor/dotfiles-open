@@ -47,10 +47,6 @@ function _G.self_color_gruvbox_dark()
   vim.cmd('highlight GalaxyViModeTerminalInverted                                                                guibg=#504945 guifg=#d3869b')
   vim.cmd('highlight GalaxyViModeTerminalUnturned                                                                guibg=#d3869b guifg=#3c3836')
 
-  -- Tabline colors
-  vim.cmd('highlight TabLineFill                                                                                               guifg=#3c3836')
-  vim.cmd('highlight TabLineSel                                                                                  guibg=#bdae93 guifg=#3c3836')
-  vim.cmd('highlight TabLine                                                                                     guibg=#504945 guifg=#bdae93')
 end
 
 function _G.self_color_gruvbox_light()
@@ -102,8 +98,4 @@ function _G.self_color_gruvbox_light()
   vim.cmd('highlight GalaxyViModeTerminalInverted                                                                guibg=#d5c4a1 guifg=#d3869b')
   vim.cmd('highlight GalaxyViModeTerminalUnturned                                                                guibg=#d3869b guifg=#d5c4a1')
 
-  -- Tabline colors
-  vim.cmd('highlight TabLineFill                                                                                               guifg=#ebdbb2')
-  vim.cmd('highlight TabLineSel                                                                                  guibg=#7c6f64 guifg=#bdae93')
-  vim.cmd('highlight TabLine                                                                                     guibg=#bdae93 guifg=#7c6f64')
 end

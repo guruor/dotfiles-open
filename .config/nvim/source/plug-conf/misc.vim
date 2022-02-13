@@ -29,5 +29,3 @@ if !empty(glob("~/.cache/dark-mode.off"))
 else
     call v:lua.self_color_gruvbox_dark()
 endif
-
-set tabline=%!MyTabLine()
