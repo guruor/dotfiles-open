@@ -174,3 +174,6 @@ require("dapui").setup()
 require('dap-python').setup("~/.pyenv/versions/debugpy/bin/python")
 
 vim.cmd('command! -nargs=0 DapBreakpoints :lua require\'dap\'.list_breakpoints()')
+
+-- Loads configurations from vscode Launch.json, adding it at end so it extends the existing configuration
+require("dap.ext.vscode").load_launchjs()
