@@ -46,6 +46,7 @@ Plug 'sheerun/vim-polyglot'
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-compe'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 " Debugging
 Plug 'mfussenegger/nvim-dap'
