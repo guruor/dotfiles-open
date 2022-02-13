@@ -182,7 +182,8 @@ dap.configurations.go = {
 dap.configurations.c = dap.configurations.rust
 dap.configurations.cpp = dap.configurations.rust
 
--- Enable virutal text, requires theHamsta/nvim-dap-virutal-text
+-- Enable virutal text, requires theHamsta/nvim-dap-virtual-text
+require("nvim-dap-virtual-text").setup()
 vim.g.dap_virtual_text = true
 -- Enable virutal text, requires rcarriga/nvim-dap-ui
 require("dapui").setup()
