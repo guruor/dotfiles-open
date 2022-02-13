@@ -1,10 +1,37 @@
 # Luke's config for the Zoomer Shell
 
+# ZSH plugins
+ZSH_PLUGIN_DIR="$HOME/.local/share/zsh/plugins"
+if [[ ! -d "$ZSH_PLUGIN_DIR"  ]]; then
+    mkdir -p "$ZSH_PLUGIN_DIR"
+    # If number of plugins increases, use `Sheldon` https://github.com/rossmacarthur/sheldon to manage plugins
+    git -C "$ZSH_PLUGIN_DIR" clone https://github.com/zdharma-continuum/fast-syntax-highlighting
+    git -C "$ZSH_PLUGIN_DIR" clone https://github.com/zsh-users/zsh-completions
+    git -C "$ZSH_PLUGIN_DIR" clone https://github.com/zsh-users/zsh-autosuggestions
+    git -C "$ZSH_PLUGIN_DIR" clone https://github.com/davidparsson/zsh-pyenv-lazy
+    git -C "$ZSH_PLUGIN_DIR" clone https://github.com/mroth/evalcache
+    # git -C "$ZSH_PLUGIN_DIR" clone https://github.com/mafredri/zsh-async
+    cd "$ZSH_PLUGIN_DIR/zsh-completions/src"
+    curl -O https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker
+    curl -O https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose
+
+fi
+
+# Load syntax highlighting; should be last.
+source $ZSH_PLUGIN_DIR/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh 2>/dev/null
+source $ZSH_PLUGIN_DIR/zsh-pyenv-lazy/pyenv-lazy.plugin.zsh 2>/dev/null
+source $ZSH_PLUGIN_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh  2>/dev/null
+source $ZSH_PLUGIN_DIR/zsh-completions/zsh-completions.plugin.zsh  2>/dev/null
+source $ZSH_PLUGIN_DIR/evalcache/evalcache.plugin.zsh  2>/dev/null
+# source $ZSH_PLUGIN_DIR/zsh-async/async.plugin.zsh 2>/dev/null
+
 # Enable colors and change prompt:
 autoload -U colors && colors	# Load colors
 
 # Adding git status to the prompt
 autoload -Uz vcs_info
+# Loading async plugin
+# autoload -Uz async && async
 setopt prompt_subst
 
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
@@ -40,7 +67,9 @@ setopt HIST_IGNORE_ALL_DUPS
 
 # Basic auto/tab complete:
 autoload -U compinit
-zstyle ':completion:*' menu select
+zstyle ':completion:*' menu select # select completions with arrow keys
+zstyle ':completion:*' group-name '' # group results by category
+zstyle ':completion:::::' completer _expand _complete _ignored _approximate # enable approximate matches for completion
 zmodload zsh/complist
 compinit
 _comp_options+=(globdots)		# Include hidden files.
@@ -126,9 +155,6 @@ bindkey '^[[P' delete-char
 autoload edit-command-line; zle -N edit-command-line
 bindkey '^e' edit-command-line
 
-# Load syntax highlighting; should be last.
-source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh 2>/dev/null
-
 # Auto type tmux when zsh is loaded
 # if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
 #     stty -echo && sleep 0.2 && xdotool type --delay 15 'tmux' && stty echo
@@ -138,12 +164,51 @@ if [[ $MACHINE == "Linux" ]]; then
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 else
     source $(brew --prefix nvm)/nvm.sh
+# We are using evalcache to cache eval operations
+# Make sure to trigger `_evalcache_clear` if cache needs to be cleared
+
+if [[ ${machine} == "Linux" ]]; then
+	if $(pacman -Qs libxft-bgra >/dev/null 2>&1); then
+		# Start graphical server on user's current tty if not already running.
+		[ "$(tty)" = "/dev/tty1" ] && ! pidof -s Xorg >/dev/null 2>&1 && exec startx
+	else
+		echo "\033[31mIMPORTANT\033[0m: Note that \033[32m\`libxft-bgra\`\033[0m must be installed for this build of dwm.
+	Please run:
+		\033[32myay -S libxft-bgra-git\033[0m
+	and replace \`libxft\`. Afterwards, you may start the graphical server by running \`startx\`."
+	fi
+
+	# Switch escape and caps if tty and no passwd required:
+	sudo -n loadkeys ${XDG_DATA_HOME:-$HOME/.local/share}/larbs/ttymaps.kmap 2>/dev/null
 fi
 
-eval "$(starship init zsh)"
-# Initializing pyev
-eval "$(pyenv init --path)"
-# eval "$(pyenv virtualenv-init -)" # Slowing down the shell
+if [[ $MACHINE == "Mac" ]]; then
+    # Brew Stuff
+    # Initializing brew
+    # Brew path changes for x86 and m1 users
+    # For x86 Users, uncomment below and comment m1 BREW_PREFIX if not x86 installation needs to be used
+    # BREW_PREFIX="/usr/local"
+    # For M1 users
+    BREW_PREFIX="/opt/homebrew"
+    export HOMEBREW_NO_AUTO_UPDATE=1
+    _evalcache "${BREW_PREFIX}/bin/brew" shellenv
+    # Make all GNU flavor commands available, may override same-name BSD flavor commands
+    export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:${PATH}"
+    export MANPATH="$(brew --prefix)/opt/coreutils/libexec/gnuman:${MANPATH}"
 
-eval "$(zoxide init zsh)"
-eval "$(navi widget zsh)"
+    export PATH="$(brew --prefix)/opt/postgresql@12/bin:$PATH"
+
+    # Rust Cargo stuff
+    export CARGO_HOME="$HOME/.cargo"
+fi
+
+export PATH="$PATH:${CARGO_HOME}/bin"
+source "${CARGO_HOME}/env"
+
+# Initializing pyev, used by zsh-pyenv-lazy
+export ZSH_PYENV_LAZY_VIRTUALENV=true
+
+_evalcache starship init zsh
+_evalcache zoxide init zsh
+_evalcache navi widget zsh
+
