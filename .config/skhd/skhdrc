@@ -24,9 +24,16 @@ alt - l : yabai -m window --focus east
 cmd - space : yabai -m window --warp east; yabai -m window --focus west
 
 # Shortcuts with hyper key
-# Notetaker, Reference for floating window with yabai (https://github.com/Granitosaurus/bin/blob/master/dropdown)
+
+shift + cmd + alt + ctrl - h : yabai -m window --focus west
+shift + cmd + alt + ctrl - j : yabai -m window --focus south
+shift + cmd + alt + ctrl - k : yabai -m window --focus north
+shift + cmd + alt + ctrl - l : yabai -m window --focus east
+shift + cmd + alt + ctrl - q : yabai -m window --close
+shift + cmd + alt + ctrl - return : "${HOME}"/.config/yabai/scripts/open_iterm2.sh
+shift + cmd + alt + ctrl - space : yabai -m window --warp east; yabai -m window --focus west # Move window to left and focus
 shift + cmd + alt + ctrl - n : "${HOME}"/.config/yabai/scripts/open_notetaker.sh
-shift + cmd + alt + ctrl - r : alacritty --title "Bottom" -e $SHELL -lc "btm -b" & # Opens process monitoring tool
+shift + cmd + alt + ctrl - r : sudo alacritty --title "Bottom" -e $SHELL -lc "btm -b" & # Opens process monitoring tool
 shift + cmd + alt + ctrl - m : alacritty --title "Ncmpcpp" -e $SHELL -lc "ncmpcpp" & # Opens music player
 shift + cmd + alt + ctrl - p : mpc toggle # Toggle play/pause for mpd
 shift + cmd + alt + ctrl - 0x21 : mpc seek -10 # Seek music 10 seconds backward with hyper + [
@@ -35,10 +42,10 @@ shift + cmd + alt + ctrl - 0x1B : osascript -e 'set volume output volume (output
 shift + cmd + alt + ctrl - 0x18 : osascript -e 'set volume output volume (output volume of (get volume settings)) + 10' # Volume down with hyper + +
 
 # Switch space, requires SIP to be disabled, handling the same with mac keyboard shortcuts for mission control
-# lctrl - 1 : yabai -m space --focus 1
-# lctrl - 2 : yabai -m space --focus 2
-# lctrl - 3 : yabai -m space --focus 3
-# lctrl - 4 : yabai -m space --focus 4
+# alt - 1 : yabai -m space --focus 1
+# alt - 2 : yabai -m space --focus 2
+# alt - 3 : yabai -m space --focus 3
+# alt - 4 : yabai -m space --focus 4
 
 # Moving windows
 shift + alt - h : yabai -m window --warp west
