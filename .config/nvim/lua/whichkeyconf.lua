@@ -88,11 +88,8 @@ keys = {
         ["r"] = {"<cmd>lua require\'dap\'.repl.toggle({height=15})<CR>", "Toggle REPL"},
         ["x"] = {"<cmd>lua require\'dap\'.close()<CR>", "Stop"},
         ["t"] = {"<cmd>lua require\'dapui\'.toggle()<CR>", "DAP UI Toggle"},
-        ["S"] = {"<cmd>lua require\'dap.ui.variables\'.scopes()<CR>", "Scopes"},
-        ["h"] = {"<cmd>lua require\'dap.ui.variables\'.hover()<CR>", "Hover"},
-        ["H"] = {"<cmd>lua require\'dap.ui.variables\'.visual_hover()<CR>", "Visual hover"},
-        ["w"] = {"<cmd>lua require\'dap.ui.widgets\'.hover()<CR>", "Widget Hover"},
-        ["W"] = {"<cmd>lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>", "Widget Scopes"},
+        ["h"] = {"<cmd>lua require\'dap.ui.widgets\'.hover()<CR>", "Widget Hover"},
+        ["S"] = {"<cmd>lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>", "Widget Scopes"},
         ["dr"] = {
             ':exec ":vs | :te cargo build; rust-lldb ".input("Path to executable: ", getcwd() .. "/target/debug/", "file")." ".input("Enter args: ")<CR>',
             "rust-lldb"
