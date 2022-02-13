@@ -14,6 +14,8 @@ lua << EOF
     require("statusline")
     require("gruvbox-statusline")
     require("compeconf")
+    require("treesitter")
+    require("rest")
 EOF
 
 " Plugin config

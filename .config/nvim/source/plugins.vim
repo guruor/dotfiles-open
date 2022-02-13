@@ -26,6 +26,7 @@ Plug 'rktjmp/lush.nvim'
 Plug 'npxbr/gruvbox.nvim'
 Plug 'glepnir/galaxyline.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 Plug 'romgrk/barbar.nvim'
 
 " Easy search, navigation
@@ -68,6 +69,10 @@ Plug 'dhruvasagar/vim-prosession'
 " Better working environment
 Plug 'junegunn/goyo.vim',           { 'on': 'Goyo' }
 Plug 'junegunn/limelight.vim',      { 'on': 'LimeLight!!'}
+
+" Rest client
+Plug 'nvim-lua/plenary.nvim'
+Plug 'NTBBloodbath/rest.nvim'
 
 " Good to have
 Plug 'vimwiki/vimwiki'

@@ -196,6 +196,7 @@ endif
 	autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
 	autocmd BufRead,BufNewFile *.tex set filetype=tex
     autocmd FileType markdown setlocal commentstring=<!--\ %s\ -->
+    autocmd FileType http setlocal commentstring=#\ %s
     autocmd BufRead,BufNewFile *.md setlocal spell
 
 " Disabling syntax highlighting for larger files
