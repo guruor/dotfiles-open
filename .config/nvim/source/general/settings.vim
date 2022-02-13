@@ -159,7 +159,7 @@ autocmd BufLeave term://* stopinsert
 
 " Auto show diagnostics for a line when curson is on the line
     " Show diagnostic hover after 'updatetime' and don't steal focus
-    autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics({focusable = false})
+    " autocmd CursorHold * lua vim.diagnostic.open_float(0, { scope = "line", border = "single" })
     autocmd CursorHoldI * silent! lua vim.lsp.buf.signature_help()
 
 " Turns off highlighting on the bits of code that are changed, so the line that is changed is highlighted but the actual text that has changed stands out on the line and is readable.

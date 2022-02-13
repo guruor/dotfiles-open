@@ -119,7 +119,7 @@ keys = {
         ["k"] = {":lua vim.lsp.buf.hover()<CR>", "Hover"},
         ["="] = {":update | lua require'lsp.formatting'.format()<CR>", "Format"},
         ["d"] = {":lua vim.lsp.diagnostic.set_loclist()<CR>", "Diagnostic"},
-        ["D"] = {":lua vim.lsp.diagnostic.show_line_diagnostics({focusable = false})<CR>", "Diagnostic"},
+        ["D"] = {":lua vim.diagnostic.open_float(0, { scope = 'line', border = 'single' })<CR>", "Diagnostic"},
         ["dd"] = {":lua require'lsp.diagnostics'.line_diagnostics()<CR>", "Diagnostic"},
         ["n"] = {":lua vim.lsp.diagnostic.goto_next()<CR>", "Next diagnostic"},
         ["p"] = {":lua vim.lsp.diagnostic.goto_prev()<CR>", "Prev diagnostic"},
