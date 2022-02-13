@@ -80,22 +80,19 @@ yabai -m rule --add label="About This Mac" app="System Information" title="About
 
 # ===== Signals ================================
 
-yabai -m signal --add event=application_front_switched action="${ubersicht_spaces_refresh_command}"
-yabai -m signal --add event=display_changed action="${ubersicht_spaces_refresh_command}"
-yabai -m signal --add event=space_changed action="${ubersicht_spaces_refresh_command}"
-yabai -m signal --add event=window_created action="${ubersicht_spaces_refresh_command}"
-yabai -m signal --add event=window_destroyed action="${ubersicht_spaces_refresh_command}"
-yabai -m signal --add event=window_focused action="${ubersicht_spaces_refresh_command}"
-yabai -m signal --add event=window_title_changed action="${ubersicht_spaces_refresh_command}"
-
 # Signal to focus on active widnow when a window is closed or minimized
-focus_under_cursor="yabai -m query --windows --window &> /dev/null || yabai -m window --focus mouse"
-yabai -m signal --add event=window_destroyed action="${focus_under_cursor}"
-yabai -m signal --add event=window_minimized action="${focus_under_cursor}"
-yabai -m signal --add event=application_hidden action="${focus_under_cursor}"
-yabai -m signal --add event=application_terminated action="${focus_under_cursor}"
 
+yabai -m signal --add event=window_destroyed action="${functions[focus_under_cursor]}"
+yabai -m signal --add event=window_minimized action="${functions[focus_under_cursor]}"
+yabai -m signal --add event=application_hidden action="${functions[focus_under_cursor]}"
+yabai -m signal --add event=application_terminated action="${functions[focus_under_cursor]}"
+yabai -m signal --add event=space_changed action="${functions[focus_under_cursor]}"
+yabai -m signal --add event=display_changed action="${functions[focus_under_cursor]}"
 
+function focus_under_cursor {
+  if yabai -m query --windows --space | jq -er 'map(select(."has-focus" == true)) | length == 0' >/dev/null; then
+    yabai -m window --focus mouse 2>/dev/null || true
+  fi
+}
 
-set +x
 printf "yabai: configuration loaded...\\n"
