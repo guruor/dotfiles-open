@@ -30,7 +30,14 @@ dap.adapters.lldb = {
     env = {LLDB_LAUNCH_FLAG_LAUNCH_IN_TTY = "YES"}
 }
 
-dap.adapters.python = {type = 'executable', command = '/usr/bin/python', args = {'-m', 'debugpy.adapter'}}
+-- dap.adapters.python = {type = 'executable', command = '/usr/bin/python', args = {'-m', 'debugpy.adapter'}}
+dap.adapters.remote_python = function (callback)
+  callback({
+    type = 'server',
+    host = '0.0.0.0',
+    port = 5678
+  })
+end
 
 dap.adapters.nlua = function(callback, config)
     callback({type = 'server', host = config.host, port = config.port})
@@ -71,15 +78,24 @@ dap.adapters.go = function(callback, config)
       100)
   end
 
+-- General purpose configs are added by `dap-python` and custom one's are added in .vscode/launch.json
 dap.configurations.python = {
     {
-        type = 'python',
-        request = 'launch',
-        name = "Launch file",
-        program = "${file}",
-        pythonPath = function(_)
-            return '/usr/bin/python'
-        end
+        type = 'remote_python',
+        request = 'attach',
+        name = "Python: Remote Attach remote_python",
+        connect = {
+            host = "0.0.0.0",
+            port = 5678
+        },
+        logToFile = true,
+        cwd = vim.fn.getcwd(),
+        pathMappings = {
+          {
+            localRoot= "${workspaceFolder}",
+            remoteRoot= "/app"
+          }
+        }
     }
 }
 
