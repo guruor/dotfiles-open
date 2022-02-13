@@ -3,14 +3,18 @@
     aa = add -A
     b = branch --sort=-committerdate
     ba = branch -a --sort=-committerdate
+    bf = !git branch --color=always --sort=-committerdate -vv | grep -v '/HEAD\\s'  | fzf --ansi | sed 's/^..//' | awk '{print $1}' | sed "s#^remotes/[^/]*/##"
+    bfd = !git bf | xargs git branch -D
+    bfc = !git bf | pbcopy
+    bccib = "!zsh -c \"source $HOME/.config/zsh/.zshrc; create_git_branches $1 stage master feature/1box;\""
     c = commit -m
     ca = commit -am
     co = checkout
     # git checkout fzf
-    cof = !git branch -a --color=always --sort=-committerdate | grep -v '/HEAD\\s'  | fzf --ansi | sed 's/^..//' | awk '{print $1}' | sed "s#^remotes/[^/]*/##" | xargs git checkout
+    cof = !git branch --color=always --sort=-committerdate | grep -v '/HEAD\\s'  | fzf --ansi | sed 's/^..//' | awk '{print $1}' | sed "s#^remotes/[^/]*/##" | xargs git checkout
     # git checkout fzf with last commit details
-	cofv = !git branch -a --color=always --sort=-committerdate -vv | grep -v '/HEAD\\s'  | fzf --ansi | sed 's/^..//' | awk '{print $1}' | sed "s#^remotes/[^/]*/##" | xargs git checkout
-    contributors = shortlog -nse
+	cofv = !git branch --color=always --sort=-committerdate -vv | grep -v '/HEAD\\s'  | fzf --ansi | sed 's/^..//' | awk '{print $1}' | sed "s#^remotes/[^/]*/##" | xargs git checkout
+    contributors = shortlog -nse --all
     d = diff --patch-with-stat
     df = diff --patch-with-stat --color-words
     ds = diff --patch-with-stat --staged
@@ -19,6 +23,12 @@
     fc = "!f() { git log --pretty='%C(yellow)%h%Creset -%Cred%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' --grep=$1; }; f"
     fs = "!f() { git log --pretty='%C(yellow)%h%Creset -%Cred%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' -S$1; }; f"
     lg = log --graph --pretty='%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset'
+    l1 = log --all --date=short --color=always --format='%C(green)%ad %C(auto)%h %C(blue)%<(15,trunc)%an %C(auto)%<(65,trunc)%s%d%C(reset)'
+    # Pick commits from log with fzf
+    logf = "!f() { git l1 \"${1:-.}\" | fzf --ansi --multi | cut -d' ' -f2; }; f"
+    logfc = "!git logf | pbcopy"
+    # Cherry pick selected commit with fzf
+    cpf = "!git logf | xargs git cherry-pick"
     p = push
     P = pull
     pull-dir = "!find . -mindepth 1 -maxdepth 1 -type d -print -exec git -C {} pull \\;"
@@ -26,6 +36,11 @@
     s = status -sb
     sclone = clone --depth 1
     undo = reset HEAD~1
+    stash-staged =stash -- $(git diff --staged --name-only)
+    stash-staged-message = "!f() { git stash -m \"$1\" -- $(git diff --staged --name-only); }; f"
+    stash-but-keep-staged = stash --keep-index
+    stashes = stash list
+    stash-show-no-color = stash show -p --color=never
 
 [core]
     editor = vim
