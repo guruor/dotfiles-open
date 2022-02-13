@@ -288,14 +288,14 @@ require ('galaxyline').section.right = {
         if #vim.tbl_keys(vim.lsp.buf_get_clients()) <= 0 then
            return
         end
-
-        if vim.lsp.diagnostic.get_count(0, 'Error') == 0 then
+        local error_count = #vim.diagnostic.get(0, {severity=vim.diagnostic.severity.Error})
+        if error_count == 0 then
           vim.cmd('highlight link GalaxyRightLspError GalaxyLeftLspInactive')
         else
           vim.cmd('highlight link GalaxyRightLspError GalaxyRightLspErrorActive')
         end
 
-        return '!' .. vim.lsp.diagnostic.get_count(0, 'Error') .. ' '
+        return '!' .. error_count .. ' '
       end
     }
   },
@@ -305,14 +305,14 @@ require ('galaxyline').section.right = {
         if #vim.tbl_keys(vim.lsp.buf_get_clients()) <= 0 then
            return
         end
-
-        if vim.lsp.diagnostic.get_count(0, 'Warning') == 0 then
+        local warning_count = #vim.diagnostic.get(0, {severity=vim.diagnostic.severity.WARN})
+        if warning_count == 0 then
           vim.cmd('highlight link GalaxyRightLspWarning GalaxyLeftLspInactive')
         else
           vim.cmd('highlight link GalaxyRightLspWarning GalaxyRightLspWarningActive')
         end
 
-        return '?' .. vim.lsp.diagnostic.get_count(0, 'Warning') .. ' '
+        return '?' .. warning_count .. ' '
       end
     }
   },
@@ -323,13 +323,14 @@ require ('galaxyline').section.right = {
            return
         end
 
-        if vim.lsp.diagnostic.get_count(0, 'Information') == 0 then
+        local info_count = #vim.diagnostic.get(0, {severity=vim.diagnostic.severity.INFO})
+        if info_count == 0 then
           vim.cmd('highlight link GalaxyRightLspInformation GalaxyLeftLspInactive')
         else
           vim.cmd('highlight link GalaxyRightLspInformation GalaxyRightLspInformationActive')
         end
 
-        return '+' .. vim.lsp.diagnostic.get_count(0, 'Information') .. ' '
+        return '+' .. info_count .. ' '
       end
     }
   },
@@ -340,13 +341,14 @@ require ('galaxyline').section.right = {
            return
         end
 
-        if vim.lsp.diagnostic.get_count(0, 'Hint') == 0 then
+        local hint_count = #vim.diagnostic.get(0, {severity=vim.diagnostic.severity.HINT})
+        if hint_count == 0 then
           vim.cmd('highlight link GalaxyRightLspHint GalaxyLeftLspInactive')
         else
           vim.cmd('highlight link GalaxyRightLspHint GalaxyRightLspHintActive')
         end
 
-        return '-' .. vim.lsp.diagnostic.get_count(0, 'Hint') .. ' '
+        return '-' .. hint_count .. ' '
       end
     }
   },
