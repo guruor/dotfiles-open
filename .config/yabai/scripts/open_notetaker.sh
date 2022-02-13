@@ -20,7 +20,7 @@ function open_notetaker() {
             if [[ $window_space_id == $current_space_id ]]; then
                 # Only minimize when window was on current space
                 yabai -m window $window_id --minimize
-                yabai -m window --focus mouse 2>/dev/null
+                yabai -m window --focus recent 2>/dev/null
             fi
         fi
     fi
