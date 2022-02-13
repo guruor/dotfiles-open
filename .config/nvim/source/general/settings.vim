@@ -211,3 +211,5 @@ endif
 
 " Allowing opening of quick fix entries in new tab
     autocmd FileType qf nnoremap <buffer> <Enter> <C-W><Enter><C-W>T
+" Markdown code block color syntax
+let g:markdown_fenced_languages = ['bash=sh', 'javascript', 'js=javascript', 'json=javascript', 'typescript', 'ts=typescript', 'python', 'html', 'css', 'rust']
