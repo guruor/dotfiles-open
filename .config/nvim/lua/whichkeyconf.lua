@@ -86,7 +86,7 @@ keys = {
         ["u"] = {"<cmd>lua require\'dap\'.step_out()<CR>", "Step Out"},
         ["l"] = {"<cmd>lua require\'dap\'.toggle_breakpoint(nil, nil, vim.fn.input(\'Log point message: \'), true)<CR>", "Log"},
         ["r"] = {"<cmd>lua require\'dap\'.repl.toggle({height=15})<CR>", "Toggle REPL"},
-        ["x"] = {"<cmd>lua require\'dap\'.stop()<CR>", "Stop"},
+        ["x"] = {"<cmd>lua require\'dap\'.close()<CR>", "Stop"},
         ["t"] = {"<cmd>lua require\'dapui\'.toggle()<CR>", "DAP UI Toggle"},
         ["S"] = {"<cmd>lua require\'dap.ui.variables\'.scopes()<CR>", "Scopes"},
         ["h"] = {"<cmd>lua require\'dap.ui.variables\'.hover()<CR>", "Hover"},
