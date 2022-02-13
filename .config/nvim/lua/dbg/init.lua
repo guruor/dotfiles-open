@@ -83,7 +83,7 @@ dap.configurations.cpp = dap.configurations.rust
 vim.g.dap_virtual_text = true
 -- Enable virutal text, requires rcarriga/nvim-dap-ui
 require("dapui").setup()
--- Enable virutal text, requires mfussenegger/nvim-dap-python
-require('dap-python').setup("~/.pyenv/versions/3.6.5/bin/python")
+-- Enable virutal text, requires mfussenegger/nvim-dap-python, overide it with .vscode/launch.json
+require('dap-python').setup("~/.pyenv/versions/debugpy/bin/python")
 
 vim.cmd('command! -nargs=0 DapBreakpoints :lua require\'dap\'.list_breakpoints()')
