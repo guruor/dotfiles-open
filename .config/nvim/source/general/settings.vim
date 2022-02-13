@@ -102,12 +102,12 @@ let g:netrw_banner=0
 let g:netrw_browse_split=2
 let g:netrw_winsize=25
 
-set undodir=~/.cache/vim/undo
-set directory=~/.cache/vim/swap
-set backupdir=~/.cache/vim/backup
-set viewdir=~/.cache/vim/view
+set undodir=~/.cache/nvim/undo
+set directory=~/.cache/nvim/swap
+set backupdir=~/.cache/nvim/backup
+set viewdir=~/.cache/nvim/view
 " Sesstion directory
-let session_directory='~/.cache/vim/session/'
+let session_directory='~/.cache/nvim/session/'
 
 """ Python3 VirtualEnv
 let g:python3_host_prog = expand('~/.pyenv/versions/nvim/bin/python')
