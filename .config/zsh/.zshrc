@@ -16,7 +16,11 @@ setopt interactive_comments
 # History in cache directory:
 HISTSIZE=10000000
 SAVEHIST=10000000
-HISTFILE=~/.cache/zsh/history
+HISTDIR=~/.cache/zsh/
+HISTFILE="${HISTDIR}/history"
+# Creating history file if does not exist
+[ ! -f "$HISTFILE" ] && mkdir -p $HISTDIR && touch $HISTFILE
+
 # Doesn't save listed commands in history
 HISTORY_IGNORE="(ls|cd|pwd|exit|cd ..|history|code|vim|dot|pdot)"
 # Ignores commands starting with space
