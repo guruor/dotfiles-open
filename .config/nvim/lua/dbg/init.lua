@@ -1,4 +1,22 @@
+-- https://alpha2phi.medium.com/neovim-dap-enhanced-ebc730ff498b
+-- :DIInstall jsnode_dbg
+-- :DIInstall go_delve_dbg
 local dap = require 'dap'
+local dap_install = require("dap-install")
+
+dap_install.config("python", {})
+-- Golang
+dap_install.config("go", {})
+dap_install.config("go_delve", {})
+-- Rust, C, C++
+dap_install.config("codelldb", {})
+dap_install.config("ccppr_vsc", {})
+dap_install.config("ccppr_lldb", {})
+-- Javascript
+dap_install.config("jsnode", {})
+dap_install.config("chrome", {})
+-- Lua
+dap_install.config("lua", {})
 
 local mapper = function(mode, key, result)
     vim.api.nvim_set_keymap(mode, key, result, {noremap = true, silent = true})
