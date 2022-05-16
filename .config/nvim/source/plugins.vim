@@ -72,7 +72,8 @@ Plug 'dhruvasagar/vim-prosession'
 
 " Better working environment
 Plug 'junegunn/goyo.vim',           { 'on': 'Goyo' }
-Plug 'junegunn/limelight.vim',      { 'on': 'LimeLight!!'}
+" Plug 'junegunn/limelight.vim',      { 'on': 'LimeLight!!'}
+Plug 'junegunn/limelight.vim'
 
 " Rest client
 Plug 'nvim-lua/plenary.nvim'
