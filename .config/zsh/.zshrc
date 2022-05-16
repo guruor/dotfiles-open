@@ -14,6 +14,7 @@ if [[ ! -d "$ZSH_PLUGIN_DIR"  ]]; then
     cd "$ZSH_PLUGIN_DIR/zsh-completions/src"
     curl -O https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker
     curl -O https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose
+    curl -O https://git.zx2c4.com/password-store/plain/src/completion/pass.zsh-completion
 
 fi
 
@@ -145,7 +146,7 @@ bindkey '^R' fzf-history-widget
 # Backward search in vi mode will also trigger history search
 bindkey -a '?' fzf-history-widget
 
-bindkey -s '^a' 'bc -lq\n'
+# bindkey -s '^a' 'bc -lq\n'
 
 bindkey -s '^f' 'cd "$(dirname "$(fzf)")"\n'
 
@@ -215,3 +216,5 @@ _evalcache starship init zsh
 _evalcache zoxide init zsh
 _evalcache navi widget zsh
 
+# Trigger asl logs cleaning, since it slows down shell on macos
+# clean-asl-logs
