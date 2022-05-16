@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+cd $PASSWORD_STORE_DIR
+PASSFILE=$(tree -Ffi | grep '.gpg' | sed 's/.gpg$//g' | sed 's/^..//' | fzf)
+
+if [ -z "$PASSFILE" ]; then
+	exit 0
+fi
+
+PASSDATA="$(pass $PASSFILE)"
+USRNAME="$(echo "$PASSDATA" | grep "username:" | cut -d' ' -f2-)"
+PASS="$(echo "$PASSDATA" | head -n 1)"
+URL="$(echo $PASSDATA | grep url: | cut -d' ' -f2-)"
+
+RESP=$(cat <<EOF | fzf
+OTP
+Password
+Username
+Autotype
+URL
+EOF
+);
+
+case "$RESP" in
+	# Autotype)
+		# ydotool type "$USRNAME" && ydotool key Tab && ydotool type "$PASS" && ydotool key Enter
+		# ;;
+	Username)
+		RETURN_VALUE="$USRNAME"
+		;;
+	Password)
+		RETURN_VALUE="$PASS"
+		;;
+	OTP)
+		RETURN_VALUE="$(pass otp $PASSFILE)"
+		;;
+	URL)
+		RETURN_VALUE="$URL"
+		;;
+	*)
+		exit 1
+esac
+
+if command -v pbcopy &> /dev/null ; then
+    COPY_CMD="pbcopy"
+else
+    COPY_CMD="xsel"
+fi
+
+echo "$RETURN_VALUE" | eval "$COPY_CMD"
