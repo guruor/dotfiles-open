@@ -132,7 +132,11 @@ autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 autocmd BufWinEnter,WinEnter term://* startinsert
 autocmd TermOpen * startinsert
 
+
+autocmd VimEnter * Limelight
+
 autocmd BufLeave term://* stopinsert
+autocmd BufLeave *  call CleanNoNameEmptyBuffers()
 
 
 " Enable Goyo by default for mutt writing
