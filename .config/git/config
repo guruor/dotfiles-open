@@ -41,6 +41,8 @@
     stash-but-keep-staged = stash --keep-index
     stashes = stash list
     stash-show-no-color = stash show -p --color=never
+    # Searches a change in commit history of the branch
+    search = "!f() { git log -S \"$1\"; }; f"
 
 [core]
     editor = vim
