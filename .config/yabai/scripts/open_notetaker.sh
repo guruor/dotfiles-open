@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Notetaker, Reference for floating window with yabai (https://github.com/Granitosaurus/bin/blob/master/dropdown)
 
 window_name="Notes"
 terminal="alacritty"
