@@ -22,3 +22,13 @@ snippet biz_auth "bypass auth" Ab
 from biz.models import Biz
 biz = Biz.objects.get(biz_id=$1${VISUAL})
 endsnippet
+
+# ipython debugger (ipdb)
+snippet ipdb
+	__import__('ipdb').set_trace()
+endsnippet
+
+# ipython debugger (nosetest)
+snippet nose
+    from nose.tools import set_trace; set_trace()
+endsnippet
