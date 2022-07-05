@@ -42,8 +42,9 @@ printf '%s\n%s\n' "$password" "$password" | keepassxc-cli db-create -p -k $keepa
 
 echo -e "\n\n${blue}Importing aegis backup to newly created keepass db${white}\n\n"
 echo -e -n "\n\n${blue}KeePass Password again: ${white}\n\n";
-pimport -af keepassxc aegis $dump_file --out $keepass_db -k $keepass_db_secret -vvv
-pass import -af aegis $dump_file
+pimport -af -vvv --out $keepass_db -k $keepass_db_secret keepassxc aegis $dump_file
+# Importing to pass-otp as well to be used with pass-fzf
+pimport -af -vvv pass aegis $dump_file
 
 echo -e "\n\n${blue}Removing temp files${white}"
 # Securely delete the file once it is restored in keepass,
