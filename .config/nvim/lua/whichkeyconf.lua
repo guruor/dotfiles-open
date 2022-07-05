@@ -183,6 +183,8 @@ keys = {
         ["El"] = {":!ln -sf localenv .env<CR>", "Local env"},
         ["Es"] = {":!ln -sf stageenv .env<CR>", "Stage env"},
         ["Ep"] = {":!ln -sf prodenv .env<CR>", "Prod env"},
+        ["Eo"] = {":!ln -sf oneboxenv .env<CR>", "Onebox env"},
+        ["Eu"] = {":!ln -sf uatenv .env<CR>", "UAT env"},
     }
 }
 wk.register(keys, {prefix = leader})
