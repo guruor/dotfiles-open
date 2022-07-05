@@ -177,6 +177,12 @@ lspconfig.yamlls.setup {on_attach = on_attach}
 lspconfig.sqlls.setup {on_attach = on_attach}
 
 -- https://github.com/vscode-langservers/vscode-css-languageserver-bin
+-- https://github.com/hrsh7th/vscode-langservers-extracted
+-- npm i -g vscode-langservers-extracted, this will provide below LSPs
+-- vscode-html-language-server
+-- vscode-css-language-server
+-- vscode-json-language-server
+-- vscode-eslint-language-server
 lspconfig.cssls.setup {on_attach = on_attach}
 
 -- https://github.com/vscode-langservers/vscode-html-languageserver-bin
