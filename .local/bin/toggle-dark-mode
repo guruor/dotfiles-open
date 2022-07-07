@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Script to enable, disable dark mode
 # Changes background for following applications
 # xresources, alacritty, tmux, vim, bat
@@ -12,47 +12,50 @@ help() {
     exit
 }
 
-dark_mode_flag="~/.cache/dark-mode.off"
+dark_mode_flag="$HOME/.cache/dark-mode.off"
 
 change_xresources_theme() {
-    echo -e "Requested xresource theme is: $1"
     theme=$1
+    echo "Requested xresource theme is: $1"
     config_file="$HOME/.config/x11/xresources"
     get_actual_path_if_symlink $config_file
 
     theme_file="$HOME/.config/x11/$theme.xres"
-    sed -i -e "s|^#include .*gruvbox.*.xres\"|#include \"$theme_file\"|g" $config_file
+    sd "^#include .*gruvbox.*.xres\"" "#include \"$theme_file\"" $config_file
 
-    # Reloading xresource databases
-    xrdb $HOME/.config/x11/xresources
+    # Running this only on x11 systems
+    if [ -x "$(command -v xrdb)" ]; then
+        # Reloading xresource databases
+        xrdb $HOME/.config/x11/xresources
 
-    # echo -e "Merging $theme_file"
-    # xrdb -merge "$theme_file"
+        # echo "Merging $theme_file"
+        # xrdb -merge "$theme_file"
 
-    # Reloading xrdb colors for dwm
-    dwmc xrdb
-    # Reloading all active instances of `st`
-    pidof st | xargs kill -SIGUSR1
+        # Reloading xrdb colors for dwm
+        dwmc xrdb
+        # Reloading all active instances of `st`
+        pidof st | xargs kill -SIGUSR1
+    fi
 }
 
 
 change_alacritty_theme() {
-    echo -e "Requested alacritty theme is: $1"
+    echo "Requested alacritty theme is: $1"
     config_file="$HOME/.config/alacritty/color.yml"
     theme=$1
     get_actual_path_if_symlink $config_file
 
-    sed -i -e "s|^colors: \*.*|colors: *$theme|g" $config_file
+    sd "^colors: \*.*" "colors: *$theme" $config_file
 }
 
 change_tmux_theme() {
-    echo -e "Requested tmux theme is: $1"
+    echo "Requested tmux theme is: $1"
     theme=$1
     tmux source-file $HOME/.config/tmux/tmux.$theme.conf
 }
 
 change_vim_background() {
-    # echo -e "Requested vim background mode is: $1"
+    # echo "Requested vim background mode is: $1"
     # # well, seems like there is no proper way to send a command to
     # # Vim as a client. Luckily we're using tmux, which means we can
     # # iterate over all vim pans and change the background ourself.
@@ -73,16 +76,16 @@ change_vim_background() {
 }
 
 change_bat_theme() {
-    echo -e "Requested bat theme is: $1"
+    echo "Requested bat theme is: $1"
     config_file="$HOME/.config/bat/config"
     theme=$1
     get_actual_path_if_symlink $config_file
 
-    sed -i -e "s|^--theme=.*|--theme=\"$theme\"|g" $config_file
+    sd "^--theme=.*" -- "--theme=\"$theme\"" $config_file
 }
 
 change_taskwarrior_theme() {
-    echo -e "Requested taskwarrior theme is: $1"
+    echo "Requested taskwarrior theme is: $1"
     config_file="$HOME/.config/taskwarrior/task/taskrc"
     theme=$1
     get_actual_path_if_symlink $config_file
@@ -90,66 +93,72 @@ change_taskwarrior_theme() {
     # theme_name="include /usr/share/doc/task/rc/solarized-${theme}-256.theme"
     theme_name="include /usr/share/doc/task/rc/${theme}-256.theme"
 
-    sed -i -e "s|^include .*theme$|$theme_name|g" $config_file
+    sd "^include .*theme$" "$theme_name" $config_file
     pkill taskwarrior-tui
 }
 
 change_gtk_theme() {
-    echo -e "Requested gtk theme is: $1"
     theme=$1
+    # Running for only x11 system
+    if [ -x "$(command -v xrdb)" ]; then
+        echo "Requested gtk theme is: $1"
 
-    theme1="Pop-gruvbox"
-    theme2="Arc-Gruvbox"
+        theme1="Pop-gruvbox"
+        theme2="Arc-Gruvbox"
 
-    if [[ $theme == "light" ]]; then
-        temp=$theme1
-        theme1=$theme2
-        theme2=$temp
+        if [[ $theme == "light" ]]; then
+            temp=$theme1
+            theme1=$theme2
+            theme2=$temp
+        fi
+
+        config_file="$HOME/.config/gtk-2.0/gtkrc-2.0"
+        get_actual_path_if_symlink $config_file
+        sd "$theme1" "$theme2" $config_file
+
+        config_file="$HOME/.config/gtk-3.0/settings.ini"
+        get_actual_path_if_symlink $config_file
+        sd "$theme1" "$theme2" $config_file
+
+        config_file="$HOME/.config/xsettingsd/xsettingsd.conf"
+        get_actual_path_if_symlink $config_file
+        sd "$theme1" "$theme2" $config_file
+
+        pkill -1 xsettingsd
     fi
-
-    config_file="$HOME/.config/gtk-2.0/gtkrc-2.0"
-    get_actual_path_if_symlink $config_file
-    sed -i "s/$theme1/$theme2/g" $config_file
-
-    config_file="$HOME/.config/gtk-3.0/settings.ini"
-    get_actual_path_if_symlink $config_file
-    sed -i "s/$theme1/$theme2/g" $config_file
-
-    config_file="$HOME/.config/xsettingsd/xsettingsd.conf"
-    get_actual_path_if_symlink $config_file
-    sed -i "s/$theme1/$theme2/g" $config_file
-
-    pkill -1 xsettingsd
 }
 
 change_dunst_theme() {
-    echo -e "Requested dunst theme is: $1"
     theme=$1
-    config_file="$HOME/voidrice/.config/dunst/dunstrc"
-    get_actual_path_if_symlink $config_file
+    # Run only when dunst is present on system
+    if [ -x "$(command -v dunst)" ]; then
+        echo "Requested dunst theme is: $1"
+        config_file="$HOME/voidrice/.config/dunst/dunstrc"
+        get_actual_path_if_symlink $config_file
 
-    theme1=$theme
-    if [[ $theme == "light" ]]; then
-        theme2="dark"
-    else
-        theme2="light"
+        theme1=$theme
+        if [[ $theme == "light" ]]; then
+            theme2="dark"
+        else
+            theme2="light"
+        fi
+
+        # Commenting old theme
+        sed -i -e "/^## $theme1-theme-start/,/^## $theme1-theme-end/{s/^#//g}" $config_file
+        # Applying old theme
+        sed -i -e "/^# $theme2-theme-start/,/^# $theme2-theme-end/{s/^/#/g}" $config_file
+        killall dunst
+        dunst &
+        dunstify -u "normal" -a "System" "Dark mode toggled" "Theme changed"
     fi
-
-    # Commenting old theme
-    sed -i -e "/^## $theme1-theme-start/,/^## $theme1-theme-end/{s/^#//g}" $config_file
-    # Applying old theme
-    sed -i -e "/^# $theme2-theme-start/,/^# $theme2-theme-end/{s/^/#/g}" $config_file
-    killall dunst
-    dunst &
-    dunstify -u "normal" -a "System" "Dark mode toggled" "Theme changed"
 }
 
 get_actual_path_if_symlink(){
     if [[ ! -f $config_file ]]; then
-        echo -e "File ${config_file} doesn't exist"
+        echo "File ${config_file} doesn't exist"
         return
     fi
-    # sed doesn't like symlinks, get the absolute path
+    # sed/sd doesn't like symlinks, get the absolute path
     config_file=$(readlink -f $config_file)
     echo $config_file
 }
