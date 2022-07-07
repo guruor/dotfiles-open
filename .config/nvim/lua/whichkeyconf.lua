@@ -132,7 +132,8 @@ wk.register(keys, {prefix = leader, mode = 'v'})
 keys = {
     t = {
         name = 'Toggle',
-        ["b"] = {":!toggle-dark-mode<CR>", "Toggle background"},
+        ["b"] = {":call ToggleBackground()<CR>", "Toggle vim background"},
+        ["B"] = {":!toggle-dark-mode<CR>", "Toggle background of all apps"},
         ["n"] = {":set nonumber!<CR>", "Line numbers"},
         ["r"] = {":set norelativenumber!<CR>", "Relative line numbers"},
         ["w"] = {":set wrap!<CR>", "Word wrap"},
