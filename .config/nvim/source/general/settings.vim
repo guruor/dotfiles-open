@@ -138,6 +138,10 @@ autocmd VimEnter * Limelight
 autocmd BufLeave term://* stopinsert
 autocmd BufLeave *  call CleanNoNameEmptyBuffers()
 
+" Enable folding
+	autocmd BufReadPre * setlocal foldmethod=indent
+    autocmd BufEnter *.md setlocal foldexpr=MarkdownLevel()
+    autocmd BufEnter *.md setlocal foldmethod=expr
 
 " Enable Goyo by default for mutt writing
 	autocmd BufRead,BufNewFile /tmp/neomutt* let g:goyo_width=80

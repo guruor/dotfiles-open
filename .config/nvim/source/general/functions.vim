@@ -87,3 +87,12 @@ function! CleanNoNameEmptyBuffers()
         echo 'No buffer deleted'
     endif
 endfunction
+
+function MarkdownLevel()
+    let h = matchstr(getline(v:lnum), '^#\+')
+    if empty(h)
+        return "="
+    else
+        return ">" . len(h)
+    endif
+endfunction
