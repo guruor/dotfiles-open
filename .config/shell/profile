@@ -101,10 +101,10 @@ export TIMEWARRIORDB="$HOME/Dropbox/timewarrior"
 
 # Other program settings:
 export DICS="/usr/share/stardict/dic/"
-export SUDO_ASKPASS="$HOME/.local/bin/dmenupass"
+# export SUDO_ASKPASS="$HOME/.local/bin/dmenupass"
 export FZF_DEFAULT_OPTS="--layout=reverse --height 40%  --inline-info"
 export FZF_DEFAULT_COMMAND='fd --hidden --follow --type f'
-
+export BC_ENV_ARGS=$HOME/.config/bc/bcrc
 
 # export LESS=-R
 export LESS="-XFR"
