@@ -66,6 +66,17 @@ setopt HIST_IGNORE_ALL_DUPS
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc"
 
+# Loading iterm profile
+export DARK_MODE_FLAG="$HOME/.cache/dark-mode.off"
+if [[ -f $DARK_MODE_FLAG ]]; then
+    iterm_profile="gruvbox-light"
+else
+    iterm_profile="gruvbox-dark"
+fi
+switch_iterm2_profile $iterm_profile
+export ITERM_PROFILE=$iterm_profile
+
+
 # Basic auto/tab complete:
 autoload -U compinit
 zstyle ':completion:*' menu select # select completions with arrow keys
