@@ -12,6 +12,7 @@ help() {
     exit
 }
 
+source ~/.config/shell/functions
 dark_mode_flag="$HOME/.cache/dark-mode.off"
 
 change_xresources_theme() {
@@ -95,6 +96,11 @@ change_taskwarrior_theme() {
 
     sd "^include .*theme$" "$theme_name" $config_file
     pkill taskwarrior-tui
+}
+
+change_iterm2_theme() {
+    echo "Requested iterm2 theme is: $1"
+    switch_iterm2_profile $1
 }
 
 change_gtk_theme() {
@@ -181,6 +187,7 @@ stopdark() {
     change_taskwarrior_theme light
     change_gtk_theme light
     change_dunst_theme light
+    change_iterm2_theme gruvbox-light
     touch $dark_mode_flag
 }
 
@@ -193,6 +200,7 @@ startdark() {
     change_taskwarrior_theme dark
     change_gtk_theme dark
     change_dunst_theme dark
+    change_iterm2_theme gruvbox-dark
     rm -f $dark_mode_flag
 }
 
