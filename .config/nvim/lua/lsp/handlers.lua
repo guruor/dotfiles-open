@@ -26,7 +26,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = function(...)
         },
         virtual_text = false,
     })(...)
-    pcall(vim.lsp.diagnostic.set_loclist, {open_loclist = false})
+    pcall(vim.lsp.diagnostic.setloclist, {open_loclist = false})
 end
 
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {border = vim.g.floating_window_border_dark})
