@@ -1,5 +1,4 @@
 require "lsp.handlers"
-require "lsp.formatting"
 local lspconfig = require "lspconfig"
 local utils = require "utils"
 local M = {}
@@ -42,6 +41,7 @@ vim.fn.sign_define("LspDiagnosticsSignInformation", {text = "", numhl = "LspD
 vim.fn.sign_define("LspDiagnosticsSignHint", {text = "", numhl = "LspDiagnosticsDefaultHint"})
 
 local on_attach = function(client)
+    require("lsp-format").on_attach(client)
     utils.map('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', {buffer = true})
     utils.map('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', {buffer = true})
     utils.map('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', {buffer = true})

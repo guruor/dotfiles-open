@@ -54,6 +54,7 @@ Plug 'theHamsta/nvim-dap-virtual-text'
 Plug 'rcarriga/nvim-dap-ui'
 Plug 'jbyuki/one-small-step-for-vimkind'
 Plug 'mfussenegger/nvim-dap-python'
+Plug 'lukas-reineke/lsp-format.nvim'
 " Plug 'Pocco81/DAPInstall.nvim'
 
 Plug 'alvan/vim-closetag'
