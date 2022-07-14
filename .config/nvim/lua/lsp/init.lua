@@ -4,9 +4,31 @@ local utils = require "utils"
 local M = {}
 
 vim.lsp.protocol.CompletionItemKind = {
-    " [text]", " [method]", " [function]", " [constructor]", "ﰠ [field]", " [variable]", " [class]", " [interface]",
-    " [module]", " [property]", " [unit]", " [value]", " [enum]", " [key]", "﬌ [snippet]", " [color]", " [file]",
-    " [reference]", " [folder]", " [enum member]", " [constant]", " [struct]", "⌘ [event]", " [operator]", "♛ [type]"
+    Text = " [text]",
+    Method = " [method]",
+    Function = " [function]",
+    Constructor = " [constructor]",
+    Field = "ﰠ [field]",
+    Variable = " [variable]",
+    Class = " [class]",
+    Interface = " [interface]",
+    Module = " [module]",
+    Property = " [property]",
+    Unit = " [unit]",
+    Value = " [value]",
+    Enum = " [enum]",
+    Keyword = " [key]",
+    Snippet = "﬌ [snippet]",
+    Color = " [color]",
+    File = " [file]",
+    Reference = " [reference]",
+    Folder = " [folder]",
+    EnumMember = " [enum member]",
+    Constant = " [constant]",
+    Struct = " [struct]",
+    Event = "⌘ [event]",
+    Operator = " [operator]",
+    TypeParameter = " [type]",
 }
 
 M.symbol_kind_icons = {
@@ -14,12 +36,28 @@ M.symbol_kind_icons = {
     Method = "",
     Variable = "",
     Constant = "",
-    Interface = "",
+    Interface = "練",
     Field = "ﰠ",
     Property = "",
     Struct = "",
     Enum = "",
-    Class = ""
+    Class = "",
+    File = "",
+    Module = "",
+    Namespace = "",
+    Package = "",
+    Constructor = "",
+    String = "",
+    Number = "",
+    Boolean = "◩",
+    Array = "",
+    Object = "",
+    Key = "",
+    Null = "ﳠ",
+    EnumMember = "",
+    Event = "",
+    Operator = "",
+    TypeParameter = "",
 }
 
 M.symbol_kind_colors = {
@@ -32,7 +70,7 @@ M.symbol_kind_colors = {
     Property = "blue",
     Struct = "cyan",
     Enum = "yellow",
-    Class = "red"
+    Class = "magenta",
 }
 
 vim.fn.sign_define("LspDiagnosticsSignError", {text = "", numhl = "LspDiagnosticsDefaultError"})
@@ -53,12 +91,16 @@ end
 
 function _G.activeLSP()
     local servers = {}
-    for _, lsp in pairs(vim.lsp.get_active_clients()) do table.insert(servers, {name = lsp.name, id = lsp.id}) end
+    for _, lsp in pairs(vim.lsp.get_active_clients()) do
+        table.insert(servers, { name = lsp.name, id = lsp.id })
+    end
     _G.P(servers)
 end
 function _G.bufferActiveLSP()
     local servers = {}
-    for _, lsp in pairs(vim.lsp.buf_get_clients()) do table.insert(servers, {name = lsp.name, id = lsp.id}) end
+    for _, lsp in pairs(vim.lsp.buf_get_clients()) do
+        table.insert(servers, { name = lsp.name, id = lsp.id })
+    end
     _G.P(servers)
 end
 
