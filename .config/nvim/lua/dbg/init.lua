@@ -18,6 +18,10 @@ local dap = require 'dap'
 -- Lua
 -- dap_install.config("lua", {})
 
+
+-- Setting log level possible values: TRACE, DEBUG, INFO, WARN, ERROR
+dap.set_log_level("TRACE")
+
 local mapper = function(mode, key, result)
     vim.api.nvim_set_keymap(mode, key, result, {noremap = true, silent = true})
 end
