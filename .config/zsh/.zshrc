@@ -15,7 +15,9 @@ if [[ ! -d "$ZSH_PLUGIN_DIR"  ]]; then
     curl -O https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker
     curl -O https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose
     curl -O https://git.zx2c4.com/password-store/plain/src/completion/pass.zsh-completion
-
+    curl -O https://raw.githubusercontent.com/sharkdp/fd/master/contrib/completion/_fd
+    curl -O https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/ripgrep/_ripgrep
+    curl -O https://raw.githubusercontent.com/junegunn/fzf/master/shell/completion.zsh
 fi
 
 # Load syntax highlighting; should be last.
