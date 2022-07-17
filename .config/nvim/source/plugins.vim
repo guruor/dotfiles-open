@@ -12,9 +12,9 @@ if ! filereadable(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autolo
         echo "Creating virtual environment ..."
         " Check if python or pip needs to be installed
         " silent !sudo pacman -S words --noconfirm
-        silent !pyenv install 3.9.1 || true
-        silent !pyenv virtualenv 3.9.1 nvim || true
-        silent !pyenv virtualenv 3.9.1 debugpy || true " Creating a virtualenv for debugpy for python debugging
+        silent !pyenv install 3.10.0 || true
+        silent !pyenv virtualenv 3.10.0 nvim || true
+        silent !pyenv virtualenv 3.10.0 debugpy || true " Creating a virtualenv for debugpy for python debugging
         silent !~/.pyenv/versions/nvim/bin/python -m pip install neovim pynvim
         silent !~/.pyenv/versions/debugpy/bin/python -m pip install debugpy
     endif
