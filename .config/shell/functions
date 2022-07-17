@@ -1,13 +1,13 @@
 #!/bin/sh
 
-sudo() {
+# sudo() {
     # Enables touch id for sudo on mac
-    unset -f sudo
-    if [[ "$(uname)" == 'Darwin' ]] && ! grep 'pam_tid.so' /etc/pam.d/sudo --silent; then
-      sudo sed -i -e '1s;^;auth       sufficient     pam_tid.so\n;' /etc/pam.d/sudo
-    fi
-    sudo "$@"
-}
+    # unset -f sudo
+    # if [[ "$(uname)" == 'Darwin' ]] && ! grep 'pam_tid.so' /etc/pam.d/sudo --silent; then
+      # sudo sed -i -e '1s;^;auth       sufficient     pam_tid.so\n;' /etc/pam.d/sudo
+    # fi
+    # sudo "$@"
+# }
 
 # Add global functions here
 function docker_ip() {
