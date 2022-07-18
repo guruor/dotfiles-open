@@ -33,8 +33,8 @@ shift + cmd + alt + ctrl - q : yabai -m window --close
 shift + cmd + alt + ctrl - return : "${HOME}"/.config/yabai/scripts/open_iterm2.sh
 shift + cmd + alt + ctrl - space : yabai -m window --warp east; yabai -m window --focus west # Move window to left and focus
 shift + cmd + alt + ctrl - n : "${HOME}"/.config/yabai/scripts/open_notetaker.sh
-shift + cmd + alt + ctrl - r : sudo alacritty --title "Bottom" -e $SHELL -lc "btm -b" & # Opens process monitoring tool
-shift + cmd + alt + ctrl - m : alacritty --title "Ncmpcpp" -e $SHELL -lc "ncmpcpp" & # Opens music player
+shift + cmd + alt + ctrl - r : kitty --title "Bottom" -e $SHELL -lc "btm -b" & # Opens process monitoring tool
+shift + cmd + alt + ctrl - m : kitty --title "Ncmpcpp" -e $SHELL -lc "ncmpcpp" & # Opens music player
 shift + cmd + alt + ctrl - p : mpc toggle # Toggle play/pause for mpd
 shift + cmd + alt + ctrl - 0x21 : mpc seek -10 # Seek music 10 seconds backward with hyper + [
 shift + cmd + alt + ctrl - 0x1E : mpc seek +10 # Seek music 10 seconds forward with hyper + ]
