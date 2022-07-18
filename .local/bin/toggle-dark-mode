@@ -49,6 +49,30 @@ change_alacritty_theme() {
     sd "^colors: \*.*" "colors: *$theme" $config_file
 }
 
+change_kitty_theme() {
+    echo "Requested kitty theme is: $1"
+    config_file="$HOME/.config/kitty/kitty.conf"
+    theme=$1
+    get_actual_path_if_symlink $config_file
+
+    sd "^include gruvbox_.*\.conf$" "include $theme.conf" $config_file
+
+    # Reloading all active instances of `st`
+    pidof kitty | xargs kill -SIGUSR1
+}
+
+change_bottom_theme() {
+    echo "Requested bottom theme is: $1"
+    config_file="$HOME/.config/bottom/bottom.toml"
+    theme=$1
+    get_actual_path_if_symlink $config_file
+
+    sd "^color = .*$" "color = \"$theme\"" $config_file
+
+    # Reloading all active instances of `st`
+    pidof kitty | xargs kill -SIGUSR1
+}
+
 change_tmux_theme() {
     echo "Requested tmux theme is: $1"
     theme=$1
@@ -181,6 +205,7 @@ toggledark() {
 stopdark() {
     change_xresources_theme gruvbox-light
     change_alacritty_theme gruvbox_light
+    change_kitty_theme gruvbox_light
     change_vim_background light
     change_bat_theme gruvbox-light
     change_tmux_theme light
@@ -188,12 +213,14 @@ stopdark() {
     change_gtk_theme light
     change_dunst_theme light
     change_iterm2_theme gruvbox-light
+    change_bottom_theme gruvbox-light
     touch $dark_mode_flag
 }
 
 startdark() {
     change_xresources_theme gruvbox-dark
     change_alacritty_theme gruvbox_dark
+    change_kitty_theme gruvbox_dark
     change_vim_background dark
     change_bat_theme gruvbox-dark
     change_tmux_theme dark
@@ -201,6 +228,7 @@ startdark() {
     change_gtk_theme dark
     change_dunst_theme dark
     change_iterm2_theme gruvbox-dark
+    change_bottom_theme gruvbox
     rm -f $dark_mode_flag
 }
 
