@@ -79,7 +79,6 @@ vim.fn.sign_define("LspDiagnosticsSignInformation", {text = "", numhl = "LspD
 vim.fn.sign_define("LspDiagnosticsSignHint", {text = "", numhl = "LspDiagnosticsDefaultHint"})
 
 local on_attach = function(client)
-    require("lsp-format").on_attach(client)
     utils.map('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', {buffer = true})
     utils.map('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', {buffer = true})
     utils.map('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', {buffer = true})
@@ -87,6 +86,7 @@ local on_attach = function(client)
     utils.map('n', 'gs', '<Cmd>lua vim.lsp.buf.signature_help()<CR>', {buffer = true})
     utils.map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', {buffer = true})
     utils.map('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', {buffer = true})
+    require("lsp.lsp-format").on_attach(client)
 end
 
 function _G.activeLSP()
