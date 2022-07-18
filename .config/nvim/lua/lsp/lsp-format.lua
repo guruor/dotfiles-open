@@ -1,10 +1,13 @@
+local lsp_format = require("lsp-format")
+
 local prettier = {
     tabWidth = 4,
     singleQuote = true,
     trailingComma = "all",
     configPrecedence = "prefer-file",
 }
-require("lsp-format").setup {
+
+lsp_format.setup {
     typescript = prettier,
     javascript = prettier,
     typescriptreact = prettier,
@@ -24,3 +27,7 @@ require("lsp-format").setup {
         tabWidth = 4,
     },
 }
+
+lsp_format.disable { args = "" }
+
+return lsp_format
