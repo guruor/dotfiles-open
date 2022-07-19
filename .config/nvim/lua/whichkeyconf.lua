@@ -77,7 +77,7 @@ keys = {
     d = {
         name = 'Debug',
 
-        ["b"] = {"<cmd>lua require'dap'.toggle_breakpoint()<CR><cmd>lua require'dbg.breakpoints'.store()<CR>", "Toggle Breakpoint"},
+        ["b"] = {"<cmd>lua require'dap'.toggle_breakpoint()<CR>", "Toggle Breakpoint"},
         ["B"] = {"<cmd>lua require\'dap\'.toggle_breakpoint(vim.fn.input(\'Breakpoint Condition: \'), nil, nil, true)<CR>", "Condition"},
         ["j"] = {"<cmd>lua require\'dap\'.down()<CR>", "Down in stack trace"},
         ["k"] = {"<cmd>lua require\'dap\'.up()<CR>", "Up in stack trace"},
