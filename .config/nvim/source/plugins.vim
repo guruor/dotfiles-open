@@ -78,7 +78,8 @@ Plug 'junegunn/limelight.vim'
 
 " Rest client
 Plug 'nvim-lua/plenary.nvim'
-Plug 'NTBBloodbath/rest.nvim'
+" Plug 'NTBBloodbath/rest.nvim'
+Plug 'teto/rest.nvim', { 'branch': 'always-send-string' }
 
 " Good to have
 Plug 'vimwiki/vimwiki'
