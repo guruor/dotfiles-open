@@ -116,7 +116,7 @@ change_taskwarrior_theme() {
     get_actual_path_if_symlink $config_file
 
     # theme_name="include /usr/share/doc/task/rc/solarized-${theme}-256.theme"
-    theme_name="include /usr/share/doc/task/rc/${theme}-256.theme"
+    theme_name="include ${theme}-256.theme"
 
     sd "^include .*theme$" "$theme_name" $config_file
     pkill taskwarrior-tui
