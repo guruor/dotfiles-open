@@ -18,7 +18,8 @@ urgency.user.tag.personal.coefficient = 0
 urgency.user.tag.waiting.coefficient=-10.0
 
 # Color theme (uncomment one to use)
-include /usr/share/doc/task/rc/light-256.theme
+include dark-256.theme
+
 # Task state
 color.active=color1 on rgb035
 color.blocked=bold gray10 on gray4
