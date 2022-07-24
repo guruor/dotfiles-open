@@ -92,4 +92,4 @@ schemes:
       white:   '#928374'
     # indexed_colors: []
 
-colors: *gruvbox_light
+colors: *gruvbox_dark
