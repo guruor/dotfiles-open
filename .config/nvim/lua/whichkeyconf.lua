@@ -193,3 +193,16 @@ keys = {
 }
 wk.register(keys, {prefix = leader})
 wk.register(keys, {prefix = leader, mode = 'v'})
+
+keys = {
+    q = {
+        name = 'Dadbod DB client',
+        ["t"] = {"<Cmd>DBUIToggle<Cr>", "Toggle UI"},
+        ["f"] = {"<Cmd>DBUIFindBuffer<Cr>", "Find buffer"},
+        ["r"] = {"<Cmd>DBUIRenameBuffer<Cr>", "Rename buffer"},
+        ["q"] = {"<Cmd>DBUILastQueryInfo<Cr>", "Last query info"},
+        ["e"] = {"<Plug>(DBUI_ExecuteQuery)", "Execute query"},
+    }
+}
+wk.register(keys, {prefix = leader})
+wk.register(keys, {prefix = leader, mode = 'v'})

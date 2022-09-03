@@ -21,3 +21,7 @@ EOF
 " Plugin config
 source $HOME/.config/nvim/source/plug-conf/fzf.vim
 source $HOME/.config/nvim/source/plug-conf/misc.vim
+
+if filereadable(system('echo -n "$HOME/.config/nvim/source/private/dadbods.vim"'))
+    source $HOME/.config/nvim/source/private/dadbods.vim
+endif

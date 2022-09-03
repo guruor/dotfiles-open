@@ -21,5 +21,6 @@ require'compe'.setup {
     path = true;
     buffer = true;
     spell = true;
+	vim_dadbod_completion = true;
   };
 }
