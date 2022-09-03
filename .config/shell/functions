@@ -44,8 +44,8 @@ function switch_iterm2_profile() {
     echo -ne "\033]50;SetProfile=$1\a"
 }
 
-get_pr_url() {
-    raise=$1
+raise_pr() {
+    raise=${1:=1}
 
     # Gets pull request URL for selected destination branch from current branch
     inside_git_repo="$(git rev-parse --is-inside-work-tree 2>/dev/null)"
