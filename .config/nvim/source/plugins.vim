@@ -81,6 +81,11 @@ Plug 'nvim-lua/plenary.nvim'
 " Plug 'NTBBloodbath/rest.nvim'
 Plug 'teto/rest.nvim', { 'branch': 'always-send-string' }
 
+" DB query executer
+Plug 'tpope/vim-dadbod'
+Plug 'kristijanhusak/vim-dadbod-completion'
+Plug 'kristijanhusak/vim-dadbod-ui'
+
 " Good to have
 Plug 'vimwiki/vimwiki'
 Plug 'SirVer/ultisnips'
