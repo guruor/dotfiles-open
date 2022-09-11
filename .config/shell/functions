@@ -57,7 +57,9 @@ raise_pr() {
 
     # Choosing destination branch from available top branch choices
     # Instruct if main brances are not defined, and consider all recently used local branches
-    if ! [[ $(git config --get core.mainbranches) ]]; then
+
+    main_branch_str=$(git config --get core.mainbranches)
+    if ! [[ "${main_branch_str}" ]]; then
         echo "Main branches are not defined in local git config"
         echo -e "Define them using below command, in this sample adding stage and master as two main branches\n"
         echo '```\ngit config --replace-all core.mainbranches "stage\\nmaster"\n\n```'
@@ -65,9 +67,19 @@ raise_pr() {
         echo "\n\nConsidering all recently used local branches by default\n\n"
         dest_branch="$(git branch --color=always --sort=-committerdate | grep -v '/HEAD\\s'  | fzf --ansi | sed 's/^..//' | awk '{print $1}' | sed "s#^remotes/[^/]*/##")"
     else
-        dest_branch="$(echo -e $(git config --get core.mainbranches) | fzf)"
+        dest_branch="$(echo -e "${main_branch_str}" | fzf)"
     fi
 
+    # Validating if all source branch commits are present in previous lower branch
+    echo -e "\nValidating if all source branch commits are present in previous lower branch:\n" >&2
+
+    check_lower_branch_missed_commits "${dest_branch}" "${main_branch_str}"
+    # Returning on error
+    if [ $? -ne 0 ]; then
+       return
+    fi
+
+    echo -e "\nGetting repo URL..." >&2
     # Getting repo path from configured origin remote
     repo_push_url=$(git remote get-url --push origin)
 
@@ -81,7 +93,7 @@ raise_pr() {
     # Using current branch as source branch
     source_branch=$(git rev-parse --abbrev-ref HEAD)
 
-    echo -e "\nRepo Path: ${repo_path}\nSource branch: ${source_branch}\nDestination branch: ${dest_branch}\n\n"
+    echo -e "Repo Path: ${repo_path}\nSource branch: ${source_branch}\nDestination branch: ${dest_branch}\n\n"
     if [[ $repo_push_url == *bitbucket* ]]; then
         pr_url="https://bitbucket.org/${repo_path}/pull-requests/new?source=${source_branch}&dest=${dest_branch}"
     elif [[ $repo_push_url == *gitlab* ]]; then
@@ -98,4 +110,74 @@ raise_pr() {
     fi
 }
 
+function get_lower_branch(){
+    # Lower branch: A branch lower in hierarchy then the target branch, which should have all the commits before moving to target branch
+    destination_branch=$1
+    shift
+    main_branches=("$@")
+
+    echo -e "main_branches: ${main_branches}" >&2
+    echo -e "destination_branch: ${destination_branch}" >&2
+    branch_position=-1
+
+
+    count=0
+    for branch in "${main_branches[@]}"; do
+        if [[ "${branch}" = "${destination_branch}" ]]; then
+            branch_position=${count}
+            break
+        fi
+        count=$((count + 1))
+    done
+
+    local lower_branch
+    if [[ $branch_position -ge 1 ]]; then
+        lower_branch_position=$((${branch_position} - 1))
+
+        # Zsh and bash compatible way to access list index by using offset:limit
+        lower_branch=${main_branches[@]:$lower_branch_position:1}
+
+        echo -e "lower_branch: ${lower_branch}" >&2
+    else
+        echo -e "This is the lowest main branch, no need to check missing commits for this." >&2
+    fi
+
+    echo "${lower_branch}"
+}
+
+function check_lower_branch_missed_commits(){
+    # Check for missing commits in lower branch
+    # Here lower branch refers to a branch lower in hierarchy then the target branch, which should have all the commits before moving to target branch
+    dest_branch=$1
+    main_branche_str=$2
+
+    if [[ -z "${main_branche_str}" ]]; then
+        main_branch_str=$(git config --get core.mainbranches)
+    fi
+    if [[ -z "${dest_branch}" ]]; then
+        dest_branch=$(echo -e "${main_branch_str}" | fzf)
+    fi
+
+    main_branches=()
+    while IFS= read -r branch; do main_branches+=("${branch}"); done <<< $(echo -e "${main_branch_str}")
+    source_branch=$(git rev-parse --abbrev-ref HEAD)
+    lower_branch=$(get_lower_branch "${dest_branch}" "${main_branches[@]}")
+
+    if [ -z "${lower_branch}" ]; then
+        echo -e "SUCCESS : No lower branch to compare with" >&2
+    else
+        echo -e "\nChecking branch logs..." >&2
+        echo -e "git log origin/${lower_branch}..origin/${source_branch} --no-merges\n" >&2
+        log_diff=$(git log origin/"${lower_branch}..origin/${source_branch}" --no-merges)
+        log_cmd_return=$(echo "${log_diff}" | head -c1 | wc -c)
+        if [ -n "${log_diff}" ] && [ "${log_cmd_return}" -ne 0 ]; then
+            comment_msg="FAILED : the changes are not merged in [${lower_branch}]. Please merge your changes in [$lower_branch] before merging in [${dest_branch}]\n\n${log_diff}"
+            echo -e "${comment_msg}" >&2
+
+            return "${log_cmd_return}"
+        else
+            echo -e "SUCCESS : All the changes are merged in lower hierarchy branch" >&2
+        fi
+    fi
+}
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions-private" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions-private"
