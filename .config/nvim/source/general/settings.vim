@@ -149,6 +149,15 @@ autocmd BufLeave *  call CleanNoNameEmptyBuffers()
 	autocmd BufRead,BufNewFile /tmp/neomutt* map ZZ :Goyo\|x!<CR>
 	autocmd BufRead,BufNewFile /tmp/neomutt* map ZQ :Goyo\|q!<CR>
 
+" Auto detect dadbod connection for the file
+	autocmd BufRead,BufNewFile ~/Dropbox/vimWiki/db_ui_queries/**/*.sql :exec 'DBUIFindBuffer' | DBUIToggle
+
+" Detect file type for tunnel-config file
+	autocmd BufRead,BufNewFile ~/voidrice/Private/.config/.ssh/tunnel-config :set filetype=sshconfig
+
+" Detect file type for env files for rest-nvim
+	autocmd BufRead,BufNewFile ~/Dropbox/vimWiki/http/collections/*env :set filetype=sh
+
 " Automatically deletes all trailing whitespace and newlines at end of file on save.
 	autocmd BufWritePre * %s/\s\+$//e
 	autocmd BufWritePre * %s/\n\+\%$//e
