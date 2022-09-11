@@ -132,6 +132,17 @@ export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 
+# AUTOSSH variables
+export AUTOSSH_DEBUG=7
+export AUTOSSH_LOGLEVEL=7
+export AUTOSSH_POLL=120
+export AUTOSSH_LOGFILE="${HOME}/.cache/autossh.log"
+export AUTOSSH_GATETIME=0
+
+export SSH_LOGFILE="${HOME}/.cache/ssh.log"
+export SSH_TUNNEL_CONFIG="${HOME}/.ssh/tunnel-config"
+
+
 # This is the list for lf icons:
 export LF_ICONS="di=📁:\
 fi=📃:\
