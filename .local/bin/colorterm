@@ -36,7 +36,7 @@ if [ ! -z `expr match "$1" '\([A-Fa-f0-9]\{6\}\|#[A-Fa-f0-9]\{3\}\)'` ]; then
     BG_COLOR=$1
 elif [[ "$1" =~ prod ]]; then
     BG_COLOR=$([[ $is_dark == 1 ]] && echo "#331C1F" || echo "#CCE3E0")
-elif [[ "$1" =~ staging|dev ]]; then
+elif [[ "$1" =~ stage|dev ]]; then
     BG_COLOR=$([[ $is_dark == 1 ]] && echo "#253320" || echo "#DACCDF")
 elif [[ "$1" =~ other ]]; then
     BG_COLOR=$([[ $is_dark == 1 ]] && echo "#282C34" || echo "#D7D3CB")
