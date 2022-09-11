@@ -79,7 +79,8 @@ Plug 'junegunn/limelight.vim'
 " Rest client
 Plug 'nvim-lua/plenary.nvim'
 " Plug 'NTBBloodbath/rest.nvim'
-Plug 'teto/rest.nvim', { 'branch': 'always-send-string' }
+" Plug 'teto/rest.nvim', { 'branch': 'always-send-string' }
+Plug 'G0V1NDS/rest.nvim', { 'branch': 'response_body_stored' }
 
 " DB query executer
 Plug 'tpope/vim-dadbod'
