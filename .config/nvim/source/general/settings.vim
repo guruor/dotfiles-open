@@ -150,7 +150,7 @@ autocmd BufLeave *  call CleanNoNameEmptyBuffers()
 	autocmd BufRead,BufNewFile /tmp/neomutt* map ZQ :Goyo\|q!<CR>
 
 " Auto detect dadbod connection for the file
-	autocmd BufRead,BufNewFile ~/Dropbox/vimWiki/db_ui_queries/**/*.sql :exec 'DBUIFindBuffer' | DBUIToggle
+	autocmd BufRead,BufNewFile $DADBOD_DB_QUERIES_PATH/**/*.sql :exec 'DBUIFindBuffer' | DBUIToggle
 
 " Detect file type for tunnel-config file
 	autocmd BufRead,BufNewFile ~/voidrice/Private/.config/.ssh/tunnel-config :set filetype=sshconfig
