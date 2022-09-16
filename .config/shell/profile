@@ -103,6 +103,9 @@ export TASKDATA="$HOME/Dropbox/taskwarrior"
 export BUGWARRIORRC="$HOME/.config/taskwarrior/bugwarrior/bugwarriorrc"
 export TIMEWARRIORDB="$HOME/Dropbox/timewarrior"
 
+# Dadbod dbui queries
+export DADBOD_DB_QUERIES_PATH="$HOME/Dropbox/db_ui_queries"
+
 
 # Other program settings:
 export DICS="/usr/share/stardict/dic/"
