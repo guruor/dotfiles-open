@@ -156,7 +156,7 @@ autocmd BufLeave *  call CleanNoNameEmptyBuffers()
 	autocmd BufRead,BufNewFile ~/voidrice/Private/.config/.ssh/tunnel-config :set filetype=sshconfig
 
 " Detect file type for env files for rest-nvim
-	autocmd BufRead,BufNewFile ~/Dropbox/vimWiki/http/collections/*env :set filetype=sh
+	autocmd BufRead,BufNewFile ~/Dropbox/http/collections/*env :set filetype=sh
 
 " Automatically deletes all trailing whitespace and newlines at end of file on save.
 	autocmd BufWritePre * %s/\s\+$//e

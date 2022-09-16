@@ -94,3 +94,15 @@ function MarkdownLevel()
         return ">" . len(h)
     endif
 endfunction
+
+function SelectRestNvimEnvironment()
+    let b:sessiondir = getcwd()
+    let b:envdir = b:sessiondir . '/envs/'
+    " let environments = readdir(b:envdir, {name -> name =~ '.' . expand('%:e') . '$'})
+    let environments = readdir(b:envdir)
+    let environments_for_display = environments->deepcopy()->map({idx, val -> 1 + idx . '. ' . val})
+    let choice = inputlist(['Choose an environment:'] + environments_for_display)
+    let chosen_environment = expand(b:envdir . environments[choice - 1])
+    echo "\n\nChosen environment is : " . chosen_environment
+    execute "!ln -sf " . chosen_environment . " .env"
+endfunction
