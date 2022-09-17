@@ -230,3 +230,11 @@ endif
     autocmd FileType qf nnoremap <buffer> <Enter> <C-W><Enter><C-W>T
 " Markdown code block color syntax
 let g:markdown_fenced_languages = ['bash=sh', 'javascript', 'js=javascript', 'json=javascript', 'typescript', 'ts=typescript', 'python', 'html', 'css', 'rust']
+
+" Save and restore folds
+set viewoptions-=options
+augroup remember_folds
+    autocmd!
+    autocmd BufWinLeave *.* if &ft !=# 'help' || &ft !=# 'fugitiveblame' | mkview | endif
+    autocmd BufWinEnter *.* if &ft !=# 'help' || &ft !=# 'fugitiveblame' | silent! loadview | endif
+augroup END
