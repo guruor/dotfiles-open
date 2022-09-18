@@ -6,7 +6,7 @@
     bf = !git branch --color=always --sort=-committerdate -vv | grep -v '/HEAD\\s'  | fzf --ansi | sed 's/^..//' | awk '{print $1}' | sed "s#^remotes/[^/]*/##"
     bfd = !git bf | xargs git branch -D
     bfc = !git bf | pbcopy
-    bccib = "!zsh -c \"source $HOME/.config/zsh/.zshrc; create_git_branches $1 stage master feature/1box;\""
+    bccib = "!zsh -c \"source $HOME/.config/zsh/.zshrc; create_git_branches $1 stage uat master pre-prod;\""
     c = commit -m
     ca = commit -am
     co = checkout
