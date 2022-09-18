@@ -89,8 +89,6 @@ Plug 'kristijanhusak/vim-dadbod-ui'
 
 " Good to have
 Plug 'vimwiki/vimwiki'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
 Plug 'ron89/thesaurus_query.vim'
 
 " Yet to explorer
