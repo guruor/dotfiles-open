@@ -1,0 +1,7 @@
+{
+  "Adds todo": {
+    "prefix": "todo",
+    "body": "# @TODO [`git config user.name`] `date +%d-%m-%Y`: $0${VISUAL}",
+    "description": "Adds todo with current datetime"
+  }
+}
