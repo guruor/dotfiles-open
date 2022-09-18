@@ -43,7 +43,6 @@ Plug 'tpope/vim-fugitive'
 
 " Syntax, formatting and auto-completion
 Plug 'sheerun/vim-polyglot'
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-compe'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }

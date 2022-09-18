@@ -12,7 +12,6 @@ source $HOME/.config/nvim/init.vim
 " yay lua-format | yay luarocks (sudo luarocks install --server=https://luarocks.org/dev luaformatter)
 
 " LSP related config
-" source $HOME/.config/nvim/source/plug-conf/coc.vim
 lua << EOF
     require("dbg")
     require("lsp")
