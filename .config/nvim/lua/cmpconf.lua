@@ -19,6 +19,7 @@ cmp.setup({
                 buffer = "[Buf]",
                 nvim_lua = "[Lua]",
                 path = "[Pth]",
+                ['vim-dadbod-completion'] = "[DB]",
                 calc = "[Clc]",
                 emoji = "[Emj]",
             })[entry.source.name]
@@ -72,7 +73,7 @@ cmp.setup({
         { name = 'buffer', keyword_length = 2 },
         { name = 'luasnip', keyword_length = 2 },
         { name = 'nvim_lua' },
-        { name = 'vim_dadbod_completion' },
+        { name = 'vim-dadbod-completion', keyword_length = 2 },
         { name = 'spell', keyword_length = 3 },
     }, {
         { name = 'buffer' },
