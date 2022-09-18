@@ -1,0 +1,7 @@
+{
+  "Add nosetest debugger": {
+    "prefix": "nose",
+    "body": "from nose.tools import set_trace; set_trace()",
+    "description": "ipython debugger (nosetest)"
+  }
+}

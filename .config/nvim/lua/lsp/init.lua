@@ -78,6 +78,11 @@ vim.fn.sign_define("LspDiagnosticsSignWarning", {text = "", numhl = "LspDiagn
 vim.fn.sign_define("LspDiagnosticsSignInformation", {text = "", numhl = "LspDiagnosticsDefaultInformation"})
 vim.fn.sign_define("LspDiagnosticsSignHint", {text = "", numhl = "LspDiagnosticsDefaultHint"})
 
+-- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+
+
 local on_attach = function(client)
     utils.map('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', {buffer = true})
     utils.map('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', {buffer = true})
@@ -106,6 +111,7 @@ end
 
 -- https://github.com/golang/tools/tree/master/gopls
 lspconfig.gopls.setup {
+    capabilities = capabilities,
     on_attach = function(client)
         client.resolved_capabilities.document_formatting = false
         on_attach(client)
@@ -114,6 +120,7 @@ lspconfig.gopls.setup {
 
 -- https://github.com/palantir/python-language-server
 -- lspconfig.pyls.setup {
+--    capabilities = capabilities,
 --     on_attach = on_attach,
 --     settings = {
 --         pyls = {
@@ -131,6 +138,7 @@ lspconfig.gopls.setup {
 
 -- https://github.com/microsoft/pyright
 lspconfig.pyright.setup {
+    capabilities = capabilities,
     on_attach = function(client)
         client.resolved_capabilities.document_formatting = false
         on_attach(client)
@@ -139,13 +147,17 @@ lspconfig.pyright.setup {
 
 -- https://github.com/pappasam/jedi-language-server
 -- lspconfig.jedi_language_server.setup {
+--    capabilities = capabilities,
 -- on_attach = function(client)
 -- client.resolved_capabilities.document_formatting = false
 -- on_attach(client)
 -- end
 -- }
 
--- lspconfig.rls.setup {on_attach = on_attach}
+-- lspconfig.rls.setup {
+    -- capabilities = capabilities,
+    -- on_attach = on_attach
+-- }
 
 lspconfig.rust_analyzer.setup({
     on_attach=on_attach,
@@ -167,6 +179,7 @@ lspconfig.rust_analyzer.setup({
 
 -- https://github.com/theia-ide/typescript-language-server
 lspconfig.tsserver.setup {
+    capabilities = capabilities,
     on_attach = function(client)
         client.resolved_capabilities.document_formatting = false
         -- require"nvim-lsp-ts-utils".setup {}
@@ -186,6 +199,7 @@ local function get_lua_runtime()
     return result
 end
 lspconfig.sumneko_lua.setup {
+    capabilities = capabilities,
     on_attach = on_attach,
     cmd = {"lua-language-server"},
     settings = {
@@ -207,13 +221,22 @@ lspconfig.sumneko_lua.setup {
 }
 
 -- https://github.com/iamcco/vim-language-server
-lspconfig.vimls.setup {on_attach = on_attach}
+lspconfig.vimls.setup {
+    capabilities = capabilities,
+    on_attach = on_attach
+}
 
 -- https://github.com/vscode-langservers/vscode-json-languageserver
-lspconfig.jsonls.setup {on_attach = on_attach, cmd = {"vscode-json-languageserver", "--stdio"}}
+lspconfig.jsonls.setup {
+    capabilities = capabilities,
+    on_attach = on_attach, cmd = {"vscode-json-languageserver", "--stdio"}
+}
 
 -- https://github.com/redhat-developer/yaml-language-server
-lspconfig.yamlls.setup {on_attach = on_attach}
+lspconfig.yamlls.setup {
+    capabilities = capabilities,
+    on_attach = on_attach
+}
 
 -- https://github.com/joe-re/sql-language-server
 lspconfig.sqlls.setup {on_attach = on_attach}
@@ -225,19 +248,35 @@ lspconfig.sqlls.setup {on_attach = on_attach}
 -- vscode-css-language-server
 -- vscode-json-language-server
 -- vscode-eslint-language-server
-lspconfig.cssls.setup {on_attach = on_attach}
+lspconfig.cssls.setup {
+    capabilities = capabilities,
+    on_attach = on_attach
+}
 
 -- https://github.com/vscode-langservers/vscode-html-languageserver-bin
-lspconfig.html.setup {on_attach = on_attach}
+lspconfig.html.setup {
+    capabilities = capabilities,
+    on_attach = on_attach
+}
 
 -- https://github.com/bash-lsp/bash-language-server
-lspconfig.bashls.setup {on_attach = on_attach}
+lspconfig.bashls.setup {
+    capabilities = capabilities,
+    on_attach = on_attach
+}
 
 -- https://github.com/rcjsuen/dockerfile-language-server-nodejs
-lspconfig.dockerls.setup {on_attach = on_attach}
+lspconfig.dockerls.setup {
+    capabilities = capabilities,
+    on_attach = on_attach
+}
 
 -- https://github.com/hashicorp/terraform-ls
-lspconfig.terraformls.setup {on_attach = on_attach, cmd = {"terraform-ls", "serve"}, filetypes = {"tf"}}
+lspconfig.terraformls.setup {
+    capabilities = capabilities,
+    on_attach = on_attach, cmd = {"terraform-ls", "serve"}, filetypes = {"tf"}
+}
+
 
 local vint = require "efm/vint"
 local luafmt = require "efm/luafmt"
@@ -258,6 +297,7 @@ local proselint = require "efm/proselint"
 -- https://github.com/mattn/efm-langserver
 -- python = {black, isort, flake8, mypy},
 lspconfig.efm.setup {
+    capabilities = capabilities,
     on_attach = function(client)
         client.resolved_capabilities.document_formatting = true
         client.resolved_capabilities.document_range_formatting = true
@@ -290,6 +330,9 @@ lspconfig.efm.setup {
     }
 }
 
-lspconfig.clangd.setup {on_attach = on_attach}
+lspconfig.clangd.setup {
+    capabilities = capabilities,
+    on_attach = on_attach
+}
 
 return M

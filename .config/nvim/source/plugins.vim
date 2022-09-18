@@ -44,7 +44,12 @@ Plug 'tpope/vim-fugitive'
 " Syntax, formatting and auto-completion
 Plug 'sheerun/vim-polyglot'
 Plug 'neovim/nvim-lspconfig'
-Plug 'hrsh7th/nvim-compe'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
+
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 " Debugging
@@ -88,6 +93,9 @@ Plug 'kristijanhusak/vim-dadbod-ui'
 
 " Good to have
 Plug 'vimwiki/vimwiki'
+Plug 'L3MON4D3/LuaSnip'
+Plug 'saadparwaiz1/cmp_luasnip'
+Plug 'rafamadriz/friendly-snippets'
 Plug 'ron89/thesaurus_query.vim'
 
 " Yet to explorer
