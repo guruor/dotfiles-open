@@ -27,6 +27,8 @@
     # Pick commits from log with fzf
     logf = "!f() { git l1 \"${1:-.}\" | fzf --ansi --multi | cut -d' ' -f2; }; f"
     logfc = "!git logf | pbcopy"
+    # Searches a change in commit history of the branch
+    search = "!f() { git log -S \"$1\"; }; f"
     # Cherry pick selected commit with fzf
     cpf = "!git logf | xargs git cherry-pick"
     p = push
@@ -46,8 +48,6 @@
     stash-but-keep-staged = stash --keep-index
     stashes = stash list
     stash-show-no-color = stash show -p --color=never
-    # Searches a change in commit history of the branch
-    search = "!f() { git log -S \"$1\"; }; f"
     stash-save-test-changes="stash push -m test_changes"
     stash-apply-test-changes="stash apply stash^{/test_changes}"
 
