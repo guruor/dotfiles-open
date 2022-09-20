@@ -167,7 +167,9 @@ function check_lower_branch_missed_commits(){
         echo -e "SUCCESS : No lower branch to compare with" >&2
     else
         echo -e "\nChecking branch logs..." >&2
-        echo -e "git log origin/${lower_branch}..origin/${source_branch} --no-merges\n" >&2
+        echo -e "\nFetching latest changes..." >&2
+        git fetch -a
+        echo -e "\ngit log origin/${lower_branch}..origin/${source_branch} --no-merges\n" >&2
         log_diff=$(git log origin/"${lower_branch}..origin/${source_branch}" --no-merges)
         log_cmd_return=$(echo "${log_diff}" | head -c1 | wc -c)
         if [ -n "${log_diff}" ] && [ "${log_cmd_return}" -ne 0 ]; then
