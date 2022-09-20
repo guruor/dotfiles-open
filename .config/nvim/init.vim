@@ -18,6 +18,7 @@ lua << EOF
     require("treesitter")
     require("rest")
     require("barbar")
+    require("overseerconf")
 EOF
 
 " Plugin config
