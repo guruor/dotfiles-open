@@ -61,6 +61,7 @@ Plug 'mfussenegger/nvim-dap-python'
 Plug 'lukas-reineke/lsp-format.nvim'
 " Plug 'Pocco81/DAPInstall.nvim'
 
+Plug 'stevearc/overseer.nvim'
 Plug 'alvan/vim-closetag'
 Plug 'Yggdroot/indentLine',         { 'on': 'IndentLinesToggle' }
 
