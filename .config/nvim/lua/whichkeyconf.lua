@@ -134,7 +134,7 @@ wk.register(keys_visual, {prefix = leader, mode = 'v'})
 keys = {
     t = {
         name = 'taskrunner',
-        ["r"] = {":OverseerRun<CR>", "Run a task"},
+        ["e"] = {":OverseerRun<CR>", "Run a task"},
         ["t"] = {":OverseerToggle<CR>", "Toggle task list"},
         ["a"] = {":OverseerQuickAction<CR>", "Toggle quick action"},
     }
