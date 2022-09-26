@@ -13,7 +13,7 @@ set cmdheight=1                         " More space for displaying messages
 set mouse+=a                            " Enable your mouse
 set splitbelow                          " Horizontal splits will automatically be below
 set splitright                          " Vertical splits will automatically be to the right
-set conceallevel=0                      " So that I can see `` in markdown files
+set conceallevel=2                      " Helpful in hiding/replacing specific value with a cchar, using vim conceal feature
 set tabstop=4                           " Insert 2 spaces for a tab
 set softtabstop=4
 set shiftwidth=4                        " Change the number of space characters inserted for indentation
@@ -207,6 +207,7 @@ endif
     let g:vimwiki_list = [myWikiWork, myWikiPersonal]
 
 	let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
+    let g:vimwiki_hl_headers=1
 
 	autocmd BufRead,BufNewFile *.md  set filetype=markdown
 	autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
@@ -214,6 +215,9 @@ endif
     autocmd FileType markdown setlocal commentstring=<!--\ %s\ -->
     autocmd FileType http setlocal commentstring=#\ %s
     autocmd BufRead,BufNewFile *.md setlocal spell
+
+" Markdown code block color syntax
+let g:markdown_fenced_languages = ['bash=sh', 'javascript', 'js=javascript', 'json=javascript', 'typescript', 'ts=typescript', 'python', 'html', 'css', 'rust']
 
 " Disabling syntax highlighting for larger files
     autocmd Filetype * if getfsize(@%) > 1000000 | setlocal syntax=OFF | endif
@@ -227,8 +231,6 @@ endif
 
 " Allowing opening of quick fix entries in new tab
     autocmd FileType qf nnoremap <buffer> <Enter> <C-W><Enter><C-W>T
-" Markdown code block color syntax
-let g:markdown_fenced_languages = ['bash=sh', 'javascript', 'js=javascript', 'json=javascript', 'typescript', 'ts=typescript', 'python', 'html', 'css', 'rust']
 
 " Save and restore folds
 set viewoptions-=options
