@@ -1,4 +1,27 @@
 {
+  "Code Python": {
+    "prefix": "python",
+    "body": [
+      "```python",
+      "${0}",
+      "```"
+    ],
+    "description": "Python code block"
+  },
+  "Details summary": {
+    "prefix": "details",
+    "body": [
+      "<details>",
+      "<summary>${0}</summary>",
+      "",
+      "```",
+      "${1}",
+      "```",
+      "",
+      "</details>"
+    ],
+    "description": "Expandable content"
+  },
   "Jira code SQL": {
     "prefix": "codesql",
     "body": [
