@@ -4,7 +4,10 @@ local wk = require("which-key")
 local leader = "<Space>"
 local localleader = ","
 
-local keys = {
+local keys
+local keys_visual
+
+keys = {
     ["j"] = {":BufferPrevious<CR>", "Jump to left tab"},
     ["k"] = {":BufferNext<CR>", "Jump to right tab"},
     ["<"] = {":BufferMovePrevious<CR>", "Move tab left"},
@@ -165,17 +168,21 @@ keys = {
     m = {
         name = 'Macro',
         ["j"] = {":!jq .<CR>", "Format selection as json"},
-        ["q"] = {":'<,'>!sqlformat --reindent --keywords upper --identifiers lower -<CR>", "Format SQL query"},
+        ["q"] = {":%s!sqlformat --reindent --keywords upper --identifiers lower -<CR>", "Format SQL query"},
         ["n"] = {":%s/\\n/\r/g<CR>", "Replace \n with newline charFormat sqlalchemy query from logs"},
         ["{"] = {":%s/\\%V{/{{/g | %s/\\%V}/}}/g<CR>", "Replace braces with double braces for multiline formatted string"},
         ["\""] = {":%s/'/\"/g<CR>", "Replace ' with \""},
-        ["\\"] = {":%s/\"/'/g<CR>", "Replace \" with '"},
+        ["'"] = {":%s/\"/'/g<CR>", "Replace \" with '"},
         ["e"] = {":!date -d @<C-R><C-W><CR>", "Epoch to System time"}
     }
 }
 
 wk.register(keys, {prefix = leader})
-wk.register(keys, {prefix = leader, mode = 'v'})
+keys_visual = copy(keys)
+keys_visual["m"]["q"] = {":'<,'>!sqlformat --reindent --keywords upper --identifiers lower -<CR>", "Format selected SQL query"}
+keys_visual["m"]["\""] = {":s/'/\"/g<CR>", "Replace ' with \" for selected text"}
+keys_visual["m"]["'"] = {":s/\"/'/g<CR>", "Replace \" with ' for selected text"}
+wk.register(keys_visual, {prefix = leader, mode = 'v'})
 
 keys = {
     a = {
