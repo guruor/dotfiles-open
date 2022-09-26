@@ -10,3 +10,12 @@
 
 " syntax match unorderedListItemIndent3 /^[ ]\{8}[-,\*] / containedin=ALL
 " syntax match unorderedBulletIndent3 /[-,\*]/ containedin=unorderedListItemIndent3 contained conceal cchar=▫
+
+" highlight htmlH1 guifg=#50fa7b gui=bold
+" highlight htmlH2 guifg=#8be9fd gui=bold
+" highlight htmlH3 guifg=#ff79c6 gui=bold
+" highlight htmlH4 guifg=#ffb86c gui=bold
+" highlight htmlH5 guifg=#f1fa8c gui=bold
+
+" highlight markdownCode ctermfg=Cyan guifg=#80a0ff
+" highlight markdownCodeBlock ctermfg=Cyan guifg=#80a0ff
