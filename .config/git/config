@@ -20,6 +20,17 @@
     ds = diff --patch-with-stat --staged
     dt = difftool
     dts = difftool --staged
+    # Save diff patch by name
+    dfs-named="!zsh -c \"source $HOME/.config/zsh/.zshrc; local_dev_files_save_diff $1\""
+    # Apply diff patch by name
+    ; dfa-named="!f() { git apply .patches/$1.patch --reject --whitespace=fix; git s; }; f"
+    dfa-named="!f() { git apply .patches/$1.patch; git s; }; f"
+
+    # Save diff patch for dev_changes
+    dfs="!git dfs-named dev_changes"
+    # Apply diff patch for dev_changes
+    dfa="!git dfa-named dev_changes"
+
     fc = "!f() { git log --pretty='%C(yellow)%h%Creset -%Cred%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' --grep=$1; }; f"
     fs = "!f() { git log --pretty='%C(yellow)%h%Creset -%Cred%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' -S$1; }; f"
     lg = log --graph --pretty='%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset'
