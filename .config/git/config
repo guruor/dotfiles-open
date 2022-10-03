@@ -46,10 +46,7 @@
     stash-staged =stash -- $(git diff --staged --name-only)
     stash-staged-message = "!f() { git stash -m \"$1\" -- $(git diff --staged --name-only); }; f"
     stash-but-keep-staged = stash --keep-index
-    stashes = stash list
     stash-show-no-color = stash show -p --color=never
-    stash-save-test-changes="stash push -m test_changes"
-    stash-apply-test-changes="stash apply stash^{/test_changes}"
 
 [core]
     editor = vim
