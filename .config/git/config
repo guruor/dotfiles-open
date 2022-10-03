@@ -43,10 +43,10 @@
     sta = stash apply
     stp = stash push -m
     stpop = stash pop
-    stash-staged =stash -- $(git diff --staged --name-only)
-    stash-staged-message = "!f() { git stash -m \"$1\" -- $(git diff --staged --name-only); }; f"
-    stash-but-keep-staged = stash --keep-index
-    stash-show-no-color = stash show -p --color=never
+    st-staged =stash -- $(git diff --staged --name-only)
+    st-staged-message = "!f() { git stash -m \"$1\" -- $(git diff --staged --name-only); }; f"
+    st-but-keep-staged = stash --keep-index
+    st-show-no-color = stash show -p --color=never
 
 [core]
     editor = vim
