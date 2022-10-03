@@ -40,13 +40,31 @@
     undo = reset HEAD~1
     st = stash
     stl = stash list
-    sta = stash apply
     stp = stash push -m
     stpop = stash pop
     st-staged =stash -- $(git diff --staged --name-only)
     st-staged-message = "!f() { git stash -m \"$1\" -- $(git diff --staged --name-only); }; f"
     st-but-keep-staged = stash --keep-index
     st-show-no-color = stash show -p --color=never
+    # Save stash by name
+    sts-named="!f() { git stash push -m "named_stash_$1"; }; f"
+    # Get stash by name
+    stg-named="!f() { git stash list | grep -m 1 "named_stash_$1" | cut -d: -f1; }; f"
+    # Apply saved stash by name
+    sta-named="!f() { stash_name=$(git stg-named "$1"); [[ "${stash_name}" ]] && git stash apply "${stash_name}"; }; f"
+    # Drop saved stash by name
+    std-named="!f() { stash_name=$(git stg-named "$1"); [[ "${stash_name}" ]] && git stash drop "${stash_name}"; }; f"
+    # Replace saved stash by name
+    str-named="!f() { git std-named "$1"; git sts-named "$1"; }; f"
+
+    # Stash save dev changes
+    sts="!f() { git sts-named dev_changes; }; f"
+    # Stash apply dev changes
+    sta="!f() { git sta-named dev_changes; }; f"
+    # Stash drop dev changes
+    std="!f() { git std-named dev_changes; }; f"
+    # Stash replace (drop and save) dev changes
+    str="!f() { git std; git sts; }; f"
 
 [core]
     editor = vim
