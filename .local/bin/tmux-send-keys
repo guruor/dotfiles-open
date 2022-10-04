@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# tmux session name
+session_name="${1}"
+# tmux window name
+window_name="${2}"
+shift
+shift
+# Commands to be run on tmux shell
+cmd_list=("$@")
+
+echo -e "Tmux session name: ${session_name}"
+echo -e "Tmux window name: ${window_name}"
+echo -e "Commands to run: ${cmd_list}"
+
+
+# -F Formats list-pages command output to specific format
+# -f Filter the output to specific format
+tmux_panes=$(tmux list-panes -a -F "#{session_name}:#{window_name}.#{pane_index},#{pane_tty}" -f "#{m:${session_name}:${window_name},#{session_name}:#{window_name}}")
+
+IFS=',' read pane_index pane_tty <<< "${tmux_panes}"
+
+for cmd in "${cmd_list[@]}"; do
+    tmux send-keys -t "${pane_index}" "$cmd" ENTER;
+    sleep 1
+done
