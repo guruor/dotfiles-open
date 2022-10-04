@@ -195,27 +195,43 @@ keys = {
 wk.register(keys, {prefix = leader})
 wk.register(keys, {prefix = leader, mode = 'v'})
 
-keys = {
-    r = {
-        name = 'REST client',
-        ["e"] = {"<Plug>RestNvim", "run the request under the cursor"},
-        ["p"] = {"<Plug>RestNvimPreview", "preview the request cURL command"},
-        ["l"] = {"<Plug>RestNvimLast", "re-run the last request"},
-        ["E"] = {"<Cmd>call SelectRestNvimEnvironment()<Cr>", "Change environment"},
+-- Adding file or buffer specific mapping with autocmds
+-- Reference https://github.com/folke/which-key.nvim/issues/276#issuecomment-1117432067
+local function attach_rest_nvim_keys(bufnr)
+    keys = {
+        r = {
+            name = 'REST client',
+            ["e"] = {"<Plug>RestNvim", "run the request under the cursor"},
+            ["p"] = {"<Plug>RestNvimPreview", "preview the request cURL command"},
+            ["l"] = {"<Plug>RestNvimLast", "re-run the last request"},
+            ["E"] = {"<Cmd>call SelectRestNvimEnvironment()<Cr>", "Change environment"},
+        }
     }
-}
-wk.register(keys, {prefix = leader})
-wk.register(keys, {prefix = leader, mode = 'v'})
+    wk.register(keys, {prefix = leader})
+    wk.register(keys, {prefix = leader, mode = 'v'})
+end
 
-keys = {
-    q = {
-        name = 'Dadbod DB client',
-        ["t"] = {"<Cmd>DBUIToggle<Cr>", "Toggle UI"},
-        ["f"] = {"<Cmd>DBUIFindBuffer<Cr><Cmd>DBUIToggle<Cr>", "Find buffer"},
-        ["r"] = {"<Cmd>DBUIRenameBuffer<Cr>", "Rename buffer"},
-        ["q"] = {"<Cmd>DBUILastQueryInfo<Cr>", "Last query info"},
-        ["e"] = {"<Plug>(DBUI_ExecuteQuery)", "Execute query"},
+vim.api.nvim_create_autocmd(
+    { "Filetype" },
+    { pattern = { "http" }, callback = attach_rest_nvim_keys }
+)
+
+local function attach_dadbod_ui_keys(bufnr)
+    keys = {
+        r = {
+            name = 'Dadbod DB client',
+            ["t"] = {"<Cmd>DBUIToggle<Cr>", "Toggle UI"},
+            ["f"] = {"<Cmd>DBUIFindBuffer<Cr><Cmd>DBUIToggle<Cr>", "Find buffer"},
+            ["r"] = {"<Cmd>DBUIRenameBuffer<Cr>", "Rename buffer"},
+            ["q"] = {"<Cmd>DBUILastQueryInfo<Cr>", "Last query info"},
+            ["e"] = {"<Plug>(DBUI_ExecuteQuery)", "Execute query"},
+        }
     }
-}
-wk.register(keys, {prefix = leader})
-wk.register(keys, {prefix = leader, mode = 'v'})
+    wk.register(keys, {prefix = leader})
+    wk.register(keys, {prefix = leader, mode = 'v'})
+end
+
+vim.api.nvim_create_autocmd(
+    { "Filetype" },
+    { pattern = { "sql" }, callback = attach_dadbod_ui_keys }
+)
