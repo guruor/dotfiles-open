@@ -1,27 +1,53 @@
 #!/bin/bash
 
-noteFilename="${VIMWIKI_DIR}/QuickNote.md"
-todayHeading="# Notes for $(date +%Y-%m-%d)"
+# Opens tmux session named `Notes`
+# or
+# Opens a QuickNote.md file inside specific note directory or the most used not directory based on `MOST_USED_VIMWIKI_DIR` environment variable
 
-# Create file if doesn't exists, add
-if [ ! -f $noteFilename ]; then
-  echo -e "$todayHeading" > $noteFilename
-fi
-
-# Check if note file has a header for today's date, if not add it
-if ! grep -q "$todayHeading" "$noteFilename"; then
-  echo -e "\n---\n" >> $noteFilename
-  echo -e "$todayHeading" >> $noteFilename
-fi
+NOTE_DIR="${1}"
 
 # To alias access to this script
 shopt -s expand_aliases
-source ~/.config/shell/aliasrc
+source "${HOME}/.config/shell/aliasrc"
 
-# Creates a timestamp and changes the working directory for vim session to vim wiki directory
-code -c "cd $VIMWIKI_DIR" \
-  -c "norm Go" \
-  -c "norm Go## $(date +%H:%M)" \
-  -c "norm G2o" \
-  -c "norm zz" \
-  -c "startinsert" $noteFilename
+function open_quicknote(){
+    # Open Quicknote file in specific directory
+    NOTE_DIR="${1}"
+
+    noteFilename="${NOTE_DIR}/QuickNote.md"
+    todayHeading="# Notes for $(date +%Y-%m-%d)"
+
+    # Create file if doesn't exists, add
+    if [ ! -f "${noteFilename}" ]; then
+      echo -e "${todayHeading}" > "${noteFilename}"
+    fi
+
+    # TODO: Rename old file and create new file, if line length exceeds
+    # Check if note file has a header for today's date, if not add it
+    if ! grep -q "${todayHeading}" "${noteFilename}"; then
+      echo -e "\n---\n" >> "${noteFilename}"
+      echo -e "${todayHeading}" >> "${noteFilename}"
+    fi
+
+    # Creates a timestamp and changes the working directory for vim session to vim wiki directory
+    code -c "cd ${NOTE_DIR}" \
+        -c "norm G2o" \
+        -c "norm zz" \
+        -c "startinsert" "${noteFilename}";
+}
+
+# Open QuickNote file in notes directory
+if [[ "${NOTE_DIR}" ]]; then
+    open_quicknote "${NOTE_DIR}"
+else
+    # Open tmux session if exist
+    session_name="Notes"
+    tmux_panes=$(tmux list-panes -a -F "#{session_name}:#{window_name}.#{pane_index},#{pane_tty}" | rg "${session_name}" | head -n 1)
+
+    if [[ "${tmux_panes}" ]]; then
+        tmux a -t "${session_name}"
+    else
+        # Use most used note directory
+        open_quicknote "${MOST_USED_VIMWIKI_DIR}"
+    fi
+fi
