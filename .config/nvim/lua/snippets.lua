@@ -35,6 +35,17 @@ ls.add_snippets(nil, {
     },
     markdown = {
         snip({
+            trig = "new-day",
+            namr = "Notes for a fresh day",
+            dscr = "Notes heading with current date"
+        },
+           {
+               text({ "# Notes for " }), func(date, {}), text({ "",
+                       "",
+                   ""}),
+               insert(3)
+        }),
+        snip({
             trig = "meta",
             namr = "Metadata",
             dscr = "Yaml metadata format for markdown"
