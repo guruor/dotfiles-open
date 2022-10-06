@@ -137,7 +137,7 @@ wk.register(keys_visual, {prefix = leader, mode = 'v'})
 keys = {
     t = {
         name = 'taskrunner',
-        ["e"] = {":OverseerRun<CR>", "Run a task"},
+        ["r"] = {":OverseerRun<CR>", "Run a task"},
         ["t"] = {":OverseerToggle<CR>", "Toggle task list"},
         ["a"] = {":OverseerQuickAction<CR>", "Toggle quick action"},
     }
@@ -201,10 +201,10 @@ local function attach_rest_nvim_keys(bufnr)
     keys = {
         r = {
             name = 'REST client',
-            ["e"] = {"<Plug>RestNvim", "run the request under the cursor"},
+            ["r"] = {"<Plug>RestNvim", "Run the request under the cursor"},
             ["p"] = {"<Plug>RestNvimPreview", "preview the request cURL command"},
             ["l"] = {"<Plug>RestNvimLast", "re-run the last request"},
-            ["E"] = {"<Cmd>call SelectRestNvimEnvironment()<Cr>", "Change environment"},
+            ["e"] = {"<Cmd>call SelectRestNvimEnvironment()<Cr>", "Change environment"},
         }
     }
     wk.register(keys, {prefix = leader})
@@ -222,9 +222,9 @@ local function attach_dadbod_ui_keys(bufnr)
             name = 'Dadbod DB client',
             ["t"] = {"<Cmd>DBUIToggle<Cr>", "Toggle UI"},
             ["f"] = {"<Cmd>DBUIFindBuffer<Cr><Cmd>DBUIToggle<Cr>", "Find buffer"},
-            ["r"] = {"<Cmd>DBUIRenameBuffer<Cr>", "Rename buffer"},
+            ["R"] = {"<Cmd>DBUIRenameBuffer<Cr>", "Rename buffer"},
             ["q"] = {"<Cmd>DBUILastQueryInfo<Cr>", "Last query info"},
-            ["e"] = {"<Plug>(DBUI_ExecuteQuery)", "Execute query"},
+            ["r"] = {"<Plug>(DBUI_ExecuteQuery)", "Run query"},
         }
     }
     wk.register(keys, {prefix = leader})
