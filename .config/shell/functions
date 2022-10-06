@@ -183,3 +183,15 @@ function check_lower_branch_missed_commits(){
     fi
 }
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions-private" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions-private"
+
+function urldecode(){
+    decoded_value=$(python3 -c "import sys, urllib.parse as ul; \
+        print(ul.unquote_plus(sys.argv[1]))" $1)
+    echo "${decoded_value}"
+}
+
+function urlencode(){
+    encoded_value=$(python3 -c "import sys, urllib.parse as ul; \
+        print (ul.quote_plus(sys.argv[1]))" $1)
+    echo "${encoded_value}"
+}
