@@ -96,6 +96,7 @@ export CM_IGNORE_WINDOW="dmenu"
 export VIMWIKI_DIR="$HOME/Dropbox/vimWiki"
 export VIMWIKI_DIR_PERSONAL="${VIMWIKI_DIR}/Personal"
 export VIMWIKI_DIR_WORK="${VIMWIKI_DIR}/Work"
+export MOST_USED_VIMWIKI_DIR="${VIMWIKI_DIR_WORK}"
 
 # Taskwarrior
 export TASKRC="$HOME/.config/taskwarrior/task/taskrc"
