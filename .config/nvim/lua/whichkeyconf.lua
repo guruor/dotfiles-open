@@ -204,7 +204,7 @@ local function attach_rest_nvim_keys(bufnr)
             ["r"] = {"<Plug>RestNvim", "Run the request under the cursor"},
             ["p"] = {"<Plug>RestNvimPreview", "preview the request cURL command"},
             ["l"] = {"<Plug>RestNvimLast", "re-run the last request"},
-            ["e"] = {"<Cmd>call SelectRestNvimEnvironment()<Cr>", "Change environment"},
+            ["e"] = {"<Cmd>lua SelectRestNvimEnvironment()<Cr>", "Change environment"},
         }
     }
     wk.register(keys, {prefix = leader})
