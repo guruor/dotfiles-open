@@ -187,6 +187,46 @@ require ('galaxyline').section.left = {
     }
   },
   {
+    LeftEnvName = {
+      highlight = 'GalaxyLeftENV',
+      provider = function()
+          unsafe_env_keywords = { "prod", "release" }
+          local env_name
+
+          local filetype_env_functions = {
+              sql = GetDBUIConnectionName,
+              http = GetRestNvimEnvName,
+          }
+
+          local func = filetype_env_functions[vim.bo.filetype]
+          if(func) then
+              env_name = func()
+          end
+
+          if env_name == nil or env_name == '' then
+              vim.cmd('highlight link GalaxyLeftENV GalaxyMapperCommon6')
+              return ''
+          else
+              local is_unsafe = false
+              for _, keyword in ipairs(unsafe_env_keywords) do
+                  if string.find(env_name, keyword) then
+                      is_unsafe = true
+                      break
+                  end
+              end
+              if is_unsafe then
+                  vim.cmd('highlight link GalaxyLeftENV GalaxyLeftENVUnSafe')
+              else
+                  vim.cmd('highlight link GalaxyLeftENV GalaxyLeftENVSafe')
+              end
+              return 'Σ ' .. env_name
+          end
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyLeftENV'
+    }
+  },
+  {
     LeftGitDiffSeparator = {
       highlight = 'GalaxyMapperCommon1',
       provider = function()
