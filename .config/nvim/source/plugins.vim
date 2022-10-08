@@ -101,11 +101,11 @@ Plug 'L3MON4D3/LuaSnip'
 Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'rafamadriz/friendly-snippets'
 Plug 'ron89/thesaurus_query.vim'
+Plug 'chrisbra/Colorizer' " Highlights color code or hash
 
 " Yet to explorer
 " Plug 'tpope/vim-sensible'
 " Plug 'tpope/vim-abolish'
-" Plug 'chrisbra/Colorizer'
 " Plug 'heavenshell/vim-pydocstring', { 'do': 'make install' }
 " Plug 'vim-scripts/loremipsum'
 " Plug 'metakirby5/codi.vim'
