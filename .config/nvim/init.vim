@@ -10,6 +10,7 @@ source $HOME/.config/nvim/source/general/functions.vim
 source $HOME/.config/nvim/source/keys/mappings.vim
 
 lua << EOF
+    require("functions")
     require("whichkeyconf")
     require("statusline")
     require("gruvbox-statusline")
