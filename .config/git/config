@@ -48,7 +48,9 @@
     remotes = remote -v
     s = status -sb
     sclone = clone --depth 1
-    undo = reset HEAD~1
+    rs = reset HEAD~1
+    rsh = reset --hard
+    undo = rs
     st = stash
     stl = stash list
     stp = stash push -m
