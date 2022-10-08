@@ -217,7 +217,7 @@ endif
     autocmd BufRead,BufNewFile *.md setlocal spell
 
 " Markdown code block color syntax
-let g:markdown_fenced_languages = ['bash=sh', 'javascript', 'js=javascript', 'json=javascript', 'typescript', 'ts=typescript', 'python', 'html', 'css', 'rust']
+let g:markdown_fenced_languages = ['bash=sh', 'javascript', 'js=javascript', 'json=javascript', 'typescript', 'ts=typescript', 'python', 'html', 'css', 'rust', 'go', 'vim', 'lua']
 
 " Disabling syntax highlighting for larger files
     autocmd Filetype * if getfsize(@%) > 1000000 | setlocal syntax=OFF | endif
