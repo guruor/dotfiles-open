@@ -37,6 +37,7 @@ case "$ext" in
 	cpp) g++ "$file" -o "$base" && "$base" ;;
 	cs) mcs "$file" && mono "$base".exe ;;
 	go) go run "$file" ;;
+	lua) lua "$file" ;;
 	h) sudo make install ;;
 	java) javac -d classes "$file" && java -cp classes "${1%.*}" ;;
 	m) octave "$file" ;;
