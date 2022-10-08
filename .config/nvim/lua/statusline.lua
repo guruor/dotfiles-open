@@ -175,11 +175,11 @@ require ('galaxyline').section.left = {
         if require('galaxyline.condition').check_git_workspace() then
             branch_name = require('galaxyline.provider_vcs').get_git_branch()
             if branch_name == nil or branch_name == '' then
-              return ' '
+              return ''
             end
           return ' ' .. branch_name
         else
-          return ' '
+            return ''
         end
       end,
       separator = ' ',
