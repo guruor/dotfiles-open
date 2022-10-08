@@ -24,6 +24,7 @@ require'nvim-treesitter.configs'.setup {
       "scss",
       "css",
       "tsx",
+      "rust"
       },
 }
 local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
