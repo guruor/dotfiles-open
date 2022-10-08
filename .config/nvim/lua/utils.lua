@@ -127,4 +127,20 @@ M.close_floating_windows = function()
     end
 end
 
+-- see if the file exists
+M.file_exists = function(file)
+  local f = io.open(file, "rb")
+  if f then f:close() end
+  return f ~= nil
+end
+
+M.split = function(s, delimiter)
+    local result = {};
+    for match in (s..delimiter):gmatch("(.-)"..delimiter) do
+        table.insert(result, match);
+    end
+    return result;
+end
+
+
 return M

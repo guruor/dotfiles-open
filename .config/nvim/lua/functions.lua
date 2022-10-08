@@ -1,3 +1,45 @@
+local utils = require "utils"
+
+
+function GetDBUIConnectionName()
+    -- dadbod-ui selected environment name
+    local env_name
+    local db_url = vim.b.db
+
+    if db_url then
+        local db_connections = vim.g.dbs
+        local decoded_db_url = vim.call('db#url#decode', db_url)
+
+        for _, conn in ipairs(db_connections) do
+            local decoded_conn_url = vim.call('db#url#decode', conn.url)
+            if decoded_conn_url == decoded_db_url then
+                env_name = conn.name
+                break
+            end
+        end
+    end
+
+    return env_name
+end
+
+function GetRestNvimEnvName()
+    -- rest-nvim selected environment name
+    local variable_name = "ENV"
+    local env_file_path = vim.fn.getcwd() .. "/" .. ".env"
+
+    -- If there's an env file in the current working dir
+    if utils.file_exists(env_file_path) then
+        for line in io.lines(env_file_path) do
+
+            local vars = utils.split(line, "=")
+
+            if vars[1] == variable_name then
+                return vars[2]
+            end
+        end
+    end
+end
+
 -- Lua implementation of PHP scandir function
 function Scandir(directory)
     local i, t, popen = 0, {}, io.popen
