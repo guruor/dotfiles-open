@@ -35,6 +35,27 @@ local vi_mode_mapping = {
   ['v']  = {'CommonVisual', 'V'}
 }
 
+function get_environment_name()
+    local env_name
+
+    local filetype_env_functions = {
+        sql = GetDBUIConnectionName,
+        http = GetRestNvimEnvName,
+    }
+
+    local func = filetype_env_functions[vim.bo.filetype]
+    if (func) then
+        env_name = func()
+    end
+
+    if env_name == nil or env_name == '' then
+        return ''
+    else
+        return 'Σ ' .. env_name
+    end
+end
+
+
 require ('galaxyline').section.left = {
   {
     LeftViModeColourSet = {
@@ -46,6 +67,40 @@ require ('galaxyline').section.left = {
           vim.api.nvim_command("highlight link GalaxyViModeColourUnturned GalaxyViMode" .. vi_mode_mapping[vim.fn.mode()][1] .. "Unturned")
           vim.api.nvim_command("highlight link GalaxyViModeColourInverted GalaxyViMode" .. vi_mode_mapping[vim.fn.mode()][1] .. "Inverted")
         end
+      end
+    }
+  },
+  {
+    LeftEnvNameColourSet = {
+      provider = function()
+          env_name = get_environment_name()
+
+          if env_name == nil or env_name == '' then
+              vim.cmd('highlight link GalaxyLeftEnvSeparator GalaxyLeftEnvSeparatorDefault')
+              vim.cmd('highlight link GalaxyLeftGitDiffSeparator GalaxyLeftGitDiffSeparatorDefault')
+              vim.cmd('highlight link GalaxyLeftENVColor GalaxyLeftEnvSeparator')
+              vim.cmd('highlight link GalaxyLeftENVColorInverted GalaxyLeftGitDiffSeparator')
+          else
+              local is_unsafe = false
+              local unsafe_env_keywords = { "prod", "release" }
+              for _, keyword in ipairs(unsafe_env_keywords) do
+                  if string.find(env_name, keyword) then
+                      is_unsafe = true
+                      break
+                  end
+              end
+              if is_unsafe then
+                  vim.cmd('highlight link GalaxyLeftEnvSeparator GalaxyLeftEnvSeparatorColorUnsafe')
+                  vim.cmd('highlight link GalaxyLeftGitDiffSeparator GalaxyLeftGitDiffSeparatorColorUnsafe')
+                  vim.cmd('highlight link GalaxyLeftENVColor GalaxyLeftENVColorUnsafe')
+                  vim.cmd('highlight link GalaxyLeftENVColorInverted GalaxyLeftENVColorInvertedUnsafe')
+              else
+                  vim.cmd('highlight link GalaxyLeftEnvSeparator GalaxyLeftEnvSeparatorColorSafe')
+                  vim.cmd('highlight link GalaxyLeftGitDiffSeparator GalaxyLeftGitDiffSeparatorColorSafe')
+                  vim.cmd('highlight link GalaxyLeftENVColor GalaxyLeftENVColorSafe')
+                  vim.cmd('highlight link GalaxyLeftENVColorInverted GalaxyLeftENVColorInvertedSafe')
+              end
+          end
       end
     }
   },
@@ -187,48 +242,28 @@ require ('galaxyline').section.left = {
     }
   },
   {
-    LeftEnvName = {
-      highlight = 'GalaxyLeftENV',
+    LeftEnvSeparator = {
+      highlight = 'GalaxyLeftEnvSeparator',
       provider = function()
-          unsafe_env_keywords = { "prod", "release" }
-          local env_name
-
-          local filetype_env_functions = {
-              sql = GetDBUIConnectionName,
-              http = GetRestNvimEnvName,
-          }
-
-          local func = filetype_env_functions[vim.bo.filetype]
-          if(func) then
-              env_name = func()
-          end
-
-          if env_name == nil or env_name == '' then
-              vim.cmd('highlight link GalaxyLeftENV GalaxyMapperCommon6')
-              return ''
-          else
-              local is_unsafe = false
-              for _, keyword in ipairs(unsafe_env_keywords) do
-                  if string.find(env_name, keyword) then
-                      is_unsafe = true
-                      break
-                  end
-              end
-              if is_unsafe then
-                  vim.cmd('highlight link GalaxyLeftENV GalaxyLeftENVUnSafe')
-              else
-                  vim.cmd('highlight link GalaxyLeftENV GalaxyLeftENVSafe')
-              end
-              return 'Σ ' .. env_name
-          end
+        return ''
       end,
       separator = ' ',
-      separator_highlight = 'GalaxyLeftENV'
+      separator_highlight = 'GalaxyLeftENVColor'
+    }
+  },
+  {
+    LeftEnvName = {
+      highlight = 'GalaxyLeftENVColor',
+      provider = function()
+        return env_name
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyLeftENVColor'
     }
   },
   {
     LeftGitDiffSeparator = {
-      highlight = 'GalaxyMapperCommon1',
+      highlight = 'GalaxyLeftGitDiffSeparator',
       provider = function()
         return ''
       end,
