@@ -9,8 +9,19 @@ function _G.self_color_gruvbox_dark()
 
   vim.cmd('highlight StatusLine                                                                                                guifg=#3c3836')
 
-  vim.cmd('highlight GalaxyLeftENVSafe                                                                           guibg=#8ec07c guifg=#3c3836')
-  vim.cmd('highlight GalaxyLeftENVUnSafe                                                                         guibg=#fe811b guifg=#3c3836')
+  vim.cmd('highlight GalaxyLeftEnvSeparatorDefault                                                               guibg=#3c3836 guifg=#504945')
+  vim.cmd('highlight GalaxyLeftGitDiffSeparatorDefault                                                           guibg=#3c3836 guifg=#3c3836')
+
+  vim.cmd('highlight GalaxyLeftEnvSeparatorColorSafe                                                             guibg=#8ec07c guifg=#504945')
+  vim.cmd('highlight GalaxyLeftGitDiffSeparatorColorSafe                                                         guibg=#504945 guifg=#8ec07c')
+  vim.cmd('highlight GalaxyLeftENVColorSafe                                                                      guibg=#8ec07c guifg=#504945')
+  vim.cmd('highlight GalaxyLeftENVColorInvertedSafe                                                              guibg=#504945 guifg=#8ec07c')
+
+  vim.cmd('highlight GalaxyLeftEnvSeparatorColorUnsafe                                                           guibg=#fe811b guifg=#504945')
+  vim.cmd('highlight GalaxyLeftGitDiffSeparatorColorUnsafe                                                       guibg=#504945 guifg=#fe811b')
+  vim.cmd('highlight GalaxyLeftENVColorUnsafe                                                                    guibg=#fe811b guifg=#504945')
+  vim.cmd('highlight GalaxyLeftENVColorInvertedUnsafe                                                            guibg=#504945 guifg=#fe811b')
+
   vim.cmd('highlight GalaxyLeftGitDiffAddActive                                                                  guibg=#3c3836 guifg=#27b31a')
   vim.cmd('highlight GalaxyLeftGitDiffInactive                                                                   guibg=#3c3836 guifg=#ebdbb2')
   vim.cmd('highlight GalaxyLeftGitDiffModifiedActive                                                             guibg=#3c3836 guifg=#fe811b')
@@ -62,8 +73,19 @@ function _G.self_color_gruvbox_light()
 
   vim.cmd('highlight StatusLine                                                                                                guifg=#ebdbb2')
 
-  vim.cmd('highlight GalaxyLeftENVSafe                                                                           guibg=#8ec07c guifg=#ebdbb2')
-  vim.cmd('highlight GalaxyLeftENVUnSafe                                                                         guibg=#fe811b guifg=#ebdbb2')
+  vim.cmd('highlight GalaxyLeftEnvSeparatorDefault                                                               guibg=#ebdbb2 guifg=#d5c4a1')
+  vim.cmd('highlight GalaxyLeftGitDiffSeparatorDefault                                                           guibg=#ebdbb2 guifg=#ebdbb2')
+
+  vim.cmd('highlight GalaxyLeftEnvSeparatorColorSafe                                                             guibg=#8ec07c guifg=#d5c4a1')
+  vim.cmd('highlight GalaxyLeftGitDiffSeparatorColorSafe                                                         guibg=#ebdbb2 guifg=#8ec07c')
+  vim.cmd('highlight GalaxyLeftENVColorSafe                                                                      guibg=#8ec07c guifg=#ebdbb2')
+  vim.cmd('highlight GalaxyLeftENVColorInvertedSafe                                                              guibg=#ebdbb2 guifg=#8ec07c')
+
+  vim.cmd('highlight GalaxyLeftEnvSeparatorColorUnsafe                                                           guibg=#fe811b guifg=#d5c4a1')
+  vim.cmd('highlight GalaxyLeftGitDiffSeparatorColorUnsafe                                                       guibg=#ebdbb2 guifg=#fe811b')
+  vim.cmd('highlight GalaxyLeftENVColorUnsafe                                                                    guibg=#fe811b guifg=#ebdbb2')
+  vim.cmd('highlight GalaxyLeftENVColorInvertedUnsafe                                                            guibg=#ebdbb2 guifg=#fe811b')
+
   vim.cmd('highlight GalaxyLeftGitDiffAddActive                                                                  guibg=#ebdbb2 guifg=#27b31a')
   vim.cmd('highlight GalaxyLeftGitDiffInactive                                                                   guibg=#ebdbb2 guifg=#7c6f64')
   vim.cmd('highlight GalaxyLeftGitDiffModifiedActive                                                             guibg=#ebdbb2 guifg=#dc7f27')
