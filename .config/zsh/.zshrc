@@ -159,6 +159,18 @@ bindkey '^R' fzf-history-widget
 # Backward search in vi mode will also trigger history search
 bindkey -a '?' fzf-history-widget
 
+function fzf_alias() {
+    local selection
+    if selection=$(alias | fzf --query="$BUFFER" | sed -re 's/=.+$/ /'); then
+        BUFFER=$selection
+    fi
+    zle redisplay
+}
+
+zle -N fzf_alias
+
+bindkey -M vicmd '^a' fzf_alias
+bindkey -M viins '^a' fzf_alias
 # bindkey -s '^a' 'bc -lq\n'
 
 bindkey -s '^f' 'cd "$(dirname "$(fzf)")"\n'
