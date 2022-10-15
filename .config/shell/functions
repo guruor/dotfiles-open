@@ -70,13 +70,20 @@ raise_pr() {
         dest_branch="$(echo -e "${main_branch_str}" | fzf)"
     fi
 
-    # Validating if all source branch commits are present in previous lower branch
-    echo -e "\nValidating if all source branch commits are present in previous lower branch:\n" >&2
 
-    check_lower_branch_missed_commits "${dest_branch}" "${main_branch_str}"
-    # Returning on error
-    if [ $? -ne 0 ]; then
-       return
+    # Using current branch as source branch
+    source_branch=$(git rev-parse --abbrev-ref HEAD)
+    is_hotfix_branch=$(rg -i "FIX" <<< "${source_branch}")
+
+    if [[ -z "${is_hotfix_branch}" ]]; then
+        # Validating if all source branch commits are present in previous lower branch
+        echo -e "\nValidating if all source branch commits are present in previous lower branch:\n" >&2
+
+        check_lower_branch_missed_commits "${dest_branch}" "${main_branch_str}"
+        # Returning on error
+        if [ $? -ne 0 ]; then
+           return
+        fi
     fi
 
     echo -e "\nGetting repo URL..." >&2
@@ -89,9 +96,6 @@ raise_pr() {
     else
         repo_path=$(echo $repo_push_url | cut -d ":" -f2 | cut -d "." -f1)
     fi
-
-    # Using current branch as source branch
-    source_branch=$(git rev-parse --abbrev-ref HEAD)
 
     echo -e "Repo Path: ${repo_path}\nSource branch: ${source_branch}\nDestination branch: ${dest_branch}\n\n"
     if [[ $repo_push_url == *bitbucket* ]]; then
