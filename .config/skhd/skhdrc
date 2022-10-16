@@ -32,6 +32,7 @@ shift + cmd + alt + ctrl - l : yabai -m window --focus east
 shift + cmd + alt + ctrl - q : yabai -m window --close
 shift + cmd + alt + ctrl - return : "${HOME}"/.config/yabai/scripts/open_iterm2.sh
 shift + cmd + alt + ctrl - space : yabai -m window --warp east; yabai -m window --focus west # Move window to left and focus
+shift + cmd + alt + ctrl - 0x29 : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Scratchpad" # Mapping semicolon(;) to open floating terminal
 shift + cmd + alt + ctrl - n : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Notes" "notetaker"
 shift + cmd + alt + ctrl - r : kitty -1 --title "Bottom" -e $SHELL -lc "btm -b" & # Opens process monitoring tool
 shift + cmd + alt + ctrl - m : kitty -1 --title "Ncmpcpp" -e $SHELL -lc "ncmpcpp" & # Opens music player
