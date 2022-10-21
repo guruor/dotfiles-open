@@ -165,7 +165,8 @@ keys = {
         ["i"] = {":IndentLinesToggle<CR>", "Indent lines"},
         ["u"] = {":UndotreeToggle<CR>", "Undo Tree"},
         ["h"] = {":call ToggleHiddenAll()<CR>", "Hide"},
-        ["z"] = {":Goyo<CR>", "Goyo"}
+        ["z"] = {":Goyo<CR>", "Goyo"},
+        ["s"] = {":set spell!", "Spell"}
     }
 }
 wk.register(keys, {prefix = leader})
