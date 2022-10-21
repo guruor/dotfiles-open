@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 # opens iTerm2
-alt - return : "${HOME}"/.config/yabai/scripts/open_iterm2.sh
+# alt - return : "${HOME}"/.config/yabai/scripts/open_iterm2.sh
+alt - return : kitty -1 --title "New window"
 alt - q : \
     nextwinid=$(bash -c 'yabai -m query --windows --window east 2>/dev/null || yabai -m query --windows --window west 2>/dev/null' | jq -r .id) \
     bash -c 'yabai -m window --close && yabai -m window --focus $nextwinid'
@@ -30,7 +31,8 @@ shift + cmd + alt + ctrl - j : yabai -m window --focus south
 shift + cmd + alt + ctrl - k : yabai -m window --focus north
 shift + cmd + alt + ctrl - l : yabai -m window --focus east
 shift + cmd + alt + ctrl - q : yabai -m window --close
-shift + cmd + alt + ctrl - return : "${HOME}"/.config/yabai/scripts/open_iterm2.sh
+# shift + cmd + alt + ctrl - return : "${HOME}"/.config/yabai/scripts/open_iterm2.sh
+shift + cmd + alt + ctrl - return : kitty -1 --title "New window"
 shift + cmd + alt + ctrl - space : yabai -m window --warp east; yabai -m window --focus west # Move window to left and focus
 shift + cmd + alt + ctrl - 0x29 : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Scratchpad" # Mapping semicolon(;) to open floating terminal
 shift + cmd + alt + ctrl - n : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Notes" "notetaker"
