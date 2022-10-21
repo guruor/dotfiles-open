@@ -18,9 +18,6 @@
 " Alternate way to escape
 	nnoremap <silent> <C-c> <Esc>
 
-" Replace all is aliased to S.
-	nnoremap S :%s//g<Left><Left>
-
 " Move selected line / block of text in visual mode
 " shift + k to move up
 " shift + j to move down
