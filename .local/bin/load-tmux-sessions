@@ -1,0 +1,14 @@
+#!/bin/bash
+# Loads all tmux sessions in separate windows
+
+
+# Open tmux session if exist
+tmux_sessions=$(tmux list-sessions -F "#{session_name}")
+
+if [[ "${tmux_sessions}" ]]; then
+    for session_name in ${tmux_sessions} ; do
+        kitty -1 --title "${session_name}" -e $SHELL -lc "tmux a -t ${session_name}; $SHELL";
+    done
+else
+    echo -e "No tmux session found" >&2
+fi
