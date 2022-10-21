@@ -42,9 +42,9 @@ if [[ "${NOTE_DIR}" ]]; then
 else
     # Open tmux session if exist
     session_name="Notes"
-    tmux_panes=$(tmux list-panes -a -F "#{session_name}:#{window_name}.#{pane_index},#{pane_tty}" | rg "${session_name}" | head -n 1)
+    tmux_sessions=$(tmux list-sessions -F "#{session_name}" | rg "${session_name}" | head -n 1)
 
-    if [[ "${tmux_panes}" ]]; then
+    if [[ "${tmux_sessions}" ]]; then
         tmux a -t "${session_name}"
     else
         # Use most used note directory
