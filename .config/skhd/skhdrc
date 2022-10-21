@@ -36,8 +36,8 @@ shift + cmd + alt + ctrl - return : kitty -1 --title "New window"
 shift + cmd + alt + ctrl - space : yabai -m window --warp east; yabai -m window --focus west # Move window to left and focus
 shift + cmd + alt + ctrl - 0x29 : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Scratchpad" # Mapping semicolon(;) to open floating terminal
 shift + cmd + alt + ctrl - n : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Notes" "notetaker"
-shift + cmd + alt + ctrl - r : kitty -1 --title "Bottom" -e $SHELL -lc "btm -b" & # Opens process monitoring tool
-shift + cmd + alt + ctrl - m : kitty -1 --title "Ncmpcpp" -e $SHELL -lc "ncmpcpp" & # Opens music player
+shift + cmd + alt + ctrl - r : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Bottom" "btm -b" # Opens process monitoring tool
+shift + cmd + alt + ctrl - m : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Ncmpcpp" "ncmpcpp" # Opens music player
 shift + cmd + alt + ctrl - p : mpc toggle # Toggle play/pause for mpd
 shift + cmd + alt + ctrl - 0x21 : mpc seek -10 # Seek music 10 seconds backward with hyper + [
 shift + cmd + alt + ctrl - 0x1E : mpc seek +10 # Seek music 10 seconds forward with hyper + ]
