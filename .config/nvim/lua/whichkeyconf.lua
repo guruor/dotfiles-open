@@ -31,6 +31,8 @@ keys = {
     ["x"] = {":q!<CR>", "Close without saving"},
     ["Q"] = {":qa!<CR>", "Quit all"}
 }
+
+
 wk.register(keys, {prefix = localleader})
 wk.register(keys, {prefix = localleader, mode = 'v'})
 
@@ -51,10 +53,15 @@ keys = {
     ["U"] = {":UndotreeToggle<CR>", "Undo Tree"},
     [" "] = {":noh<CR>", "No Highlight"},
     ["L"] = {":Limelight<CR>", "Limelight activate"},
-    ["o"] = {":tabnew | terminal lf<CR>", "Open file explorer"}
+    ["o"] = {":tabnew | terminal lf<CR>", "Open file explorer"},
+    ["S"] = {":%s//gc<Left><Left><Left>", "Find and replace/substitute"}
 }
 wk.register(keys, {prefix = leader})
 wk.register(keys, {prefix = leader, mode = 'v'})
+
+keys_visual = copy(keys)
+keys_visual["S"] = {'"hy:%s/<C-r>h//gc<left><left><left>', "Find and replace/substitute visual selected"}
+wk.register(keys_visual, {prefix = leader, mode = 'v'})
 
 keys = {
     g = {
