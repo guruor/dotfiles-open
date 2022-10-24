@@ -1,0 +1,56 @@
+#!/bin/bash
+# This script will create default session and windows for tmux
+# Requires JQ, json processor, https://github.com/stedolan/jq
+
+# Create a JSON like this and pass it as input
+#{
+#  "session1": {
+#    "window1": "$SHELL",
+#    "window2": "$SHELL"
+#  },
+#  "session2": {
+#    "window3": "$SHELL",
+#    "window4": "$SHELL"
+#  }
+#}
+
+session_template_path="$HOME/.config/tmux/private/default-session.json"
+
+session_data=$(cat "${session_template_path}")
+session_names=($(echo "${session_data}" | jq -r 'keys[]'))
+existing_sessions=$(tmux list-sessions -F "#{session_name}" 2>/dev/null)
+
+tmux start-server
+for ((s = 0; s < ${#session_names[@]}; ++s));
+do
+    session_name="${session_names[${s}]}"
+    echo -e "s: ${s}, session_name: ${session_name}\n" >&2
+    window_names=($(echo "${session_data}" | jq -r ".${session_name} | keys[]"))
+    first_window=${window_names[0]}
+    first_window_commands=$(echo "${session_data}" | jq -r ".${session_name} | .${first_window}")
+
+    if [[ $(echo -e "${existing_sessions}" | grep "${session_name}") ]]; then
+        echo -e "Session with name ${session_name} already exist" >&2
+    else
+        echo -e "Creating new session: ${session_name} and window ${first_window}" >&2
+        echo -e "Commands: ${first_window_commands}\n" >&2
+        tmux new-session -d -s "${session_name}" -n "${first_window}";
+        tmux send-keys -t "${session_name}":"${first_window}" "${first_window_commands}" ENTER; sleep .3
+    fi
+
+    existing_windows=$(tmux list-windows -t "${session_name}" -F "#{window_name}")
+
+    for ((w = 1; w < ${#window_names[@]}; ++w));
+    do
+        window_name="${window_names[${w}]}"
+        if [[ $(echo -e "${existing_windows}" | grep "${window_name}") ]]; then
+            echo -e "Window with name ${window_name} already exist" >&2
+        else
+            echo -e "Creating new window: ${window_name}" >&2
+            commands=$(echo "${session_data}" | jq -r ".${session_name} | .${window_name}")
+            echo -e "Commands: ${commands}\n" >&2
+            tmux new-window -n  "${window_name}" -t "${session_name}";
+            tmux send-keys -t "${session_name}":"${window_name}" "${commands}" ENTER; sleep .3;
+        fi
+    done
+done
