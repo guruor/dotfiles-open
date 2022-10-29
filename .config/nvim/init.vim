@@ -6,6 +6,7 @@
 
 source $HOME/.config/nvim/source/plugins.vim
 source $HOME/.config/nvim/source/general/settings.vim
+source $HOME/.config/nvim/source/general/autocmds.vim
 source $HOME/.config/nvim/source/general/functions.vim
 source $HOME/.config/nvim/source/keys/mappings.vim
 

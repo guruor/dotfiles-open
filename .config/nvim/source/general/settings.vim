@@ -115,78 +115,10 @@ let g:python3_host_prog = expand('~/.pyenv/versions/nvim/bin/python')
 """ Filetype-Specific Configurations
 filetype plugin indent on
 
-" HTML, XML, Jinja
-autocmd FileType html setlocal shiftwidth=2 tabstop=2 softtabstop=2
-autocmd FileType css setlocal shiftwidth=2 tabstop=2 softtabstop=2
-autocmd FileType xml setlocal shiftwidth=2 tabstop=2 softtabstop=2
-autocmd FileType htmldjango setlocal shiftwidth=2 tabstop=2 softtabstop=2
-autocmd FileType htmldjango inoremap {{ {{  }}<left><left><left>
-autocmd FileType htmldjango inoremap {% {%  %}<left><left><left>
-autocmd FileType htmldjango inoremap {# {#  #}<left><left><left>
-
-" Markdown and Journal
-autocmd FileType markdown setlocal shiftwidth=2 tabstop=2 softtabstop=2
-autocmd FileType journal setlocal shiftwidth=2 tabstop=2 softtabstop=2
-
-autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
-autocmd BufWinEnter,WinEnter term://* startinsert
-autocmd TermOpen * startinsert
-
-" Enabling limelight on vim start
-" autocmd VimEnter * Limelight
-
-autocmd BufLeave term://* stopinsert
-autocmd BufLeave *  call CleanNoNameEmptyBuffers()
-
-" Enable folding
-	autocmd BufReadPre * setlocal foldmethod=indent
-	autocmd BufReadPre * setlocal foldlevel=1
-    autocmd BufEnter *.md setlocal foldexpr=MarkdownLevel()
-    autocmd BufEnter *.md setlocal foldmethod=expr
-
-" Enable Goyo by default for mutt writing
-	autocmd BufRead,BufNewFile /tmp/neomutt* let g:goyo_width=80
-	autocmd BufRead,BufNewFile /tmp/neomutt* :Goyo | set bg=light
-	autocmd BufRead,BufNewFile /tmp/neomutt* map ZZ :Goyo\|x!<CR>
-	autocmd BufRead,BufNewFile /tmp/neomutt* map ZQ :Goyo\|q!<CR>
-
-" Auto detect dadbod connection for the file
-	autocmd BufRead,BufNewFile $DADBOD_DB_QUERIES_PATH/**/*.sql :exec 'DBUIFindBuffer' | DBUIToggle
-
-" Detect file type for tunnel-config file
-	autocmd BufRead,BufNewFile ~/voidrice/Private/.config/.ssh/tunnel-config :set filetype=sshconfig
-
-" Detect file type for env files for rest-nvim
-	autocmd BufRead,BufNewFile $REST_NVIM_COLLECTION_PATH/envs/* :set filetype=sh
-
-" Automatically deletes all trailing whitespace and newlines at end of file on save.
-	autocmd BufWritePre * %s/\s\+$//e
-	autocmd BufWritePre * %s/\n\+\%$//e
-
-" When shortcut files are updated, renew bash and ranger configs with new material:
-	autocmd BufWritePost bm-files,bm-dirs !shortcuts
-" Run xrdb whenever Xdefaults or Xresources are updated.
-	autocmd BufRead,BufNewFile xresources,xdefaults set filetype=xdefaults
-	autocmd BufWritePost Xresources,Xdefaults,xresources,xdefaults !xrdb %
-" Recompile dwmblocks on config edit.
-	autocmd BufWritePost ~/.local/src/dwmblocks/config.h !cd ~/.local/src/dwmblocks/; sudo make install && { killall -q dwmblocks;setsid -f dwmblocks }
-	autocmd BufWritePost ~/.local/src/dwm/config.h !cd ~/.local/src/dwm/; sudo make install && kill -HUP $(pgrep -u $USER "\bdwm$")
-" Restart yabai when yabai config is changed
-	autocmd BufWritePost ~/voidrice/.config/yabai/yabairc !brew services restart yabai; killall Dock
-	autocmd BufWritePost ~/voidrice/.config/skhd/skhdrc !brew services restart skhd;
-
-" Auto show diagnostics for a line when curson is on the line
-    " Show diagnostic hover after 'updatetime' and don't steal focus
-    " autocmd CursorHold * lua vim.diagnostic.open_float(0, { scope = "line", border = "single" })
-    autocmd CursorHoldI * silent! lua vim.lsp.buf.signature_help()
-
 " Turns off highlighting on the bits of code that are changed, so the line that is changed is highlighted but the actual text that has changed stands out on the line and is readable.
 if &diff
     highlight! link DiffText MatchParen
 endif
-
-" Runs a script that cleans out tex build files whenever I close out of a .tex file.
-	autocmd VimLeave *.tex !texclear %
 
 " Ensure files are read as what "Multiple Wikis
 " https://opensource.com/article/18/6/vimwiki-gitlab-notes
@@ -210,33 +142,6 @@ endif
 	let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
     let g:vimwiki_hl_headers=1
 
-	autocmd BufRead,BufNewFile *.md  set filetype=markdown
-	autocmd BufRead,BufNewFile *.ms,*.me,*.mom,*.man set filetype=groff
-	autocmd BufRead,BufNewFile *.tex set filetype=tex
-    autocmd FileType markdown setlocal commentstring=<!--\ %s\ -->
-    autocmd FileType http setlocal commentstring=#\ %s
-    autocmd BufRead,BufNewFile *.md setlocal spell
 
 " Markdown code block color syntax
 let g:markdown_fenced_languages = ['bash=sh', 'javascript', 'js=javascript', 'json=javascript', 'typescript', 'ts=typescript', 'python', 'html', 'css', 'rust', 'go', 'vim', 'lua']
-
-" Disabling syntax highlighting for larger files
-    autocmd Filetype * if getfsize(@%) > 1000000 | setlocal syntax=OFF | endif
-
-" Storing last visited tab
-    autocmd TabLeave * let g:lasttab = tabpagenr()
-
-" Enabling spell check for gitcommit
-    autocmd FileType gitcommit setlocal spell
-
-
-" Allowing opening of quick fix entries in new tab
-    autocmd FileType qf nnoremap <buffer> <Enter> <C-W><Enter><C-W>T
-
-" Save and restore folds
-set viewoptions-=options
-augroup remember_folds
-    autocmd!
-    autocmd BufWinLeave *.* if &ft !=# 'help' || &ft !=# 'fugitiveblame' | mkview | endif
-    autocmd BufWinEnter *.* if &ft !=# 'help' || &ft !=# 'fugitiveblame' | silent! loadview | endif
-augroup END
