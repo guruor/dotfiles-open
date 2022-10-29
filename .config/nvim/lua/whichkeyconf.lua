@@ -233,6 +233,7 @@ local function attach_dadbod_ui_keys(bufnr)
             ["R"] = {"<Cmd>DBUIRenameBuffer<Cr>", "Rename buffer"},
             ["q"] = {"<Cmd>DBUILastQueryInfo<Cr>", "Last query info"},
             ["r"] = {"<Plug>(DBUI_ExecuteQuery)", "Run query"},
+            ["e"] = {"<Plug>(DBUI_EditBindParameters)", "Edit bind parameters"},
         }
     }
     wk.register(keys, {prefix = leader})
