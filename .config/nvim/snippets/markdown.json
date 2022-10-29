@@ -1,4 +1,13 @@
 {
+  "## TODOs": {
+    "prefix": "todo",
+    "body": [
+      "## TODOs",
+      "",
+      "- ${0}"
+    ],
+    "description": "Adds TODO header"
+  },
   "Code Python": {
     "prefix": "python",
     "body": [
