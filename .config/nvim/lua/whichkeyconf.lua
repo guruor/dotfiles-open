@@ -74,9 +74,10 @@ keys = {
         ["g"] = {":GGrep<CR>", "Grep"},
         ["s"] = {":Git<CR>", "Status"},
         ["l"] = {":Git log<CR>", "Log"},
+        ["L"] = {":tabnew | terminal lazygit<CR>", "Lazygit"},
         ["p"] = {":Git push<CR>", "Push"},
         ["P"] = {":Git pull<CR>", "Pull"},
-        ["<"] = {":diffget //3<CR>", "Get changes from right"},
+        ["<lt>"] = {":diffget //3<CR>", "Get changes from right"},
         [">"] = {":diffget //2<CR>", "Get changes from left"}
     }
 }
