@@ -3,12 +3,21 @@
 
 
 # Open tmux session if exist
-tmux_sessions=$(tmux list-sessions -F "#{session_name}")
+tmux_sessions=$(tmux list-sessions -F "#{session_name}" 2>/dev/null)
 
+if [[ -z "${tmux_sessions}" ]]; then
+    echo -e "No running tmux session found, reloading the session from tmux-resurrect" >&2
+    tmux start-server
+    tmux new-session -d;
+    echo -e "Waiting for session to load..." >&2
+    sleep 10;
+fi
+
+tmux_sessions=$(tmux list-sessions -F "#{session_name}" 2>/dev/null)
 if [[ "${tmux_sessions}" ]]; then
     for session_name in ${tmux_sessions} ; do
-        kitty -1 --title "${session_name}" -e $SHELL -lc "tmux a -t ${session_name}; $SHELL";
+        kitty -1 --title "${session_name}" -e "${SHELL}" -lc "tmux a -t ${session_name}; ${SHELL}";
     done
 else
-    echo -e "No tmux session found" >&2
+    echo -e "No tmux session found at all" >&2
 fi
