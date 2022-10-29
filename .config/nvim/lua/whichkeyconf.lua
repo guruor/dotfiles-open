@@ -10,7 +10,7 @@ local keys_visual
 keys = {
     ["j"] = {":BufferPrevious<CR>", "Jump to left tab"},
     ["k"] = {":BufferNext<CR>", "Jump to right tab"},
-    ["<"] = {":BufferMovePrevious<CR>", "Move tab left"},
+    ["<lt>"] = {":BufferMovePrevious<CR>", "Move tab left"},
     [">"] = {":BufferMoveNext<CR>", "Move tab right"},
     ["\\"] = {":exe 'tabn '.g:lasttab<CR>", "Last tab"},
     ["1"] = {":BufferGoto 1<CR>", "which_key_ignore"},
