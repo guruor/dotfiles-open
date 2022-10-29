@@ -7,7 +7,7 @@ local func = ls.function_node
 local choice = ls.choice_node
 local dynamicn = ls.dynamic_node
 
-local date = function() return { os.date('%d-%m-%Y') } end
+local date = function() return { os.date('%Y-%m-%d') } end
 
 ls.config.set_config {
     history = true,
