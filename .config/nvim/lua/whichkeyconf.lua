@@ -229,7 +229,7 @@ local function attach_dadbod_ui_keys(bufnr)
         r = {
             name = 'Dadbod DB client',
             ["t"] = {"<Cmd>DBUIToggle<Cr>", "Toggle UI"},
-            ["f"] = {"<Cmd>DBUIFindBuffer<Cr><Cmd>DBUIToggle<Cr>", "Find buffer"},
+            ["f"] = {"<Cmd>DBUIFindBuffer<Cr>", "Find buffer"},
             ["R"] = {"<Cmd>DBUIRenameBuffer<Cr>", "Rename buffer"},
             ["q"] = {"<Cmd>DBUILastQueryInfo<Cr>", "Last query info"},
             ["r"] = {"<Plug>(DBUI_ExecuteQuery)", "Run query"},
