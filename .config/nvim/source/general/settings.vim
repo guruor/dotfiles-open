@@ -140,6 +140,7 @@ autocmd BufLeave *  call CleanNoNameEmptyBuffers()
 
 " Enable folding
 	autocmd BufReadPre * setlocal foldmethod=indent
+	autocmd BufReadPre * setlocal foldlevel=1
     autocmd BufEnter *.md setlocal foldexpr=MarkdownLevel()
     autocmd BufEnter *.md setlocal foldmethod=expr
 
