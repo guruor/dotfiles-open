@@ -1,0 +1,9 @@
+{
+  "jsonb_pretty": {
+    "prefix": "jsonb_pretty",
+    "body": [
+      "jsonb_pretty((${0})::JSONB) as ${1}"
+    ],
+    "description": "Pretty Json"
+  }
+}
