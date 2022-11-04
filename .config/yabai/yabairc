@@ -33,6 +33,7 @@ yabai -m config layout                      bsp
 # Default layout per space
 yabai -m config --space 1 layout stack
 yabai -m config --space 2 layout stack
+yabai -m config --space 3 layout stack
 
 
 yabai -m config top_padding                 "${gaps["top"]}"
@@ -83,10 +84,11 @@ yabai -m rule --add label="Software Update" title="Software Update" manage=off
 yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
 
 # Moves the apps to specific space
-yabai -m rule --add title="^(Code|Servers)$" app="^kitty$" space=1
-yabai -m rule --add title="^(Postman|Databases)$" app="^kitty$" space=2
-yabai -m rule --add app="^(Slack|WhatsApp|Microsoft Teams)$" space=3
+yabai -m rule --add title="^(Code)$" app="^kitty$" space=1
+yabai -m rule --add title="^(Servers)$" app="^kitty$" space=2
+yabai -m rule --add title="^(Postman|Databases)$" app="^kitty$" space=3
 yabai -m rule --add app="^(Brave Browser|Google Chrome|Firefox)$" space=4
+yabai -m rule --add app="^(Slack|WhatsApp|Microsoft Teams)$" space=5
 
 # ===== Signals ================================
 
