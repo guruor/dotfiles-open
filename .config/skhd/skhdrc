@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# skhd --observe, use this to get the keycode
+# Hyper = Left Control + Shift + Alt + Winkey
+# Meh = Left Control + Shift + Alt
 
 # Show system statistics
 fn + lalt - 1 : "${HOME}"/.config/yabai/scripts/show_cpu.sh
@@ -7,31 +10,43 @@ fn + lalt - 3 : "${HOME}"/.config/yabai/scripts/show_bat.sh
 fn + lalt - 4 : "${HOME}"/.config/yabai/scripts/show_disk.sh
 fn + lalt - 5 : "${HOME}"/.config/yabai/scripts/show_song.sh
 
-# Navigation
-alt - h : yabai -m window --focus west
-alt - j : yabai -m window --focus south
-alt - k : yabai -m window --focus north
-alt - l : yabai -m window --focus east
+# Shortcuts with meh key
+meh - q : yabai -m window --close
+meh - j : yabai -m window --focus south
+meh - k : yabai -m window --focus north
+# meh - h : yabai -m window --focus west
+# meh - l : yabai -m window --focus east
 
-# Shortcuts with hyper key
+# Toggle layout stacking/bsp
+meh - t : yabai -m space --layout "$(yabai -m query --spaces --space | jq -r 'if .type == "bsp" then "stack" else "bsp" end')"
 
-shift + cmd + alt + ctrl - h : yabai -m window --focus west
-shift + cmd + alt + ctrl - j : yabai -m window --focus south
-shift + cmd + alt + ctrl - k : yabai -m window --focus north
-shift + cmd + alt + ctrl - l : yabai -m window --focus east
-shift + cmd + alt + ctrl - q : yabai -m window --close
-# shift + cmd + alt + ctrl - return : "${HOME}"/.config/yabai/scripts/open_iterm2.sh
-shift + cmd + alt + ctrl - return : kitty -1 --title "New window"
-shift + cmd + alt + ctrl - space : yabai -m window --warp east; yabai -m window --focus west # Move window to left and focus
-shift + cmd + alt + ctrl - 0x29 : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Scratchpad" # Mapping semicolon(;) to open floating terminal
-shift + cmd + alt + ctrl - n : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Notes" "notetaker"
-shift + cmd + alt + ctrl - r : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Bottom" "btm -b" # Opens process monitoring tool
-shift + cmd + alt + ctrl - m : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Ncmpcpp" "ncmpcpp" # Opens music player
-shift + cmd + alt + ctrl - p : mpc toggle # Toggle play/pause for mpd
-shift + cmd + alt + ctrl - 0x21 : mpc seek -10 # Seek music 10 seconds backward with hyper + [
-shift + cmd + alt + ctrl - 0x1E : mpc seek +10 # Seek music 10 seconds forward with hyper + ]
-shift + cmd + alt + ctrl - 0x1B : osascript -e 'set volume output volume (output volume of (get volume settings)) - 10' # Volume down with hyper + -
-shift + cmd + alt + ctrl - 0x18 : osascript -e 'set volume output volume (output volume of (get volume settings)) + 10' # Volume down with hyper + +
+# Focus previous window
+meh - h : yabai -m query --spaces --space \
+  | jq -re ".index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre 'add | map(select(."is-minimized"==false)) | sort_by(.display, .frame.y, .frame.x, .id) | . as $array | length as $array_length | index(map(select(."has-focus"==true))) as $has_index | if $has_index > 0 then nth($has_index - 1).id else nth($array_length - 1).id end' \
+  | xargs -I{} yabai -m window --focus {}
+
+# Focus next window
+meh - l : yabai -m query --spaces --space \
+  | jq -re ".index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre 'add | map(select(."is-minimized"==false)) | sort_by(.display, .frame.y, .frame.x, .id) | . as $array | length as $array_length | index(map(select(."has-focus"==true))) as $has_index | if $array_length - 1 > $has_index then nth($has_index + 1).id else nth(0).id end' \
+  | xargs -I{} yabai -m window --focus {}
+
+
+# meh - return : "${HOME}"/.config/yabai/scripts/open_iterm2.sh
+meh - return : kitty -1 --title "New window"
+meh - space : yabai -m window --warp east; yabai -m window --focus west # Move window to left and focus
+meh - 0x29 : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Scratchpad" # Mapping semicolon(;) to open floating terminal
+meh - n : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Notes" "notetaker"
+meh - r : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Bottom" "btm -b" # Opens process monitoring tool
+meh - m : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Ncmpcpp" "ncmpcpp" # Opens music player
+meh - p : mpc toggle # Toggle play/pause for mpd
+meh - 0x21 : mpc seek -10 # Seek music 10 seconds backward with meh + [
+meh - 0x1E : mpc seek +10 # Seek music 10 seconds forward with meh + ]
+meh - 0x1B : osascript -e 'set volume output volume (output volume of (get volume settings)) - 10' # Volume down with meh + -
+meh - 0x18 : osascript -e 'set volume output volume (output volume of (get volume settings)) + 10' # Volume down with meh + +
 
 # Switch space, requires SIP to be disabled, handling the same with mac keyboard shortcuts for mission control
 # alt - 1 : yabai -m space --focus 1
