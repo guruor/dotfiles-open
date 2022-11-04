@@ -28,8 +28,12 @@ color["preselect"]="0xE02d74da"
 # yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
 
 # ===== Tiling setting =========================
-
+# Layouts : bsp/stack/float
 yabai -m config layout                      bsp
+# Default layout per space
+yabai -m config --space 1 layout stack
+yabai -m config --space 2 layout stack
+
 
 yabai -m config top_padding                 "${gaps["top"]}"
 yabai -m config bottom_padding              "${gaps["bottom"]}"
@@ -79,6 +83,12 @@ yabai -m rule --add label="Dictionary" app="^Dictionary$" manage=off
 yabai -m rule --add label="mpv" app="^mpv$" manage=off
 yabai -m rule --add label="Software Update" title="Software Update" manage=off
 yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
+
+# Moves the apps to specific space
+yabai -m rule --add title="^(Code|Servers)$" app="^kitty$" space=1
+yabai -m rule --add title="^(Postman|Databases)$" app="^kitty$" space=2
+yabai -m rule --add app="^(Slack|WhatsApp|Microsoft Teams)$" space=3
+yabai -m rule --add app="^(Brave Browser|Google Chrome|Firefox)$" space=4
 
 # ===== Signals ================================
 
