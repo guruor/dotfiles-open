@@ -1,1 +1,1 @@
-return {formatCommand = "autopep8 -", formatStdin = true}
+return {formatCommand = "autopep8 -", formatStdin = true, lintIgnoreExitCode=true}
