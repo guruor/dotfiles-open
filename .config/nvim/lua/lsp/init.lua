@@ -80,7 +80,6 @@ vim.fn.sign_define("LspDiagnosticsSignHint", {text = "", numhl = "LspDiagnost
 
 -- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 
 local on_attach = function(client)
@@ -113,7 +112,7 @@ end
 lspconfig.gopls.setup {
     capabilities = capabilities,
     on_attach = function(client)
-        client.resolved_capabilities.document_formatting = false
+        client.server_capabilities.documentFormattingProvider = false
         on_attach(client)
     end
 }
@@ -140,7 +139,7 @@ lspconfig.gopls.setup {
 lspconfig.pyright.setup {
     capabilities = capabilities,
     on_attach = function(client)
-        client.resolved_capabilities.document_formatting = false
+        client.server_capabilities.documentFormattingProvider = false
         on_attach(client)
     end
 }
@@ -149,7 +148,7 @@ lspconfig.pyright.setup {
 -- lspconfig.jedi_language_server.setup {
 --    capabilities = capabilities,
 -- on_attach = function(client)
--- client.resolved_capabilities.document_formatting = false
+-- client.server_capabilities.documentFormattingProvider = false
 -- on_attach(client)
 -- end
 -- }
@@ -181,7 +180,7 @@ lspconfig.rust_analyzer.setup({
 lspconfig.tsserver.setup {
     capabilities = capabilities,
     on_attach = function(client)
-        client.resolved_capabilities.document_formatting = false
+        client.server_capabilities.documentFormattingProvider = false
         -- require"nvim-lsp-ts-utils".setup {}
         on_attach(client)
     end
@@ -299,8 +298,8 @@ local proselint = require "efm/proselint"
 lspconfig.efm.setup {
     capabilities = capabilities,
     on_attach = function(client)
-        client.resolved_capabilities.document_formatting = true
-        client.resolved_capabilities.document_range_formatting = true
+        client.server_capabilities.documentFormattingProvider = true
+        client.server_capabilities.documentRangeFormattingProvider = true
         on_attach(client)
     end,
     init_options = {documentFormatting = true},
