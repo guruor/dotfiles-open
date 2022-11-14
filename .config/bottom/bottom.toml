@@ -48,7 +48,7 @@ basic = false
 # Remove space in tables
 #hide_table_gap = false
 # Show the battery widgets
-#battery = false
+battery = true
 # Disable mouse clicks
 #disable_click = false
 # Built-in themes.  Valid values are "default", "default-light", "gruvbox", "gruvbox-light", "nord", "nord-light"
