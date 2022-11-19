@@ -199,3 +199,10 @@ function urlencode(){
         print (ul.quote_plus(sys.argv[1]))" $1)
     echo "${encoded_value}"
 }
+
+function kill_port(){
+    PORT_NUMBER=$1
+    if [[ "${PORT_NUMBER}" ]]; then
+        lsof -i tcp:${PORT_NUMBER} | rg ssh | awk '{print $2}' | xargs kill
+    fi
+}
