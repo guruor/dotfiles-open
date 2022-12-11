@@ -245,3 +245,22 @@ vim.api.nvim_create_autocmd(
     { "Filetype" },
     { pattern = { "sql" }, callback = attach_dadbod_ui_keys }
 )
+
+
+local function attach_markdown_keys(bufnr)
+    keys = {
+        r = {
+            name = 'Markdown',
+            ["r"] = {"<Cmd>MarkdownPreview<Cr>", "Markdown Preview"},
+            ["t"] = {"<Cmd>MarkdownPreviewToggle<Cr>", "Markdown Preview Toggle"},
+            ["x"] = {"<Cmd>MarkdownPreviewStop<Cr>", "Markdown Preview Stop"},
+        }
+    }
+    wk.register(keys, {prefix = leader})
+    wk.register(keys, {prefix = leader, mode = 'v'})
+end
+
+vim.api.nvim_create_autocmd(
+    { "Filetype" },
+    { pattern = { "vimwiki", "markdown" }, callback = attach_markdown_keys }
+)
