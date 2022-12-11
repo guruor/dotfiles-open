@@ -144,4 +144,4 @@ endif
 
 
 " Markdown code block color syntax
-let g:markdown_fenced_languages = ['bash=sh', 'javascript', 'js=javascript', 'json=javascript', 'typescript', 'ts=typescript', 'python', 'html', 'css', 'rust', 'go', 'vim', 'lua']
+let g:markdown_fenced_languages = ['bash=sh', 'javascript', 'js=javascript', 'json=javascript', 'typescript', 'ts=typescript', 'python', 'html', 'css', 'rust', 'go', 'vim', 'lua', 'plantuml']

@@ -104,6 +104,7 @@ Plug 'rafamadriz/friendly-snippets'
 Plug 'ron89/thesaurus_query.vim'
 Plug 'chrisbra/Colorizer' " Highlights color code or hash
 
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 " Yet to explorer
 " Plug 'tpope/vim-sensible'
 " Plug 'tpope/vim-abolish'
