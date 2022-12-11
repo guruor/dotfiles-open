@@ -86,6 +86,7 @@
 
 [push]
     default = simple
+    autoSetupRemote = true
 
 [merge]
     tool = vimdiff
