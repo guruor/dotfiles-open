@@ -293,6 +293,7 @@ local shellcheck = require "efm/shellcheck"
 local terraform = require "efm/terraform"
 -- local misspell = require "efm/misspell"
 local proselint = require "efm/proselint"
+local buf = require "efm/buf"
 -- https://github.com/mattn/efm-langserver
 -- python = {black, isort, flake8, mypy},
 lspconfig.efm.setup {
@@ -324,7 +325,8 @@ lspconfig.efm.setup {
             css = {prettier},
             markdown = {prettier, proselint},
             sh = {shellcheck},
-            tf = {terraform}
+            tf = {terraform},
+            proto = {buf}
         }
     }
 }

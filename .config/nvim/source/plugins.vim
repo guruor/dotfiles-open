@@ -55,6 +55,7 @@ Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'bufbuild/vim-buf'
 
 " Debugging
 Plug 'mfussenegger/nvim-dap'
