@@ -16,7 +16,7 @@ alias \
     rga='rg -uuu' \
     :q='exit' \
     ,q='exit' \
-    lzd='lazydocker' \
+    lzd='DOCKER_HOST=unix://$HOME/.colima/docker.sock  lazydocker' \
     lzg='lazygit'
 
 # Colorize commands when possible.
