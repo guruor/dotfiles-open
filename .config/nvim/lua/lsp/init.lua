@@ -1,3 +1,6 @@
+-- Look for server configurations here
+-- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+
 require "lsp.handlers"
 local lspconfig = require "lspconfig"
 local utils = require "utils"
@@ -276,6 +279,13 @@ lspconfig.terraformls.setup {
     on_attach = on_attach, cmd = {"terraform-ls", "serve"}, filetypes = {"tf"}
 }
 
+-- https://github.com/bufbuild/buf-language-server
+-- go install github.com/bufbuild/buf-language-server/cmd/bufls@latest
+lspconfig.bufls.setup {
+    capabilities = capabilities,
+    on_attach = on_attach, cmd = {"bufls", "serve"}, filetypes = {"proto"}
+}
+
 
 local vint = require "efm/vint"
 local luafmt = require "efm/luafmt"
@@ -304,7 +314,7 @@ lspconfig.efm.setup {
         on_attach(client)
     end,
     init_options = {documentFormatting = true},
-    filetypes = {"python", "javascript", "json", "lua", "vim", "markdown", "yaml"},
+    filetypes = {"python", "javascript", "json", "lua", "vim", "markdown", "yaml", "proto", "go", "sh"},
     settings = {
         rootMarkers = {".git/"},
         languages = {
@@ -331,9 +341,11 @@ lspconfig.efm.setup {
     }
 }
 
+
 lspconfig.clangd.setup {
     capabilities = capabilities,
-    on_attach = on_attach
+    on_attach = on_attach, cmd = { "clangd" },
+    filetypes = { "c", "cpp", "objc", "objcpp", "cuda" }
 }
 
 return M
