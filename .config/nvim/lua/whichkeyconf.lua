@@ -126,7 +126,7 @@ keys = {
         ["o"] = {"<cmd>lua vim.lsp.buf.outgoing_calls()<CR>", "Outgoing calls"},
         ["a"] = {":lua vim.lsp.buf.code_action()<CR>", "Action"},
         ["k"] = {":lua vim.lsp.buf.hover()<CR>", "Hover"},
-        ["="] = {":update | lua vim.lsp.buf.formatting()<CR>", "Format"},
+        ["="] = {":update | lua vim.lsp.buf.format()<CR>", "Format"},
         ["d"] = {":lua vim.lsp.diagnostic.set_loclist()<CR>", "Diagnostic"},
         ["D"] = {":lua vim.diagnostic.open_float(0, { scope = 'line', border = 'single' })<CR>", "Diagnostic"},
         ["dd"] = {":lua require'lsp.diagnostics'.line_diagnostics()<CR>", "Diagnostic"},
@@ -139,7 +139,7 @@ keys = {
 }
 wk.register(keys, {prefix = leader})
 keys_visual = copy(keys)
-keys_visual["l"]["="] = {":update | lua vim.lsp.buf.range_formatting()<CR>", "Range Format"}
+keys_visual["l"]["="] = {":update | lua vim.lsp.formatexpr()<CR>", "Range Format"}
 wk.register(keys_visual, {prefix = leader, mode = 'v'})
 
 keys = {
