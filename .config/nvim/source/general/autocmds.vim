@@ -80,7 +80,7 @@
 	autocmd BufWritePre * %s/\n\+\%$//e
 
 " When shortcut files are updated, renew bash and ranger configs with new material:
-	autocmd BufWritePost bm-files,bm-dirs !shortcuts
+	autocmd BufWritePost bm-files,bm-dirs !$HOME/.local/bin/shortcuts
 " Auto reloads xresources settings
 	autocmd BufWritePost Xresources,Xdefaults,xresources,xdefaults !xrdb %
 " Recompile dwmblocks on config edit.
