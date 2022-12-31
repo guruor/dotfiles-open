@@ -14,8 +14,9 @@ vv  ${XDG_VIDEOS_DIR:-$HOME/Videos}
 dot  ${XDG_VIDEOS_DIR:-$HOME/voidrice}
 pdot  ${XDG_VIDEOS_DIR:-$HOME/voidrice/Private}
 work   $HOME/Workspace
-up   $HOME/Workspace/up
+csk   $HOME/Workspace/csk
 prac   $HOME/Workspace/practice
+order   $HOME/Workspace/csk/csx/ordering-module/order-service/
 rust  $HOME/Workspace/practice/rust
 vw   ${VIMWIKI_DIR:-$HOME/Dropbox/vimWiki}
 vww  "${VIM_WIKI_DIR_WORK:-$HOME/Dropbox}/vimWiki/Work"
