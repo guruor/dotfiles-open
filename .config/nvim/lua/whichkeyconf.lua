@@ -127,14 +127,15 @@ keys = {
         ["a"] = {":lua vim.lsp.buf.code_action()<CR>", "Action"},
         ["k"] = {":lua vim.lsp.buf.hover()<CR>", "Hover"},
         ["="] = {":update | lua vim.lsp.buf.format()<CR>", "Format"},
-        ["d"] = {":lua vim.lsp.diagnostic.set_loclist()<CR>", "Diagnostic"},
-        ["D"] = {":lua vim.diagnostic.open_float(0, { scope = 'line', border = 'single' })<CR>", "Diagnostic"},
-        ["dd"] = {":lua require'lsp.diagnostics'.line_diagnostics()<CR>", "Diagnostic"},
-        ["n"] = {":lua vim.lsp.diagnostic.goto_next()<CR>", "Next diagnostic"},
-        ["p"] = {":lua vim.lsp.diagnostic.goto_prev()<CR>", "Prev diagnostic"},
-        ["q"] = {":lua require('lists').change_active('Quickfix')<CR>", "Quick fix"},
+        ["dd"] = {":lua vim.diagnostic.setloclist()<CR>", "Diagnostic"},
+        ["dn"] = {":lua vim.diagnostic.goto_next()<CR>", "Next diagnostic"},
+        ["dp"] = {":lua vim.diagnostic.goto_prev()<CR>", "Prev diagnostic"},
+        ["dl"] = {":lua vim.diagnostic.open_float()<CR>", "Line Diagnostic"},
+        ["dL"] = {":lua vim.diagnostic.open_float(0, { scope = 'line', border = 'single' })<CR>", "Line Diagnostic"},
+        ["da"] = {":lua vim.diagnostic.get()<CR>", "All diagnostic"},
+        ["dq"] = {"<cmd>lua vim.diagnostic.setqflist()<CR>", "QuickFix"},
         ["r"] = {":lua require'lsp.rename'.rename()<CR>", "Rename"},
-        ["R"] = {":lua require('lists').change_active('Quickfix')<CR>:lua vim.lsp.buf.references()<CR>", "References"}
+        ["R"] = {"<cmd>lua vim.lsp.buf.references()<CR>", "References"},
     }
 }
 wk.register(keys, {prefix = leader})
