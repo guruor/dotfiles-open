@@ -76,6 +76,7 @@ Plug 'mbbill/undotree',             { 'on': 'UndotreeToggle'   }
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary',        { 'on': 'Commentary' }
+Plug 'tpope/vim-abolish' " easily search for, substitute, and abbreviate multiple variants of a word
 
 " Session management plugins
 Plug 'tpope/vim-obsession'
