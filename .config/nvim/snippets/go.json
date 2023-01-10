@@ -1,0 +1,35 @@
+{
+  "Log Prefix": {
+    "prefix": "logprefix",
+    "body": [
+      "logPrefix := \"${0} =>\""
+    ],
+    "description": "Log prefix"
+  },
+  "log from ctx": {
+    "prefix": "logctx",
+    "body": [
+      "log := logger.GetLogger(ctx)"
+    ],
+    "description": "Get logger from context"
+  },
+  "if err": {
+    "prefix": "iferr",
+    "body": [
+      "if err != nil {",
+      " log.Errorf(\"%v ${0} %v\", logPrefix, err.Error())",
+      " return nil, err",
+      "}"
+    ],
+    "description": "Log raised error"
+  },
+  "String method": {
+    "prefix": "String()",
+    "body": [
+      "func (x *${0}) String() string{",
+      "   return fmt.Sprintf(\"[%v]\")",
+      "}"
+    ],
+    "description": "Define String() method"
+  }
+}
