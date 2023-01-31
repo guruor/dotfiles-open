@@ -11,17 +11,18 @@ venvPath = "/home/govind/.pyenv/versions/"
 venv = "atlas"
 
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md#type-check-diagnostics-settings
-reportGeneralTypeIssues = "none"
-reportPropertyTypeMismatch = "none"
-reportMissingImports = true
-reportMissingTypeStubs = false
-reportUnknownVariableType = "none"
-reportUnknownParameterType = "none"
-reportUnknownArgumentType = "none"
-reportUnknownMemberType = "none"
-reportOptionalMemberAccess = "none"
-reportFunctionMemberAccess = "none"
-# typeCheckingMode = "off"
+# Default values for these rules: https://github.com/microsoft/pyright/blob/main/docs/configuration.md#diagnostic-rule-defaults
+typeCheckingMode = "basic"  # Possible values "off", "basic", "strict"
+reportGeneralTypeIssues = "warning"
+reportPropertyTypeMismatch = "warning"
+reportMissingImports = "error"
+reportMissingTypeStubs = "warning"
+reportUnknownVariableType = "information"
+reportUnknownParameterType = "information"
+reportUnknownArgumentType = "information"
+reportUnknownMemberType = "information"
+reportOptionalMemberAccess = "information"
+reportFunctionMemberAccess = "information"
 
 pythonVersion = "3.6"
 pythonPlatform = "Linux"
