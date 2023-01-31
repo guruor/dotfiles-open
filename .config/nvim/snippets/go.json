@@ -31,5 +31,12 @@
       "}"
     ],
     "description": "Define String() method"
+  },
+  "Printf": {
+    "prefix": "Printf",
+    "body": [
+      "fmt.Printf(\"${0}\")"
+    ],
+    "description": "Print statement"
   }
 }
