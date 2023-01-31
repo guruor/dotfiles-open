@@ -16,6 +16,9 @@
 # Exclude files.
 --glob=!{package-lock.json}
 
+# Exclude files.
+--glob=!{*.pb.go}
+
 # Don't print lines longer than this limit.
 --max-columns=10000
 
