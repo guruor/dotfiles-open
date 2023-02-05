@@ -53,7 +53,8 @@ keys = {
     ["U"] = {":UndotreeToggle<CR>", "Undo Tree"},
     [" "] = {":noh<CR>", "No Highlight"},
     ["L"] = {":Limelight<CR>", "Limelight activate"},
-    ["o"] = {":tabnew | terminal lf<CR>", "Open file explorer"},
+    ["o"] = {":LfCurrentFileExistingOrNewTab<CR>", "Open LF file explorer"},
+    ["O"] = {":LfWorkingDirectoryExistingOrNewTab<CR>", "Open LF file explorer"},
     ["S"] = {":%s//gc<Left><Left><Left>", "Find and replace/substitute"}
 }
 wk.register(keys, {prefix = leader})
