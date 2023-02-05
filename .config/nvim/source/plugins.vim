@@ -113,9 +113,12 @@ Plug 'ron89/thesaurus_query.vim'
 Plug 'chrisbra/Colorizer' " Highlights color code or hash
 
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
+
+
+
+
 " Yet to explorer
 " Plug 'tpope/vim-sensible'
-" Plug 'tpope/vim-abolish'
 " Plug 'heavenshell/vim-pydocstring', { 'do': 'make install' }
 " Plug 'vim-scripts/loremipsum'
 " Plug 'metakirby5/codi.vim'
