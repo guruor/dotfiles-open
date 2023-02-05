@@ -36,7 +36,7 @@ meh - l : yabai -m query --spaces --space \
 
 
 # meh - return : "${HOME}"/.config/yabai/scripts/open_iterm2.sh
-meh - return : kitty -1 --title "New window"
+meh - return : kitty -1 --title "New window" ~/
 meh - space : yabai -m window --warp east; yabai -m window --focus west # Move window to left and focus
 meh - 0x29 : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Scratchpad" # Mapping semicolon(;) to open floating terminal
 meh - o : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "File Manager" "lf ~"
