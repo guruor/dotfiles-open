@@ -52,6 +52,16 @@ cmd copyto ${{
 	notify-send "📋 File(s) copied." "File(s) copies to $dest."
 }}
 
+cmd z %{{
+	result="$(zoxide query --exclude $PWD $@)"
+	lf -remote "send $id cd $result"
+}}
+
+cmd zi ${{
+	result="$(zoxide query -i)"
+	lf -remote "send $id cd $result"
+}}
+
 cmd setbg "$1"
 cmd bulkrename $vidir
 
@@ -64,7 +74,8 @@ map D delete
 map C copyto
 map M moveto
 map <c-n> push :mkdir<space>
-map <c-r> reload
+# map <c-r> reload
+map <c-r> zi
 map <enter> shell
 map x $$f
 map X !$f
