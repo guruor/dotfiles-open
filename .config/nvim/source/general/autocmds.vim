@@ -14,6 +14,9 @@
 " Enabling spell check for gitcommit
     autocmd FileType gitcommit setlocal spell
 
+" Using different indentation pattern for Makefile
+    autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
+
 "File types specific mappings
 " Vim dadbod dbui, mappings
     autocmd FileType dbui nmap <buffer> o <Plug>(DBUI_SelectLine)
