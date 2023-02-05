@@ -41,6 +41,7 @@ Plug 'majutsushi/tagbar',           { 'on': 'TagbarToggle'      }
 
 " Git stuff
 Plug 'tpope/vim-fugitive'
+Plug 'lewis6991/gitsigns.nvim'
 Plug 'tommcdo/vim-fubitive' " GBrowse bitbucket support
 Plug 'shumphrey/fugitive-gitlab.vim' " Gitlab gitlab support
 Plug 'tpope/vim-rhubarb' " GBrowse github support

@@ -21,6 +21,7 @@ lua << EOF
     require("rest")
     require("barbar")
     require("overseerconf")
+    require('gitsignsconf')
 EOF
 
 " Plugin config

@@ -79,7 +79,10 @@ keys = {
         ["p"] = {":Git push<CR>", "Push"},
         ["P"] = {":Git pull<CR>", "Pull"},
         ["<lt>"] = {":diffget //3<CR>", "Get changes from right"},
-        [">"] = {":diffget //2<CR>", "Get changes from left"}
+        [">"] = {":diffget //2<CR>", "Get changes from left"},
+        ["]"] = {":Gitsigns next_hunk<CR>", "Next hunk"},
+        ["["] = {":Gitsigns prev_hunk<CR>", "Previous hunk"},
+        ["hp"] = {":Gitsigns preview_hunk<CR>", "Preview hunk"},
     }
 }
 wk.register(keys, {prefix = leader})
@@ -129,10 +132,9 @@ keys = {
         ["k"] = {":lua vim.lsp.buf.hover()<CR>", "Hover"},
         ["="] = {":update | lua vim.lsp.buf.format()<CR>", "Format"},
         ["dd"] = {":lua vim.diagnostic.setloclist()<CR>", "Diagnostic"},
-        ["dn"] = {":lua vim.diagnostic.goto_next()<CR>", "Next diagnostic"},
-        ["dp"] = {":lua vim.diagnostic.goto_prev()<CR>", "Prev diagnostic"},
-        ["dl"] = {":lua vim.diagnostic.open_float()<CR>", "Line Diagnostic"},
-        ["dL"] = {":lua vim.diagnostic.open_float(0, { scope = 'line', border = 'single' })<CR>", "Line Diagnostic"},
+        ["d]"] = {":lua vim.diagnostic.goto_next()<CR>", "Next diagnostic"},
+        ["d["] = {":lua vim.diagnostic.goto_prev()<CR>", "Prev diagnostic"},
+        ["dl"] = {":lua vim.diagnostic.open_float(0, { scope = 'line', border = 'single' })<CR>", "Line Diagnostic"},
         ["da"] = {":lua vim.diagnostic.get()<CR>", "All diagnostic"},
         ["dq"] = {"<cmd>lua vim.diagnostic.setqflist()<CR>", "QuickFix"},
         ["r"] = {":lua require'lsp.rename'.rename()<CR>", "Rename"},
@@ -169,7 +171,9 @@ keys = {
         ["u"] = {":UndotreeToggle<CR>", "Undo Tree"},
         ["h"] = {":call ToggleHiddenAll()<CR>", "Hide"},
         ["z"] = {":Goyo<CR>", "Goyo"},
-        ["s"] = {":set spell!<CR>", "Spell"}
+        ["s"] = {":set spell!<CR>", "Spell"},
+        ["gh"] = {":Gitsigns toggle_signs<CR>", "Toggle git hunks"},
+        ["gb"] = {":Gitsigns toggle_current_line_blame<CR>", "Toggle line git blame"},
     }
 }
 wk.register(keys, {prefix = leader})
