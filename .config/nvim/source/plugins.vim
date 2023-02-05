@@ -98,6 +98,11 @@ Plug 'tpope/vim-dadbod'
 Plug 'kristijanhusak/vim-dadbod-completion'
 Plug 'kristijanhusak/vim-dadbod-ui'
 
+" File navigator, uses LF file manager to navigate and change working
+" directory
+Plug 'ptzz/lf.vim'
+Plug 'voldikss/vim-floaterm'
+
 " Good to have
 Plug 'vimwiki/vimwiki'
 Plug 'L3MON4D3/LuaSnip'
