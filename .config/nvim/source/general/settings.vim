@@ -145,3 +145,12 @@ endif
 
 " Markdown code block color syntax
 let g:markdown_fenced_languages = ['bash=sh', 'javascript', 'js=javascript', 'json=javascript', 'typescript', 'ts=typescript', 'python', 'html', 'css', 'rust', 'go', 'vim', 'lua', 'plantuml']
+
+" Setting default height and with for floaterm
+let g:floaterm_width = 0.6
+let g:floaterm_height = 0.6
+
+" Disabling default mapping for lf.vim
+let g:lf_map_keys = 0
+let g:lf_width = 0.75
+let g:lf_height = 0.75
