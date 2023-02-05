@@ -127,7 +127,7 @@ lfcd () {
 }
 
 # Opening user directory by default
-bindkey -s '^o' 'lfcd ~\n'
+bindkey -s '^o' 'lfcd -command zi ~ \n'
 
 __fzf_use_tmux__() {
   [ -n "$TMUX_PANE" ] && [ "${FZF_TMUX:-0}" != 0 ] && [ ${LINES:-40} -gt 15 ]
