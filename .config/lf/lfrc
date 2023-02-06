@@ -19,6 +19,14 @@ $lf -remote "send $id set previewer ${XDG_CONFIG_HOME:-$HOME/.config}/lf/preview
 cmd open $$OPENER $fx
 cmd open-choose $OPENER_CHOOSE="true" $OPENER $fx
 
+cmd edit ${{
+    if [ -d "$fx" ]; then
+        nvim -u /Users/govind.r/.config/nvim/initlsp.vim -- $fx
+    else
+        $EDITOR "$fx"
+    fi
+}}
+
 cmd mkdir $mkdir -p "$(echo $* | tr ' ' '\ ')"
 
 cmd delete ${{
@@ -82,6 +90,7 @@ map X !$f
 
 map o open
 map O open-choose
+map e edit
 
 map A rename # at the very end
 map I push A<c-a> # at the very beginning
