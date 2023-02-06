@@ -154,3 +154,5 @@ let g:floaterm_height = 0.6
 let g:lf_map_keys = 0
 let g:lf_width = 0.75
 let g:lf_height = 0.75
+let g:NERDTreeHijackNetrw = 0 " Add this line if you use NERDTree
+let g:lf_replace_netrw = 1 " Open lf when vim opens a directory
