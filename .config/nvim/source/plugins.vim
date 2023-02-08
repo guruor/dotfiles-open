@@ -38,6 +38,13 @@ Plug 'junegunn/fzf.vim'
 Plug 'jesseleite/vim-agriculture'
 Plug 'folke/which-key.nvim'
 Plug 'majutsushi/tagbar',           { 'on': 'TagbarToggle'      }
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+Plug 'jvgrootveld/telescope-zoxide'
+Plug 'kevinhwang91/nvim-bqf' " For better preview of quickfix buffers
+Plug 'stevearc/dressing.nvim' " For improved vim.ui interfaces
+
 
 " Git stuff
 Plug 'tpope/vim-fugitive'
@@ -67,7 +74,9 @@ Plug 'mfussenegger/nvim-dap-python'
 Plug 'lukas-reineke/lsp-format.nvim'
 " Plug 'Pocco81/DAPInstall.nvim'
 
+" Task runner
 Plug 'stevearc/overseer.nvim'
+
 Plug 'alvan/vim-closetag'
 Plug 'Yggdroot/indentLine',         { 'on': 'IndentLinesToggle' }
 

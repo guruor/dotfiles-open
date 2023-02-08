@@ -18,6 +18,7 @@ lua << EOF
     require("snippets")
     require("cmpconf")
     require("treesitter")
+    require("telescopeconf")
     require("rest")
     require("barbar")
     require("overseerconf")
