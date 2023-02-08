@@ -40,10 +40,10 @@ keys = {
     ["\\"] = {":TagbarToggle<CR>", "Toggle tagbar"},
     ["/"] = {":call Comment()<CR>", "Comment"},
     ["C"] = {":Code!!<CR>", "Virtual REPL"},
-    ["p"] = {":Files<CR>", "Find files"},
+    -- ["p"] = {":Files<CR>", "Find files"},
     ["P"] = {":!opout %<CR>", "Preview files"},
-    ["f"] = {":Rg<CR>", "Find text"},
-    ["F"] = {':exec ":RgRaw ".input("Enter rg command (Ex: \'<search_keyword>\' <search_dir>): ", "", "shellcmd")<CR>', "Find text with raw rg command"},
+    -- ["f"] = {":Rg<CR>", "Find text"},
+    -- ["F"] = {':exec ":RgRaw ".input("Enter rg command (Ex: \'<search_keyword>\' <search_dir>): ", "", "shellcmd")<CR>', "Find text with raw rg command"},
     ["_"] = {"<C-W>s", "Split below"},
     ["|"] = {"<C-W>v", "Split right"},
     ["c"] = {':exec ":w! | :vs | :te compiler % ".input("Enter args: ")<CR>', "Compile"},
@@ -63,6 +63,26 @@ wk.register(keys, {prefix = leader, mode = 'v'})
 keys_visual = copy(keys)
 keys_visual["S"] = {'"hy:%s/<C-r>h//gc<left><left><left>', "Find and replace/substitute visual selected"}
 wk.register(keys_visual, {prefix = leader, mode = 'v'})
+
+keys = {
+    f = {
+        name = 'Find stuff',
+        ["t"] = {":Telescope<CR>", "Telescope"},
+        ["f"] = {":lua require('telescope.builtin').grep_string({ default_text = vim.fn.expand('<cword>') })<CR>", "Find text"},
+        ["/"] = {":lua require('telescope.builtin').current_buffer_fuzzy_find({ default_text = vim.fn.expand('<cword>') })<CR>", "Find in buffer"},
+        ["z"] = {":lua require'telescope'.extensions.zoxide.list{results_title='Z Directories', prompt_title='Z Prompt'}<CR>", "Find z directory"},
+        ["p"] = {":Telescope fd<CR>", "Find files fd"},
+        ["gf"] = {":Telescope git_files<CR>", "Git files"},
+        ["gb"] = {":Telescope git_branches<CR>", "Git branches"},
+        ["gs"] = {":Telescope git_status<CR>", "Git status"},
+        ["ld"] = {":Telescope diagnostics<CR>", "LSP diagnostics"},
+        ["lr"] = {":Telescope lsp_references<CR>", "Find references"},
+        ["lq"] = {":Telescope quickfix<CR>", "Find quickfix"},
+
+    }
+}
+wk.register(keys, {prefix = leader})
+wk.register(keys, {prefix = leader, mode = 'v'})
 
 keys = {
     g = {
