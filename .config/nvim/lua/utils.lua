@@ -142,5 +142,70 @@ M.split = function(s, delimiter)
     return result;
 end
 
+M.tbl_length = function(T)
+  local count = 0
+  for _ in pairs(T) do count = count + 1 end
+  return count
+end
+
+M.get_visual_selection = function(delimeter, use_last_position)
+    delimeter = delimeter or "\n"
+    if use_last_position == nil then use_last_position = true end
+    -- this will exit visual mode
+    -- use 'gv' to reselect the text
+    local _, csrow, cscol, cerow, cecol
+    local mode = vim.fn.mode()
+    if mode == 'v' or mode == 'V' or mode == '' then
+      -- if we are in visual mode use the live position
+      _, csrow, cscol, _ = unpack(vim.fn.getpos("."))
+      _, cerow, cecol, _ = unpack(vim.fn.getpos("v"))
+      if mode == 'V' then
+        -- visual line doesn't provide columns
+        cscol, cecol = 0, 999
+      end
+      -- exit visual mode
+      vim.api.nvim_feedkeys(
+        vim.api.nvim_replace_termcodes("<Esc>",
+          true, false, true), 'n', true)
+    else
+        if use_last_position then
+            -- otherwise, use the last known visual position
+            _, csrow, cscol, _ = unpack(vim.fn.getpos("'<"))
+            _, cerow, cecol, _ = unpack(vim.fn.getpos("'>"))
+        end
+    end
+    -- swap vars if needed
+    if csrow ~= nil and cerow ~= nil and cscol ~= nil and cecol ~=nil then
+        if cerow < csrow then csrow, cerow = cerow, csrow end
+        if cecol < cscol then cscol, cecol = cecol, cscol end
+    end
+    local lines = vim.fn.getline(csrow, cerow)
+    local n = M.tbl_length(lines)
+    if n <= 0 then return '' end
+    lines[n] = string.sub(lines[n], 1, cecol)
+    lines[1] = string.sub(lines[1], cscol)
+
+    return table.concat(lines, delimeter)
+end
+
+M.GetVisualorCursorText = function(delimeter, visual, cword)
+    delimeter = delimeter or "\n"
+    if visual == nil then visual = true end
+    if cword == nil then cword = true end
+
+    local text = ""
+    if visual == nil then
+        text = M.get_visual_selection(delimeter, true)
+    end
+
+	if text ~="" and #text > 0 then
+		return text
+	else
+        if cword then
+            text = vim.fn.expand("<cword>")
+            return text
+        end
+	end
+end
 
 return M

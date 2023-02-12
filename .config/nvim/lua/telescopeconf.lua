@@ -1,3 +1,4 @@
+local utils = require "utils"
 local status_ok, telescope = pcall(require, "telescope")
 if not status_ok then
   return
@@ -129,3 +130,85 @@ telescope.setup {
 
 telescope.load_extension('fzf')
 telescope.load_extension('zoxide')
+
+-- Custom helper functions
+local function onComplete(picker)
+    local mode = vim.fn.mode()
+    local keys = mode ~= "n" and "<ESC>" or ""
+    vim.api.nvim_feedkeys(
+      vim.api.nvim_replace_termcodes(keys .. [[^v$<C-g>]], true, false, true),
+      "n",
+      true
+    )
+    -- should you have more callbacks, just pop the first one
+    table.remove(picker._completion_callbacks, 1)
+    -- copy mappings s.t. eg <C-n>, <C-p> works etc
+    vim.tbl_map(function(mapping)
+      vim.api.nvim_buf_set_keymap(0, "s", mapping.lhs, mapping.rhs, {})
+    end, vim.api.nvim_buf_get_keymap(0, "i"))
+end
+
+local function customGrepString(text, search_dirs)
+    if search_dirs == nil then search_dirs = {} end
+
+    local opts = {
+        search_dirs = search_dirs,
+        search = "",
+        word_match = "-w",
+        only_sort_text = true,
+        default_text = text,
+        on_complete = text ~= "" and {
+            onComplete
+        } or nil,
+    }
+    require("telescope.builtin").grep_string(opts)
+end
+
+function TelescopeSearchInSpecificDirectory()
+  vim.ui.input({ prompt = "Directory: ", default = "./", completion = "dir" }, function(dir)
+    dir = vim.trim(dir or "")
+    if dir == "" then
+      return
+    end
+
+    vim.ui.input({ prompt = "File pattern: ", default = "*" }, function(pattern)
+      pattern = vim.trim(pattern or "")
+      if pattern == "" or pattern == "*" then
+        pattern = ""
+      end
+
+      customGrepString(pattern, { dir })
+    end)
+  end)
+end
+
+-- https://github.com/nvim-telescope/telescope.nvim/issues/1766#issuecomment-1150437074
+-- Triggers telescope live_grep with word under the cursor by default in select mode
+function TelescopeLiveGrepStringWithSelection()
+  local text = utils.GetVisualorCursorText("", false)
+  require("telescope.builtin").live_grep({
+    default_text = text,
+    on_complete = text ~= "" and {
+        onComplete
+    } or nil,
+  })
+end
+
+-- Triggers telescope grep_string with word under the cursor by default in select mode
+--:lua require'telescope.builtin'.grep_string{only_sort_text = true, search = '' }
+function TelescopeGrepStringWithSelection()
+  local text = utils.GetVisualorCursorText("", false)
+  customGrepString(text)
+end
+
+-- Triggers telescope current_buffer_fuzzy_find with word under the cursor by default in select mode
+--:lua require('telescope.builtin').current_buffer_fuzzy_find({ default_text = vim.fn.expand('<cword>') })<CR>
+function TelescopeCurrentBufferFuzzyFindWithSelection()
+  local text = utils.GetVisualorCursorText("", false)
+  require("telescope.builtin").current_buffer_fuzzy_find({
+    default_text = text,
+    on_complete = text ~= "" and {
+        onComplete
+    } or nil,
+  })
+end

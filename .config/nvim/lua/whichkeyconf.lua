@@ -65,11 +65,12 @@ keys_visual["S"] = {'"hy:%s/<C-r>h//gc<left><left><left>', "Find and replace/sub
 wk.register(keys_visual, {prefix = leader, mode = 'v'})
 
 keys = {
-    f = {
+    t = {
         name = 'Find stuff',
-        ["t"] = {":Telescope<CR>", "Telescope"},
-        ["f"] = {":lua require('telescope.builtin').grep_string({ default_text = vim.fn.expand('<cword>') })<CR>", "Find text"},
-        ["/"] = {":lua require('telescope.builtin').current_buffer_fuzzy_find({ default_text = vim.fn.expand('<cword>') })<CR>", "Find in buffer"},
+        [" "] = {":Telescope<CR>", "Telescope"},
+        ["f"] = {":lua TelescopeGrepStringWithSelection() <CR>", "Find text"},
+        ["F"] = {":lua TelescopeSearchInSpecificDirectory() <CR>", "Find in directory"},
+        ["/"] = {":lua TelescopeCurrentBufferFuzzyFindWithSelection() <CR>", "Find in buffer"},
         ["z"] = {":lua require'telescope'.extensions.zoxide.list{results_title='Z Directories', prompt_title='Z Prompt'}<CR>", "Find z directory"},
         ["p"] = {":Telescope fd<CR>", "Find files fd"},
         ["gf"] = {":Telescope git_files<CR>", "Git files"},
