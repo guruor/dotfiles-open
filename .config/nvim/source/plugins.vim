@@ -27,7 +27,7 @@ call plug#begin(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/plugged"
 Plug 'rktjmp/lush.nvim'
 Plug 'npxbr/gruvbox.nvim'
 Plug 'glepnir/galaxyline.nvim'
-Plug 'kyazdani42/nvim-web-devicons'
+Plug 'nvim-tree/nvim-web-devicons'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 Plug 'nvim-treesitter/nvim-treesitter-context'
 Plug 'romgrk/barbar.nvim'
@@ -35,6 +35,7 @@ Plug 'romgrk/barbar.nvim'
 " Easy search, navigation
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'ibhagwan/fzf-lua', {'branch': 'main'}
 Plug 'jesseleite/vim-agriculture'
 Plug 'folke/which-key.nvim'
 Plug 'majutsushi/tagbar',           { 'on': 'TagbarToggle'      }

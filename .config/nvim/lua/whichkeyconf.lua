@@ -86,6 +86,25 @@ wk.register(keys, {prefix = leader})
 wk.register(keys, {prefix = leader, mode = 'v'})
 
 keys = {
+    f = {
+        name = 'Find stuff with fzf',
+        [" "] = {":FzfLua<CR>", "Fzf"},
+        ["f"] = {":lua FzfGrepProjectWithSelection()<CR>", "Find text"},
+        ["F"] = {":lua FzfSearchInSpecificDirectory() <CR>", "Find in directory"},
+        ["/"] = {":lua FzfBlinesWithSelection() <CR>", "Find in buffer"},
+        ["p"] = {":FzfLua files<CR>", "Find files fd"},
+        ["gf"] = {":FzfLua git_files<CR>", "Git files"},
+        ["gb"] = {":FzfLua git_branches<CR>", "Git branches"},
+        ["gs"] = {":FzfLua git_status<CR>", "Git status"},
+        ["ld"] = {":FzfLua diagnostics_document<CR>", "LSP diagnostics"},
+        ["lr"] = {":FzfLua lsp_references<CR>", "Find references"},
+        ["lq"] = {":FzfLua quickfix<CR>", "Find quickfix"},
+    }
+}
+wk.register(keys, {prefix = leader})
+wk.register(keys, {prefix = leader, mode = 'v'})
+
+keys = {
     g = {
         name = 'Git',
         ["b"] = {":Git blame<CR>", "Blame"},
