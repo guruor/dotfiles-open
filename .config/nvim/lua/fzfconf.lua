@@ -371,7 +371,7 @@ require 'fzf-lua'.setup {
         rg_opts        = "--column --line-number --hidden --smart-case --no-heading --color=always --max-columns=512",
         fzf_opts    = {
             ['--delimiter'] = "'[\\]:]'",
-            ["--with-nth"]  = '4..',
+            ["--with-nth"]  = '2..',
         },
         -- set to 'true' to always parse globs in both 'grep' and 'live_grep'
         -- search strings will be split using the 'glob_separator' and translated
@@ -436,7 +436,7 @@ require 'fzf-lua'.setup {
         fzf_opts    = {
             -- hide tabnr
             ['--delimiter'] = "'[\\):]'",
-            ["--with-nth"]  = '4..',
+            ["--with-nth"]  = '2..',
         },
     },
     lines               = {
@@ -448,7 +448,7 @@ require 'fzf-lua'.setup {
             -- do not include bufnr in fuzzy matching
             -- tiebreak by line no.
             ['--delimiter'] = "'[\\]:]'",
-            ["--nth"]       = '4..',
+            ["--nth"]       = '2..',
             ["--tiebreak"]  = 'index',
             ["--tabstop"]   = "1",
         },
@@ -467,7 +467,7 @@ require 'fzf-lua'.setup {
         fzf_opts        = {
             -- hide filename, tiebreak by line no.
             ['--delimiter'] = "'[\\]:]'",
-            ["--with-nth"]  = '4..',
+            ["--with-nth"]  = '2..',
             ["--tiebreak"]  = 'index',
             ["--tabstop"]   = "1",
         },
@@ -508,7 +508,7 @@ require 'fzf-lua'.setup {
         grep_opts     = "--color=auto --perl-regexp",
         fzf_opts      = {
             ['--delimiter'] = "'[\\]:]'",
-            ["--with-nth"]  = '4..',
+            ["--with-nth"]  = '2..',
             ["--tiebreak"]  = 'index',
         },
         -- actions inherit from 'actions.files'
