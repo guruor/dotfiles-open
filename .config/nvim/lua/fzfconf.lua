@@ -1,6 +1,7 @@
 local utils = require "utils"
 local actions = require "fzf-lua.actions"
 
+local fzf_history_dir = vim.fn.expand('~/.local/share/fzf-history')
 require 'fzf-lua'.setup {
     -- fzf_bin         = 'sk',            -- use skim instead of fzf?
     -- https://github.com/lotabout/skim
@@ -163,6 +164,7 @@ require 'fzf-lua'.setup {
         ['--height'] = '100%',
         ['--layout'] = 'reverse',
         ['--border'] = 'none',
+        ['--history']     = fzf_history_dir .. '/' .. 'fzf-lua-history'
     },
     -- fzf '--color=' options (optional)
     --[[ fzf_colors = {
