@@ -6,6 +6,9 @@ local lspconfig = require "lspconfig"
 local utils = require "utils"
 local M = {}
 
+-- Adding some lsp related config from kickstart.nvim
+-- https://github.com/nvim-lua/kickstart.nvim/blob/master/init.lua
+require"fidget".setup{}
 vim.lsp.protocol.CompletionItemKind = {
     Text = " [text]",
     Method = " [method]",
