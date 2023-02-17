@@ -27,7 +27,6 @@ lua << EOF
 EOF
 
 " Plugin config
-source $HOME/.config/nvim/source/plug-conf/fzf.vim
 source $HOME/.config/nvim/source/plug-conf/vimwiki.vim
 source $HOME/.config/nvim/source/plug-conf/misc.vim
 

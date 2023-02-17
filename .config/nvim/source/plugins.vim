@@ -36,7 +36,6 @@ Plug 'j-hui/fidget.nvim'
 
 " Easy search, navigation
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
 Plug 'ibhagwan/fzf-lua', {'branch': 'main'}
 Plug 'jesseleite/vim-agriculture'
 Plug 'folke/which-key.nvim'
