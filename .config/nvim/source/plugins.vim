@@ -116,6 +116,7 @@ Plug 'voldikss/vim-floaterm'
 
 " Good to have
 Plug 'vimwiki/vimwiki'
+Plug 'mattn/calendar-vim'
 Plug 'L3MON4D3/LuaSnip'
 Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'rafamadriz/friendly-snippets'
