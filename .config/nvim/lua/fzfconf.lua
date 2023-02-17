@@ -369,6 +369,10 @@ require 'fzf-lua'.setup {
         -- cmd            = "rg --vimgrep",
         grep_opts      = "--binary-files=without-match --line-number --recursive --color=auto --perl-regexp",
         rg_opts        = "--column --line-number --hidden --smart-case --no-heading --color=always --max-columns=512",
+        fzf_opts    = {
+            ['--delimiter'] = "'[\\]:]'",
+            ["--with-nth"]  = '4..',
+        },
         -- set to 'true' to always parse globs in both 'grep' and 'live_grep'
         -- search strings will be split using the 'glob_separator' and translated
         -- to '--iglob=' arguments, requires 'rg'
