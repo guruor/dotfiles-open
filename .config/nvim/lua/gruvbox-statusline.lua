@@ -4,8 +4,16 @@ function _G.self_color_gruvbox_dark()
   vim.g.gruvbox_italic = 1
   vim.g.gruvbox_sign_column = 'bg0'
 
+
+  -- Available values:   `'material'`, `'mix'`, `'original'`
+  vim.g.gruvbox_material_foreground = 'original'
+  -- Available values: 'hard', 'medium'(default), 'soft'
+  vim.g.gruvbox_material_background = 'medium'
+  vim.g.gruvbox_material_better_performance = 1
+
   vim.cmd('set background=dark')
-  vim.cmd('colorscheme gruvbox')
+  -- vim.cmd('colorscheme gruvbox')
+  vim.cmd('colorscheme gruvbox-material')
 
   vim.cmd('highlight StatusLine                                                                                                guifg=#3c3836')
 
@@ -69,7 +77,15 @@ function _G.self_color_gruvbox_light()
   vim.g.gruvbox_sign_column = 'bg0'
 
   vim.cmd('set background=light')
-  vim.cmd('colorscheme gruvbox')
+  -- Available values:   `'material'`, `'mix'`, `'original'`
+  vim.g.gruvbox_material_foreground = 'original'
+  -- Available values: 'hard', 'medium'(default), 'soft'
+  vim.g.gruvbox_material_background = 'medium'
+  vim.g.gruvbox_material_better_performance = 1
+
+  vim.cmd('set background=dark')
+  -- vim.cmd('colorscheme gruvbox')
+  vim.cmd('colorscheme gruvbox-material')
 
   vim.cmd('highlight StatusLine                                                                                                guifg=#ebdbb2')
 
