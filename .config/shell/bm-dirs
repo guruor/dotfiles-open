@@ -18,6 +18,10 @@ csk   $HOME/Workspace/csk
 prac   $HOME/Workspace/practice
 order   $HOME/Workspace/csk/csx/ordering-module/order-service/
 rust  $HOME/Workspace/practice/rust
-vw   ${VIMWIKI_DIR:-$HOME/Dropbox/vimWiki}
-vww  "${VIM_WIKI_DIR_WORK:-$HOME/Dropbox}/vimWiki/Work"
-vwp  "${VIM_WIKI_DIR_PERSONAL:-$HOME/Dropbox}/vimWiki/Personal"
+vw   "${VIMWIKI_DIR}"
+vww  "${VIMWIKI_DIR_WORK}"
+vwp  "${VIMWIKI_DIR_PERSONAL}"
+vwi  "${VIMWIKI_DIR_INTERVIEWS}"
+vwd  "${VIMWIKI_DIR_DISCUSSIONS}"
+vwa  "${VIMWIKI_DIR_ACTIVE_TASKS}"
+vwm  "${MOST_USED_VIMWIKI_DIR}"

@@ -94,8 +94,12 @@ export CM_IGNORE_WINDOW="dmenu"
 
 # VimWiki
 export VIMWIKI_DIR="$HOME/Dropbox/vimWiki"
-export VIMWIKI_DIR_PERSONAL="${VIMWIKI_DIR}/Personal"
-export VIMWIKI_DIR_WORK="${VIMWIKI_DIR}/Work"
+export VIMWIKI_DIR_PERSONAL="${VIMWIKI_DIR}/Personal/wiki/"
+export VIMWIKI_DIR_WORK="${VIMWIKI_DIR}/Work/wiki/"
+export VIMWIKI_DIR_INTERVIEWS="${VIMWIKI_DIR}/InterviewsTaken/wiki/"
+export VIMWIKI_DIR_DISCUSSIONS="${VIMWIKI_DIR}/Discussions/wiki/"
+export VIMWIKI_DIR_ACTIVE_TASKS="${VIMWIKI_DIR}/ActiveTasks/wiki/"
+
 export MOST_USED_VIMWIKI_DIR="${VIMWIKI_DIR_WORK}"
 
 # Taskwarrior

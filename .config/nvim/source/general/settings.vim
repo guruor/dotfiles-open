@@ -120,32 +120,6 @@ if &diff
     highlight! link DiffText MatchParen
 endif
 
-" Ensure files are read as what "Multiple Wikis
-" https://opensource.com/article/18/6/vimwiki-gitlab-notes
-"
-" Use wiki names via :h vimwiki-option-name
-" Clone off a default https://github.com/vimwiki/vimwiki/issues/365
-    let myWikiDefault = {}
-    let myWikiDefault.syntax = 'markdown'
-    let myWikiDefault.ext = 'md'
-
-    let myWikiPersonal = copy(myWikiDefault)
-    let myWikiPersonal.path = $VIMWIKI_DIR_PERSONAL . "/wiki/"
-    let myWikiPersonal.name = 'myWikiPersonal'
-
-    let myWikiWork = copy(myWikiDefault)
-    let myWikiWork.path = $VIMWIKI_DIR_WORK . "/wiki/"
-    let myWikiWork.name = 'myWikiWork'
-
-    let g:vimwiki_list = [myWikiWork, myWikiPersonal]
-
-	let g:vimwiki_ext2syntax = {'.Rmd': 'markdown', '.rmd': 'markdown','.md': 'markdown', '.markdown': 'markdown', '.mdown': 'markdown'}
-    let g:vimwiki_hl_headers=1
-
-
-" Markdown code block color syntax
-let g:markdown_fenced_languages = ['bash=sh', 'javascript', 'js=javascript', 'json=javascript', 'typescript', 'ts=typescript', 'python', 'html', 'css', 'rust', 'go', 'vim', 'lua', 'plantuml']
-
 " Setting default height and with for floaterm
 let g:floaterm_width = 0.6
 let g:floaterm_height = 0.6
