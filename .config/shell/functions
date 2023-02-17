@@ -65,15 +65,21 @@ raise_pr() {
         echo '```\ngit config --replace-all core.mainbranches "stage\\nmaster"\n\n```'
 
         echo "\n\nConsidering all recently used local branches by default\n\n"
-        dest_branch="$(git branch --color=always --sort=-committerdate | grep -v '/HEAD\\s'  | fzf --ansi | sed 's/^..//' | awk '{print $1}' | sed "s#^remotes/[^/]*/##")"
-    else
-        dest_branch="$(echo -e "${main_branch_str}" | fzf)"
     fi
+    dest_branch="$(git branch --color=always --sort=-committerdate | grep -v '/HEAD\\s'  | fzf --ansi | sed 's/^..//' | awk '{print $1}' | sed "s#^remotes/[^/]*/##")"
 
 
     # Using current branch as source branch
     source_branch=$(git rev-parse --abbrev-ref HEAD)
-    is_hotfix_branch=$(rg -i "FIX" <<< "${source_branch}")
+
+    declare -a hotfix_prefixes=("FIX" "VVIMP")
+    # Checking if source branch name starts with filtered hotfix suffix
+    for prefix in "${hotfix_prefixes[@]}"; do
+        is_hotfix_branch=$(rg -i "$prefix" <<< "${source_branch}")
+        if [[ "${is_hotfix_branch}" ]]; then
+            break
+        fi
+    done
 
     if [[ -z "${is_hotfix_branch}" ]]; then
         # Validating if all source branch commits are present in previous lower branch
@@ -84,6 +90,8 @@ raise_pr() {
         if [ $? -ne 0 ]; then
            return
         fi
+    else
+        echo "\nSkipping diff check since it is a hotfix\n"
     fi
 
     echo -e "\nGetting repo URL..." >&2
