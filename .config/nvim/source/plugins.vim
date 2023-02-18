@@ -57,10 +57,13 @@ Plug 'tpope/vim-rhubarb' " GBrowse github support
 
 " Syntax, formatting and auto-completion
 Plug 'sheerun/vim-polyglot'
+
+" Managing and installing LSP servers
 Plug 'williamboman/mason.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'folke/neodev.nvim',
 Plug 'neovim/nvim-lspconfig'
+Plug 'onsails/lspkind.nvim'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
