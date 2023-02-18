@@ -135,6 +135,7 @@ Plug 'rafamadriz/friendly-snippets'
 
 " Good to have
 Plug 'ron89/thesaurus_query.vim'
+Plug 'christoomey/vim-tmux-navigator' " Switch windows with C-[h,j,k,l,\], same for tmux panes
 Plug 'chrisbra/Colorizer' " Highlights color code or hash
 
 
