@@ -1,3 +1,4 @@
+local lspkind = require('lspkind')
 vim.o.completeopt = "menu,menuone,noselect"
 
 -- Set up nvim-cmp.
@@ -12,7 +13,14 @@ cmp.setup({
     },
     formatting = {
         fields = { 'menu', 'abbr', 'kind' },
-        format = function(entry, vim_item)
+        format = lspkind.cmp_format({
+          mode = 'symbol', -- show only symbol annotations
+          maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+          ellipsis_char = '...', -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
+
+          -- The function below will be called before any actual modifications from lspkind
+          -- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
+          before = function (entry, vim_item)
             vim_item.menu = ({
                 nvim_lsp = "[LSP]",
                 luasnip = "[Snp]",
@@ -24,8 +32,9 @@ cmp.setup({
                 emoji = "[Emj]",
             })[entry.source.name]
             return vim_item
-        end,
-    },
+          end
+        })
+      },
     window = {
         completion = cmp.config.window.bordered(),
         documentation = cmp.config.window.bordered(),
