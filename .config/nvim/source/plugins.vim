@@ -23,6 +23,9 @@ endif
 """ Vim-Plug
 call plug#begin(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/plugged"'))
 
+" Common lua utils used by other plugins
+Plug 'nvim-lua/plenary.nvim'
+
 " Editor look and feel
 Plug 'rktjmp/lush.nvim'
 Plug 'npxbr/gruvbox.nvim'
@@ -106,7 +109,6 @@ Plug 'junegunn/goyo.vim',           { 'on': 'Goyo' }
 Plug 'junegunn/limelight.vim'
 
 " Rest client
-Plug 'nvim-lua/plenary.nvim'
 " Plug 'NTBBloodbath/rest.nvim'
 " Plug 'teto/rest.nvim', { 'branch': 'always-send-string' }
 Plug 'G0V1NDS/rest.nvim', { 'branch': 'response_body_stored' }
@@ -121,16 +123,20 @@ Plug 'kristijanhusak/vim-dadbod-ui'
 Plug 'ptzz/lf.vim'
 Plug 'voldikss/vim-floaterm'
 
-" Good to have
+" VimWiki for note management
 Plug 'vimwiki/vimwiki'
 Plug 'mattn/calendar-vim'
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
+
+" Snippet
 Plug 'L3MON4D3/LuaSnip'
 Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'rafamadriz/friendly-snippets'
+
+" Good to have
 Plug 'ron89/thesaurus_query.vim'
 Plug 'chrisbra/Colorizer' " Highlights color code or hash
 
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 
 
 
