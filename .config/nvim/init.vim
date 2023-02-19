@@ -15,7 +15,6 @@ lua << EOF
     require("functions")
     require("whichkeyconf")
     require("statusline")
-    require("gruvbox-statusline")
     require("snippets")
     require("cmpconf")
     require("treesitter")
