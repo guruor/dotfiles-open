@@ -52,9 +52,15 @@ set scrolloff=5
 " No highlight for window separator, userful with global statusline
 highlight WinSeparator guibg=None
 
-" Setting colorschema after setting up background
-set t_Co=256                            " Support 256 colors
-set termguicolors
+" Enable true color 启用终端24位色
+if exists('+termguicolors')
+  " Setting colorschema after setting up background
+  set t_Co=256                            " Support 256 colors
+
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
 
 """ Coloring
 " highlight Pmenu guibg=white guifg=black gui=bold
