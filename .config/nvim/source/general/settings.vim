@@ -21,7 +21,7 @@ set smarttab                            " Makes tabbing smarter will realize you
 set expandtab                           " Converts tabs to spaces
 set smartindent                         " Makes indenting smart
 set autoindent                          " Good auto indent
-set laststatus=2                        " Always display the status line
+set laststatus=3                        " Always display the status line, use global statusline
 set cursorline                          " Enable highlighting of the current line
 set showtabline=2                       " Always show tabs
 set noshowmode                          " We don't need to see things like -- INSERT -- anymore
@@ -48,6 +48,9 @@ set colorcolumn=120
 set noswapfile
 set undofile
 set scrolloff=5
+
+" No highlight for window separator, userful with global statusline
+highlight WinSeparator guibg=None
 
 " Setting colorschema after setting up background
 set t_Co=256                            " Support 256 colors
