@@ -19,13 +19,14 @@ function GetDBUIConnectionName()
         end
     end
 
-    return env_name
+    return env_name or ''
 end
 
 function GetRestNvimEnvName()
     -- rest-nvim selected environment name
     local variable_name = "ENV"
     local env_file_path = vim.fn.getcwd() .. "/" .. ".env"
+    local env_name = ''
 
     -- If there's an env file in the current working dir
     if utils.file_exists(env_file_path) then
@@ -34,10 +35,29 @@ function GetRestNvimEnvName()
             local vars = utils.split(line, "=")
 
             if vars[1] == variable_name then
-                return vars[2]
+                env_name = vars[2]
+                break
             end
         end
     end
+
+    return env_name
+end
+
+function GetEnvironmentName()
+    local env_name = ''
+
+    local filetype_env_functions = {
+        sql = GetDBUIConnectionName,
+        http = GetRestNvimEnvName,
+    }
+
+    local func = filetype_env_functions[vim.bo.filetype]
+    if (func) then
+        env_name = func()
+    end
+
+    return env_name
 end
 
 -- Lua implementation of PHP scandir function
