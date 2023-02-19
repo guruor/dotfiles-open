@@ -11,6 +11,7 @@ source $HOME/.config/nvim/source/general/functions.vim
 source $HOME/.config/nvim/source/keys/mappings.vim
 
 lua << EOF
+    require("conf/misc")
     require("functions")
     require("whichkeyconf")
     require("statusline")
