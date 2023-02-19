@@ -1,0 +1,61 @@
+format = """
+[┌ ](bold cyan)$all$fill$cmd_duratio$time
+[│ ](bold cyan)
+[└─$character](bold cyan) """
+
+# Moves these modules to right on same line as cursor
+right_format = """"""
+
+# Inserts a blank line between shell prompts
+add_newline = true
+
+# Helps in filling the gap between modules, used in above format
+[fill]
+symbol = ' '
+style = 'bold cyan'
+
+# Making a single line prompt
+[line_break]
+disabled = true
+
+[character]
+success_symbol = '[❯](bold cyan) '
+error_symbol = '[✗](bold red) '
+
+[battery]
+full_symbol = "🔋 "
+charging_symbol = "🔌 "
+
+[[battery.display]]
+threshold = 10
+style = "bold red"
+discharging_symbol = " "
+
+[[battery.display]]
+threshold = 30
+style = "yellow"
+discharging_symbol = " "
+
+[directory]
+home_symbol = "🏠 "
+truncation_length = 5
+format = "[$path]($style)[$lock_symbol]($lock_style) "
+
+[time]
+disabled = false
+format = '🕙 [$time]($style) '
+time_format = '%v - %I:%M'
+
+[cmd_duration]
+min_time = 10_000  # Show command duration over 10,000 milliseconds (=10 sec)
+format = " took [$duration]($style)"
+
+# Disable the package module, hiding it from the prompt completely
+[package]
+disabled = true
+
+# [python]
+# disabled = false
+
+[aws]
+disabled = true
