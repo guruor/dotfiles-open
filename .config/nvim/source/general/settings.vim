@@ -44,7 +44,7 @@ set nowrap
 set breakindent
 set title
 set number relativenumber
-set colorcolumn=120
+" set colorcolumn=120                      " Handling this with smartcolumn plugin
 set noswapfile
 set undofile
 set scrolloff=5
