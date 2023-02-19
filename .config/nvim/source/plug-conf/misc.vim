@@ -18,8 +18,26 @@ let g:indentLine_color_gui = '#363949'
 " Goyo
 let g:goyo_width=125
 
-if !empty(glob("~/.cache/dark-mode.off"))
-    call v:lua.self_color_gruvbox_light()
-else
-    call v:lua.self_color_gruvbox_dark()
-endif
+" Colorscheme
+
+lua << EOF
+  vim.g.gruvbox_contrast_light = 'medium'
+  vim.g.gruvbox_contrast_dark = 'medium'
+  vim.g.gruvbox_invert_selection = 0
+  vim.g.gruvbox_italic = 1
+  vim.g.gruvbox_sign_column = 'bg0'
+
+  -- Available values:   `'material'`, `'mix'`, `'original'`
+  vim.g.gruvbox_material_foreground = 'material'
+  -- Available values: 'hard', 'medium'(default), 'soft'
+  vim.g.gruvbox_material_background = 'medium'
+  vim.g.gruvbox_material_better_performance = 1
+  vim.g.gruvbox_material_enable_bold = 1
+  vim.g.gruvbox_material_enable_italic = 1
+  vim.g.gruvbox_material_disable_italic_comment = 1
+  vim.g.gruvbox_material_transparent_background = 0
+
+  vim.cmd('set background=dark')
+  -- vim.cmd('colorscheme gruvbox')
+  vim.cmd('colorscheme gruvbox-material')
+EOF
