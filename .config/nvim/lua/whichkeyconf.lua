@@ -38,7 +38,6 @@ wk.register(keys, {prefix = localleader, mode = 'v'})
 
 keys = {
     ["\\"] = {":TagbarToggle<CR>", "Toggle tagbar"},
-    ["/"] = {":call Comment()<CR>", "Comment"},
     ["C"] = {":Code!!<CR>", "Virtual REPL"},
     -- ["p"] = {":Files<CR>", "Find files"},
     ["P"] = {":!opout %<CR>", "Preview files"},

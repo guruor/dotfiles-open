@@ -12,15 +12,6 @@ augroup Mkdir
   autocmd BufWritePre * call mkdir(expand("<afile>:p:h"), "p")
 augroup END
 
-" To comment current line or visual block, uses Commentary plugin
-function! Comment()
-  if (mode() == "n" )
-    execute "Commentary"
-  else
-    execute "'<,'>Commentary"
-  endif
- endfunction
-
 " Function for toggling the bottom statusbar:
 let s:hidden_all = 1
 function! ToggleHiddenAll()
