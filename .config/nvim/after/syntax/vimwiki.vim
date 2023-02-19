@@ -11,6 +11,8 @@ syntax match unorderedBulletIndent2 /[-,\*]/ containedin=unorderedListItemIndent
 syntax match unorderedListItemIndent3 /^[ ]\{8}[-,\*] / containedin=ALL
 syntax match unorderedBulletIndent3 /[-,\*]/ containedin=unorderedListItemIndent3 contained conceal cchar=▫
 
+syn match Statement "^> .*"
+
 " highlight VimwikiHeader1 guifg=#50fa7b gui=bold
 " highlight VimwikiHeader2 guifg=#8be9fd gui=bold
 " highlight VimwikiHeader3 guifg=#ff79c6 gui=bold
