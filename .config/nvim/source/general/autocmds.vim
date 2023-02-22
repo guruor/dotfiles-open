@@ -131,3 +131,12 @@ augroup END
     " autocmd BufWinLeave *.* if &ft !=# 'help' || &ft !=# 'fugitiveblame' | mkview | endif
     " autocmd BufWinEnter *.* if &ft !=# 'help' || &ft !=# 'fugitiveblame' | silent! loadview | endif
 " augroup END
+
+" Vimwiki diary template
+autocmd BufNewFile $VIMWIKI_DIR/**/diary/*.md
+      \ call append(0,[
+      \ "# Notes for " . split(expand('%:r'),'/')[-1], "",
+      \ "## TODOs", "",
+      \ "- [✗] ", "",
+      \ "## Callouts", "",
+      \ "- "])
