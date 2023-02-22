@@ -40,4 +40,6 @@ lua << EOF
   vim.cmd('set background=dark')
   -- vim.cmd('colorscheme gruvbox')
   vim.cmd('colorscheme gruvbox-material')
+  -- Setting colorscheme overriding laststatus, so needed to redeclare
+  vim.opt.laststatus = 3
 EOF
