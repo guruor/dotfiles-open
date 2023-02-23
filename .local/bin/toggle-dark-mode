@@ -80,24 +80,10 @@ change_tmux_theme() {
 }
 
 change_vim_background() {
-    # echo "Requested vim background mode is: $1"
-    # # well, seems like there is no proper way to send a command to
-    # # Vim as a client. Luckily we're using tmux, which means we can
-    # # iterate over all vim pans and change the background ourself.
-
-    # for i in $(tmux list-panes -a -F '#{session_name}:#{window_index}.#{pane_index},#{pane_tty}') ; do
-    #     # Above expression returns two values comma separated, Ex main:1.1,/dev/pts/3
-    #     IFS=',' read pix tty_x <<< "${i}"
-    #     processes=$(ps -o state= -o comm= -t ${tty_x})
-    #     if [[ $(echo $processes  | grep -iE "^.* (nvim|gvim|vi|vim).*$") ]]; then
-    #         tmux send-keys -t "$pix" escape ENTER
-    #         tmux send-keys -t "$pix" ":call ToggleBackground(\"${1}\")" ENTER
-    #     fi
-    # done
-
-    # By using nvim-ctrl, command can be sent to all active neovim instances
-    # Check https://github.com/chmln/nvim-ctrl, or you can use neovim-control https://github.com/mhinz/neovim-remote
-    nvim-ctrl "call ToggleBackground(\"${1}\")"
+    echo "Requested vim background mode is: $1"
+    for sock in $(ls "$HOME/.cache/nvim/sockets/"); do
+        nvim --server ~/.cache/nvim/sockets/$sock --remote-send "<C-\><C-n>:call ToggleBackground(\"${1}\")<CR>"
+    done
 }
 
 change_bat_theme() {
