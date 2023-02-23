@@ -37,7 +37,16 @@ lua << EOF
   vim.g.gruvbox_material_disable_italic_comment = 1
   vim.g.gruvbox_material_transparent_background = 0
 
-  vim.cmd('set background=dark')
+  local home_dir=os.getenv("HOME")
+  dark_mode_flag_file=home_dir .. '/.cache/dark-mode.off'
+  local f=io.open(dark_mode_flag_file,"r")
+  if f~=nil then
+      io.close(f)
+      vim.cmd('set background=light')
+  else
+      vim.cmd('set background=dark')
+  end
+
   -- vim.cmd('colorscheme gruvbox')
   vim.cmd('colorscheme gruvbox-material')
   -- Setting colorscheme overriding laststatus, so needed to redeclare
