@@ -8,7 +8,7 @@ declare -A gaps
 declare -A color
 
 gaps["top"]="4"
-gaps["bottom"]="24"
+gaps["bottom"]="4"
 gaps["left"]="4"
 gaps["right"]="4"
 gaps["inner"]="4"
