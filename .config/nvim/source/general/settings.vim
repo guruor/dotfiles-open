@@ -52,29 +52,6 @@ set noswapfile
 set undofile
 set scrolloff=5
 
-" No highlight for window separator, userful with global statusline
-highlight WinSeparator guibg=None
-
-" Enable true color 启用终端24位色
-if exists('+termguicolors')
-  " Setting colorschema after setting up background
-  set t_Co=256                            " Support 256 colors
-
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  set termguicolors
-endif
-
-""" Coloring
-" highlight Pmenu guibg=white guifg=black gui=bold
-" highlight Comment gui=bold
-" highlight Normal gui=none
-" highlight NonText guibg=none
-
-" Transparent Background (For i3 and compton)
-" highlight Normal guibg=NONE ctermbg=NONE
-" highlight LineNr guibg=NONE ctermbg=NONE
-
 " Reducing the time out to avoid sluggishness
 let g:matchparen_timeout = 20
 let g:matchparen_insert_timeout = 20
@@ -109,36 +86,10 @@ set dictionary='/usr/share/dict/words'
 " Preventing thesaurus_query from binding any keys, will map custom keys using whichkey
 let g:tq_map_keys=0
 
-""" netrw settings
-let g:netrw_banner=0
-let g:netrw_browse_split=2
-let g:netrw_winsize=25
-
 set undodir=~/.cache/nvim/undo
 set directory=~/.cache/nvim/swap
 set backupdir=~/.cache/nvim/backup
 set viewdir=~/.cache/nvim/view
-" Sesstion directory
-let session_directory='~/.cache/nvim/session/'
-
-""" Python3 VirtualEnv
-let g:python3_host_prog = expand('~/.pyenv/versions/nvim/bin/python')
 
 """ Filetype-Specific Configurations
 filetype plugin indent on
-
-" Turns off highlighting on the bits of code that are changed, so the line that is changed is highlighted but the actual text that has changed stands out on the line and is readable.
-if &diff
-    highlight! link DiffText MatchParen
-endif
-
-" Setting default height and with for floaterm
-let g:floaterm_width = 0.6
-let g:floaterm_height = 0.6
-
-" Disabling default mapping for lf.vim
-let g:lf_map_keys = 0
-let g:lf_width = 0.75
-let g:lf_height = 0.75
-let g:NERDTreeHijackNetrw = 0 " Add this line if you use NERDTree
-let g:lf_replace_netrw = 1 " Open lf when vim opens a directory
