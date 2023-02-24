@@ -210,7 +210,8 @@ keys = {
         ["u"] = {":UndotreeToggle<CR>", "Undo Tree"},
         ["h"] = {":call ToggleHiddenAll()<CR>", "Hide"},
         ["z"] = {":Goyo<CR>", "Goyo"},
-        ["s"] = {":set spell!<CR>", "Spell"},
+        ["s"] = {":lua ToggleTpipeline()<CR>", "Toggle tpipeline"},
+        ["S"] = {":set spell!<CR>", "Spell"},
         ["gh"] = {":Gitsigns toggle_signs<CR>", "Toggle git hunks"},
         ["gb"] = {":Gitsigns toggle_current_line_blame<CR>", "Toggle line git blame"},
     }

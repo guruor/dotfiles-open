@@ -50,5 +50,8 @@ lua << EOF
   -- vim.cmd('colorscheme gruvbox')
   vim.cmd('colorscheme gruvbox-material')
   -- Setting colorscheme overriding laststatus, so needed to redeclare
-  vim.opt.laststatus = 3
+  -- vim.opt.laststatus = 3
 EOF
+
+" Avoid duplicate statusline in case of config reload
+call tpipeline#state#reload()

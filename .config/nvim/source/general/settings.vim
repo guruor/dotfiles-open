@@ -21,7 +21,7 @@ set smarttab                            " Makes tabbing smarter will realize you
 set expandtab                           " Converts tabs to spaces
 set smartindent                         " Makes indenting smart
 set autoindent                          " Good auto indent
-set laststatus=3                        " Always display the status line, use global statusline
+" set laststatus=3                        " Always display the status line, use global statusline
 set cursorline                          " Enable highlighting of the current line
 set showtabline=2                       " Always show tabs
 set noshowmode                          " We don't need to see things like -- INSERT -- anymore
@@ -39,7 +39,10 @@ set ignorecase
 set smartcase
 set hlsearch
 " set list listchars=trail:»,tab:»-
-set fillchars+=vert:\
+set statusline=-                        " hide file name in statusline
+set fillchars+=vert:\|                  " Fills vertical split with `|` symbol
+set fillchars+=stl:-                    " Fills horizontal split with `-` symbol
+set fillchars+=stlnc:-                  " Fills inactive horizontal split with `-` symbol
 set nowrap
 set breakindent
 set title
