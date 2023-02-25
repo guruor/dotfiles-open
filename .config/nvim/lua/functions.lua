@@ -99,3 +99,27 @@ function ToggleTpipeline()
         vim.opt.laststatus = 3
     end
 end
+
+function ChooseDBUIConnection()
+    local connections_list = vim.call('db_ui#connections_list')
+    local connection_names = {}
+    local connection_map = {}
+    for _, conn in pairs(connections_list) do
+        table.insert(connection_names, conn.name)
+        connection_map[conn.name] = conn
+    end
+
+    vim.ui.select(connection_names, { prompt = "Choose a connection: " },
+        function(chosen_conn)
+            if chosen_conn then
+                print("Chosen connection is " .. chosen_conn)
+                local conn = connection_map[chosen_conn]
+                vim.b.dbui_db_key_name = conn.name .. "_" .. conn.source
+                vim.cmd("DBUIFindBuffer")
+                vim.cmd("DBUIToggle")
+            else
+                print "Connection not changed"
+            end
+        end
+    )
+end
