@@ -42,7 +42,7 @@ alias \
 	xr="sudo xbps-remove -R" \
 	xq="xbps-query" \
     tt="taskwarrior-tui" \
-    code='nvim --listen ~/.cache/nvim/sockets/nvim-$RANDOM.sock'
+    code='nvim -u ${MYVIMRCLSP} --listen ~/.cache/nvim/sockets/nvim-$RANDOM.sock' \
     lf="lfimg" \
 	# z="zathura" \
 
