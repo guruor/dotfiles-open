@@ -92,11 +92,12 @@ function SelectRestNvimEnvironment()
 end
 
 function ToggleTpipeline()
-    -- Triggering toggle method manually to override laststatus back to 3
     vim.call('tpipeline#state#toggle')
-    local laststatus = vim.api.nvim_get_option('laststatus')
-    if laststatus ~= 0 then
+    local is_active = vim.call('tpipeline#state#is_active')
+    if is_active == 0 then
         vim.opt.laststatus = 3
+    else
+        vim.opt.laststatus = 0
     end
 end
 
