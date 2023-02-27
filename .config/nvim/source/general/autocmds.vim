@@ -60,6 +60,7 @@ augroup END
 	autocmd BufReadPre * setlocal foldlevel=1
     autocmd BufEnter *.md setlocal foldexpr=MarkdownLevel()
     autocmd BufEnter *.md setlocal foldmethod=expr
+    autocmd BufEnter *.http setlocal foldlevel=0
 
 " Enable Goyo by default for mutt writing
 	autocmd BufRead,BufNewFile /tmp/neomutt* let g:goyo_width=80
