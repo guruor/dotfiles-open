@@ -40,7 +40,7 @@ set smartcase
 set hlsearch
 " set list listchars=trail:»,tab:»-
 set statusline=-                        " hide file name in statusline
-set fillchars+=vert:\|                  " Fills vertical split with `|` symbol
+set fillchars+=vert:\│                  " Fills vertical split with `|` symbol
 set fillchars+=stl:-                    " Fills horizontal split with `-` symbol
 set fillchars+=stlnc:-                  " Fills inactive horizontal split with `-` symbol
 set nowrap
