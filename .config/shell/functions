@@ -39,6 +39,19 @@ function docker_start_service() {
     fi
 }
 
+function docker_choose_latest_tag() {
+    image_name=${1}
+
+    if [[ -z "$image_name" ]]; then
+        image_name=$(docker image ls --filter="dangling=false" --format="{{ .Repository }}" | uniq | fzf)
+    fi
+
+    tag=$(docker image ls --format="{{ .Tag }}" "$image_name" | fzf)
+    docker tag "$image_name":"$tag" "$image_name":latest
+    echo -e "\nUsing $image_name:$tag as latest image\n"
+    docker image ls --filter="dangling=false" "$image_name"
+}
+
 function switch_iterm2_profile() {
     # Iterm allows switching profile with this escape sequence
     echo -ne "\033]50;SetProfile=$1\a"
