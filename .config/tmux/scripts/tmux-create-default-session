@@ -16,29 +16,32 @@
 
 session_template_path="$HOME/.config/tmux/private/default-session.json"
 
-session_data=$(cat "${session_template_path}")
+session_data=$(cat < "${session_template_path}" | jq -r '.sessions')
 session_names=($(echo "${session_data}" | jq -r 'keys[]'))
 existing_sessions=$(tmux list-sessions -F "#{session_name}" 2>/dev/null)
 
-tmux start-server
+
+# tmux start-server
 for ((s = 0; s < ${#session_names[@]}; ++s));
 do
     session_name="${session_names[${s}]}"
-    echo -e "s: ${s}, session_name: ${session_name}\n" >&2
-    window_names=($(echo "${session_data}" | jq -r ".${session_name} | keys[]"))
+    session_icon=$(echo "${session_data}" | jq -r ".${session_name} | .icon")
+    echo -e "\n\ns: ${s}, session_name: ${session_icon} ${session_name}\n" >&2
+    windows_data=$(echo "${session_data}" | jq -r ".${session_name} | .windows")
+    window_names=($(echo "${windows_data}" | jq -r "keys[]"))
     first_window=${window_names[0]}
-    first_window_commands=$(echo "${session_data}" | jq -r ".${session_name} | .${first_window}")
+    first_window_commands=$(echo "${windows_data}" | jq -r ".${first_window}")
 
-    if [[ $(echo -e "${existing_sessions}" | grep "${session_name}") ]]; then
-        echo -e "Session with name ${session_name} already exist" >&2
+    if [[ $(echo -e "${existing_sessions}" | grep "${session_icon}") ]]; then
+        echo -e "Session with name ${session_icon} ${session_name} already exist" >&2
     else
-        echo -e "Creating new session: ${session_name} and window ${first_window}" >&2
+        echo -e "Creating new session: ${session_icon} ${session_name} and window ${first_window}" >&2
         echo -e "Commands: ${first_window_commands}\n" >&2
-        tmux new-session -d -s "${session_name}" -n "${first_window}";
-        tmux send-keys -t "${session_name}":"${first_window}" "${first_window_commands}" ENTER; sleep .3
+        tmux new-session -d -s "${session_icon}" -n "${first_window}";
+        tmux send-keys -t "${session_icon}":"${first_window}" "${first_window_commands}" ENTER; sleep .3
     fi
 
-    existing_windows=$(tmux list-windows -t "${session_name}" -F "#{window_name}")
+    existing_windows=$(tmux list-windows -t "${session_icon}" -F "#{window_name}")
 
     for ((w = 1; w < ${#window_names[@]}; ++w));
     do
@@ -47,10 +50,10 @@ do
             echo -e "Window with name ${window_name} already exist" >&2
         else
             echo -e "Creating new window: ${window_name}" >&2
-            commands=$(echo "${session_data}" | jq -r ".${session_name} | .${window_name}")
+            commands=$(echo "${windows_data}" | jq -r ".${window_name}")
             echo -e "Commands: ${commands}\n" >&2
-            tmux new-window -n  "${window_name}" -t "${session_name}";
-            tmux send-keys -t "${session_name}":"${window_name}" "${commands}" ENTER; sleep .3;
+            tmux new-window -n  "${window_name}" -t "${session_icon}";
+            tmux send-keys -t "${session_icon}":"${window_name}" "${commands}" ENTER; sleep .3;
         fi
     done
 done

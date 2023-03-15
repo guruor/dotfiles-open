@@ -1,9 +1,11 @@
 #!/bin/bash
 # Loads all tmux sessions in separate windows
 
+source "$HOME/.local/bin/tmux/tmux-common-functions"
 
 # Open tmux session if exist
 tmux_sessions=$(tmux list-sessions -F "#{session_name}" 2>/dev/null)
+session_icon_name_map=$(get_default_session_icon_name_map)
 
 if [[ -z "${tmux_sessions}" ]]; then
     echo -e "No running tmux session found, reloading the session from tmux-resurrect" >&2
@@ -16,7 +18,9 @@ fi
 tmux_sessions=$(tmux list-sessions -F "#{session_name}" 2>/dev/null)
 if [[ "${tmux_sessions}" ]]; then
     for session_name in ${tmux_sessions} ; do
-        kitty -1 --title "${session_name}" -e "${SHELL}" -lc "tmux a -t ${session_name}; ${SHELL}";
+        actual_session_name=$(get_actual_session_name "$session_icon_name_map" "$session_name")
+        echo -e "Kitty window name: $actual_session_name and tmux session name: $session_name" >&2
+        kitty -1 --title "${actual_session_name}" -e "${SHELL}" -lc "tmux a -t ${session_name}; ${SHELL}";
     done
 else
     echo -e "No tmux session found at all" >&2

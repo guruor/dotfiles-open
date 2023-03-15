@@ -1,0 +1,54 @@
+#!/bin/bash
+# Common function to be used in other tmux scripts
+# Download nerd font from here: https://www.nerdfonts.com/cheat-sheet
+#          
+#
+# Usage examples:
+# session_icon_name_map=$(get_default_session_icon_name_map)
+# get_actual_session_name "$session_icon_name_map" ""
+
+
+function get_default_session_icon_name_map(){
+    local session_template_path session_data session_icon_name_map
+
+    session_template_path="$HOME/.config/tmux/private/default-session.json"
+    session_data=$([ -r "$session_template_path" ] && cat < "${session_template_path}" | jq -r '.sessions')
+
+    session_icon_name_map="$(echo "$session_data" | jq ' to_entries | map( {(.value.icon|tostring) : .key } ) | add ')"
+
+    echo -e "\nSession Icon-Name Map: \n\n$session_icon_name_map" >&2
+    echo -e "$session_icon_name_map"
+}
+
+function get_default_session_name_icon_map(){
+    local session_template_path session_data session_icon_name_map
+
+    session_template_path="$HOME/.config/tmux/private/default-session.json"
+    session_data=$([ -r "$session_template_path" ] && cat < "${session_template_path}" | jq -r '.sessions')
+
+    session_name_icon_map="$(echo "$session_data" | jq ' to_entries | map( {(.key) : (.value.icon|tostring) } ) | add ')"
+
+    echo -e "\nSession Name-Icon Map: \n\n$session_name_icon_map" >&2
+    echo -e "$session_name_icon_map"
+}
+
+function get_actual_session_name(){
+    local session_icon_name_map=$1
+    local session_icon=$2
+
+    actual_session_name="$(echo "$session_icon_name_map" | jq -r ".\"$session_icon\" // \"$session_icon\"")"
+
+    echo -e "\nActual session name: \n\n$actual_session_name" >&2
+    echo -e "$actual_session_name"
+}
+
+
+function get_session_icon(){
+    local session_name_icon_map=$1
+    local session_name=$2
+
+    session_icon="$(echo "$session_name_icon_map" | jq -r ".\"$session_name\" // \"$session_name\"")"
+
+    echo -e "\nSession icon: \n\n$session_icon" >&2
+    echo -e "$session_icon"
+}
