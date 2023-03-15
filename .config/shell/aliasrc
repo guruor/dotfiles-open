@@ -18,7 +18,8 @@ alias \
     :q='exit' \
     ,q='exit' \
     lzd='DOCKER_HOST=unix://$HOME/.colima/docker.sock  lazydocker' \
-    lzg='lazygit'
+    lzg='lazygit' \
+    dc='docker compose'
 
 # Colorize commands when possible.
 alias \
