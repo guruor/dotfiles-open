@@ -125,3 +125,12 @@ function ChooseDBUIConnection()
         end
     )
 end
+
+function ChooseDBUIConnectionOptional()
+    print("Choosing db connection")
+    if not vim.b.dbui_db_key_name then
+        ChooseDBUIConnection()
+    else
+        print("Already active connection: " .. vim.b.dbui_db_key_name)
+    end
+end
