@@ -250,6 +250,19 @@ keys = {
 wk.register(keys, {prefix = leader})
 wk.register(keys, {prefix = leader, mode = 'v'})
 
+-- There are some default mappings provided by vimwiki, just extending them
+keys = {
+    w = {
+        name = 'Vimwiki overrides',
+        [" c"] = {":CalendarH<CR>", "<Plug>CalendarH"},
+        [" p"] = {":VimwikiDiaryPrevDay<CR>", "<Plug>VimwikiDiaryPrevDay"},
+        [" n"] = {":VimwikiDiaryNextDay<CR>", "<Plug>VimwikiDiaryNextDay"},
+    }
+}
+wk.register(keys, {prefix = leader})
+wk.register(keys, {prefix = leader, mode = 'v'})
+
+
 -- Adding file or buffer specific mapping with autocmds
 -- Reference https://github.com/folke/which-key.nvim/issues/276#issuecomment-1117432067
 local function attach_rest_nvim_keys(bufnr)
