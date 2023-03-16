@@ -42,10 +42,13 @@ if [[ "${NOTE_DIR}" ]]; then
 else
     # Open tmux session if exist
     session_name="Notes"
-    tmux_sessions=$(tmux list-sessions -F "#{session_name}" | rg "${session_name}" | head -n 1)
+    source "$HOME/.local/bin/tmux/tmux-common-functions"
+    session_name_icon_map=$(get_default_session_name_icon_map)
+    session_icon=$(get_session_icon "$session_name_icon_map" "$session_name")
+    tmux_sessions=$(tmux list-sessions -F "#{session_name}" | rg "${session_icon}" | head -n 1)
 
     if [[ "${tmux_sessions}" ]]; then
-        tmux a -t "${session_name}"
+        tmux a -t "${session_icon}"
     else
         # Use most used note directory
         open_quicknote "${MOST_USED_VIMWIKI_DIR}"
