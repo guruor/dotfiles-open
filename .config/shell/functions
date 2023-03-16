@@ -17,25 +17,46 @@ function docker_ip() {
 
 
 function is_docker_container_running() {
-    container_name=$1
-    if [[ $(docker ps -f "name=$container_name" --format '{{.Names}}') == $container_name ]]; then
+    compose_file="$1"
+    service_name="$2"
+
+    # container_name=$(get_docker_container_name_by_service "$compose_file" "$service_name")
+    # if [[ $(docker container ls --filter="name=\"${container_name}\"" --format="{{.Names}}") = "$container_name" ]]; then
+    if [[ $(docker compose -f "$compose_file" ps --services | grep "$service_name") = "$service_name" ]]; then
         true
     else
         false
     fi
 }
 
+function get_docker_project_name() {
+    compose_file="$1"
 
-function docker_start_service() {
+    project_dir=$(dirname "${compose_file}")
+    project_name=$(basename "${project_dir}")
+    print "$project_name"
+}
+
+function get_docker_container_name_by_service() {
     compose_file="$1"
     service_name="$2"
-    compose_file_dir=$(basename $(dirname "${compose_file}"))
-    container_name="${compose_file_dir}-${service_name}-1"
-    if is_docker_container_running $container_name ; then
-        echo -e "Container ${container_name} is already running"
+
+    project_name=$(get_docker_project_name "$compose_file")
+    container_name="${project_name}-${service_name}-1"
+    print "$container_name"
+}
+
+
+function docker_start_service() {
+    # Here profile name is same as service name
+    compose_file="$1"
+    profile_name="$2"
+
+    if is_docker_container_running "$compose_file" "$profile_name"; then
+        echo -e "Service ${profile_name} is already running"
     else
-        echo -e "Starting container ${container_name}..."
-        docker-compose -f "$compose_file"  up -d "$service_name"
+        echo -e "Starting service ${profile_name}..."
+        COMPOSE_PROFILES="$profile_name" docker compose -f "$compose_file"  up -d
     fi
 }
 
