@@ -61,6 +61,8 @@ function docker_start_service() {
 }
 
 function docker_choose_latest_tag() {
+    # When you have multiple tag available for same image,
+    # you can choose the image first and then choose one tag to be used as latest
     image_name=${1}
 
     if [[ -z "$image_name" ]]; then
