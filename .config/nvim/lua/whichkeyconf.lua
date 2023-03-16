@@ -155,7 +155,7 @@ wk.register(keys, {prefix = leader})
 wk.register(keys, {prefix = leader, mode = 'v'})
 
 keys = {
-    l = {
+    L = {
         name = 'LSP',
         ["gd"] = {"<Cmd>lua vim.lsp.buf.definition()<CR>", "Definition"},
         ["gD"] = {"<Cmd>lua vim.lsp.buf.declaration()<CR>", "Declaration"},
@@ -178,6 +178,34 @@ keys = {
         ["dq"] = {"<cmd>lua vim.diagnostic.setqflist()<CR>", "QuickFix"},
         ["r"] = {":lua require'lsp.rename'.rename()<CR>", "Rename"},
         ["R"] = {"<cmd>lua vim.lsp.buf.references()<CR>", "References"},
+    }
+}
+wk.register(keys, {prefix = leader})
+keys_visual = copy(keys)
+keys_visual["L"]["="] = {":update | lua vim.lsp.formatexpr()<CR>", "Range Format"}
+wk.register(keys_visual, {prefix = leader, mode = 'v'})
+
+
+keys = {
+    l = {
+        name = 'LSP',
+        ["gd"] = {"<Cmd>Lspsaga goto_definition()<CR>", "Definition"},
+        ["gD"] = {"<Cmd>Lspsaga peek_definition()<CR>", "Peek definition"},
+        ["gr"] = {"<Cmd>Lspsaga lsp_finder<CR>", "References"},
+        ["gi"] = {"<Cmd>Lspsaga lsp_finder<CR>", "Implementation"},
+        ["gt"] = {"<Cmd>Lspsaga peek_type_definition<CR>", "Type definition"},
+        ["i"] = {"<Cmd>Lspsaga incoming_calls<CR>", "Incoming calls"},
+        ["o"] = {"<Cmd>Lspsaga outgoing_calls<CR>", "Outgoing calls"},
+        ["a"] = {"<Cmd>Lspsaga code_action<CR>", "Action"},
+        ["k"] = {"<Cmd>Lspsaga hover_doc<CR>", "Hover"},
+        ["="] = {"<Cmd>update | lua vim.lsp.buf.format()<CR>", "Format"},
+        ["dd"] = {"<Cmd>Lspsaga show_buf_diagnostics<CR>", "Diagnostic"},
+        ["d]"] = {"<Cmd>Lspsaga diagnostic_jump_next<CR>", "Next diagnostic"},
+        ["d["] = {"<Cmd>Lspsaga diagnostic_jump_prev<CR>", "Prev diagnostic"},
+        ["dl"] = {"<Cmd>Lspsaga show_line_diagnostics<CR>", "Line Diagnostic"},
+        ["da"] = {"<Cmd>Lspsaga show_buf_diagnostics<CR>", "All diagnostic"},
+        ["r"] = {"<Cmd>Lspsaga rename ++project<CR>", "Rename"},
+        ["R"] = {"<Cmd>Lspsaga lsp_finder<CR>", "References"},
     }
 }
 wk.register(keys, {prefix = leader})
