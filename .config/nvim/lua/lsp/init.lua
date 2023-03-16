@@ -122,13 +122,10 @@ capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 
 local on_attach = function(client)
-    utils.map('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', {buffer = true})
-    utils.map('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', {buffer = true})
-    utils.map('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', {buffer = true})
-    utils.map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', {buffer = true})
-    utils.map('n', 'gs', '<Cmd>lua vim.lsp.buf.signature_help()<CR>', {buffer = true})
-    utils.map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', {buffer = true})
-    utils.map('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', {buffer = true})
+    utils.map('n', 'gd', '<Cmd>Lspsaga goto_definition<CR>', {buffer = true})
+    utils.map('n', 'gD', '<Cmd>Lspsaga goto_type_definition<CR>', {buffer = true})
+    utils.map('n', 'K', '<Cmd>Lspsaga hover_doc<CR>', {buffer = true})
+    utils.map('n', 'gr', '<Cmd>Lspsaga lsp_finder<CR>', {buffer = true})
     require("lsp.lsp-format").on_attach(client)
 end
 
@@ -400,5 +397,15 @@ lspconfig.clangd.setup {
     on_attach = on_attach, cmd = { "clangd" },
     filetypes = { "c", "cpp", "objc", "objcpp", "cuda" }
 }
+
+
+
+-- Neovim's built-in LSP with a highly performant UI.
+require("lspsaga").setup()
+
+-- " LspSaga remove border highlighting
+-- " highlight SagaBorder guifg=#ffffff guibg=None
+vim.api.nvim_set_hl(0, 'SagaBorder', { fg = "#ffffff", bg = nil })
+
 
 return M
