@@ -21,12 +21,8 @@ function is_docker_container_running() {
     service_name="$2"
 
     # container_name=$(get_docker_container_name_by_service "$compose_file" "$service_name")
-    # if [[ $(docker container ls --filter="name=\"${container_name}\"" --format="{{.Names}}") = "$container_name" ]]; then
-    if [[ $(docker compose -f "$compose_file" ps --services | grep "$service_name") = "$service_name" ]]; then
-        true
-    else
-        false
-    fi
+    # [[ $(docker container ls --filter="name=\"${container_name}\"" --format="{{.Names}}") = "$container_name" ]]
+    [[ $(docker compose -f "$compose_file" ps --services | grep "$service_name") = "$service_name" ]]
 }
 
 function get_docker_project_name() {
