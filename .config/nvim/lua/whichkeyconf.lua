@@ -37,7 +37,7 @@ wk.register(keys, {prefix = localleader})
 wk.register(keys, {prefix = localleader, mode = 'v'})
 
 keys = {
-    ["\\"] = {":TagbarToggle<CR>", "Toggle tagbar"},
+    ["\\"] = {":Lspsaga outline<CR>", "Toggle tagbar"},
     ["C"] = {":Code!!<CR>", "Virtual REPL"},
     -- ["p"] = {":Files<CR>", "Find files"},
     ["P"] = {":!opout %<CR>", "Preview files"},
@@ -199,6 +199,7 @@ wk.register(keys, {prefix = leader, mode = 'v'})
 keys = {
     T = {
         name = 'Toggle',
+        ["\\"] = {":TagbarToggle<CR>", "Toggle tagbar"},
         ["b"] = {":call ToggleBackground()<CR>", "Toggle vim background"},
         ["B"] = {":!toggle-dark-mode<CR>", "Toggle background of all apps"},
         ["n"] = {":set nonumber!<CR>", "Line numbers"},
