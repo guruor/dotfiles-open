@@ -69,8 +69,9 @@ augroup END
 	autocmd BufRead,BufNewFile /tmp/neomutt* map ZQ :Goyo\|q!<CR>
 
 " Auto detect dadbod connection for the file
-	autocmd BufRead,BufNewFile $DADBOD_DB_QUERIES_PATH/**/*.sql :exec 'DBUIFindBuffer' | DBUIToggle
-
+	" autocmd BufRead,BufNewFile $DADBOD_DB_QUERIES_PATH/**/*.sql :exec 'DBUIFindBuffer' | DBUIToggle
+	autocmd BufRead,BufNewFile $DB_QUERIES_PATH/**/*.sql :lua ChooseDBUIConnectionOptional()
+	" autocmd BufRead,BufNewFile $DADBOD_DB_QUERIES_PATH/**/*.sql :lua ChooseDBUIConnectionOptional()
 " Detect file type for tunnel-config file
 	autocmd BufRead,BufNewFile $HOME/voidrice/Private/.config/.ssh/tunnel-config :setlocal filetype=sshconfig
 
