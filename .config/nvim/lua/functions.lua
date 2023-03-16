@@ -117,6 +117,7 @@ function ChooseDBUIConnection()
                 local conn = connection_map[chosen_conn]
                 vim.b.dbui_db_key_name = conn.name .. "_" .. conn.source
                 vim.cmd("DBUIFindBuffer")
+                vim.cmd("DBUIFindBuffer")
                 vim.cmd("DBUIToggle")
             else
                 print "Connection not changed"
