@@ -92,11 +92,6 @@ augroup END
     " autocmd CursorHold * lua vim.diagnostic.open_float(0, { scope = "line", border = "single" })
     " autocmd CursorHoldI * silent! lua vim.lsp.buf.signature_help()
 
-
-" Automatically deletes all trailing whitespace and newlines at end of file on save.
-	autocmd BufWritePre * %s/\s\+$//e
-	autocmd BufWritePre * %s/\n\+\%$//e
-
 " When shortcut files are updated, renew bash and ranger configs with new material:
 	autocmd BufWritePost bm-files,bm-dirs !$HOME/.local/bin/shortcuts
 " Auto reloads xresources settings
