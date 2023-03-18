@@ -105,3 +105,11 @@ vim.g.lf_replace_netrw = 1 --[[ Open lf when vim opens a directory ]]
 vim.g.netrw_banner = 0
 vim.g.netrw_browse_split = 2
 vim.g.netrw_winsize = 25
+
+-- ----------------
+-- vim-better-whitespace
+-- ----------------
+vim.g.better_whitespace_enabled = 1
+vim.g.strip_whitespace_on_save = 1
+vim.g.strip_only_modified_lines = 1
+vim.g.strip_whitespace_confirm = 0

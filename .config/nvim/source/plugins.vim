@@ -101,6 +101,7 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'numToStr/Comment.nvim'
 Plug 'tpope/vim-abolish' " easily search for, substitute, and abbreviate multiple variants of a word
+Plug 'ntpeters/vim-better-whitespace'
 
 " Session management plugins
 Plug 'tpope/vim-obsession'
