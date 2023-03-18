@@ -64,7 +64,7 @@ keys_visual["S"] = {'"hy:%s/<C-r>h//gc<left><left><left>', "Find and replace/sub
 wk.register(keys_visual, {prefix = leader, mode = 'v'})
 
 keys = {
-    t = {
+    F = {
         name = 'Find stuff',
         [" "] = {":Telescope<CR>", "Telescope"},
         ["f"] = {":lua TelescopeGrepStringWithSelection() <CR>", "Find text"},
