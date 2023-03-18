@@ -41,8 +41,7 @@ keys = {
     ["C"] = {":Code!!<CR>", "Virtual REPL"},
     -- ["p"] = {":Files<CR>", "Find files"},
     ["P"] = {":!opout %<CR>", "Preview files"},
-    -- ["f"] = {":Rg<CR>", "Find text"},
-    -- ["F"] = {':exec ":RgRaw ".input("Enter rg command (Ex: \'<search_keyword>\' <search_dir>): ", "", "shellcmd")<CR>', "Find text with raw rg command"},
+    -- ["F"] = {':exec ":Lflcd" <CR>', "Switch directory and find text"},
     ["_"] = {"<C-W>s", "Split below"},
     ["|"] = {"<C-W>v", "Split right"},
     ["c"] = {':exec ":w! | :vs | :te compiler % ".input("Enter args: ")<CR>', "Compile"},
@@ -67,6 +66,7 @@ keys = {
     F = {
         name = 'Find stuff',
         [" "] = {":Telescope<CR>", "Telescope"},
+        ["h"] = {":Telescope help_tags<CR>", "Help tags"},
         ["f"] = {":lua TelescopeGrepStringWithSelection() <CR>", "Find text"},
         ["F"] = {":lua TelescopeSearchInSpecificDirectory() <CR>", "Find in directory"},
         ["/"] = {":lua TelescopeCurrentBufferFuzzyFindWithSelection() <CR>", "Find in buffer"},
@@ -78,7 +78,7 @@ keys = {
         ["ld"] = {":Telescope diagnostics<CR>", "LSP diagnostics"},
         ["lr"] = {":Telescope lsp_references<CR>", "Find references"},
         ["lq"] = {":Telescope quickfix<CR>", "Find quickfix"},
-
+        ["\\"] = {":exec ':Lflcd' <CR>", "Switch directory and find text"},
     }
 }
 wk.register(keys, {prefix = leader})
@@ -88,6 +88,7 @@ keys = {
     f = {
         name = 'Find stuff with fzf',
         [" "] = {":FzfLua<CR>", "Fzf"},
+        ["h"] = {":FzfLua help_tags<CR>", "Help tags"},
         ["f"] = {":lua FzfGrepProjectWithSelection()<CR>", "Find text"},
         ["F"] = {":lua FzfSearchInSpecificDirectory() <CR>", "Find in directory"},
         ["/"] = {":lua FzfBlinesWithSelection() <CR>", "Find in buffer"},
@@ -98,6 +99,7 @@ keys = {
         ["ld"] = {":FzfLua diagnostics_document<CR>", "LSP diagnostics"},
         ["lr"] = {":FzfLua lsp_references<CR>", "Find references"},
         ["lq"] = {":FzfLua quickfix<CR>", "Find quickfix"},
+        ["\\"] = {":exec ':Lflcd' <CR>", "Switch directory and find text"},
     }
 }
 wk.register(keys, {prefix = leader})
