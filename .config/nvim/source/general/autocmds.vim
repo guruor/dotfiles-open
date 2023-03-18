@@ -90,7 +90,7 @@ augroup END
 " Auto show diagnostics for a line when curson is on the line
     " Show diagnostic hover after 'updatetime' and don't steal focus
     " autocmd CursorHold * lua vim.diagnostic.open_float(0, { scope = "line", border = "single" })
-    autocmd CursorHoldI * silent! lua vim.lsp.buf.signature_help()
+    " autocmd CursorHoldI * silent! lua vim.lsp.buf.signature_help()
 
 
 " Automatically deletes all trailing whitespace and newlines at end of file on save.
