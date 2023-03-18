@@ -51,6 +51,7 @@ set number relativenumber
 set noswapfile
 set undofile
 set scrolloff=5
+set nofixendofline                      " Avoid fixing new line end of file
 
 " Reducing the time out to avoid sluggishness
 let g:matchparen_timeout = 20
