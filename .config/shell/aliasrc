@@ -22,8 +22,7 @@ alias \
 # Docker related aliases
 alias \
     lzd='DOCKER_HOST=unix://$HOME/.colima/docker.sock  lazydocker' \
-    dc='docker compose' \
-    dctag='docker_choose_latest_tag'
+    dc='docker compose'
 
 # Colorize commands when possible.
 alias \

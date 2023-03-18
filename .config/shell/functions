@@ -56,19 +56,24 @@ function docker_start_service() {
     fi
 }
 
-function docker_choose_latest_tag() {
+function docker_copy_tag() {
     # When you have multiple tag available for same image,
-    # you can choose the image first and then choose one tag to be used as latest
-    image_name=${1}
+    # you can choose the image first and then choose one tag to be used as `$new_tag`, which is by default latest
+    new_tag="${1:-latest}"
 
-    if [[ -z "$image_name" ]]; then
-        image_name=$(docker image ls --filter="dangling=false" --format="{{ .Repository }}" | uniq | fzf)
-    fi
-
+    # Selecting image and tag to be copied
+    image_name=$(docker image ls --filter="dangling=false" --format="{{ .Repository }}" | uniq | fzf)
     tag=$(docker image ls --format="{{ .Tag }}" "$image_name" | fzf)
-    docker tag "$image_name":"$tag" "$image_name":latest
-    echo -e "\nUsing $image_name:$tag as latest image\n"
+
+    # Making the copy
+    docker tag "$image_name":"$tag" "$image_name":"$new_tag"
+    echo -e "\nCopying \`${image_name}:${tag}\` as \`${new_tag}\` image\n"
     docker image ls --filter="dangling=false" "$image_name"
+}
+
+function dctagc(){
+    # Alias function for docker_copy_tag
+    docker_copy_tag "$@"
 }
 
 function switch_iterm2_profile() {
