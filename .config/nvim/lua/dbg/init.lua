@@ -2,21 +2,10 @@
 -- :DIInstall jsnode_dbg
 -- :DIInstall go_delve_dbg
 local dap = require 'dap'
--- local dap_install = require("dap-install")
-
--- dap_install.config("python", {})
--- Golang
--- dap_install.config("go", {})
--- dap_install.config("go_delve", {})
--- Rust, C, C++
--- dap_install.config("codelldb", {})
--- dap_install.config("ccppr_vsc", {})
--- dap_install.config("ccppr_lldb", {})
--- Javascript
--- dap_install.config("jsnode", {})
--- dap_install.config("chrome", {})
--- Lua
--- dap_install.config("lua", {})
+require("mason-nvim-dap").setup({
+        ensure_installed = { "python", "delve", "codelldb", "js", "node2", "bash"},
+        automatic_setup = true,
+})
 
 
 -- Setting log level possible values: TRACE, DEBUG, INFO, WARN, ERROR

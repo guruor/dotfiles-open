@@ -64,7 +64,9 @@ Plug 'sheerun/vim-polyglot'
 
 " Managing and installing LSP servers
 Plug 'williamboman/mason.nvim'
+Plug 'WhoIsSethDaniel/mason-tool-installer.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
+Plug 'jay-babu/mason-nvim-dap.nvim'
 Plug 'folke/neodev.nvim',
 Plug 'neovim/nvim-lspconfig'
 Plug 'glepnir/lspsaga.nvim'
@@ -86,7 +88,6 @@ Plug 'rcarriga/nvim-dap-ui'
 Plug 'jbyuki/one-small-step-for-vimkind'
 Plug 'mfussenegger/nvim-dap-python'
 Plug 'lukas-reineke/lsp-format.nvim'
-" Plug 'Pocco81/DAPInstall.nvim'
 
 " Task runner
 Plug 'stevearc/overseer.nvim'
