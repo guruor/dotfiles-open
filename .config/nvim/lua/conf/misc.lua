@@ -67,12 +67,6 @@ vim.g.tagbar_width = 30
 vim.g.tagbar_iconchars = {'↠', '↡'}
 
 -- ----------------
--- indentLine
--- ----------------
-vim.g.indentLine_char = '▏'
-vim.g.indentLine_color_gui = '#363949'
-
--- ----------------
 -- Goyo
 -- ----------------
 vim.g.goyo_width = 125
@@ -113,3 +107,18 @@ vim.g.better_whitespace_enabled = 1
 vim.g.strip_whitespace_on_save = 1
 vim.g.strip_only_modified_lines = 1
 vim.g.strip_whitespace_confirm = 0
+-- ----------------
+-- indent-blankline
+-- -- ----------------
+vim.opt.list = true
+vim.opt.listchars:append "space:⋅"
+vim.opt.listchars:append "eol:↴"
+vim.g.indent_blankline_use_treesitter = true
+require("indent_blankline").setup {
+    -- for example, context is off by default, use this to turn it on
+    show_current_context = true,
+    show_current_context_start = true,
+    show_end_of_line = true,
+    space_char_blankline = " ",
+}
+

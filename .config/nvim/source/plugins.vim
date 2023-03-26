@@ -92,7 +92,7 @@ Plug 'lukas-reineke/lsp-format.nvim'
 Plug 'stevearc/overseer.nvim'
 
 Plug 'alvan/vim-closetag'
-Plug 'Yggdroot/indentLine',         { 'on': 'IndentLinesToggle' }
+Plug 'lukas-reineke/indent-blankline.nvim'
 
 " Additional Functionalities
 Plug 'editorconfig/editorconfig-vim'
