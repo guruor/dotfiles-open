@@ -1,0 +1,10 @@
+# Use cbfmt to format code blocks in files like markdown
+# cbfmt --write --best-effort --config ~/.config/cbfmt/cbfmt.toml  ./diary/2023-03-26.md
+[languages]
+sh = ["shfmt -i=4 -ci -s -bn"]
+python = ["black --fast -"]
+json = ["prettierd"]
+javascript = ["prettierd"]
+go = ["gofmt"]
+lua = ["stylua -s -"]
+rust = ["rustfmt"]
