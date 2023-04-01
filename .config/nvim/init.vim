@@ -20,7 +20,7 @@ lua << EOF
     require("telescopeconf")
     require("fzfconf")
     require("rest")
-    require("barbar")
+    require("barbarconf")
     require("overseerconf")
     require('gitsignsconf')
     require("conf/colorscheme")
