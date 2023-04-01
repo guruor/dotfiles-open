@@ -87,7 +87,6 @@ Plug 'theHamsta/nvim-dap-virtual-text'
 Plug 'rcarriga/nvim-dap-ui'
 Plug 'jbyuki/one-small-step-for-vimkind'
 Plug 'mfussenegger/nvim-dap-python'
-Plug 'lukas-reineke/lsp-format.nvim'
 
 " Task runner
 Plug 'stevearc/overseer.nvim'

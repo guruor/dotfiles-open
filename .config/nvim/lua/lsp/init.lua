@@ -126,7 +126,6 @@ local on_attach = function(client)
     utils.map('n', 'gD', '<Cmd>Lspsaga goto_type_definition<CR>', {buffer = true})
     utils.map('n', 'K', '<Cmd>Lspsaga hover_doc<CR>', {buffer = true})
     utils.map('n', 'gr', '<Cmd>Lspsaga lsp_finder<CR>', {buffer = true})
-    require("lsp.lsp-format").on_attach(client)
 end
 
 function _G.activeLSP()
