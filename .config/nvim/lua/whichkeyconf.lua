@@ -75,7 +75,7 @@ keys = {
         ["ld"] = {":Telescope diagnostics<CR>", "LSP diagnostics"},
         ["lr"] = {":Telescope lsp_references<CR>", "Find references"},
         ["lq"] = {":Telescope quickfix<CR>", "Find quickfix"},
-        ["\\"] = {":exec ':Lflcd' <CR>", "Switch directory and find text"},
+        ["\\"] = {":exec ':Lfcd' <CR>", "Switch directory and find text"},
     }
 }
 wk.register(keys, {prefix = leader})
@@ -96,7 +96,7 @@ keys = {
         ["ld"] = {":FzfLua diagnostics_document<CR>", "LSP diagnostics"},
         ["lr"] = {":FzfLua lsp_references<CR>", "Find references"},
         ["lq"] = {":FzfLua quickfix<CR>", "Find quickfix"},
-        ["\\"] = {":exec ':Lflcd' <CR>", "Switch directory and find text"},
+        ["\\"] = {":exec ':Lfcd' <CR>", "Switch directory and find text"},
     }
 }
 wk.register(keys, {prefix = leader})
