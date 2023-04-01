@@ -69,6 +69,8 @@ Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'jay-babu/mason-nvim-dap.nvim'
 Plug 'folke/neodev.nvim',
 Plug 'neovim/nvim-lspconfig'
+Plug 'jose-elias-alvarez/null-ls.nvim'
+Plug 'mhartington/formatter.nvim'
 Plug 'glepnir/lspsaga.nvim'
 Plug 'onsails/lspkind.nvim'
 Plug 'hrsh7th/cmp-nvim-lsp'
