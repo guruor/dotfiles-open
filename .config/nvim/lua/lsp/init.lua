@@ -124,7 +124,7 @@ end
 
 function _G.bufferActiveLSP()
     local servers = {}
-    for _, lsp in pairs(vim.lsp.buf_get_clients()) do
+    for _, lsp in pairs(vim.lsp.get_active_clients()) do
         table.insert(servers, { name = lsp.name, id = lsp.id })
     end
     _G.P(servers)
