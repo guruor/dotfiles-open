@@ -337,61 +337,6 @@ lspconfig.bufls.setup {
 }
 
 
-local vint = require "efm/vint"
-local luafmt = require "efm/luafmt"
-local golint = require "efm/golint"
-local goimports = require "efm/goimports"
-local black = require "efm/black"
-local isort = require "efm/isort"
-local flake8 = require "efm/flake8"
-local pylint = require "efm/pylint"
-local autopep8 = require "efm/autopep8"
-local mypy = require "efm/mypy"
-local prettier = require "efm/prettier"
-local eslint = require "efm/eslint"
-local shellcheck = require "efm/shellcheck"
-local terraform = require "efm/terraform"
--- local misspell = require "efm/misspell"
-local proselint = require "efm/proselint"
-local buf = require "efm/buf"
--- https://github.com/mattn/efm-langserver
--- python = {black, isort, flake8, mypy},
-lspconfig.efm.setup {
-    capabilities = capabilities,
-    on_attach = function(client)
-        client.server_capabilities.documentFormattingProvider = true
-        client.server_capabilities.documentRangeFormattingProvider = true
-        on_attach(client)
-    end,
-    init_options = {documentFormatting = true},
-    filetypes = {"python", "javascript", "json", "lua", "vim", "markdown", "yaml", "proto", "go", "sh"},
-    settings = {
-        rootMarkers = {".git/"},
-        languages = {
-            -- ["="] = {misspell},
-            vim = {vint},
-            lua = {luafmt},
-            go = {golint, goimports},
-            python = {autopep8, flake8},
-            -- python = {black, isort, flake8, mypy},
-            typescript = {prettier, eslint},
-            javascript = {prettier, eslint},
-            typescriptreact = {prettier, eslint},
-            javascriptreact = {prettier, eslint},
-            yaml = {prettier},
-            json = {prettier},
-            html = {prettier},
-            scss = {prettier},
-            css = {prettier},
-            markdown = {prettier, proselint},
-            sh = {shellcheck},
-            tf = {terraform},
-            proto = {buf}
-        }
-    }
-}
-
-
 lspconfig.clangd.setup {
     capabilities = capabilities,
     on_attach = on_attach, cmd = { "clangd" },
