@@ -171,7 +171,7 @@ keys = {
         ["o"] = {"<cmd>lua vim.lsp.buf.outgoing_calls()<CR>", "Outgoing calls"},
         ["a"] = {":lua vim.lsp.buf.code_action()<CR>", "Action"},
         ["k"] = {":lua vim.lsp.buf.hover()<CR>", "Hover"},
-        ["="] = {":update | lua vim.lsp.buf.format()<CR>", "Format"},
+        ["="] = {":update | FormatWrite<CR>", "FormatWrite"},
         ["dd"] = {":lua vim.diagnostic.setloclist()<CR>", "Diagnostic"},
         ["d]"] = {":lua vim.diagnostic.goto_next()<CR>", "Next diagnostic"},
         ["d["] = {":lua vim.diagnostic.goto_prev()<CR>", "Prev diagnostic"},
@@ -184,7 +184,7 @@ keys = {
 }
 wk.register(keys, {prefix = leader})
 keys_visual = copy(keys)
-keys_visual["L"]["="] = {":update | lua vim.lsp.formatexpr()<CR>", "Range Format"}
+keys_visual["L"]["="] = { ":update | '<,'>FormatWrite<CR>", "Range FormatWrite" }
 wk.register(keys_visual, {prefix = leader, mode = 'v'})
 
 
@@ -200,7 +200,7 @@ keys = {
         ["o"] = {"<Cmd>Lspsaga outgoing_calls<CR>", "Outgoing calls"},
         ["a"] = {"<Cmd>Lspsaga code_action<CR>", "Action"},
         ["k"] = {"<Cmd>Lspsaga hover_doc<CR>", "Hover"},
-        ["="] = {"<Cmd>update | lua vim.lsp.buf.format()<CR>", "Format"},
+        ["="] = {"<cmd> update | lua vim.lsp.buf.format { async = true }<CR>", "Format"},
         ["dd"] = {"<Cmd>Lspsaga show_buf_diagnostics<CR>", "Diagnostic"},
         ["d]"] = {"<Cmd>Lspsaga diagnostic_jump_next<CR>", "Next diagnostic"},
         ["d["] = {"<Cmd>Lspsaga diagnostic_jump_prev<CR>", "Prev diagnostic"},
@@ -212,7 +212,7 @@ keys = {
 }
 wk.register(keys, {prefix = leader})
 keys_visual = copy(keys)
-keys_visual["l"]["="] = {":update | lua vim.lsp.formatexpr()<CR>", "Range Format"}
+keys_visual["l"]["="] = { "<cmd> update | lua vim.lsp.buf.format { async = true }<CR>", "Range Format" }
 wk.register(keys_visual, {prefix = leader, mode = 'v'})
 
 keys = {
