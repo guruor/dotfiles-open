@@ -14,32 +14,6 @@ require"fidget".setup{}
 require('neodev').setup()
 local mason_lspconfig = require 'mason-lspconfig'
 
-
--- Enable the following language servers
---  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
---
---  Add any additional override configuration in the following tables. They will be passed to
---  the `settings` field of the server config. You must look up that documentation yourself.
-local servers = {
-  clangd = {},
-  gopls = {},
-  pyright = {},
-  rust_analyzer = {},
-  vimls = {},
-  jsonls = {},
-  yamlls = {},
-  cssls = {},
-  html = {},
-  bashls = {},
-  dockerls = {},
-  terraformls = {},
-  tsserver = {},
-  lua_ls = {},
-  sqlls = {},
-  efm = {},
-  -- bufls = {},
-}
-
 vim.lsp.protocol.CompletionItemKind = {
     Text = " [text]",
     Method = " [method]",
@@ -120,12 +94,24 @@ end
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
+-- Single flag to toggle efm-langserver and null-ls
+-- Both serves the same purpose of providing support for external linters and formatters
+-- As of now using null-ls as first priority because it provides support for range-formatting as well
+vim.g.should_enable_efm = false
 
 local on_attach = function(client)
     utils.map('n', 'gd', '<Cmd>Lspsaga goto_definition<CR>', {buffer = true})
     utils.map('n', 'gD', '<Cmd>Lspsaga goto_type_definition<CR>', {buffer = true})
     utils.map('n', 'K', '<Cmd>Lspsaga hover_doc<CR>', {buffer = true})
     utils.map('n', 'gr', '<Cmd>Lspsaga lsp_finder<CR>', {buffer = true})
+
+    if not vim.g.should_enable_efm then
+        print("Enabling null-ls")
+        require("lsp.null-ls")
+    end
+    -- null-ls provides support for formatting, but still keeping formatter.nvim as backup
+    -- It also mimics range formatting with hack of using temporary buffer
+    require("lsp.formatter")
 end
 
 function _G.activeLSP()
@@ -144,6 +130,30 @@ function _G.bufferActiveLSP()
     _G.P(servers)
 end
 
+-- Enable the following language servers
+--  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
+--
+--  Add any additional override configuration in the following tables. They will be passed to
+--  the `settings` field of the server config. You must look up that documentation yourself.
+local servers = {
+    clangd = {},
+    gopls = {},
+    pyright = {},
+    rust_analyzer = {},
+    vimls = {},
+    jsonls = {},
+    yamlls = {},
+    cssls = {},
+    html = {},
+    bashls = {},
+    dockerls = {},
+    terraformls = {},
+    tsserver = {},
+    lua_ls = {},
+    sqlls = {},
+    -- bufls = {},
+}
+
 mason_lspconfig.setup {
   ensure_installed = vim.tbl_keys(servers),
 }
@@ -158,6 +168,22 @@ mason_lspconfig.setup_handlers {
   end,
 }
 
+if vim.g.should_enable_efm then
+    print("Enabling efm-langserver")
+    local efm_lsp = require("lsp.efm")
+    lspconfig.efm.setup({
+        capabilities = capabilities,
+        on_attach = function(client)
+            client.server_capabilities.documentFormattingProvider = true
+            client.server_capabilities.documentRangeFormattingProvider = true
+            on_attach(client)
+        end,
+        init_options = { documentFormatting = true },
+        filetypes = efm_lsp.filetypes,
+        settings = efm_lsp.settings,
+    })
+else
+end
 
 -- https://github.com/golang/tools/tree/master/gopls
 lspconfig.gopls.setup {
