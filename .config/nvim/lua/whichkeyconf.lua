@@ -39,9 +39,7 @@ wk.register(keys, {prefix = localleader, mode = 'v'})
 keys = {
     ["\\"] = {":Lspsaga outline<CR>", "Toggle tagbar"},
     ["C"] = {":Code!!<CR>", "Virtual REPL"},
-    -- ["p"] = {":Files<CR>", "Find files"},
     ["P"] = {":!opout %<CR>", "Preview files"},
-    -- ["F"] = {':exec ":Lflcd" <CR>', "Switch directory and find text"},
     ["_"] = {"<C-W>s", "Split below"},
     ["|"] = {"<C-W>v", "Split right"},
     ["c"] = {':exec ":w! | :vs | :te compiler % ".input("Enter args: ")<CR>', "Compile"},
@@ -50,7 +48,6 @@ keys = {
     ["R"] = {":source $MYVIMRC<CR>", "Reload Init"},
     ["U"] = {":UndotreeToggle<CR>", "Undo Tree"},
     [" "] = {":noh<CR>", "No Highlight"},
-    ["L"] = {":Limelight<CR>", "Limelight activate"},
     ["o"] = {":LfCurrentFileExistingOrNewTab<CR>", "Open LF file explorer"},
     ["O"] = {":LfWorkingDirectoryExistingOrNewTab<CR>", "Open LF file explorer"},
     ["S"] = {":%s//gc<Left><Left><Left>", "Find and replace/substitute"}
