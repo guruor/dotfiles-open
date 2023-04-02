@@ -13,7 +13,7 @@ require 'colorizer'.setup()
 -- ----------------
 -- smartcolumn settings
 -- ----------------
-local smartcolumn_config = require("smartcolumn").setup({
+require("smartcolumn").setup({
    colorcolumn = 120,
    disabled_filetypes = { "help", "text", "markdown" },
 })
