@@ -13,7 +13,7 @@ memory: 2
 
 # Architecture of the virtual machine (x86_64, aarch64, host).
 # Default: host
-arch: aarch64
+arch: linux/amd64
 
 # Container runtime to be used (docker, containerd).
 # Default: docker
@@ -75,7 +75,7 @@ network:
   #   - slirp is the default user mode networking provided by Qemu
   #   - gvproxy is an alternative to VPNKit based on gVisor https://github.com/containers/gvisor-tap-vsock
   # Default: gvproxy
-  driver: ""
+  driver: gvproxy
 
 # ===================================================================== #
 # ADVANCED CONFIGURATION
@@ -110,7 +110,11 @@ docker: {}
 # vz is macOS virtualization framework and requires macOS 13
 #
 # Default: qemu
-vmType: ""
+vmType: qemu
+
+# Utilise rosetta for amd64 emulation (requires m1 mac and vmType `vz`)
+# Default: false
+rosetta: false
 
 # Volume mount driver for the virtual machine (virtiofs, 9p, sshfs).
 #
@@ -185,4 +189,6 @@ mounts: []
 #   ANOTHER_KEY: another value
 #
 # Default: {}
-env: {}
+env:
+  BUILDKIT_STEP_LOG_MAX_SIZE: "1073741824"
+  BUILDKIT_STEP_LOG_MAX_SPEED: "10240000"
