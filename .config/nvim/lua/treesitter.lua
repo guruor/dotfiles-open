@@ -25,10 +25,17 @@ require'nvim-treesitter.configs'.setup {
       "scss",
       "css",
       "tsx",
-      "rust"
+      "dockerfile",
+      "make",
+      "rust",
       },
 }
 local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
+
+-- If you don't like code blocks to be concealed use this to edit the highlight
+-- https://github.com/MDeiml/tree-sitter-markdown/issues/68#issuecomment-1292108829
+local ft_to_parser = require"nvim-treesitter.parsers".filetype_to_parsername
+ft_to_parser.vimwiki = "markdown"
 
 -- Custom tree-sitter parser for http files, grammar includes rest-nvim format
 -- https://github.com/rest-nvim/rest.nvim/issues/30
