@@ -115,7 +115,7 @@ Plug 'junegunn/goyo.vim',           { 'on': 'Goyo' }
 Plug 'junegunn/limelight.vim'
 
 " Rest client
-" Plug 'NTBBloodbath/rest.nvim'
+" Plug 'rest-nvim/rest.nvim'
 " Plug 'teto/rest.nvim', { 'branch': 'always-send-string' }
 Plug 'G0V1NDS/rest.nvim', { 'branch': 'response_body_stored' }
 
