@@ -66,3 +66,12 @@ function MarkdownLevel()
         return ">" . len(h)
     endif
 endfunction
+
+function! ResizeSplit()
+  if (winheight(0) < 20)
+    :res 20
+  endif
+  if (winwidth(0) < 70)
+    :vertical resize 70
+  endif
+endfunction
