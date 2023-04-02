@@ -127,3 +127,7 @@ require("indent_blankline").setup {
     space_char_blankline = " ",
 }
 
+-- ----------------
+-- nvim-FeMaco.lua
+-- -- ----------------
+require("femaco").setup()

@@ -339,6 +339,7 @@ local function attach_markdown_keys(bufnr)
     keys = {
         r = {
             name = 'Markdown',
+            ["e"] = {"<Cmd>FeMaco<Cr>", "Code block edit"},
             ["r"] = {"<Cmd>MarkdownPreview<Cr>", "Markdown Preview"},
             ["t"] = {"<Cmd>MarkdownPreviewToggle<Cr>", "Markdown Preview Toggle"},
             ["x"] = {"<Cmd>MarkdownPreviewStop<Cr>", "Markdown Preview Stop"},
