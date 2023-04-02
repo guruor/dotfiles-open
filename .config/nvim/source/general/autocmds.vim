@@ -43,6 +43,13 @@ augroup END
     autocmd FileType dbout nmap <buffer> vic <Plug>(DBUI_YankCellValue)
     autocmd FileType dbout nmap <buffer> yh <Plug>(DBUI_YankHeader)
     autocmd FileType dbout nmap <buffer> <Leader>R <Plug>(DBUI_ToggleResultLayout)
+    " Autoresize `dbout` buffer and sql buffer for dadbod-ui
+    augroup filetype_dbout
+        autocmd!
+        " autocmd WinEnter * if &ft ==# 'dbout' || &ft ==# 'sql' | wincmd _ | endif
+        autocmd WinEnter * if &ft ==# 'dbout' || &ft ==# 'sql' | call ResizeSplit() | endif
+    augroup END
+
 " Django template specific mappings
     autocmd FileType htmldjango inoremap {{ {{  }}<left><left><left>
     autocmd FileType htmldjango inoremap {% {%  %}<left><left><left>
