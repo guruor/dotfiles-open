@@ -12,17 +12,19 @@ venv = "atlas"
 
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md#type-check-diagnostics-settings
 # Default values for these rules: https://github.com/microsoft/pyright/blob/main/docs/configuration.md#diagnostic-rule-defaults
+# Enable below carefully, the more rules we enable the more CPU utilization will happen for pyright node service,
+# Neovim will also consume the CPU when rendering those messages
 typeCheckingMode = "basic"  # Possible values "off", "basic", "strict"
 reportGeneralTypeIssues = "warning"
 reportPropertyTypeMismatch = "warning"
 reportMissingImports = "error"
 reportMissingTypeStubs = "warning"
-reportUnknownVariableType = "information"
-reportUnknownParameterType = "information"
-reportUnknownArgumentType = "information"
-reportUnknownMemberType = "information"
-reportOptionalMemberAccess = "information"
-reportFunctionMemberAccess = "information"
+# reportUnknownVariableType = "information"
+# reportUnknownParameterType = "information"
+# reportUnknownArgumentType = "information"
+# reportUnknownMemberType = "information"
+# reportOptionalMemberAccess = "information"
+# reportFunctionMemberAccess = "information"
 
 pythonVersion = "3.6"
 pythonPlatform = "Linux"
