@@ -131,6 +131,7 @@ Plug 'voldikss/vim-floaterm'
 
 " VimWiki for note management
 Plug 'vimwiki/vimwiki'
+Plug 'AckslD/nvim-FeMaco.lua'   " For inline code-block edit
 Plug 'mattn/calendar-vim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 
