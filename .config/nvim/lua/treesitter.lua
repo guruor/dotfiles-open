@@ -1,3 +1,4 @@
+-- https://github.com/nvim-treesitter/nvim-treesitter#supported-languages
 require'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,
@@ -28,6 +29,7 @@ require'nvim-treesitter.configs'.setup {
       "dockerfile",
       "make",
       "rust",
+      "sql"
       },
 }
 local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
