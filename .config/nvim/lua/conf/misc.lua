@@ -13,10 +13,14 @@ require 'colorizer'.setup()
 -- ----------------
 -- smartcolumn settings
 -- ----------------
-require("smartcolumn").setup({
-   colorcolumn = 120,
+
+local smartcolumn_options = {
+   colorcolumn = "120",
    disabled_filetypes = { "help", "text", "markdown" },
-})
+   custom_colorcolumn = {},
+   scope = "file",
+}
+require("smartcolumn").setup(smartcolumn_options)
 
 -- ----------------
 -- Obsession and Prosession
