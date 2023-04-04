@@ -101,24 +101,44 @@ function ToggleTpipeline()
     end
 end
 
-function ChooseDBUIConnection()
+
+function GetDBUIConnectionNames()
     local connections_list = vim.call('db_ui#connections_list')
     local connection_names = {}
-    local connection_map = {}
     for _, conn in pairs(connections_list) do
         table.insert(connection_names, conn.name)
+    end
+
+    return connection_names
+end
+
+function GetDBUIConnectiondMap()
+    local connections_list = vim.call('db_ui#connections_list')
+    local connection_map = {}
+    for _, conn in pairs(connections_list) do
         connection_map[conn.name] = conn
     end
+
+    return connection_map
+end
+
+function RefreshDBUIConnection(connectionName)
+    local connection_map = GetDBUIConnectiondMap()
+    local conn = connection_map[connectionName]
+    vim.b.dbui_db_key_name = conn.name .. "_" .. conn.source
+    vim.cmd("DBUIFindBuffer")
+    vim.cmd("DBUIFindBuffer")
+    vim.cmd("DBUIToggle")
+end
+
+function ChooseDBUIConnection()
+    local connection_names = GetDBUIConnectionNames()
 
     vim.ui.select(connection_names, { prompt = "Choose a connection: " },
         function(chosen_conn)
             if chosen_conn then
                 print("Chosen connection is " .. chosen_conn)
-                local conn = connection_map[chosen_conn]
-                vim.b.dbui_db_key_name = conn.name .. "_" .. conn.source
-                vim.cmd("DBUIFindBuffer")
-                vim.cmd("DBUIFindBuffer")
-                vim.cmd("DBUIToggle")
+                RefreshDBUIConnection(chosen_conn)
             else
                 print "Connection not changed"
             end
@@ -127,9 +147,15 @@ function ChooseDBUIConnection()
 end
 
 function ChooseDBUIConnectionOptional()
-    print("Choosing db connection")
+    print("Choosing db connection...")
+    local cwd = vim.fn.getcwd()
     if not vim.b.dbui_db_key_name then
-        ChooseDBUIConnection()
+        local connectionDir = cwd:match("^.+/(.+)$")
+        if connectionDir then
+            RefreshDBUIConnection(connectionDir)
+        else
+            ChooseDBUIConnection()
+        end
     else
         print("Already active connection: " .. vim.b.dbui_db_key_name)
     end
