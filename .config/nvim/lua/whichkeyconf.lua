@@ -135,19 +135,22 @@ keys = {
         ["j"] = {"<cmd>lua require\'dap\'.down()<CR>", "Down in stack trace"},
         ["k"] = {"<cmd>lua require\'dap\'.up()<CR>", "Up in stack trace"},
         ["c"] = {"<cmd>lua require\'dap\'.continue()<CR>", "Continue"},
+        ["R"] = {"<cmd> lua require('dap').run_to_cursor()<CR> ", "Run till cursor"},
         ["n"] = {"<cmd>lua require\'dap\'.step_over()<CR>", "Step Over"},
         ["s"] = {"<cmd>lua require\'dap\'.step_into()<CR>", "Step Into"},
         ["u"] = {"<cmd>lua require\'dap\'.step_out()<CR>", "Step Out"},
         ["l"] = {"<cmd>lua require\'dap\'.toggle_breakpoint(nil, nil, vim.fn.input(\'Log point message: \'), true)<CR>", "Log"},
         ["r"] = {"<cmd>lua require\'dap\'.repl.toggle({height=15})<CR>", "Toggle REPL"},
         ["x"] = {"<cmd>lua require\'dap\'.close()<CR>", "Stop"},
+        ["e"] = {"<cmd>lua require\'dapui\'.eval()<CR>", "DAP evaluate expression"},
         ["t"] = {"<cmd>lua require\'dapui\'.toggle()<CR>", "DAP UI Toggle"},
         ["h"] = {"<cmd>lua require\'dap.ui.widgets\'.hover()<CR>", "Widget Hover"},
         ["S"] = {"<cmd>lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>", "Widget Scopes"},
         ["dr"] = {
             ':exec ":vs | :te cargo build; rust-lldb ".input("Path to executable: ", getcwd() .. "/target/debug/", "file")." ".input("Enter args: ")<CR>',
             "rust-lldb"
-        }
+        },
+        ["N"] = {":lua require'osv'.launch({ config_file = '~/.config/nvim/initlsp.vim', port = 8086})<CR>", "Debug neovim lua"},
     }
 }
 wk.register(keys, {prefix = leader})
