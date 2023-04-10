@@ -77,13 +77,13 @@ cmp.setup({
         end,
     }),
     sources = cmp.config.sources({
+        { name = 'vim-dadbod-completion', keyword_length = 2 },
         { name = 'path' },
         { name = 'nvim_lsp_signature_help' },
         { name = 'nvim_lsp', keyword_length = 2 },
         { name = 'buffer', keyword_length = 2 },
         { name = 'luasnip', keyword_length = 2 },
         { name = 'nvim_lua' },
-        { name = 'vim-dadbod-completion', keyword_length = 2 },
         { name = 'spell', keyword_length = 3 },
     }, {
         { name = 'buffer' },
