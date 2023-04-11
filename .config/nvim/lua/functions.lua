@@ -1,5 +1,37 @@
 local utils = require "utils"
 
+vim.g.hidden_all = 0
+-- Function for toggling the bottom statusbar:
+function ToggleHiddenAll()
+  if vim.g.hidden_all == 0 then
+    vim.g.hidden_all = 1
+    vim.opt.laststatus = 0
+    vim.opt.showmode = false
+    vim.opt.showcmd = false
+    vim.opt.ruler = false
+  else
+    vim.g.hidden_all = 0
+    vim.opt.laststatus = 3
+    vim.opt.showmode = true
+    vim.opt.showcmd = true
+    vim.opt.ruler = true
+  end
+end
+
+-- Function for toggling vim background
+function ToggleBackground(bg)
+  if bg ~= nil then
+    vim.opt.background = bg
+  else
+    if vim.o.background == "light" then
+      P(vim.opt.background)
+      vim.o.background = "dark"
+    else
+      vim.opt.background = "light"
+    end
+  end
+end
+
 
 function GetDBUIConnectionName()
     -- dadbod-ui selected environment name
@@ -31,7 +63,6 @@ function GetRestNvimEnvName()
     -- If there's an env file in the current working dir
     if utils.file_exists(env_file_path) then
         for line in io.lines(env_file_path) do
-
             local vars = utils.split(line, "=")
 
             if vars[1] == variable_name then
@@ -91,6 +122,29 @@ function SelectRestNvimEnvironment()
     )
 end
 
+function RestNvimRunCurrentFile()
+    local fname = vim.fn.expand('%')
+    vim.ui.input({ prompt = "HTTP File: ", default = fname, completion = "file" }, function(file)
+        file = vim.trim(file or "")
+        if file == "" then
+            return
+        end
+
+        -- local collection_dir=os.getenv("REST_NVIM_COLLECTION_PATH")
+        -- local collection_dir="collections"
+        -- local file_rel_path=collection_dir.."/"..file
+        local opts = { keep_going = true, verbose = true }
+        -- local opts = {}
+        local file_rel_path = file
+        print("Running http file: " .. file_rel_path)
+        require("rest-nvim").run_file(file_rel_path, opts)
+        -- require("rest-nvim").run_file(file)
+
+        -- lua require("rest-nvim").run_file("collections/auth.http")
+        -- lua require("rest-nvim").run_file("tests/basic_get.http")
+    end)
+end
+
 function ToggleTpipeline()
     vim.call('tpipeline#state#toggle')
     local is_active = vim.call('tpipeline#state#is_active')
@@ -100,7 +154,6 @@ function ToggleTpipeline()
         vim.opt.laststatus = 0
     end
 end
-
 
 function GetDBUIConnectionNames()
     local connections_list = vim.call('db_ui#connections_list')
