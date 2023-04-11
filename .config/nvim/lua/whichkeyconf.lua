@@ -233,6 +233,7 @@ keys = {
         ["b"] = {":call ToggleBackground()<CR>", "Toggle vim background"},
         ["B"] = {":!toggle-dark-mode<CR>", "Toggle background of all apps"},
         ["n"] = {":set nonumber!<CR>", "Line numbers"},
+        ["f"] = {":FocusToggle<CR>", "Focus nvim"},
         ["r"] = {":set norelativenumber!<CR>", "Relative line numbers"},
         ["w"] = {":set wrap!<CR>", "Word wrap"},
         ["c"] = {":ColorizerToggle<CR>", "Colorizer"},

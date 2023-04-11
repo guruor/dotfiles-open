@@ -135,3 +135,8 @@ require("indent_blankline").setup {
 -- nvim-FeMaco.lua
 -- -- ----------------
 require("femaco").setup()
+
+-- ----------------
+-- focus.nvim
+-- -- ----------------
+require("focus").setup()
