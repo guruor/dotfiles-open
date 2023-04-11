@@ -141,6 +141,7 @@ Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'rafamadriz/friendly-snippets'
 
 " Good to have
+Plug 'beauwilliams/focus.nvim'
 Plug 'ron89/thesaurus_query.vim'
 Plug 'christoomey/vim-tmux-navigator' " Switch windows with C-[h,j,k,l,\], same for tmux panes
 Plug 'NvChad/nvim-colorizer.lua' " Highlights color code or hash
