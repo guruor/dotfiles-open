@@ -5,12 +5,10 @@
 "/___/_/ /_/_/\__(_)___/_/_/ /_/ /_/
 
 source $HOME/.config/nvim/source/plugins.vim
-source $HOME/.config/nvim/source/general/settings.vim
-source $HOME/.config/nvim/source/general/autocmds.vim
-source $HOME/.config/nvim/source/general/functions.vim
-source $HOME/.config/nvim/source/keys/mappings.vim
 
 lua << EOF
+    require("core")
+    require("conf/thesaurus")
     require("functions")
     require("whichkeyconf")
     require("statusline")
