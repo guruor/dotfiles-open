@@ -26,7 +26,7 @@ vim.g.dap_virtual_text = true
 -- Enable virutal text, requires rcarriga/nvim-dap-ui
 require("dapui").setup()
 -- Enable virutal text, requires mfussenegger/nvim-dap-python, overide it with .vscode/launch.json
-require('dap-python').setup("~/.pyenv/versions/debugpy/bin/python")
+require('dap-python').setup(vim.fn.expand "~/.pyenv/versions/debugpy/bin/python")
 
 -- Loads configurations from vscode Launch.json, adding it at end so it extends the existing configuration
 require("dap.ext.vscode").load_launchjs()
