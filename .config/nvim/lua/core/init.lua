@@ -80,10 +80,11 @@ opt.spelllang = "en_us"
 opt.whichwrap:append "<>[]hl"
 
 -- Directory setup
-opt.undodir = "~/.cache/nvim/undo"
-opt.directory = "~/.cache/nvim/swap"
-opt.backupdir = "~/.cache/nvim/backup"
-opt.viewdir = "~/.cache/nvim/view"
+local home_dir = vim.fn.expand "$HOME"
+opt.undodir =  home_dir .. "/.cache/nvim/undo"
+opt.directory = home_dir .."/.cache/nvim/swap"
+opt.backupdir = home_dir .. "/.cache/nvim/backup"
+opt.viewdir = home_dir .."/.cache/nvim/view"
 
 -------------------------------------- autocmds ------------------------------------------
 local autocmd = vim.api.nvim_create_autocmd
