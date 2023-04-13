@@ -24,9 +24,9 @@ lua << EOF
     require("conf/colorscheme")
     require("conf/vimwiki")
     require("conf/misc")
+
+  if vim.fn.filereadable(vim.fn.expand "$HOME" .. "/.config/nvim/lua/Private/plugins/configs/dadbod.lua") then
+    require("Private/plugins/configs/dadbod").setup()
+  end
 EOF
 
-
-if filereadable(system('echo -n "$HOME/.config/nvim/source/private/dadbods.vim"'))
-    source $HOME/.config/nvim/source/private/dadbods.vim
-endif
