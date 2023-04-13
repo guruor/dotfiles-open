@@ -22,11 +22,10 @@ lua << EOF
     require("overseerconf")
     require('gitsignsconf')
     require("conf/colorscheme")
+    require("conf/vimwiki")
     require("conf/misc")
 EOF
 
-" Plugin config
-source $HOME/.config/nvim/source/plug-conf/vimwiki.vim
 
 if filereadable(system('echo -n "$HOME/.config/nvim/source/private/dadbods.vim"'))
     source $HOME/.config/nvim/source/private/dadbods.vim
