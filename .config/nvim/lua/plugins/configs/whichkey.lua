@@ -4,6 +4,9 @@ local wk = require("which-key")
 local leader = "<Space>"
 local localleader = ","
 
+utils.map("n", localleader, '<cmd>lua require("which-key").show(",", {mode = "n", auto = true})<CR>')
+utils.map("v", localleader, '<cmd>lua require("which-key").show(",", {mode = "v", auto = true})<CR>')
+
 local keys
 local keys_visual
 
@@ -149,7 +152,7 @@ keys = {
             ':exec ":vs | :te cargo build; rust-lldb ".input("Path to executable: ", getcwd() .. "/target/debug/", "file")." ".input("Enter args: ")<CR>',
             "rust-lldb"
         },
-        ["N"] = {":lua require'osv'.launch({ config_file = '~/.config/nvim/initlsp.vim', port = 8086})<CR>", "Debug neovim lua"},
+        ["N"] = {":lua require'osv'.launch({ config_file = '~/.config/nvim/lua/initlsp_plug.lua', port = 8086})<CR>", "Debug neovim lua"},
     }
 }
 wk.register(keys, {prefix = leader})
@@ -304,6 +307,7 @@ local function attach_rest_nvim_keys(bufnr)
             ["p"] = {"<Plug>RestNvimPreview", "preview the request cURL command"},
             ["l"] = {"<Plug>RestNvimLast", "re-run the last request"},
             ["e"] = {"<Cmd>lua SelectRestNvimEnvironment()<Cr>", "Change environment"},
+            ["f"] = {'<Cmd>lua RestNvimRunCurrentFile()<Cr>', "Run current file"},
         }
     }
     wk.register(keys, {prefix = leader})
@@ -326,6 +330,8 @@ local function attach_dadbod_ui_keys(bufnr)
             ["r"] = {"<Plug>(DBUI_ExecuteQuery)", "Run query"},
             ["e"] = {"<Cmd>lua ChooseDBUIConnection()<Cr>", "Change Env"},
             ["E"] = {"<Plug>(DBUI_EditBindParameters)", "Edit bind parameters"},
+            ["oR"] = {"<Plug>(DBUI_ToggleResultLayout)", "Toggle result layout"},
+            -- ["Rf"] = {"<Plug>(DBUI_Redraw)", "Redraw connections"}
         }
     }
     wk.register(keys, {prefix = leader})

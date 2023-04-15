@@ -108,4 +108,5 @@ new_cmd("SampleCommand", function()
 end, {})
 
 require("core.utils").load_mappings()
+require "core.functions"
 require "core.autocmds"
