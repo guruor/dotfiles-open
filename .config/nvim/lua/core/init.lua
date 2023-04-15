@@ -2,6 +2,10 @@ local opt = vim.opt
 local g = vim.g
 local cmd = vim.cmd
 
+local home_dir = vim.fn.expand "$HOME"
+vim.opt.rtp:prepend(home_dir .. "/.config/vim")
+vim.opt.rtp:prepend(home_dir .. "/.config/nvim")
+
 -------------------------------------- cmds -----------------------------------------
 cmd "syntax on"
 cmd "filetype plugin indent on"
@@ -80,7 +84,6 @@ opt.spelllang = "en_us"
 opt.whichwrap:append "<>[]hl"
 
 -- Directory setup
-local home_dir = vim.fn.expand "$HOME"
 opt.undodir =  home_dir .. "/.cache/nvim/undo"
 opt.directory = home_dir .."/.cache/nvim/swap"
 opt.backupdir = home_dir .. "/.cache/nvim/backup"

@@ -3,7 +3,6 @@ local merge_tb = vim.tbl_deep_extend
 
 M.load_config = function()
   local config = require "core.default_config"
-  config.mappings = require "core.mappings"
 
   local customrc_path = vim.api.nvim_get_runtime_file("lua/custom/neovim_overriderc.lua", false)[1]
 
@@ -114,6 +113,22 @@ M.lazy_load = function(plugin)
       end
     end,
   })
+end
+
+M.FirstRunSetup = function()
+  local homeDir = vim.fn.expand "$HOME"
+  -- Setting up python virtual environment for neovim
+  local pyenvPath = homeDir .. "/.pyenv/versions"
+  if not vim.fn.isdirectory(pyenvPath .. "/nvim") then
+    print "Creating virtual environment ..."
+    -- Check if python or pip needs to be installed
+    -- silent !sudo pacman -S words --noconfirm
+    vim.cmd "silent !pyenv install 3.10.0 || true"
+    vim.cmd "silent !pyenv virtualenv 3.10.0 nvim || true"
+    vim.cmd 'silent !pyenv virtualenv 3.10.0 debugpy || true " Creating a virtualenv for debugpy for python debugging'
+    vim.cmd("silent !" .. pyenvPath .. "/nvim/bin/python -m pip install neovim pynvim")
+    vim.cmd("silent !" .. pyenvPath .. "/debugpy/bin/python -m pip install debugpy")
+  end
 end
 
 return M
