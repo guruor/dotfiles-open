@@ -152,7 +152,7 @@ keys = {
             ':exec ":vs | :te cargo build; rust-lldb ".input("Path to executable: ", getcwd() .. "/target/debug/", "file")." ".input("Enter args: ")<CR>',
             "rust-lldb"
         },
-        ["N"] = {":lua require'osv'.launch({ config_file = '~/.config/nvim/lua/initlsp_plug.lua', port = 8086})<CR>", "Debug neovim lua"},
+        ["N"] = {":lua require'osv'.launch({ config_file = '~/.config/nvim/lua/initlsp.lua', port = 8086})<CR>", "Debug neovim lua"},
     }
 }
 wk.register(keys, {prefix = leader})

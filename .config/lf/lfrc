@@ -21,7 +21,7 @@ cmd open-choose $OPENER_CHOOSE="true" $OPENER $fx
 
 cmd edit ${{
     if [ -d "$fx" ]; then
-        nvim -u /Users/govind.r/.config/nvim/initlsp.vim -- $fx
+        nvim -u /Users/govind.r/.config/nvim/lua/initlsp.lua -- $fx
     else
         $EDITOR "$fx"
     fi
