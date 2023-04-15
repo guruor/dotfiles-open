@@ -29,7 +29,7 @@ require'nvim-treesitter.configs'.setup {
       "dockerfile",
       "make",
       "rust",
-      "sql"
+      -- "sql"
       },
 }
 local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
