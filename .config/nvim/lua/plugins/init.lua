@@ -17,23 +17,33 @@ local default_plugins = {
     "nvim-treesitter/nvim-treesitter",
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
     build = ":TSUpdate",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter-context",
+    },
   },
-  "nvim-treesitter/nvim-treesitter-context",
   "romgrk/barbar.nvim",
   "j-hui/fidget.nvim",
 
   -- Easy search, navigation
-  { "junegunn/fzf", build = "./install --bin" },
-  "ibhagwan/fzf-lua",
-  "jesseleite/vim-agriculture",
-  { "folke/which-key.nvim", keys = { "<leader>", ",", '"', "'", "`" } },
+  {
+    "ibhagwan/fzf-lua",
+    dependencies = {
+
+      { "junegunn/fzf", build = "./install --bin" },
+    },
+  },
+  { "folke/which-key.nvim",    keys = { "<leader>", ",", '"', "'", "`" } },
   "majutsushi/tagbar",
-  "nvim-lua/popup.nvim",
-  { "nvim-telescope/telescope.nvim", cmd = "Telescope" },
-  { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-  "jvgrootveld/telescope-zoxide",
-  "kevinhwang91/nvim-bqf", -- For better preview of quickfix buffers
-  "stevearc/dressing.nvim", -- For improved vim.ui interfaces
+  {
+    "nvim-telescope/telescope.nvim",
+    cmd = "Telescope",
+    dependencies = {
+      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+      "jvgrootveld/telescope-zoxide",
+    },
+  },
+  { "kevinhwang91/nvim-bqf",  ft = "qf" }, -- For better preview of quickfix buffers
+  { "stevearc/dressing.nvim", lazy = false }, -- For improved vim.ui interfaces
 
   -- Git stuff
   {
@@ -54,50 +64,95 @@ local default_plugins = {
       "Gremove",
       "Gbrowse",
     },
+    dependencies = {
+      "tommcdo/vim-fubitive",          -- GBrowse bitbucket support
+      "shumphrey/fugitive-gitlab.vim", -- Gitlab gitlab support
+      "tpope/vim-rhubarb",             -- GBrowse github support
+    },
   },
   "lewis6991/gitsigns.nvim",
-  "tommcdo/vim-fubitive", -- GBrowse bitbucket support
-  "shumphrey/fugitive-gitlab.vim", -- Gitlab gitlab support
-  "tpope/vim-rhubarb", -- GBrowse github support
 
   -- Syntax, formatting and auto-completion, not needed when using treesitter
   -- "sheerun/vim-polyglot",
 
   -- Managing and installing LSP servers
-  {
-    "williamboman/mason.nvim",
-    cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
-  },
-  "WhoIsSethDaniel/mason-tool-installer.nvim",
-  "williamboman/mason-lspconfig.nvim",
-  "jay-babu/mason-nvim-dap.nvim",
   "folke/neodev.nvim",
-  "neovim/nvim-lspconfig",
-  "jose-elias-alvarez/null-ls.nvim",
+  {
+    "neovim/nvim-lspconfig",
+    dependencies = {
+      { "simrat39/rust-tools.nvim", ft = "rs" },
+      {
+        "williamboman/mason.nvim",
+        cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
+        build = ":MasonUpdate",
+      },
+      "WhoIsSethDaniel/mason-tool-installer.nvim",
+      "williamboman/mason-lspconfig.nvim",
+      { "glepnir/lspsaga.nvim",     event = "LspAttach" },
+      "jose-elias-alvarez/null-ls.nvim",
+    },
+  },
   "mhartington/formatter.nvim",
-  "glepnir/lspsaga.nvim",
-  "onsails/lspkind.nvim",
-  "hrsh7th/cmp-nvim-lsp",
-  "hrsh7th/cmp-buffer",
-  "hrsh7th/cmp-path",
-  "hrsh7th/cmp-cmdline",
-  "hrsh7th/cmp-nvim-lsp-signature-help",
-  "hrsh7th/nvim-cmp",
+  {
+    "hrsh7th/nvim-cmp",
+    event = { "InsertEnter", "CmdlineEnter" },
+    dependencies = {
 
-  { "fatih/vim-go", build = ":GoUpdateBinaries" },
+      {
+        -- snippet plugin
+        "L3MON4D3/LuaSnip",
+        dependencies = "rafamadriz/friendly-snippets",
+      },
+
+      -- autopairing of (){}[] etc
+      {
+        "windwp/nvim-autopairs",
+        opts = {
+          fast_wrap = {},
+          disable_filetype = { "TelescopePrompt", "vim" },
+        },
+        config = function(_, opts)
+          require("nvim-autopairs").setup(opts)
+
+          -- setup cmp for autopairs
+          local cmp_autopairs = require "nvim-autopairs.completion.cmp"
+          require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
+        end,
+      },
+      { "windwp/nvim-ts-autotag" },
+      -- cmp sources plugins
+      {
+        "saadparwaiz1/cmp_luasnip",
+        "hrsh7th/cmp-nvim-lua",
+        "hrsh7th/cmp-nvim-lsp",
+        "hrsh7th/cmp-buffer",
+        "hrsh7th/cmp-path",
+        "hrsh7th/cmp-cmdline",
+        "hrsh7th/cmp-nvim-lsp-signature-help",
+        "onsails/lspkind.nvim",
+      },
+    },
+  },
+
+  { "fatih/vim-go",    ft = "go",             build = ":GoUpdateBinaries" },
   "bufbuild/vim-buf",
 
   -- Debugging
-  "mfussenegger/nvim-dap",
-  "theHamsta/nvim-dap-virtual-text",
-  "rcarriga/nvim-dap-ui",
-  "jbyuki/one-small-step-for-vimkind",
-  "mfussenegger/nvim-dap-python",
+  {
+    "mfussenegger/nvim-dap",
+    dependencies = {
+
+      "jay-babu/mason-nvim-dap.nvim",
+      "theHamsta/nvim-dap-virtual-text",
+      "rcarriga/nvim-dap-ui",
+      "jbyuki/one-small-step-for-vimkind",
+      "mfussenegger/nvim-dap-python",
+    },
+  },
 
   -- Task runner
   "stevearc/overseer.nvim",
 
-  "alvan/vim-closetag",
   {
     "lukas-reineke/indent-blankline.nvim",
     init = function()
@@ -107,10 +162,15 @@ local default_plugins = {
 
   -- Additional Functionalities
   "editorconfig/editorconfig-vim",
-  "mbbill/undotree",
   { "mbbill/undotree", cmd = "UndotreeToggle" },
   "tpope/vim-repeat",
-  "tpope/vim-surround",
+  {
+    "kylechui/nvim-surround",
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup()
+    end,
+  },
   "numToStr/Comment.nvim",
   -- easily search for, substitute, and abbreviate multiple variants of a word, replaces vim-abolish
   {
@@ -122,8 +182,13 @@ local default_plugins = {
   "ntpeters/vim-better-whitespace",
 
   -- Session management plugins
-  "tpope/vim-obsession",
-  "dhruvasagar/vim-prosession",
+  {
+    "dhruvasagar/vim-prosession",
+    lazy = false,
+    dependencies = {
+      "tpope/vim-obsession",
+    },
+  },
 
   -- Better working environment
   {
@@ -142,46 +207,52 @@ local default_plugins = {
   },
 
   -- Rest client
-  { "G0V1NDS/rest.nvim", branch = "response_body_stored_updated", ft = "http" },
+  { "G0V1NDS/rest.nvim",      branch = "response_body_stored_updated", ft = "http" },
   -- { "rest-nvim/rest.nvim", ft = "http" },
 
   -- DB query executer
-  { "tpope/vim-dadbod", ft = "sql" },
-  { "kristijanhusak/vim-dadbod-completion", ft = "sql" },
-  { "kristijanhusak/vim-dadbod-ui", ft = "sql" },
+  {
+    "kristijanhusak/vim-dadbod-ui",
+    ft = "sql",
+    dependencies = {
+      "tpope/vim-dadbod",
+      "kristijanhusak/vim-dadbod-completion",
+    },
+  },
 
   -- File navigator, uses LF file manager to navigate and change working directory
-  "ptzz/lf.vim",
-  "voldikss/vim-floaterm",
+  {
+    "ptzz/lf.vim",
+    lazy = false,
+    dependencies = {
+      "voldikss/vim-floaterm",
+    },
+  },
 
   -- VimWiki for note management
-  "vimwiki/vimwiki",
-  "AckslD/nvim-FeMaco.lua", -- For inline code-block edit
-  "mattn/calendar-vim",
-  "iamcco/markdown-preview.nvim",
-  { "iamcco/markdown-preview.nvim", run = "cd app && yarn install" },
-
-  -- Snippet
-  "L3MON4D3/LuaSnip",
-  "saadparwaiz1/cmp_luasnip",
-  "rafamadriz/friendly-snippets",
+  -- vim-polyglot is needed for `plantuml` syntax
+  { "vimwiki/vimwiki",        lazy = false,                            dependencies = "sheerun/vim-polyglot" },
+  { "AckslD/nvim-FeMaco.lua", cmd = "FeMaco" }, -- For inline code-block edit
+  { "mattn/calendar-vim",     cmd = { "CalendarH", "CalendarH" } },
+  {
+    "iamcco/markdown-preview.nvim",
+    ft = "markdown",
+    run = "cd app && yarn install",
+  },
 
   -- Good to have
   "beauwilliams/focus.nvim",
   "ron89/thesaurus_query.vim",
   "christoomey/vim-tmux-navigator", -- Switch windows with C-[h,j,k,l,\], same for tmux panes
-  "NvChad/nvim-colorizer.lua", -- Highlights color code or hash
+  { "NvChad/nvim-colorizer.lua", ft = { "css" } },
   "m4xshen/smartcolumn.nvim",
+  -- annotation generator/docstring
+  { "danymat/neogen",            config = true, lazy = false },
   "rcarriga/nvim-notify",
 
   -- Yet to explorer
-  -- "tpope/vim-sensible",
-  -- { "heavenshell/vim-pydocstring", run = "make install" },
-  -- "vim-scripts/loremipsum",
   -- "metakirby5/codi.vim",
-  -- "dkarter/bullets.vim",
   -- { "junegunn/vim-easy-align", run = { "EasyAlign" } },
-  -- Plugings from Luke smith's dotfiles, confirm if still needed
 }
 
 local config = require("core.utils").load_config()
