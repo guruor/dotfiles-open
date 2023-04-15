@@ -112,7 +112,13 @@ local default_plugins = {
   "tpope/vim-repeat",
   "tpope/vim-surround",
   "numToStr/Comment.nvim",
-  "tpope/vim-abolish", -- easily search for, substitute, and abbreviate multiple variants of a word
+  -- easily search for, substitute, and abbreviate multiple variants of a word, replaces vim-abolish
+  {
+    "johmsalas/text-case.nvim",
+    config = function()
+      require("textcase").setup {}
+    end,
+  },
   "ntpeters/vim-better-whitespace",
 
   -- Session management plugins

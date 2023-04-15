@@ -130,6 +130,12 @@ telescope.setup {
 
 telescope.load_extension('fzf')
 telescope.load_extension('zoxide')
+telescope.load_extension('textcase')
+-- Mapping for text-case.nvim
+vim.api.nvim_set_keymap("n", "ga.", "<cmd>TextCaseOpenTelescope<CR>", { desc = "Telescope" })
+vim.api.nvim_set_keymap("v", "ga.", "<cmd>TextCaseOpenTelescope<CR>", { desc = "Telescope" })
+vim.api.nvim_set_keymap("n", "gaa", "<cmd>TextCaseOpenTelescopeQuickChange<CR>", { desc = "Telescope Quick Change" })
+vim.api.nvim_set_keymap('n', 'gai', "<cmd>TextCaseOpenTelescopeLSPChange<CR>", { desc = "Telescope LSP Change" })
 
 -- Custom helper functions
 local function onComplete(picker)
