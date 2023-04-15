@@ -40,8 +40,8 @@ Plug "tommcdo/vim-fubitive" -- GBrowse bitbucket support
 Plug "shumphrey/fugitive-gitlab.vim" -- Gitlab gitlab support
 Plug "tpope/vim-rhubarb" -- GBrowse github support
 
--- Syntax, formatting and auto-completion
-Plug "sheerun/vim-polyglot"
+  -- Syntax, formatting and auto-completion, not needed when using treesitter
+-- Plug "sheerun/vim-polyglot"
 
 -- Managing and installing LSP servers
 Plug "williamboman/mason.nvim"
@@ -108,8 +108,7 @@ Plug "kristijanhusak/vim-dadbod-completion"
 Plug "kristijanhusak/vim-dadbod-ui"
 -- Plug '~/Workspace/vim-plugins/vim-dadbod-ui'
 
--- File navigator, uses LF file manager to navigate and change working
--- directory
+-- File navigator, uses LF file manager to navigate and change working directory
 Plug "ptzz/lf.vim"
 Plug "voldikss/vim-floaterm"
 
