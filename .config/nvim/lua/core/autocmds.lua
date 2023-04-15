@@ -153,8 +153,7 @@ autocmd("BufEnter", {
 autocmd({ "BufRead", "BufNewFile" }, {
   pattern = "/tmp/neomutt*",
   callback = function()
-    vim.g.goyo_width = 80
-    vim.cmd ":Goyo | set bg=light"
+    vim.cmd ":ZenMode | set bg=light"
   end,
   group = augroup("Neomutt settings", { clear = true }),
 })

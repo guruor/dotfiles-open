@@ -71,11 +71,6 @@ vim.g.tagbar_width = 30
 vim.g.tagbar_iconchars = {'↠', '↡'}
 
 -- ----------------
--- Goyo
--- ----------------
-vim.g.goyo_width = 125
-
--- ----------------
 -- TPipeLine
 -- ----------------
 -- Avoid duplicate statusline in case of config reload

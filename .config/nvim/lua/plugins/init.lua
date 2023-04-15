@@ -120,8 +120,20 @@ local default_plugins = {
   "dhruvasagar/vim-prosession",
 
   -- Better working environment
-  "junegunn/goyo.vim",
-  "junegunn/limelight.vim",
+  {
+    "folke/twilight.nvim",
+    cmd = "Twilight",
+    config = function()
+      require("twilight").setup()
+    end,
+  },
+  {
+    "folke/zen-mode.nvim",
+    cmd = "ZenMode",
+    config = function()
+      require("zen-mode").setup()
+    end,
+  },
 
   -- Rest client
   { "G0V1NDS/rest.nvim", branch = "response_body_stored_updated", ft = "http" },
