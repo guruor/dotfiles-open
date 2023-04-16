@@ -32,7 +32,7 @@ local default_plugins = {
       { "junegunn/fzf", build = "./install --bin" },
     },
   },
-  { "folke/which-key.nvim",    keys = { "<leader>", ",", '"', "'", "`" } },
+  { "folke/which-key.nvim", keys = { "<leader>", ",", '"', "'", "`" } },
   "majutsushi/tagbar",
   {
     "nvim-telescope/telescope.nvim",
@@ -42,7 +42,7 @@ local default_plugins = {
       "jvgrootveld/telescope-zoxide",
     },
   },
-  { "kevinhwang91/nvim-bqf",  ft = "qf" }, -- For better preview of quickfix buffers
+  { "kevinhwang91/nvim-bqf", ft = "qf" }, -- For better preview of quickfix buffers
   { "stevearc/dressing.nvim", event = "VeryLazy" }, -- For improved vim.ui interfaces
 
   -- Git stuff
@@ -65,9 +65,9 @@ local default_plugins = {
       "Gbrowse",
     },
     dependencies = {
-      "tommcdo/vim-fubitive",          -- GBrowse bitbucket support
+      "tommcdo/vim-fubitive", -- GBrowse bitbucket support
       "shumphrey/fugitive-gitlab.vim", -- Gitlab gitlab support
-      "tpope/vim-rhubarb",             -- GBrowse github support
+      "tpope/vim-rhubarb", -- GBrowse github support
     },
   },
   "lewis6991/gitsigns.nvim",
@@ -88,7 +88,7 @@ local default_plugins = {
       },
       "WhoIsSethDaniel/mason-tool-installer.nvim",
       "williamboman/mason-lspconfig.nvim",
-      { "glepnir/lspsaga.nvim",     event = "LspAttach" },
+      { "glepnir/lspsaga.nvim", event = "LspAttach" },
       "jose-elias-alvarez/null-ls.nvim",
     },
   },
@@ -134,7 +134,7 @@ local default_plugins = {
     },
   },
 
-  { "fatih/vim-go",    ft = "go",             build = ":GoUpdateBinaries" },
+  { "fatih/vim-go", ft = "go", build = ":GoUpdateBinaries" },
   "bufbuild/vim-buf",
 
   -- Debugging
@@ -207,7 +207,7 @@ local default_plugins = {
   },
 
   -- Rest client
-  { "G0V1NDS/rest.nvim",      branch = "response_body_stored_updated", ft = "http" },
+  { "G0V1NDS/rest.nvim", branch = "response_body_stored_updated", ft = "http" },
   -- { "rest-nvim/rest.nvim", ft = "http" },
 
   -- DB query executer
@@ -231,9 +231,9 @@ local default_plugins = {
 
   -- VimWiki for note management
   -- vim-polyglot is needed for `plantuml` syntax
-  { "vimwiki/vimwiki",        lazy = false,                            dependencies = "sheerun/vim-polyglot" },
+  { "vimwiki/vimwiki", lazy = false, dependencies = "sheerun/vim-polyglot" },
   { "AckslD/nvim-FeMaco.lua", cmd = "FeMaco" }, -- For inline code-block edit
-  { "mattn/calendar-vim",     cmd = { "CalendarH", "CalendarH" } },
+  { "mattn/calendar-vim", cmd = { "CalendarH", "CalendarH" } },
   {
     "iamcco/markdown-preview.nvim",
     ft = "markdown",
@@ -249,7 +249,16 @@ local default_plugins = {
   -- annotation generator/docstring
   { "danymat/neogen", config = true, event = "VeryLazy" },
   "rcarriga/nvim-notify",
-
+  {
+    "jackMort/ChatGPT.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("chatgpt").setup()
+    end,
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+    },
+  },
   -- Yet to explorer
   -- "metakirby5/codi.vim",
   -- { "junegunn/vim-easy-align", run = { "EasyAlign" } },
