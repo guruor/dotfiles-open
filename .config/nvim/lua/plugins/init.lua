@@ -43,7 +43,7 @@ local default_plugins = {
     },
   },
   { "kevinhwang91/nvim-bqf",  ft = "qf" }, -- For better preview of quickfix buffers
-  { "stevearc/dressing.nvim", lazy = false }, -- For improved vim.ui interfaces
+  { "stevearc/dressing.nvim", event = "VeryLazy" }, -- For improved vim.ui interfaces
 
   -- Git stuff
   {
@@ -223,7 +223,7 @@ local default_plugins = {
   -- File navigator, uses LF file manager to navigate and change working directory
   {
     "ptzz/lf.vim",
-    lazy = false,
+    event = "VeryLazy",
     dependencies = {
       "voldikss/vim-floaterm",
     },
@@ -247,7 +247,7 @@ local default_plugins = {
   { "NvChad/nvim-colorizer.lua", ft = { "css" } },
   "m4xshen/smartcolumn.nvim",
   -- annotation generator/docstring
-  { "danymat/neogen",            config = true, lazy = false },
+  { "danymat/neogen", config = true, event = "VeryLazy" },
   "rcarriga/nvim-notify",
 
   -- Yet to explorer
