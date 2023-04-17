@@ -246,5 +246,5 @@ _evalcache navi widget zsh
 # Trigger asl logs cleaning, since it slows down shell on macos
 # clean-asl-logs
 
-# export DOCKER_DEFAULT_PLATFORM=linux/arm64
-export DOCKER_DEFAULT_PLATFORM=linux/amd64
+# export DOCKER_DEFAULT_PLATFORM=linux/arm64 # Same as linux/aarch64
+# export DOCKER_DEFAULT_PLATFORM=linux/amd64 # Installing pandas with pip was taking forever with amd64
