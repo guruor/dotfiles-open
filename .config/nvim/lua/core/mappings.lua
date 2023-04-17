@@ -15,7 +15,6 @@ M.general = {
     ["<C-s>"] = { "<C-O><cmd> w <CR>", "save file" },
   },
   n = {
-    ["<Esc>"] = { ":noh <CR>", "clear highlights" },
     ["<C-c>"] = { "<Esc>", "Escape" },
     -- switch between windows
     ["<C-h>"] = { "<C-w>h", "window left" },
@@ -43,8 +42,8 @@ M.general = {
   v = {
     ["<Up>"] = { 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', "move up", opts = { expr = true } },
     ["<Down>"] = { 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', "move down", opts = { expr = true } },
-    ["<"] = { '<gv', "Indent left", opts = { expr = false } },
-    [">"] = { '>gv', "Indent right", opts = { expr = false } },
+    ["<"] = { "<gv", "Indent left", opts = { expr = false } },
+    [">"] = { ">gv", "Indent right", opts = { expr = false } },
   },
   x = {
     ["j"] = { 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', "move left", opts = { expr = true } },
@@ -56,5 +55,9 @@ M.general = {
     ["p"] = { 'p:let @+=@0<CR>:let @"=@0<CR>', "dont copy replaced text", opts = { silent = true } },
   },
 }
+
+-- Silent mappings
+local opts = { silent = true }
+vim.keymap.set("n", "<Esc>", ":noh <CR>", opts)
 
 return M
