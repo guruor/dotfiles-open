@@ -10,8 +10,18 @@ local default_plugins = {
   "nvim-tree/nvim-web-devicons",
   -- "npxbr/gruvbox.nvim",
   "rafamadriz/gruvbox",
-  "sainnhe/gruvbox-material",
-  "nvim-lualine/lualine.nvim",
+  {
+    "sainnhe/gruvbox-material",
+    init = function()
+      require "plugins.configs.colorscheme"
+    end,
+  },
+  {
+    "nvim-lualine/lualine.nvim",
+    init = function()
+      require "plugins.configs.statusline"
+    end,
+  },
   { "vimpostor/vim-tpipeline", lazy = false }, -- Merges vim statusline with tmux
   {
     "nvim-treesitter/nvim-treesitter",
@@ -20,19 +30,35 @@ local default_plugins = {
     dependencies = {
       "nvim-treesitter/nvim-treesitter-context",
     },
+    init = function()
+      require "plugins.configs.treesitter"
+    end,
   },
-  "romgrk/barbar.nvim",
+  {
+    "romgrk/barbar.nvim",
+    init = function()
+      require "plugins.configs.barbar"
+    end,
+  },
   "j-hui/fidget.nvim",
 
   -- Easy search, navigation
   {
     "ibhagwan/fzf-lua",
     dependencies = {
-
       { "junegunn/fzf", build = "./install --bin" },
     },
+    init = function()
+      require "plugins.configs.fzf"
+    end,
   },
-  { "folke/which-key.nvim", keys = { "<leader>", ",", '"', "'", "`" } },
+  {
+    "folke/which-key.nvim",
+    keys = { "<leader>", ",", '"', "'", "`" },
+    init = function()
+      require "plugins.configs.whichkey"
+    end,
+  },
   "majutsushi/tagbar",
   {
     "nvim-telescope/telescope.nvim",
@@ -41,6 +67,9 @@ local default_plugins = {
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
       "jvgrootveld/telescope-zoxide",
     },
+    init = function()
+      require "plugins.configs.telescope"
+    end,
   },
   { "kevinhwang91/nvim-bqf", ft = "qf" }, -- For better preview of quickfix buffers
   { "stevearc/dressing.nvim", event = "VeryLazy" }, -- For improved vim.ui interfaces
@@ -70,7 +99,12 @@ local default_plugins = {
       "tpope/vim-rhubarb", -- GBrowse github support
     },
   },
-  "lewis6991/gitsigns.nvim",
+  {
+    "lewis6991/gitsigns.nvim",
+    init = function()
+      require "plugins.configs.gitsigns"
+    end,
+  },
 
   -- Syntax, formatting and auto-completion, not needed when using treesitter
   -- "sheerun/vim-polyglot",
@@ -96,12 +130,17 @@ local default_plugins = {
   {
     "hrsh7th/nvim-cmp",
     event = { "InsertEnter", "CmdlineEnter" },
+    init = function()
+      require "plugins.configs.cmp"
+    end,
     dependencies = {
-
       {
         -- snippet plugin
         "L3MON4D3/LuaSnip",
         dependencies = "rafamadriz/friendly-snippets",
+        init = function()
+          require "plugins.configs.snippets"
+        end,
       },
 
       -- autopairing of (){}[] etc
@@ -151,7 +190,12 @@ local default_plugins = {
   },
 
   -- Task runner
-  "stevearc/overseer.nvim",
+  {
+    "stevearc/overseer.nvim",
+    init = function()
+      require "plugins.configs.overseer"
+    end,
+  },
 
   {
     "lukas-reineke/indent-blankline.nvim",
@@ -164,21 +208,10 @@ local default_plugins = {
   "editorconfig/editorconfig-vim",
   { "mbbill/undotree", cmd = "UndotreeToggle" },
   "tpope/vim-repeat",
-  {
-    "kylechui/nvim-surround",
-    event = "VeryLazy",
-    config = function()
-      require("nvim-surround").setup()
-    end,
-  },
-  "numToStr/Comment.nvim",
+  { "kylechui/nvim-surround", event = "VeryLazy", config = 'require("nvim-surround").setup()' },
+  { "numToStr/Comment.nvim", event = "VeryLazy", config = 'require("Comment").setup()' },
   -- easily search for, substitute, and abbreviate multiple variants of a word, replaces vim-abolish
-  {
-    "johmsalas/text-case.nvim",
-    config = function()
-      require("textcase").setup {}
-    end,
-  },
+  { "johmsalas/text-case.nvim", config = 'require("textcase").setup()' },
   "ntpeters/vim-better-whitespace",
 
   -- Session management plugins
@@ -191,33 +224,34 @@ local default_plugins = {
   },
 
   -- Better working environment
-  {
-    "folke/twilight.nvim",
-    cmd = "Twilight",
-    config = function()
-      require("twilight").setup()
-    end,
-  },
-  {
-    "folke/zen-mode.nvim",
-    cmd = "ZenMode",
-    config = function()
-      require("zen-mode").setup()
-    end,
-  },
+  { "folke/twilight.nvim", cmd = "Twilight", config = 'require("twilight").setup()' },
+  { "folke/zen-mode.nvim", cmd = "ZenMode", config = 'require("zen-mode").setup()' },
 
   -- Rest client
-  { "G0V1NDS/rest.nvim", branch = "response_body_stored_updated", ft = "http" },
-  -- { "rest-nvim/rest.nvim", ft = "http" },
+  {
+    "G0V1NDS/rest.nvim",
+    -- "rest-nvim/rest.nvim",
+    branch = "response_body_stored_updated",
+    ft = "http",
+    init = function()
+      require "plugins.configs.rest"
+    end,
+  },
 
   -- DB query executer
   {
     "kristijanhusak/vim-dadbod-ui",
     ft = "sql",
+    lazy = false, -- Need to load it early, since some autocmds depends on it
     dependencies = {
       "tpope/vim-dadbod",
       "kristijanhusak/vim-dadbod-completion",
     },
+    init = function()
+      if vim.fn.filereadable(vim.fn.expand "$HOME" .. "/.config/nvim/lua/Private/plugins/configs/dadbod.lua") then
+        require("Private/plugins/configs/dadbod").setup()
+      end
+    end,
   },
 
   -- File navigator, uses LF file manager to navigate and change working directory
@@ -231,8 +265,16 @@ local default_plugins = {
 
   -- VimWiki for note management
   -- vim-polyglot is needed for `plantuml` syntax
-  { "vimwiki/vimwiki", lazy = false, dependencies = "sheerun/vim-polyglot" },
-  { "AckslD/nvim-FeMaco.lua", cmd = "FeMaco" }, -- For inline code-block edit
+  {
+    "vimwiki/vimwiki",
+    -- event = "VeryLazy",
+    lazy = false,
+    dependencies = "sheerun/vim-polyglot",
+    init = function()
+      require "plugins.configs.vimwiki"
+    end,
+  },
+  { "AckslD/nvim-FeMaco.lua", cmd = "FeMaco", config = 'require("femaco").setup()' }, -- For inline code-block edit
   { "mattn/calendar-vim", cmd = { "CalendarH", "CalendarH" } },
   {
     "iamcco/markdown-preview.nvim",
@@ -241,10 +283,15 @@ local default_plugins = {
   },
 
   -- Good to have
-  "beauwilliams/focus.nvim",
-  "ron89/thesaurus_query.vim",
+  { "beauwilliams/focus.nvim", config = 'require("focus").setup()' },
+  {
+    "ron89/thesaurus_query.vim",
+    init = function()
+      require "plugins.configs.thesaurus"
+    end,
+  },
   "christoomey/vim-tmux-navigator", -- Switch windows with C-[h,j,k,l,\], same for tmux panes
-  { "NvChad/nvim-colorizer.lua", ft = { "css" } },
+  { "NvChad/nvim-colorizer.lua", cmd = { "ColorizerToggle" }, config = 'require("colorizer").setup()' },
   "m4xshen/smartcolumn.nvim",
   -- annotation generator/docstring
   { "danymat/neogen", config = true, event = "VeryLazy" },
@@ -252,9 +299,7 @@ local default_plugins = {
   {
     "jackMort/ChatGPT.nvim",
     event = "VeryLazy",
-    config = function()
-      require("chatgpt").setup()
-    end,
+    config = 'require("chatgpt").setup()',
     dependencies = {
       "MunifTanjim/nui.nvim",
     },
@@ -271,3 +316,6 @@ if #config.plugins > 0 then
 end
 
 require("lazy").setup(default_plugins, config.lazy_nvim)
+
+-- Loads misc config for other plugins
+require "plugins.configs.misc"
