@@ -1,16 +1,6 @@
 local home_dir=os.getenv("HOME")
 
 -- ----------------
--- Comment settings
--- ----------------
-require('Comment').setup()
-
--- ----------------
--- Colorizer settings
--- ----------------
-require 'colorizer'.setup()
-
--- ----------------
 -- smartcolumn settings
 -- ----------------
 
@@ -125,13 +115,3 @@ require("indent_blankline").setup {
     show_end_of_line = true,
     space_char_blankline = " ",
 }
-
--- ----------------
--- nvim-FeMaco.lua
--- -- ----------------
-require("femaco").setup()
-
--- ----------------
--- focus.nvim
--- -- ----------------
-require("focus").setup()
