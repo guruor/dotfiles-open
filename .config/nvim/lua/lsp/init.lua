@@ -106,7 +106,7 @@ local on_attach = function(client)
     utils.map('n', 'gr', '<Cmd>Lspsaga lsp_finder<CR>', {buffer = true})
 
     if not vim.g.should_enable_efm then
-        print("Enabling null-ls")
+        -- print("Enabling null-ls")
         require("lsp.null-ls")
     end
     -- null-ls provides support for formatting, but still keeping formatter.nvim as backup
@@ -169,7 +169,7 @@ mason_lspconfig.setup_handlers {
 }
 
 if vim.g.should_enable_efm then
-    print("Enabling efm-langserver")
+    -- print("Enabling efm-langserver")
     local efm_lsp = require("lsp.efm")
     lspconfig.efm.setup({
         capabilities = capabilities,
