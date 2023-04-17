@@ -49,7 +49,6 @@ keys = {
     ["."] = {":tabnew $MYVIMRC<CR>", "Open Init"},
     ["R"] = {":source $MYVIMRC<CR>", "Reload Init"},
     ["U"] = {":UndotreeToggle<CR>", "Undo Tree"},
-    [" "] = {":noh<CR>", "No Highlight"},
     ["o"] = {":LfCurrentFileExistingOrNewTab<CR>", "Open LF file explorer"},
     ["O"] = {":LfWorkingDirectoryExistingOrNewTab<CR>", "Open LF file explorer"},
     ["S"] = {":%s//gc<Left><Left><Left>", "Find and replace/substitute"}
