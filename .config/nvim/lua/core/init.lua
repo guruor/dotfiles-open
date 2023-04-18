@@ -21,6 +21,13 @@ for _, provider in ipairs { "node", "perl", "python3", "ruby" } do
   g["loaded_" .. provider .. "_provider"] = 0
 end
 
+g.python3_host_prog = home_dir .. "/.pyenv/versions/nvim/bin/python"
+
+-- netrw
+g.netrw_banner = 0
+g.netrw_browse_split = 2
+g.netrw_winsize = 25
+
 -------------------------------------- options ------------------------------------------
 -- opt.iskeyword:remove "-" -- treat dash separated words as a word text object"
 opt.formatoptions:remove "cro" -- Stop newline continution of comments
@@ -84,10 +91,17 @@ opt.spelllang = "en_us"
 opt.whichwrap:append "<>[]hl"
 
 -- Directory setup
-opt.undodir =  home_dir .. "/.cache/nvim/undo"
-opt.directory = home_dir .."/.cache/nvim/swap"
+opt.undodir = home_dir .. "/.cache/nvim/undo"
+opt.directory = home_dir .. "/.cache/nvim/swap"
 opt.backupdir = home_dir .. "/.cache/nvim/backup"
-opt.viewdir = home_dir .."/.cache/nvim/view"
+opt.viewdir = home_dir .. "/.cache/nvim/view"
+
+-- listchars setup
+opt.list = true
+opt.listchars:append "tab:»-"
+opt.listchars:append "trail:⋅"
+opt.listchars:append "space:⋅"
+opt.listchars:append "eol:↴"
 
 -------------------------------------- autocmds ------------------------------------------
 local autocmd = vim.api.nvim_create_autocmd
