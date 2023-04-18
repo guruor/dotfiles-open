@@ -168,8 +168,8 @@ autocmd({ "BufRead", "BufNewFile" }, {
   group = augroup("Dadbod sql", { clear = true }),
 })
 
---------------- Rest nvim -----------------
--- Detect file type for env files for rest-nvim
+--------------- SSH tunnel config -----------------
+-- Detect file type for tunnel-config file
 autocmd({ "BufRead", "BufNewFile" }, {
   pattern = vim.fn.expand "$HOME" .. "/voidrice/Private/.config/.ssh/tunnel-config",
   callback = function()
@@ -178,8 +178,17 @@ autocmd({ "BufRead", "BufNewFile" }, {
   group = generalSettingsGroup,
 })
 
---------------- SSH tunnel config -----------------
--- Detect file type for tunnel-config file
+--------------- Rest nvim -----------------
+-- Detect http filetype
+autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = "*.http",
+  callback = function()
+    vim.bo.filetype = "http"
+  end,
+  group = generalSettingsGroup,
+})
+
+-- Detect file type for env files for rest-nvim
 autocmd({ "BufRead", "BufNewFile" }, {
   pattern = vim.fn.expand "$REST_NVIM_COLLECTION_PATH" .. "/envs/*",
   callback = function()
