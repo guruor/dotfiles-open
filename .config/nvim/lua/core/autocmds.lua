@@ -322,7 +322,7 @@ autocmd("VimLeave", {
 autocmd("BufNewFile", {
   pattern = vim.fn.expand "$VIMWIKI_DIR" .. "/**/diary/*.md",
   callback = function()
-      vim.cmd 'call append(0,["# Notes for " . split(expand("%:r"),"/")[-1], "", "## TODOs", "", "- [✗] ", "", "## Callouts", "", "- "])'
+    vim.cmd 'call append(0,["# Notes for " . split(expand("%:r"),"/")[-1], "", "## TODOs", "", "- [✗] ", "", "## Callouts", "", "- "])'
   end,
   group = generalSettingsGroup,
 })
