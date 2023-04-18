@@ -29,7 +29,7 @@ require'nvim-treesitter.configs'.setup {
       "dockerfile",
       "make",
       "rust",
-      -- "sql"
+      "sql"
       },
 }
 local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
@@ -40,13 +40,14 @@ local ft_to_parser = require"nvim-treesitter.parsers".filetype_to_parsername
 ft_to_parser.vimwiki = "markdown"
 
 -- Custom tree-sitter parser for http files, grammar includes rest-nvim format
+-- Tree sitter by default installs this syntax only for http filetype
 -- https://github.com/rest-nvim/rest.nvim/issues/30
-parser_config.http = {
-  install_info = {
-    url = 'https://github.com/rest-nvim/tree-sitter-http',
-    revision = 'main',
-    files = { 'src/parser.c'},
-  },
-  filetype = 'http',
-}
+-- parser_config.http = {
+--   install_info = {
+--     url = 'https://github.com/rest-nvim/tree-sitter-http',
+--     revision = 'main',
+--     files = { 'src/parser.c'},
+--   },
+--   filetype = 'http',
+-- }
 
