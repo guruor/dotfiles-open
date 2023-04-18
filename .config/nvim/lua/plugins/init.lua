@@ -9,11 +9,12 @@ local default_plugins = {
   "rktjmp/lush.nvim",
   "nvim-tree/nvim-web-devicons",
   -- "npxbr/gruvbox.nvim",
-  "rafamadriz/gruvbox",
+  -- "rafamadriz/gruvbox",
   {
     "sainnhe/gruvbox-material",
     init = function()
-      require "plugins.configs.colorscheme"
+      require("plugins.configs.misc").gruvbox_material()
+      return require "plugins.configs.colorscheme"
     end,
   },
   {
@@ -59,7 +60,12 @@ local default_plugins = {
       require "plugins.configs.whichkey"
     end,
   },
-  "majutsushi/tagbar",
+  {
+    "majutsushi/tagbar",
+    init = function()
+      require("plugins.configs.misc").tagbar()
+    end,
+  },
   {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
@@ -107,7 +113,7 @@ local default_plugins = {
   },
 
   -- Syntax, formatting and auto-completion, not needed when using treesitter
-  -- "sheerun/vim-polyglot",
+  -- {"sheerun/vim-polyglot", lazy=false},
 
   -- Managing and installing LSP servers
   "folke/neodev.nvim",
@@ -146,10 +152,7 @@ local default_plugins = {
       -- autopairing of (){}[] etc
       {
         "windwp/nvim-autopairs",
-        opts = {
-          fast_wrap = {},
-          disable_filetype = { "TelescopePrompt", "vim" },
-        },
+        opts = { fast_wrap = {}, disable_filetype = { "TelescopePrompt", "vim" } },
         config = function(_, opts)
           require("nvim-autopairs").setup(opts)
 
@@ -199,28 +202,40 @@ local default_plugins = {
 
   {
     "lukas-reineke/indent-blankline.nvim",
+    lazy = false,
     init = function()
       require("core.utils").lazy_load "indent-blankline.nvim"
     end,
+    opts = require("plugins.configs.misc").blankline,
+    config = function(_, opts)
+      require("indent_blankline").setup(opts)
+    end,
   },
 
-  -- Additional Functionalities
-  "editorconfig/editorconfig-vim",
+  "editorconfig/editorconfig-vim", -- Additional Functionalities
   { "mbbill/undotree", cmd = "UndotreeToggle" },
   "tpope/vim-repeat",
   { "kylechui/nvim-surround", event = "VeryLazy", config = 'require("nvim-surround").setup()' },
   { "numToStr/Comment.nvim", event = "VeryLazy", config = 'require("Comment").setup()' },
   -- easily search for, substitute, and abbreviate multiple variants of a word, replaces vim-abolish
   { "johmsalas/text-case.nvim", config = 'require("textcase").setup()' },
-  "ntpeters/vim-better-whitespace",
-
-  -- Session management plugins
   {
+    "ntpeters/vim-better-whitespace",
+    init = function()
+      require("plugins.configs.misc").whitespace()
+    end,
+  },
+
+  {
+    -- Session management plugins
     "dhruvasagar/vim-prosession",
     lazy = false,
     dependencies = {
       "tpope/vim-obsession",
     },
+    init = function()
+      require("plugins.configs.misc").session()
+    end,
   },
 
   -- Better working environment
@@ -259,8 +274,16 @@ local default_plugins = {
     "ptzz/lf.vim",
     event = "VeryLazy",
     dependencies = {
-      "voldikss/vim-floaterm",
+      {
+        "voldikss/vim-floaterm",
+        init = function()
+          require("plugins.configs.misc").floaterm()
+        end,
+      },
     },
+    init = function()
+      require("plugins.configs.misc").lf()
+    end,
   },
 
   -- VimWiki for note management
@@ -292,7 +315,14 @@ local default_plugins = {
   },
   "christoomey/vim-tmux-navigator", -- Switch windows with C-[h,j,k,l,\], same for tmux panes
   { "NvChad/nvim-colorizer.lua", cmd = { "ColorizerToggle" }, config = 'require("colorizer").setup()' },
-  "m4xshen/smartcolumn.nvim",
+  {
+    "m4xshen/smartcolumn.nvim",
+    event = "VeryLazy",
+    opts = require("plugins.configs.misc").smartcolumn,
+    config = function(_, opts)
+      require("smartcolumn").setup(opts)
+    end,
+  },
   -- annotation generator/docstring
   { "danymat/neogen", config = true, event = "VeryLazy" },
   "rcarriga/nvim-notify",
@@ -316,6 +346,3 @@ if #config.plugins > 0 then
 end
 
 require("lazy").setup(default_plugins, config.lazy_nvim)
-
--- Loads misc config for other plugins
-require "plugins.configs.misc"
