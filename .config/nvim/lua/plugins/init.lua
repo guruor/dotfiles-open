@@ -329,10 +329,13 @@ local default_plugins = {
   {
     "jackMort/ChatGPT.nvim",
     event = "VeryLazy",
-    config = 'require("chatgpt").setup()',
     dependencies = {
       "MunifTanjim/nui.nvim",
     },
+    opts = require("plugins.configs.misc").chatgpt,
+    config = function(_, opts)
+      require("chatgpt").setup(opts)
+    end,
   },
   -- Yet to explorer
   -- "metakirby5/codi.vim",
