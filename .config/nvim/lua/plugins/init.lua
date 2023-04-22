@@ -167,6 +167,13 @@ local default_plugins = {
         end,
       },
       { "windwp/nvim-ts-autotag" },
+      {
+        "andymass/vim-matchup",
+        event = "VeryLazy",
+        config = function()
+          vim.g.matchup_matchparen_offscreen = {}
+        end,
+      },
       -- cmp sources plugins
       {
         "saadparwaiz1/cmp_luasnip",
