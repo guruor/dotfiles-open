@@ -96,8 +96,30 @@ M.blankline = {
 
 M.chatgpt = {
   chat = {
+    welcome_message = "",
+    question_sign = "", -- 🙂
+    answer_sign = "ﮧ", -- 🤖
+    chat_layout = {
+      size = {
+        height = "85%",
+        width = "85%",
+      },
+    },
+    chat_window = {
+      win_options = {
+        winblend = 0,
+        winhighlight = "Normal:ChatGPTWindow,FloatBorder:FloatBorder",
+      },
+    },
+    chat_input = {
+      prompt = "   ",
+      win_options = {
+        winblend = 0,
+        winhighlight = "Normal:ChatGPTPrompt,ChatGPTPrompt:FloatBorder",
+      },
+    },
     keymaps = {
-      close = { "jk", "kj", "<Esc>" },
+      close = { "<Esc>", "<C-c>" },
       yank_last = "<C-y>",
       scroll_up = "<C-u>",
       scroll_down = "<C-d>",
@@ -110,4 +132,5 @@ M.chatgpt = {
     submit = "<C-s>",
   },
 }
+
 return M
