@@ -30,9 +30,13 @@ local default_plugins = {
     build = ":TSUpdate",
     dependencies = {
       "nvim-treesitter/nvim-treesitter-context",
+      "JoosepAlviste/nvim-ts-context-commentstring",
+      { "nvim-treesitter/playground", cmd = "TSPlaygroundToggle" },
     },
-    init = function()
-      require "plugins.configs.treesitter"
+    opts = require("plugins.configs.treesitter").options,
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+      require("plugins.configs.treesitter").additional_setup()
     end,
   },
   {
@@ -217,6 +221,14 @@ local default_plugins = {
   "tpope/vim-repeat",
   { "kylechui/nvim-surround", event = "VeryLazy", config = 'require("nvim-surround").setup()' },
   { "numToStr/Comment.nvim", event = "VeryLazy", config = 'require("Comment").setup()' },
+  {
+    "numToStr/Comment.nvim",
+    keys = { { "gc", mode = { "n", "v" }, "gcc" } },
+    dependencies = { "JoosepAlviste/nvim-ts-context-commentstring", event = "BufRead" },
+    init = function()
+      require("plugins.configs.misc").comment()
+    end,
+  },
   -- easily search for, substitute, and abbreviate multiple variants of a word, replaces vim-abolish
   { "johmsalas/text-case.nvim", config = 'require("textcase").setup()' },
   {

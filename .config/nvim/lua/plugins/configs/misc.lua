@@ -53,6 +53,11 @@ M.whitespace = function()
   vim.g.better_whitespace_guicolor = "#3c3836"
 end
 
+M.comment = function()
+  require("Comment").setup {
+    pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
+  }
+end
 
 M.neoterm = function()
   vim.g.neoterm_default_mod = "botright"
