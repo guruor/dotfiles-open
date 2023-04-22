@@ -248,6 +248,7 @@ keys = {
         ["gb"] = {":Gitsigns toggle_current_line_blame<CR>", "Toggle line git blame"},
         ["ff"] = { ":FocusToggle<CR>", "Focus nvim" },
         ["fc"] = { ":lua ToggleFoldcolumn()<CR>", "Spell" },
+        ["tsp"] = { ":TSPlaygroundToggle<CR>", "TSPlaygroundToggle" },
     }
 }
 wk.register(keys, {prefix = leader})
