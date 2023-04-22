@@ -1,5 +1,5 @@
 git:
   paging:
     colorArg: always
-    pager: delta
-    useConfig: true
+    pager: delta --paging=never
+    # useConfig: true
