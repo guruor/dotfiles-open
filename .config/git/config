@@ -83,6 +83,27 @@
     editor = vim
     autocrlf = false
     excludesfile = ~/.config/git/ignore
+    pager = delta
+
+[include]
+     path = ~/.config/delta/themes.gitconfig
+
+[delta]
+    features = gruvmax-fang
+    paging = always
+    tabs = 4
+    navigate = true    # use n and N to move between diff sections
+    # side-by-side = true # Keep commented so the gdd and gdds aliases work
+
+[interactive]
+    diffFilter = delta --color-only
+
+[diff]
+    colorMoved = default
+
+[pager]
+    diff = delta
+    show = delta
 
 [push]
     default = simple
@@ -90,6 +111,7 @@
 
 [merge]
     tool = vimdiff
+    conflictstyle = diff3
 
 [commit]
     gpgSign = false
@@ -124,10 +146,6 @@
 
 [credential]
     helper = store
-
-[pager]
-    diff = diff-so-fancy | less --tabs=4 -RFX
-    show = diff-so-fancy | less --tabs=4 -RFX
 
 [gpg]
     program = gpg
