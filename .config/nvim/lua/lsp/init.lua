@@ -94,6 +94,11 @@ end
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
+capabilities.textDocument.foldingRange = {
+    dynamicRegistration = false,
+    lineFoldingOnly = true
+}
+
 -- Single flag to toggle efm-langserver and null-ls
 -- Both serves the same purpose of providing support for external linters and formatters
 -- As of now using null-ls as first priority because it provides support for range-formatting as well
