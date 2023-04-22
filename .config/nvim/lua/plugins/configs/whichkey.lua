@@ -234,7 +234,6 @@ keys = {
         ["b"] = {":lua ToggleBackground()<CR>", "Toggle vim background"},
         ["B"] = {":!toggle-dark-mode<CR>", "Toggle background of all apps"},
         ["n"] = {":set nonumber!<CR>", "Line numbers"},
-        ["f"] = {":FocusToggle<CR>", "Focus nvim"},
         ["r"] = {":set norelativenumber!<CR>", "Relative line numbers"},
         ["w"] = {":set wrap!<CR>", "Word wrap"},
         ["c"] = {":ColorizerToggle<CR>", "Colorizer"},
@@ -247,6 +246,8 @@ keys = {
         ["S"] = {":set spell!<CR>", "Spell"},
         ["gh"] = {":Gitsigns toggle_signs<CR>", "Toggle git hunks"},
         ["gb"] = {":Gitsigns toggle_current_line_blame<CR>", "Toggle line git blame"},
+        ["ff"] = { ":FocusToggle<CR>", "Focus nvim" },
+        ["fc"] = { ":lua ToggleFoldcolumn()<CR>", "Spell" },
     }
 }
 wk.register(keys, {prefix = leader})

@@ -327,6 +327,14 @@ local default_plugins = {
   { "danymat/neogen", config = true, event = "VeryLazy" },
   "rcarriga/nvim-notify",
   {
+    -- Improve folding
+    "kevinhwang91/nvim-ufo",
+    dependencies = { "kevinhwang91/promise-async" },
+    init = function()
+      require "plugins.configs.ufo"
+    end,
+  },
+  {
     "jackMort/ChatGPT.nvim",
     event = "VeryLazy",
     dependencies = {

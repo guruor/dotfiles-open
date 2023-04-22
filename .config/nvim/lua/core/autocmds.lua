@@ -126,8 +126,12 @@ local foldSettingsGroup = augroup("Fold settings", { clear = true })
 autocmd("BufReadPre", {
   pattern = "*",
   callback = function()
+    vim.opt.foldenable = true
+    vim.opt.foldcolumn = "1"
+    vim.opt.foldlevel = 99
+    vim.opt.foldlevelstart = 99
+    vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
     vim.opt.foldmethod = "indent"
-    vim.opt.foldlevel = 1
   end,
   group = foldSettingsGroup,
 })
