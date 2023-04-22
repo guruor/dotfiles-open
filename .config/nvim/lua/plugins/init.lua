@@ -154,9 +154,8 @@ local default_plugins = {
           require "plugins.configs.snippets"
         end,
       },
-
-      -- autopairing of (){}[] etc
       {
+        -- autopairing of (){}[] etc
         "windwp/nvim-autopairs",
         opts = { fast_wrap = {}, disable_filetype = { "TelescopePrompt", "vim" } },
         config = function(_, opts)
@@ -187,8 +186,8 @@ local default_plugins = {
   -- Debugging
   {
     "mfussenegger/nvim-dap",
+    keys = { "<leader>d" },
     dependencies = {
-
       "jay-babu/mason-nvim-dap.nvim",
       "theHamsta/nvim-dap-virtual-text",
       "rcarriga/nvim-dap-ui",
@@ -200,6 +199,7 @@ local default_plugins = {
   -- Task runner
   {
     "stevearc/overseer.nvim",
+    keys = { "<leader>t" },
     init = function()
       require "plugins.configs.overseer"
     end,
@@ -220,8 +220,7 @@ local default_plugins = {
   "editorconfig/editorconfig-vim", -- Additional Functionalities
   { "mbbill/undotree", cmd = "UndotreeToggle" },
   "tpope/vim-repeat",
-  { "kylechui/nvim-surround", event = "VeryLazy", config = 'require("nvim-surround").setup()' },
-  { "numToStr/Comment.nvim", event = "VeryLazy", config = 'require("Comment").setup()' },
+  { "kylechui/nvim-surround", keys = { "ys", "cs", "ds" }, config = 'require("nvim-surround").setup()' },
   {
     "numToStr/Comment.nvim",
     keys = { { "gc", mode = { "n", "v" }, "gcc" } },
@@ -315,7 +314,7 @@ local default_plugins = {
   {
     "iamcco/markdown-preview.nvim",
     ft = "markdown",
-    run = "cd app && yarn install",
+    build = "cd app && yarn install",
   },
 
   -- Good to have
@@ -338,7 +337,7 @@ local default_plugins = {
   },
   -- annotation generator/docstring
   { "danymat/neogen", config = true, event = "VeryLazy" },
-  "rcarriga/nvim-notify",
+  { "rcarriga/nvim-notify", event = "VeryLazy" },
   {
     -- Improve folding
     "kevinhwang91/nvim-ufo",
@@ -349,7 +348,7 @@ local default_plugins = {
   },
   {
     "jackMort/ChatGPT.nvim",
-    event = "VeryLazy",
+    cmd = { "ChatGPT", "ChatGPTActAs", "ChatGPTEditWithInstructions" },
     dependencies = {
       "MunifTanjim/nui.nvim",
     },
