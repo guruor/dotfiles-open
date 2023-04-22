@@ -53,6 +53,14 @@ M.whitespace = function()
   vim.g.better_whitespace_guicolor = "#3c3836"
 end
 
+
+M.neoterm = function()
+  vim.g.neoterm_default_mod = "botright"
+  vim.g.neoterm_size = 12
+  vim.g.neoterm_autoinsert = 1
+  vim.g.neoterm_shell = "/bin/zsh"
+end
+
 M.smartcolumn = {
   colorcolumn = "120",
   disabled_filetypes = { "help", "text", "markdown" },

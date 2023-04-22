@@ -345,6 +345,32 @@ local default_plugins = {
       require("chatgpt").setup(opts)
     end,
   },
+  -- Testing
+  {
+    -- Use Ctrl+Q to toggle a terminal
+    "kassio/neoterm",
+    init = function()
+      require("plugins.configs.misc").neoterm()
+    end,
+    keys = {
+      { "<c-q>", [[:Ttoggle<cr>]], silent = true },
+      { "<c-q>", [[<c-\><c-n>:Ttoggle<cr>]], mode = "t", silent = true },
+    },
+  },
+  {
+    "nvim-neotest/neotest",
+    keys = { "<leader>rt" },
+    dependencies = {
+      "nvim-neotest/neotest-go",
+      "nvim-neotest/neotest-python",
+      "KaiSpencer/neotest-vitest",
+      "haydenmeade/neotest-jest",
+      "nvim-neotest/neotest-plenary",
+    },
+    init = function()
+      require "plugins.configs.neotest"
+    end,
+  },
   -- Yet to explorer
   -- "metakirby5/codi.vim",
   -- { "junegunn/vim-easy-align", run = { "EasyAlign" } },
