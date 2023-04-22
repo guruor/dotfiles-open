@@ -125,6 +125,8 @@ local default_plugins = {
     "neovim/nvim-lspconfig",
     dependencies = {
       { "simrat39/rust-tools.nvim", ft = "rs" },
+      "jose-elias-alvarez/typescript.nvim",
+      { "fatih/vim-go", ft = "go", build = ":GoUpdateBinaries" },
       {
         "williamboman/mason.nvim",
         cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
@@ -180,7 +182,6 @@ local default_plugins = {
     },
   },
 
-  { "fatih/vim-go", ft = "go", build = ":GoUpdateBinaries" },
   "bufbuild/vim-buf",
 
   -- Debugging
