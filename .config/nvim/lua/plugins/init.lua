@@ -224,7 +224,6 @@ local default_plugins = {
     end,
   },
 
-  "editorconfig/editorconfig-vim", -- Additional Functionalities
   { "mbbill/undotree", cmd = "UndotreeToggle" },
   "tpope/vim-repeat",
   {
