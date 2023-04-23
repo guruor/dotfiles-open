@@ -227,7 +227,14 @@ local default_plugins = {
   "editorconfig/editorconfig-vim", -- Additional Functionalities
   { "mbbill/undotree", cmd = "UndotreeToggle" },
   "tpope/vim-repeat",
-  { "kylechui/nvim-surround", keys = { "ys", "cs", "ds" }, config = 'require("nvim-surround").setup()' },
+  {
+    "kylechui/nvim-surround",
+    keys = { { "gys" }, { "gcs" }, { "gds" } },
+    opts = require("plugins.configs.misc").surround,
+    config = function(_, opts)
+      require("nvim-surround").setup(opts)
+    end,
+  },
   {
     "numToStr/Comment.nvim",
     keys = { { "gc", mode = { "n", "v" }, "gcc" } },

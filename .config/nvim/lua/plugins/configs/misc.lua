@@ -138,4 +138,19 @@ M.chatgpt = {
   },
 }
 
+M.surround = {
+  keymaps = {
+    insert = "g<C-g>s",
+    insert_line = "g<C-g>S",
+    normal = "gys",
+    normal_cur = "gyss",
+    normal_line = "gyS",
+    normal_cur_line = "gySS",
+    visual = "gS",
+    visual_line = "ggS",
+    delete = "gds",
+    change = "gcs",
+  },
+}
+
 return M
