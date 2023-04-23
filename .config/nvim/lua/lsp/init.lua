@@ -156,6 +156,7 @@ local servers = {
     tsserver = {},
     lua_ls = {},
     sqlls = {},
+    marksman = {},
     -- bufls = {},
 }
 
