@@ -371,6 +371,14 @@ local default_plugins = {
       require("chatgpt").setup(opts)
     end,
   },
+  {
+    "ggandor/leap.nvim",
+    event = "VeryLazy",
+    dependencies = {},
+    config = function()
+      require("leap").set_default_keymaps()
+    end,
+  },
   -- Testing
   {
     -- Use Ctrl+Q to toggle a terminal
