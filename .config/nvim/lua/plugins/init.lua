@@ -394,8 +394,11 @@ local default_plugins = {
     "nvim-neotest/neotest",
     keys = { "<leader>rt" },
     dependencies = {
+      "vim-test/vim-test",
+      "nvim-neotest/neotest-vim-test",
       "nvim-neotest/neotest-go",
       "nvim-neotest/neotest-python",
+      "rouge8/neotest-rust",
       "KaiSpencer/neotest-vitest",
       "haydenmeade/neotest-jest",
       "nvim-neotest/neotest-plenary",
