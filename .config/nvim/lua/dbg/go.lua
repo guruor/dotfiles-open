@@ -1,17 +1,11 @@
 -- DAP setup for rust, c, cpp
 local M = {}
 
+-- You might face issue where you are not able to set breakpoint once debugger is attached, check DapShowLog
+-- If the issue is related to path saying `could not find file xyz.go`, use below in your launch.json or below configs
+-- "substitutePath": [{ "from": "${workspaceFolder}", "to": "/app" }]
 function M.setup(dap)
   dap.configurations.go = {
-    -- {
-    -- type = "go",
-    -- name = "gin_server",
-    -- request = "launch",
-    -- program = "${workspaceFolder}/cmd/gin_server",
-    -- env = {
-    -- ENV = "local"
-    -- }
-    -- },
     {
       type = "go",
       name = "Debug",
@@ -34,31 +28,26 @@ function M.setup(dap)
       program = "./${relativeFileDirname}",
     },
     {
-      type = "remote_golang",
+      type = "go",
+      debugAdapter = "dlv-dap",
       request = "attach",
-      name = "Golang: Remote Attach remote_golang",
+      mode = "remote",
+      name = "Golang: Remote Attach",
       connect = {
         host = "0.0.0.0",
-        port = 2345,
+        port = 38697,
       },
       logToFile = true,
-      cwd = vim.fn.getcwd(),
+      cwd = "${workspaceFolder}",
       pathMappings = {
         {
           localRoot = "${workspaceFolder}",
           remoteRoot = "/app",
         },
       },
+      substitutePath = { { from = "${workspaceFolder}", to = "/app" } },
     },
   }
-
-  dap.adapters.remote_golang = function(callback)
-    callback {
-      type = "server",
-      host = "0.0.0.0",
-      port = 2345,
-    }
-  end
 
   -- https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
   dap.adapters.go = function(callback, config)
@@ -68,7 +57,7 @@ function M.setup(dap)
     local port = 38697
     local opts = {
       stdio = { nil, stdout },
-      args = { "dap", "-l", "127.0.0.1:" .. port },
+      args = { "dap", "-l", "0.0.0.0:" .. port },
       detached = true,
     }
     handle, pid_or_err = vim.loop.spawn("dlv", opts, function(code)
@@ -89,7 +78,7 @@ function M.setup(dap)
     end)
     -- Wait for delve to start
     vim.defer_fn(function()
-      callback { type = "server", host = "127.0.0.1", port = port }
+      callback { type = "server", host = "0.0.0.0", port = port }
     end, 100)
   end
 end
