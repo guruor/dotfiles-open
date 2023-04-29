@@ -67,6 +67,7 @@ local default_plugins = {
   },
   {
     "majutsushi/tagbar",
+    event = "VeryLazy",
     init = function()
       require("plugins.configs.misc").tagbar()
     end,
