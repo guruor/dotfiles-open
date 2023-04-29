@@ -331,7 +331,7 @@ local default_plugins = {
   },
 
   -- Good to have
-  { "beauwilliams/focus.nvim", config = 'require("focus").setup()' },
+  { "beauwilliams/focus.nvim", event = "VeryLazy", config = 'require("focus").setup()' },
   {
     "ron89/thesaurus_query.vim",
     init = function()
