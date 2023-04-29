@@ -26,6 +26,7 @@ local default_plugins = {
   { "vimpostor/vim-tpipeline", lazy = false }, -- Merges vim statusline with tmux
   {
     "nvim-treesitter/nvim-treesitter",
+    commit = "eedc5198a1b4bb1b08ae6d4f64f3d76e376957aa",
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
     build = ":TSUpdate",
     dependencies = {
