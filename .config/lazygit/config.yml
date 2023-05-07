@@ -1,5 +1,8 @@
+os:
+  editCommand: 'nvim -u ${MYVIMRCLSP} --listen ~/.cache/nvim/sockets/nvim-$RANDOM.sock'
 git:
   paging:
     colorArg: always
     pager: delta --paging=never
     # useConfig: true
+promptToReturnFromSubprocess: false
