@@ -6,6 +6,9 @@ local cmp = require 'cmp'
 local luasnip = require('luasnip')
 
 cmp.setup({
+    enabled = function()
+      return vim.api.nvim_buf_get_option(0, "buftype") ~= "prompt" or require("cmp_dap").is_dap_buffer()
+    end,
     snippet = {
         expand = function(args)
             luasnip.lsp_expand(args.body)
@@ -76,15 +79,13 @@ cmp.setup({
             end
         end,
     }),
+    -- https://github.com/hrsh7th/nvim-cmp/wiki/List-of-sources
     sources = cmp.config.sources({
-        { name = 'vim-dadbod-completion', keyword_length = 2 },
-        { name = 'path' },
-        { name = 'nvim_lsp_signature_help' },
-        { name = 'nvim_lsp', keyword_length = 2 },
-        { name = 'buffer', keyword_length = 2 },
-        { name = 'luasnip', keyword_length = 2 },
-        { name = 'nvim_lua' },
-        { name = 'spell', keyword_length = 3 },
+        { name = 'nvim_lsp_signature_help', keyword_length = 2 },
+        { name = 'nvim_lsp',                keyword_length = 3 },
+        { name = 'path',                    keyword_length = 2 },
+        { name = 'luasnip',                 keyword_length = 2 },
+        { name = 'nvim_lua',                keyword_length = 2 },
     }, {
         { name = 'buffer' },
     })
@@ -100,7 +101,7 @@ cmp.setup.filetype('gitcommit', {
 })
 
 -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline('/', {
+cmp.setup.cmdline({ '/', '?' }, {
     mapping = cmp.mapping.preset.cmdline(),
     sources = {
         { name = 'buffer' }
@@ -115,4 +116,27 @@ cmp.setup.cmdline(':', {
     }, {
         { name = 'cmdline' }
     })
+})
+
+cmp.setup.filetype({ "markdown", "vimwiki" }, {
+  sources = cmp.config.sources({
+    { name = "spell", keyword_length = 2 },
+    { name = "calc" },
+  }, {
+    { name = "buffer" },
+  }),
+})
+
+cmp.setup.filetype("sql", {
+  sources = cmp.config.sources({
+    { name = "vim-dadbod-completion", keyword_length = 2 },
+  }, {
+    { name = "buffer" },
+  }),
+})
+
+cmp.setup.filetype({ "dap-repl", "dapui_watches", "dapui_hover" }, {
+  sources = {
+    { name = "dap" },
+  },
 })
