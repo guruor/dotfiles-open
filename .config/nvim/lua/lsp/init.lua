@@ -317,8 +317,13 @@ lspconfig.jsonls.setup {
 
 -- https://github.com/redhat-developer/yaml-language-server
 lspconfig.yamlls.setup {
-    capabilities = capabilities,
-    on_attach = on_attach
+  capabilities = capabilities,
+  on_attach = on_attach,
+  settings = {
+    yaml = {
+      keyOrdering = false,
+    },
+  },
 }
 
 -- https://github.com/joe-re/sql-language-server
