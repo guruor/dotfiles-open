@@ -301,21 +301,13 @@ local default_plugins = {
 
   -- File navigator, uses LF file manager to navigate and change working directory
   {
-    "ptzz/lf.vim",
+    "lmburns/lf.nvim",
     event = "VeryLazy",
-    dependencies = {
-      {
-        "voldikss/vim-floaterm",
-        init = function()
-          require("plugins.configs.misc").floaterm()
-        end,
-      },
-    },
     init = function()
       require("plugins.configs.misc").lf()
     end,
+    dependencies = { "plenary.nvim", "toggleterm.nvim" },
   },
-
   -- VimWiki for note management
   -- vim-polyglot is needed for `plantuml` syntax
   {
@@ -385,14 +377,13 @@ local default_plugins = {
   },
   -- Testing
   {
-    -- Use Ctrl+Q to toggle a terminal
-    "kassio/neoterm",
-    init = function()
-      require("plugins.configs.misc").neoterm()
-    end,
+    "akinsho/toggleterm.nvim",
+    version = "*",
+    config = true,
+    event = "VeryLazy",
     keys = {
-      { "<c-q>", [[:Ttoggle<cr>]], silent = true },
-      { "<c-q>", [[<c-\><c-n>:Ttoggle<cr>]], mode = "t", silent = true },
+      { "<c-q>", [[:ToggleTerm<cr>]], silent = true },
+      { "<c-q>", [[<c-\><c-n>:ToggleTerm<cr>]], mode = "t", silent = true },
     },
   },
   {

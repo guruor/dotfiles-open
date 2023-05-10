@@ -31,17 +31,23 @@ M.tagbar = function()
   vim.g.tagbar_iconchars = { "↠", "↡" }
 end
 
-M.floaterm = function()
-  vim.g.floaterm_width = 0.6
-  vim.g.floaterm_height = 0.6
-end
-
 M.lf = function()
-  vim.g.lf_map_keys = 0
-  vim.g.lf_width = 0.75
-  vim.g.lf_height = 0.75
-  vim.g.NERDTreeHijackNetrw = 0 -- Add this line if you use NERDTree
-  vim.g.lf_replace_netrw = 1 -- Open lf when vim opens a directory
+  vim.g.lf_netrw = 1
+
+  require("lf").setup {
+    winblend = 5,
+    escape_quit = true,
+    default_action = "tabedit", -- default action when `Lf` opens a file
+    border = "curved", -- border kind: single double shadow curved
+    height = 0.75, -- height of the *floating* window
+    width = 0.75, -- width of the *floating* window
+    direction = "float", -- window type: float horizontal vertical
+    -- highlights = {
+      -- Normal = { guibg = "NONE" },
+      -- NormalFloat = { guibg = "NONE" },
+      -- FloatBorder = { guibg = "NONE", guifg = "NONE" },
+    -- },
+  }
 end
 
 M.whitespace = function()
@@ -57,13 +63,6 @@ M.comment = function()
   require("Comment").setup {
     pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
   }
-end
-
-M.neoterm = function()
-  vim.g.neoterm_default_mod = "botright"
-  vim.g.neoterm_size = 12
-  vim.g.neoterm_autoinsert = 1
-  vim.g.neoterm_shell = "/bin/zsh"
 end
 
 M.smartcolumn = {
