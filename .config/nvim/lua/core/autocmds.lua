@@ -117,6 +117,7 @@ autocmd("TermOpen", {
   pattern = "*",
   callback = function()
     vim.cmd "startinsert"
+    vim.opt.relativenumber = false
   end,
   group = generalSettingsGroup,
 })

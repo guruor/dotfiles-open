@@ -49,8 +49,8 @@ keys = {
     ["."] = { ":tabnew $MYVIMRC<CR>", "Open Init" },
     ["R"] = { ":source $MYVIMRC<CR>", "Reload Init" },
     ["U"] = { ":UndotreeToggle<CR>", "Undo Tree" },
-    ["o"] = { ":LfCurrentFileExistingOrNewTab<CR>", "Open LF file explorer" },
-    ["O"] = { ":LfWorkingDirectoryExistingOrNewTab<CR>", "Open LF file explorer" },
+    ["o"] = { ":Lf<CR>", "Open LF file explorer" },
+    ["O"] = { ":lua require('lf').start(vim.fn.getcwd())<CR>", "Open LF file explorer" },
     ["S"] = { ":%s//gc<Left><Left><Left>", "Find and replace/substitute" }
 }
 wk.register(keys, { prefix = leader })
