@@ -113,6 +113,12 @@
     tool = vimdiff
     conflictstyle = diff3
 
+[mergetool "vimdiff"]
+  cmd = nvim -f -c \"Gdiffsplit!\" \"$MERGED\"
+
+[mergetool]
+  prompt = false
+
 [commit]
     gpgSign = false
 
