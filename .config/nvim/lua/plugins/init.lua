@@ -255,16 +255,12 @@ local default_plugins = {
       require("plugins.configs.misc").whitespace()
     end,
   },
-
   {
-    -- Session management plugins
-    "dhruvasagar/vim-prosession",
+    'rmagatti/auto-session',
     lazy = false,
-    dependencies = {
-      "tpope/vim-obsession",
-    },
-    init = function()
-      require("plugins.configs.misc").session()
+    opts = require("plugins.configs.misc").auto_session,
+    config = function(_, opts)
+      require("auto-session").setup(opts)
     end,
   },
 

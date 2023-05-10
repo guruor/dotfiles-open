@@ -1,12 +1,4 @@
 local M = {}
-local home_dir = os.getenv "HOME"
-
-M.session = function()
-  local session_directory = home_dir .. "/.cache/nvim/session/"
-  vim.g.session_directory = session_directory
-  vim.g.prosession_dir = session_directory
-  vim.g.prosession_last_session_dir = session_directory
-end
 
 M.gruvbox = function()
   vim.g.gruvbox_contrast_light = "medium"
@@ -150,6 +142,11 @@ M.surround = {
     delete = "gds",
     change = "gcs",
   },
+}
+
+M.auto_session = {
+  log_level = "error",
+  auto_session_suppress_dirs = { "~/", "~/Workspace", "~/Downloads", "/" },
 }
 
 return M
