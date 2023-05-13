@@ -42,7 +42,7 @@ meh - 0x29 : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Scratchp
 meh - o : kitty -1 --title "File Manager" -e $SHELL -lc "lf -command zi ~; $SHELL"
 meh - n : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Notes" "notetaker"
 meh - r : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Bottom" "btm -b" # Opens process monitoring tool
-meh - m : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Ncmpcpp" "ncmpcpp" # Opens music player
+meh - m : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Ncmpcpp" "mopidy > /dev/null 2>&1 &; ncmpcpp" # Opens music player
 meh - p : mpc toggle # Toggle play/pause for mpd
 meh - 0x21 : mpc seek -10 # Seek music 10 seconds backward with meh + [
 meh - 0x1E : mpc seek +10 # Seek music 10 seconds forward with meh + ]
