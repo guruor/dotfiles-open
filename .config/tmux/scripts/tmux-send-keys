@@ -29,5 +29,5 @@ IFS=',' read pane_index pane_tty <<< "${tmux_panes}"
 
 for cmd in "${cmd_list[@]}"; do
     tmux send-keys -t "${pane_index}" "$cmd" ENTER;
-    sleep 1
+    sleep 0.2
 done
