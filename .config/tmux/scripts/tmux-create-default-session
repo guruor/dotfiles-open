@@ -3,16 +3,26 @@
 # Requires JQ, json processor, https://github.com/stedolan/jq
 
 # Create a JSON like this and pass it as input
-#{
-#  "session1": {
-#    "window1": "$SHELL",
-#    "window2": "$SHELL"
-#  },
-#  "session2": {
-#    "window3": "$SHELL",
-#    "window4": "$SHELL"
-#  }
-#}
+# ```json
+# {
+#   "sessions": {
+#     "Notes": {
+#       "windows": {
+#         "Work": "cd $VIMWIKI_DIR_WORK",
+#         "Discussions": "cd $VIMWIKI_DIR_DISCUSSIONS",
+#       },
+#       "icon": ""
+#     },
+#     "Scratchpad": {
+#       "windows": {
+#         "Dot": "cd ~/voidrice/",
+#         "Nvim": "cd ~/voidrice/nvim",
+#       },
+#       "icon": ""
+#     }
+#   }
+# }
+# ```
 
 session_template_path="$HOME/.config/tmux/private/default-session.json"
 
