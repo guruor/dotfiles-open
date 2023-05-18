@@ -60,6 +60,16 @@ cmd copyto ${{
 	notify-send "📋 File(s) copied." "File(s) copies to $dest."
 }}
 
+cmd yank_name &{{
+	echo -n $(basename $f) | pbcopy
+	# echo -n $(basename $f) | xclip -selection clipboard
+}}
+
+cmd yank_path &{{
+	echo -n $f | pbcopy
+	# echo -n $f | xclip -selection clipboard
+}}
+
 cmd z %{{
 	result="$(zoxide query --exclude $PWD $@)"
 	lf -remote "send $id cd $result"
@@ -102,3 +112,9 @@ map b $setbg $f
 map <c-e> down
 map <c-y> up
 map V push :!nvim<space>
+
+map y
+map yn yank_name
+map yp yank_path
+map yy copy
+
