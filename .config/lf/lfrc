@@ -16,6 +16,7 @@ $lf -remote "send $id set previewer ${XDG_CONFIG_HOME:-$HOME/.config}/lf/preview
 
 
 # cmds/functions
+# Check this tips section for more customizations: https://github.com/gokcehan/lf/wiki/Tips#edit-and-reload-config-file
 cmd open $$OPENER $fx
 cmd open-choose $OPENER_CHOOSE="true" $OPENER $fx
 
@@ -80,6 +81,15 @@ cmd zi ${{
 	lf -remote "send $id cd $result"
 }}
 
+cmd toggle_preview %{{
+    if [ "$lf_preview" = "true" ]; then
+        lf -remote "send $id :set preview false; set ratios 1:5"
+    else
+        lf -remote "send $id :set preview true; set ratios 1:2:3"
+    fi
+}}
+
+
 cmd setbg "$1"
 cmd bulkrename $vidir
 
@@ -117,4 +127,4 @@ map y
 map yn yank_name
 map yp yank_path
 map yy copy
-
+map zp toggle_preview
