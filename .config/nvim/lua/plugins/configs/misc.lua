@@ -10,7 +10,7 @@ end
 
 M.gruvbox_material = function()
   vim.g.gruvbox_material_foreground = "material" -- Available values:   `'material'`, `'mix'`, `'original'`
-  vim.g.gruvbox_material_background = "medium" -- Available values: 'hard', 'medium'(default), 'soft'
+  vim.g.gruvbox_material_background = "medium"   -- Available values: 'hard', 'medium'(default), 'soft'
   vim.g.gruvbox_material_better_performance = 1
   vim.g.gruvbox_material_enable_bold = 1
   vim.g.gruvbox_material_enable_italic = 1
@@ -30,14 +30,14 @@ M.lf = function()
     winblend = 5,
     escape_quit = true,
     default_action = "tabedit", -- default action when `Lf` opens a file
-    border = "curved", -- border kind: single double shadow curved
-    height = 0.75, -- height of the *floating* window
-    width = 0.75, -- width of the *floating* window
-    direction = "float", -- window type: float horizontal vertical
+    border = "curved",          -- border kind: single double shadow curved
+    height = 0.75,              -- height of the *floating* window
+    width = 0.75,               -- width of the *floating* window
+    direction = "float",        -- window type: float horizontal vertical
     -- highlights = {
-      -- Normal = { guibg = "NONE" },
-      -- NormalFloat = { guibg = "NONE" },
-      -- FloatBorder = { guibg = "NONE", guifg = "NONE" },
+    -- Normal = { guibg = "NONE" },
+    -- NormalFloat = { guibg = "NONE" },
+    -- FloatBorder = { guibg = "NONE", guifg = "NONE" },
     -- },
   }
 end
