@@ -32,10 +32,12 @@ local default_plugins = {
     dependencies = {
       "nvim-treesitter/nvim-treesitter-context",
       "JoosepAlviste/nvim-ts-context-commentstring",
+      { "LiadOz/nvim-dap-repl-highlights", lazy = false },
       { "nvim-treesitter/playground", cmd = "TSPlaygroundToggle" },
     },
     opts = require("plugins.configs.treesitter").options,
     config = function(_, opts)
+      require("nvim-dap-repl-highlights").setup()
       require("nvim-treesitter.configs").setup(opts)
       require("plugins.configs.treesitter").additional_setup()
     end,

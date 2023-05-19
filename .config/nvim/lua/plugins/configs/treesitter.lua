@@ -34,6 +34,7 @@ M.options = {
     "rust",
     "sql",
     "query",
+    "dap_repl",
   },
   context_commentstring = {
     enable_autocmd = false,
