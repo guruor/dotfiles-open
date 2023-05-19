@@ -85,8 +85,8 @@ local default_plugins = {
       require "plugins.configs.telescope"
     end,
   },
-  { "kevinhwang91/nvim-bqf",   ft = "qf" },         -- For better preview of quickfix buffers
-  { "stevearc/dressing.nvim",  event = "VeryLazy" }, -- For improved vim.ui interfaces
+  { "kevinhwang91/nvim-bqf", ft = "qf" }, -- For better preview of quickfix buffers
+  { "stevearc/dressing.nvim", event = "VeryLazy" }, -- For improved vim.ui interfaces
 
   -- Git stuff
   {
@@ -108,9 +108,9 @@ local default_plugins = {
       "Gbrowse",
     },
     dependencies = {
-      "tommcdo/vim-fubitive",          -- GBrowse bitbucket support
+      "tommcdo/vim-fubitive", -- GBrowse bitbucket support
       "shumphrey/fugitive-gitlab.vim", -- Gitlab gitlab support
-      "tpope/vim-rhubarb",             -- GBrowse github support
+      "tpope/vim-rhubarb", -- GBrowse github support
     },
   },
   {
@@ -138,7 +138,7 @@ local default_plugins = {
       },
       "WhoIsSethDaniel/mason-tool-installer.nvim",
       "williamboman/mason-lspconfig.nvim",
-      { "glepnir/lspsaga.nvim",     event = "LspAttach" },
+      { "glepnir/lspsaga.nvim", event = "LspAttach" },
       "jose-elias-alvarez/null-ls.nvim",
     },
   },
@@ -231,7 +231,7 @@ local default_plugins = {
     end,
   },
 
-  { "mbbill/undotree",          cmd = "UndotreeToggle" },
+  { "mbbill/undotree", cmd = "UndotreeToggle" },
   "tpope/vim-repeat",
   {
     "kylechui/nvim-surround",
@@ -258,7 +258,7 @@ local default_plugins = {
     end,
   },
   {
-    'rmagatti/auto-session',
+    "rmagatti/auto-session",
     lazy = false,
     opts = require("plugins.configs.misc").auto_session,
     config = function(_, opts)
@@ -268,7 +268,7 @@ local default_plugins = {
 
   -- Better working environment
   { "folke/twilight.nvim", cmd = "Twilight", config = 'require("twilight").setup()' },
-  { "folke/zen-mode.nvim", cmd = "ZenMode",  config = 'require("zen-mode").setup()' },
+  { "folke/zen-mode.nvim", cmd = "ZenMode", config = 'require("zen-mode").setup()' },
 
   -- Rest client
   {
@@ -317,8 +317,8 @@ local default_plugins = {
       require "plugins.configs.vimwiki"
     end,
   },
-  { "AckslD/nvim-FeMaco.lua", cmd = "FeMaco",                    config = 'require("femaco").setup()' }, -- For inline code-block edit
-  { "mattn/calendar-vim",     cmd = { "CalendarH", "CalendarH" } },
+  { "AckslD/nvim-FeMaco.lua", cmd = "FeMaco", config = 'require("femaco").setup()' }, -- For inline code-block edit
+  { "mattn/calendar-vim", cmd = { "CalendarH", "CalendarH" } },
   {
     "iamcco/markdown-preview.nvim",
     -- ft = { "markdown", "vimwiki" },
@@ -327,7 +327,7 @@ local default_plugins = {
   },
 
   -- Good to have
-  { "beauwilliams/focus.nvim",   event = "VeryLazy",          config = 'require("focus").setup()' },
+  { "beauwilliams/focus.nvim", event = "VeryLazy", config = 'require("focus").setup()' },
   {
     "ron89/thesaurus_query.vim",
     init = function()
@@ -345,7 +345,7 @@ local default_plugins = {
     end,
   },
   -- annotation generator/docstring
-  { "danymat/neogen",       config = true,     event = "VeryLazy" },
+  { "danymat/neogen", config = true, event = "VeryLazy" },
   { "rcarriga/nvim-notify", event = "VeryLazy" },
   {
     -- Improve folding
@@ -381,8 +381,8 @@ local default_plugins = {
     config = true,
     event = "VeryLazy",
     keys = {
-      { "<c-q>", [[:ToggleTerm<cr>]],           silent = true },
-      { "<c-q>", [[<c-\><c-n>:ToggleTerm<cr>]], mode = "t",   silent = true },
+      { "<c-q>", [[:ToggleTerm<cr>]], silent = true },
+      { "<c-q>", [[<c-\><c-n>:ToggleTerm<cr>]], mode = "t", silent = true },
     },
   },
   {
