@@ -321,7 +321,8 @@ local default_plugins = {
   { "mattn/calendar-vim",     cmd = { "CalendarH", "CalendarH" } },
   {
     "iamcco/markdown-preview.nvim",
-    ft = "markdown",
+    -- ft = { "markdown", "vimwiki" },
+    lazy = false,
     build = "cd app && yarn install",
   },
 
