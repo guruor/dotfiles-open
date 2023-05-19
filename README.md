@@ -1,48 +1,46 @@
-# The Voidrice (Luke Smith <https://lukesmith.xyz>'s dotfiles)
+### The Voidrice rice
+ 
+Inspired by [Luke Smith](https://lukesmith.xyz)'s dotfiles
 
-These are the dotfiles deployed by [LARBS](https://larbs.xyz) and as seen on
-[my YouTube channel](https://youtube.com/c/lukesmithxyz).
+#### Platform Specific Programs
 
-- Very useful scripts are in `~/.local/bin/`
+| App type             | Mac                                       | Linux                                             |
+|----------------------|-------------------------------------------|---------------------------------------------------|
+| Window Manager       | [Yabai](.config/yabai/)                   | [dwm](https://github.com/G0V1NDS/dmenu)           |
+| KeyMapper            | [Karabiner Elements](.config/karabiner)   | setxkbmap                                         |
+| General key binder   | [skhd](.config/skhd)                      | sxhkd                                             |
+| Application launcher | [Raycast](https://www.raycast.com/)                                   | [dmenu](https://github.com/G0V1NDS/dmenu)         |
+| Primary terminal     | [kitty](.config/kitty)                    | [st](https://github.com/G0V1NDS/st)               |
+| Statusbar            | -                                         | [dwmblocks](https://github.com/G0V1NDS/dwmblocks) |
+| Clipboard manager    | [Maccy](https://github.com/p0deje/Maccy)  | [clipmenu](https://github.com/cdown/clipmenu)     |
+| Notification daemon  | -                                         | [dunst](.config/dunst)                            |
+
+#### Cross-platform programs
+
 - Settings for:
-	- vim/nvim (text editor)
-	- zsh (shell)
-	- sxhkd (general key binder)
-	- lf (file manager)
-	- mpd/ncmpcpp (music)
-	- sxiv (image/gif viewer)
-	- mpv (video player)
-	- calcurse (calendar program)
-	- tmux
-	- other stuff like xdg default programs, inputrc and more, etc.
-- I try to minimize what's directly in `~` so:
-	- All configs that can be in `~/.config/` are.
-	- Some environmental variables have been set in `~/.zprofile` to move configs into `~/.config/`
-- Bookmarks in text files used by various scripts (like `~/.local/bin/shortcuts`)
-	- File bookmarks in `~/.config/files`
-	- Directory bookmarks in `~/.config/directories`
+	- [Nvim](.config/nvim/) (text editor)
+	- [Kitty](.config/kitty/)/[Wezterm](.config/wezterm/)/[Alacritty](.config/alacritty/) (terminal emulator)
+	- [Zsh](.config/zsh/) (shell)
+	- [Tmux](.config/tmux/)
+	- [LF](.config/lf/) (file manager)
+	- [mpd](.config/mpd/)/[ncmpcpp](.config/ncmpcpp/)/[mopidy](.config/mopidy/) (music)
+	- [Syncthing](https://github.com/syncthing/syncthing) (Network file sync)
+	- Other userful tools:
+		- [Starship](.config/starship.toml), [exa](https://github.com/ogham/exa), [zoxide](https://github.com/ajeetdsouza/zoxide), [bat](.config/bat), [fzf](https://github.com/junegunn/fzf), [Bottom](.config/bottom/), [delta](.config/delta/), [ripgrep](https://github.com/BurntSushi/ripgrep), [fd](.config/fd), [lazygit](.config/lazygit), [lazydocker](https://github.com/jesseduffield/lazydocker)
+	- Very useful scripts are in [~/.local/bin/](.local/bin/)
 
-## Usage
+#### Install these dotfiles and all dependencies
 
-These dotfiles are intended to go with numerous suckless programs I use:
+There is an [install.sh](./install.sh) in the repo directory for quickly symlink the dotfiles but I would advice you to go through the required config and move the helpful component to your setup.
 
-- [dwm](https://github.com/lukesmithxyz/dwm) (window manager)
-- [dwmblocks](https://github.com/lukesmithxyz/dwmblocks) (statusbar)
-- [st](https://github.com/lukesmithxyz/st) (terminal emulator)
+For personal configs maintained I have `Private` repo, where I keep my personal config those configs are symlinked into this repo.
 
-I also recommend trying out
-[mutt-wizard](https://github.com/lukesmithxyz/mutt-wizard), which additionally
-works with this setup. It gives you an easy-to-install terminal-based email
-client regardless of your email provider. It is integrated into these dotfiles
-as well.
+For few programs like `mopidy`, where you would often face some setup issues, Readme file is added inside individual program config directory.
 
-## Install these dotfiles and all dependencies
+#### Other recommanded programs
 
-Use [LARBS](https://larbs.xyz) to autoinstall everything:
+##### Mac Specific
+[Homerow](https://github.com/dexterleng/homerow), [Itsycal](https://github.com/sfsam/Itsycal), [Hidden Bar](https://github.com/dwarvesf/hidden), [MonitorControl](https://github.com/MonitorControl/MonitorControl)
 
-```
-curl -LO larbs.xyz/larbs.sh
-```
-
-or clone the repo files directly to your home directory and install the
-[dependencies](https://github.com/LukeSmithxyz/LARBS/blob/master/progs.csv).
+##### Common
+[Vimium](https://github.com/philc/vimium), [Bitwarden](https://bitwarden.com/download/), [Maestral](https://github.com/samschott/maestral), [xBrowserSync](https://github.com/xbrowsersync/app), [Flameshot](https://github.com/flameshot-org/flameshot) 
