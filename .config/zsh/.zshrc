@@ -234,7 +234,7 @@ if [[ $MACHINE == "Mac" ]]; then
 fi
 
 export PATH="$PATH:${CARGO_HOME}/bin"
-source "${CARGO_HOME}/env"
+[ -f "${CARGO_HOME}/env" ] && source "${CARGO_HOME}/env"
 
 # Initializing pyev, used by zsh-pyenv-lazy
 export ZSH_PYENV_LAZY_VIRTUALENV=true
