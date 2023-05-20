@@ -183,6 +183,24 @@ bindkey '^[[P' delete-char
 autoload edit-command-line; zle -N edit-command-line
 bindkey '^e' edit-command-line
 
+if ! typeset -f escape-clear-cmd >/dev/null; then
+function escape-clear-cmd {
+    echo 'clear'
+}
+fi
+
+function escape-clear {
+    # Only run escape-clear commands when the command line is empty and when on the first line (PS1)
+if ! (( $#BUFFER )) && [[ "$CONTEXT" == start ]]; then
+    BUFFER=$(escape-clear-cmd)
+    zle accept-line -w
+fi
+}
+
+# In normal mode hitting ESC will clear the terminal
+zle -N escape-clear
+bindkey -Mvicmd "\e" escape-clear
+
 # Auto type tmux when zsh is loaded
 # if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
 #     stty -echo && sleep 0.2 && xdotool type --delay 15 'tmux' && stty echo
