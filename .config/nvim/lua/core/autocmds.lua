@@ -279,7 +279,7 @@ autocmd("BufWritePost", {
 autocmd("BufWritePost", {
   pattern = vim.fn.expand "$HOME" .. "/voidrice/.config/yabai/yabairc",
   callback = function()
-    vim.cmd "!brew services restart yabai; killall Dock"
+    vim.cmd "!yabai --restart-service; killall Dock"
   end,
   group = postSaveSettingsGroup,
 })
@@ -288,7 +288,7 @@ autocmd("BufWritePost", {
 autocmd("BufWritePost", {
   pattern = vim.fn.expand "$HOME" .. "/voidrice/.config/skhd/skhdrc",
   callback = function()
-    vim.cmd "!brew services restart skhd;"
+    vim.cmd "!skhd --restart-service;"
   end,
   group = postSaveSettingsGroup,
 })
