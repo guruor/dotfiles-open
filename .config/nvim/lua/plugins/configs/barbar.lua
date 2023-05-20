@@ -1,5 +1,5 @@
 -- Set barbar's options
-require'barbar'.setup {
+require("barbar").setup {
   -- Enable/disable animations
   animation = true,
 
@@ -15,15 +15,15 @@ require'barbar'.setup {
   clickable = true,
 
   -- Excludes buffers from the tabline
-  exclude_ft = {'dbout'},
+  exclude_ft = { "dbout" },
   exclude_name = {},
 
   -- A buffer to this direction will be focused (if it exists) when closing the current buffer.
   -- Valid options are 'left' (the default) and 'right'
-  focus_on_close = 'left',
+  focus_on_close = "left",
 
   -- Hide inactive buffers and file extensions. Other options are `alternate`, `current`, and `visible`.
-  hide = {extensions = false, inactive = false},
+  hide = { extensions = false, inactive = false },
 
   -- Disable highlighting alternate buffers
   highlight_alternate = false,
@@ -41,10 +41,10 @@ require'barbar'.setup {
     button = "×",
     -- Enables / disables diagnostic symbols
     diagnostics = {
-      [vim.diagnostic.severity.WARN] = {enabled = false, icon = ''},
-      [vim.diagnostic.severity.INFO] = {enabled = false, icon = ''},
-      [vim.diagnostic.severity.HINT] = {enabled = false, icon = ''},
-      [vim.diagnostic.severity.ERROR] = { enabled = true, icon = "" },
+      [vim.diagnostic.severity.ERROR] = { enabled = false, icon = "" },
+      [vim.diagnostic.severity.WARN] = { enabled = false, icon = "" },
+      [vim.diagnostic.severity.INFO] = { enabled = false, icon = "" },
+      [vim.diagnostic.severity.HINT] = { enabled = false, icon = "" },
     },
     filetype = {
       -- Sets the icon's highlight group.
@@ -58,18 +58,18 @@ require'barbar'.setup {
 
     -- Configure the icons on the bufferline when modified or pinned.
     -- Supports all the base icon options.
-    modified = {button = '●'},
-    pinned = {button = '車'},
+    modified = { button = "●" },
+    pinned = { button = "車" },
 
     -- Configure the icons on the bufferline based on the visibility of a buffer.
     -- Supports all the base icon options, plus `modified` and `pinned`.
-    alternate = {filetype = {enabled = false}},
-    current = {buffer_index = true},
-    visible = {modified = {buffer_number = false}},
+    alternate = { filetype = { enabled = false } },
+    current = { buffer_index = true },
     inactive = {
       button = "×",
       separator = { left = "", right = "" },
     },
+    visible = { modified = { buffer_number = false } },
   },
 
   -- If true, new buffers will be inserted at the start/end of the list.
@@ -95,7 +95,7 @@ require'barbar'.setup {
   -- New buffer letters are assigned in this order. This order is
   -- optimal for the qwerty keyboard layout but might need adjustement
   -- for other layouts.
-  letters = 'asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP',
+  letters = "asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP",
 
   -- Sets the name of unnamed buffers. By default format is "[Buffer X]"
   -- where X is the buffer number. But only a static string is accepted here.
