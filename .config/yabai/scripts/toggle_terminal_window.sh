@@ -11,20 +11,25 @@ function toggle_window() {
     if [[ -z "$term_window" ]]; then
         # $terminal --title "$window_name" -e $SHELL -lc "${command_str}; $SHELL";
         # When opening kitty window, opening with single instance mode
-        $terminal -1 --title "$window_name" -e $SHELL -lc "${command_str}; $SHELL";
+        $terminal -1 --title "$window_name" -e "$SHELL" -lc "${command_str}; $SHELL";
     else
         # If window is already open either move it to current space or minimize it else focus it
-        window_id=$(echo $term_window | jq '.id')
-        window_space_id=$(echo $term_window | jq '.space')
+        window_id=$(echo "$term_window" | jq '.id')
+        window_space_id=$(echo "$term_window" | jq '.space')
         current_space_id=$(yabai -m query --spaces --space | jq .index)
-        yabai -m window $window_id --space mouse
-        yabai -m window --focus $(echo $term_window | jq '.id')
 
-        if [[ $(echo $term_window | jq '."is-minimized"') == "false" ]]; then
+        # Moving the window to current space
+        if [[ $window_space_id != "$current_space_id" ]]; then
+            yabai -m window "$window_id" --space mouse
+        fi
+
+        yabai -m window --focus $(echo "$term_window" | jq '.id')
+
+        if [[ $(echo "$term_window" | jq '."is-minimized"') == "false" ]]; then
             echo -e "$current_space_id, $window_space_id"
-            if [[ $window_space_id == $current_space_id ]]; then
+            if [[ $window_space_id == "$current_space_id" ]]; then
                 # Only minimize when window was on current space
-                yabai -m window $window_id --minimize
+                yabai -m window "$window_id" --minimize
                 yabai -m window --focus recent 2>/dev/null
             fi
         fi
