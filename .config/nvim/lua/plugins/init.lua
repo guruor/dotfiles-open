@@ -1,3 +1,5 @@
+local utils = require "utils"
+
 -- All plugins have lazy=true by default,to load a plugin on startup just lazy=false
 -- List of all default plugins & their definitions
 local default_plugins = {
@@ -291,7 +293,7 @@ local default_plugins = {
       "kristijanhusak/vim-dadbod-completion",
     },
     init = function()
-      if vim.fn.filereadable(vim.fn.expand "$HOME" .. "/.config/nvim/lua/Private/plugins/configs/dadbod.lua") then
+      if utils.file_exists(vim.fn.expand "$HOME" .. "/.config/nvim/lua/Private/plugins/configs/dadbod.lua") then
         require("Private/plugins/configs/dadbod").setup()
       end
     end,
