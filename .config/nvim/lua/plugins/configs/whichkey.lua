@@ -26,10 +26,10 @@ keys = {
     ["9"] = { ":BufferGoto 9<CR>", "which_key_ignore" },
     ["u"] = { ":update<CR>", "Save file" },
     -- Closing float windows before deleting the current buffer
-    ["d"] = { ":lua require'utils'.close_floating_windows();vim.api.nvim_command('bdelete')<CR>", "Delete buffer" },
-    ["D"] = { ":BufferCloseAllButCurrent<CR>", "Delete buffer" },
+    ["d"] = { ":lua CloseAllFloatingWindows();vim.api.nvim_command('bdelete')<CR>", "Delete buffer" },
+    ["D"] = { ":lua CloseAllFloatingWindows(); vim.api.nvim_command('BufferCloseAllButCurrent'); vim.api.nvim_command('BufferClose')<CR>", "Delete buffer" },
     -- Closing float windows before closing the current window
-    ["q"] = { ":lua require'utils'.close_floating_windows();vim.api.nvim_command('quit')<CR>", "Quit" },
+    ["q"] = { ":lua CloseAllFloatingWindows();vim.api.nvim_command('quit')<CR>", "Quit" },
     ["x"] = { ":q!<CR>", "Close without saving" },
     ["Q"] = { ":qa!<CR>", "Quit all" }
 }
