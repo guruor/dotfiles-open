@@ -61,6 +61,24 @@ cmd copyto ${{
 	notify-send "📋 File(s) copied." "File(s) copies to $dest."
 }}
 
+cmd slink %{{
+    set -- $(cat ~/.local/share/lf/files)
+    mode="$1"
+    shift
+    if [ "$#" -lt 1 ]; then
+        lf -remote "send $id echo no files to link"
+        exit 0
+    fi
+    case "$mode" in
+        # symbolically copy mode is indicating a soft link
+        copy) ln -sr -t . -- "$@";;
+        # while a move mode is indicating a hard link
+        move) ln -t . -- "$@";;
+    esac
+    rm ~/.local/share/lf/files
+    lf -remote "send clear"
+}}
+
 cmd yank_name &{{
 	echo -n $(basename $f) | pbcopy
 	# echo -n $(basename $f) | xclip -selection clipboard
@@ -128,3 +146,7 @@ map yn yank_name
 map yp yank_path
 map yy copy
 map zp toggle_preview
+
+map p
+map pp paste
+map ps slink
