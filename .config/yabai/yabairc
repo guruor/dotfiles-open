@@ -104,14 +104,13 @@ yabai -m rule --add app="^(Slack|WhatsApp|Microsoft Teams|Telegram)$" space=5
 # ===== Signals ================================
 
 # Signal to focus on active widnow when a window is closed or minimized
-
-yabai -m signal --add event=window_destroyed action="bash ~/.config/yabai/scripts/focus_under_cursor.sh window_destroyed"
-yabai -m signal --add event=application_terminated action="bash ~/.config/yabai/scripts/focus_under_cursor.sh application_terminated"
-yabai -m signal --add event=window_minimized action="bash ~/.config/yabai/scripts/focus_under_cursor.sh window_minimized"
-# yabai -m signal --add event=window_focused action="bash ~/.config/yabai/scripts/focus_under_cursor.sh"
-# yabai -m signal --add event=application_front_switched action="bash ~/.config/yabai/scripts/focus_under_cursor.sh"
-# yabai -m signal --add event=application_hidden action="bash ~/.config/yabai/scripts/focus_under_cursor.sh"
-# yabai -m signal --add event=space_changed action="bash ~/.config/yabai/scripts/focus_under_cursor.sh"
-# yabai -m signal --add event=display_changed action="bash ~/.config/yabai/scripts/focus_under_cursor.sh"
+# https://github.com/koekeishiya/yabai/blob/master/doc/yabai.asciidoc#67-signal
+yabai -m signal --add event=application_launched action="~/.config/yabai/scripts/signals/application_launched.sh"
+yabai -m signal --add event=application_terminated action="bash ~/.config/yabai/scripts/application_terminated.sh"
+yabai -m signal --add event=window_created action="bash ~/.config/yabai/scripts/signals/window_created.sh"
+yabai -m signal --add event=window_destroyed app!="^Notification Centre$" action="bash ~/.config/yabai/scripts/signals/window_destroyed.sh"
+yabai -m signal --add event=window_minimized action="bash ~/.config/yabai/scripts/signals/window_minimized.sh"
+yabai -m signal --add event=window_deminimized action="bash ~/.config/yabai/scripts/signals/window_deminimized.sh"
+yabai -m signal --add event=space_changed action="bash ~/.config/yabai/scripts/signals/space_changed.sh"
 
 printf "yabai: configuration loaded...\\n"
