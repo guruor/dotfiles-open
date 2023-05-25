@@ -27,7 +27,7 @@ keys = {
     ["u"] = { ":update<CR>", "Save file" },
     -- Closing float windows before deleting the current buffer
     ["d"] = { ":lua CloseAllFloatingWindows();vim.api.nvim_command('bdelete')<CR>", "Delete buffer" },
-    ["D"] = { ":lua CloseAllFloatingWindows(); vim.api.nvim_command('BufferCloseAllButCurrent'); vim.api.nvim_command('BufferClose')<CR>", "Delete buffer" },
+    ["D"] = { ":lua CloseAllFloatingWindows(); vim.api.nvim_command('bufdo bdelete');<CR>", "Delete all buffers" },
     -- Closing float windows before closing the current window
     ["q"] = { ":lua CloseAllFloatingWindows();vim.api.nvim_command('quit')<CR>", "Quit" },
     ["x"] = { ":q!<CR>", "Close without saving" },
