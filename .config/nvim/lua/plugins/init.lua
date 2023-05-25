@@ -28,7 +28,6 @@ local default_plugins = {
   { "vimpostor/vim-tpipeline", lazy = false }, -- Merges vim statusline with tmux
   {
     "nvim-treesitter/nvim-treesitter",
-    commit = "eedc5198a1b4bb1b08ae6d4f64f3d76e376957aa",
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
     build = ":TSUpdate",
     dependencies = {
@@ -274,9 +273,10 @@ local default_plugins = {
 
   -- Rest client
   {
-    "G0V1NDS/rest.nvim",
     -- "rest-nvim/rest.nvim",
-    branch = "response_body_stored_updated",
+    "G0V1NDS/rest.nvim",
+    -- branch = "response_body_stored_updated",
+    branch = "response_body_stored",
     ft = "http",
     init = function()
       require "plugins.configs.rest"
