@@ -243,3 +243,18 @@ function CloseAllFloatingWindows()
   print(string.format('Closed %d windows: %s', #closed_windows, vim.inspect(closed_windows)))
 end
 
+-- https://github.com/rmagatti/auto-session/issues/224
+function RemoveFugitiveTab()
+  local tabpages = vim.api.nvim_list_tabpages()
+  for _, tabpage in ipairs(tabpages) do
+    local windows = vim.api.nvim_tabpage_list_wins(tabpage)
+    for _, window in ipairs(windows) do
+      local buffer = vim.api.nvim_win_get_buf(window)
+      local file_name = vim.api.nvim_buf_get_name(buffer)
+      if string.find(file_name, "fugitive:") then
+        vim.api.nvim_win_close(window, true)
+        break
+      end
+    end
+  end
+end

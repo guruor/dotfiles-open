@@ -155,6 +155,11 @@ M.surround = {
 M.auto_session = {
   log_level = "error",
   auto_session_suppress_dirs = { "~/", "~/Workspace", "~/Downloads", "/" },
+  pre_save_cmds = {
+      RemoveFugitiveTab,
+      CloseAllFloatingWindows
+  },
+}
 }
 
 return M
