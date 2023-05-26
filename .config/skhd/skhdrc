@@ -73,14 +73,14 @@ shift + alt - 5 : yabai -m window --space 5; yabai -m space --focus 5
 shift + alt - 6 : yabai -m window --space 6; yabai -m space --focus 6
 
 # Resize windows
-lctrl + alt - h : yabai -m window --resize left:-50:0; \
-                  yabai -m window --resize right:-50:0
-lctrl + alt - j : yabai -m window --resize bottom:0:50; \
-                  yabai -m window --resize top:0:50
-lctrl + alt - k : yabai -m window --resize top:0:-50; \
-                  yabai -m window --resize bottom:0:-50
-lctrl + alt - l : yabai -m window --resize right:50:0; \
-                  yabai -m window --resize left:50:0
+lctrl + alt - h : yabai -m window --resize left:-10:0; \
+                  yabai -m window --resize right:-10:0
+lctrl + alt - j : yabai -m window --resize bottom:0:10; \
+                  yabai -m window --resize top:0:10
+lctrl + alt - k : yabai -m window --resize top:0:-10; \
+                  yabai -m window --resize bottom:0:-10
+lctrl + alt - l : yabai -m window --resize right:10:0; \
+                  yabai -m window --resize left:10:0
 
 # Equalize size of windows
 lctrl + alt - e : yabai -m space --balance
