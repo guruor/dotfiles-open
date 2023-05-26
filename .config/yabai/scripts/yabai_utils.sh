@@ -53,10 +53,12 @@ function move_minimized_window_to_random_space(){
     # When an app window is closed, mac by default focuses on the remaining window of same app on current space.
     # This causes focus on minimized window as well,
     # so to avoid focus on minimized window we are moving them to some temporary space other than current space.
-    # We'll move the minimized window to next space in circular manner
-    # This hack would still cause a new problem when deminimizing window frequently, when a window is being moved to next space
-    # and it is attempted to deminimize, focus will switch to next space
+    # We'll move the minimized window to first possible space on current display, excluding current space
+    # We are choosing space from current display to avoid display change, when window is moved to next display
 
+    current_space=$(yabai -m query --spaces --space | jq .index)
+    # Getting first possible space on current display, excluding current space
+    possible_space=$(yabai -m query --displays --display | jq -r ".spaces | map(select(. != $current_space)) | .[0]")
     space_minimized_window_ids="$*"
     if [[ -z "$space_minimized_window_ids" ]]; then
         space_minimized_window_ids=$(yabai -m query --windows --space | jq -er 'map(select(."is-minimized" == true)) | .[] | .id')
@@ -65,8 +67,8 @@ function move_minimized_window_to_random_space(){
 
     for minimized_window_id in $space_minimized_window_ids
     do
-        echo -e "[$log_prefix] [yabai_utils.sh] Moving minimized windows to next space: $minimized_window_id"
-        yabai -m window "$minimized_window_id" --space next || yabai -m window "$minimized_window_id" --space first
+        echo -e "[$log_prefix] [yabai_utils.sh] Moving minimized windows ($minimized_window_id) to space ($possible_space)"
+        yabai -m window "$minimized_window_id" --space "$possible_space"
     done
 }
 
