@@ -54,11 +54,18 @@ function move_minimized_window_to_random_space(){
     # This causes focus on minimized window as well,
     # so to avoid focus on minimized window we are moving them to some temporary space other than current space.
     # We'll move the minimized window to next space in circular manner
-    echo -e "[$log_prefix] [yabai_utils.sh] Moving minimized windows to next space"
-    space_minimized_window_ids=$(yabai -m query --windows --space | jq -er 'map(select(."is-minimized" == true)) | .[] | .id')
+    # This hack would still cause a new problem when deminimizing window frequently, when a window is being moved to next space
+    # and it is attempted to deminimize, focus will switch to next space
+
+    space_minimized_window_ids="$*"
+    if [[ -z "$space_minimized_window_ids" ]]; then
+        space_minimized_window_ids=$(yabai -m query --windows --space | jq -er 'map(select(."is-minimized" == true)) | .[] | .id')
+        echo -e "[$log_prefix] [yabai_utils.sh] Fetched minimized windows ids are: $space_minimized_window_ids"
+    fi
 
     for minimized_window_id in $space_minimized_window_ids
     do
+        echo -e "[$log_prefix] [yabai_utils.sh] Moving minimized windows to next space: $minimized_window_id"
         yabai -m window "$minimized_window_id" --space next || yabai -m window "$minimized_window_id" --space first
     done
 }
