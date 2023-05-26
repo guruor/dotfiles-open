@@ -13,24 +13,28 @@ function toggle_window() {
         # When opening kitty window, opening with single instance mode
         $terminal -1 --title "$window_name" -e "$SHELL" -lc "${command_str}; $SHELL";
     else
-        # If window is already open either move it to current space or minimize it else focus it
         window_id=$(echo "$term_window" | jq '.id')
         window_space_id=$(echo "$term_window" | jq '.space')
         current_space_id=$(yabai -m query --spaces --space | jq .index)
 
-        # Moving the window to current space
-        if [[ $window_space_id != "$current_space_id" ]]; then
+        if [[ $(echo "$term_window" | jq '."is-minimized"') == "true" ]]; then
+            # If minimized bring thw window to current space and focus
             yabai -m window "$window_id" --space mouse
-        fi
-
-        yabai -m window --focus $(echo "$term_window" | jq '.id')
-
-        if [[ $(echo "$term_window" | jq '."is-minimized"') == "false" ]]; then
-            echo -e "$current_space_id, $window_space_id"
+            yabai -m window --focus "$window_id"
+        else
+            echo -e "current_space_id: $current_space_id, window_space_id: $window_space_id"
             if [[ $window_space_id == "$current_space_id" ]]; then
-                # Only minimize when window was on current space
-                yabai -m window "$window_id" --minimize
-                yabai -m window --focus recent 2>/dev/null
+                if [[ $(echo "$term_window" | jq '."has-focus"') == "true" ]]; then
+                    # Only minimize when window was on current space and has focus
+                    yabai -m window "$window_id" --minimize
+                else
+                    # Focus if the window is in background
+                    yabai -m window --focus "$window_id"
+                fi
+            else
+                # If window is already open on other space move it to current space and focus
+                yabai -m window "$window_id" --space mouse
+                yabai -m window --focus "$window_id"
             fi
         fi
     fi
