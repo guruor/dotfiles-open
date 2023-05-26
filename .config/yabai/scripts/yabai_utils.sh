@@ -22,17 +22,22 @@ function focus_recent_window_on_space(){
 }
 
 function focus_appropriate_window(){
-    # filtering by `is-floating` windows first
-    space_non_float_window=$(yabai -m query --windows --space | jq -er 'map(select(."is-floating" == false)) | .[0]')
-    window_id=$(echo "$space_non_float_window" | jq '.id' 2>/dev/null)
+    # Using recent window first, but it doesn't always work, so falling back to manual approcach
+    # Check: https://github.com/koekeishiya/yabai/issues/1655
+    window_id=$(yabai -m query --windows --window recent)
     if [[ -z "$window_id" ]]; then
-        # Focus on non mimized window
-        space_non_minimized_window=$(yabai -m query --windows --space | jq -er 'map(select(."is-minimized" == false)) | .[0]')
-        window_id=$(echo "$space_non_minimized_window" | jq '.id' 2>/dev/null)
+        # filtering by `is-floating` windows first
+        space_non_float_window=$(yabai -m query --windows --space | jq -er 'map(select(."is-floating" == false)) | .[0]')
+        window_id=$(echo "$space_non_float_window" | jq '.id' 2>/dev/null)
         if [[ -z "$window_id" ]]; then
-            # If all windows are minimized then consider minimized windows as well
-            space_windows=$(yabai -m query --windows --space)
-            window_id=$(echo "$space_windows" | jq '.[0].id' 2>/dev/null)
+            # Focus on non mimized window
+            space_non_minimized_window=$(yabai -m query --windows --space | jq -er 'map(select(."is-minimized" == false)) | .[0]')
+            window_id=$(echo "$space_non_minimized_window" | jq '.id' 2>/dev/null)
+            if [[ -z "$window_id" ]]; then
+                # If all windows are minimized then consider minimized windows as well
+                space_windows=$(yabai -m query --windows --space)
+                window_id=$(echo "$space_windows" | jq '.[0].id' 2>/dev/null)
+            fi
         fi
     fi
 
