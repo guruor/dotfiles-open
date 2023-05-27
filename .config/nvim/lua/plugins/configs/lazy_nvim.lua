@@ -3,6 +3,8 @@ return {
   install = { colorscheme = { "gruvbox_material" } },
 
   ui = {
+    -- The border to use for the UI window. Accepts same border values as |nvim_open_win()|.
+    border = vim.g.border_style,
     icons = {
       ft = "",
       lazy = "鈴 ",

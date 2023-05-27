@@ -16,6 +16,13 @@ g.maplocalleader = "," -- Comma as local leader key
 g.matchparen_timeout = 20 -- Reducing the time out to avoid sluggishness
 g.matchparen_insert_timeout = 20
 
+-- Setting default border for nvim_open_win
+-- As of now there is no option to set default border
+-- Border color can be handled with highlight group `FloatBorder`
+--https://github.com/neovim/neovim/issues/20202
+-- local border_style = "curved"
+local border_style = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' }
+g.border_style = border_style
 -- disable some default providers
 for _, provider in ipairs { "node", "perl", "python3", "ruby" } do
   g["loaded_" .. provider .. "_provider"] = 0
