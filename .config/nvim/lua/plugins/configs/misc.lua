@@ -160,6 +160,6 @@ M.auto_session = {
       CloseAllFloatingWindows
   },
 }
-}
+
 
 return M
