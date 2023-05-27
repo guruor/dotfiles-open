@@ -118,6 +118,8 @@ autocmd("TermOpen", {
   callback = function()
     vim.cmd "startinsert"
     vim.opt.relativenumber = false
+    vim.opt.number = false
+    AddTerminalNavigation()
   end,
   group = generalSettingsGroup,
 })

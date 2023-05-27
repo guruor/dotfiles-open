@@ -258,3 +258,16 @@ function RemoveFugitiveTab()
     end
   end
 end
+
+-- Add window navigation using vim-tmux-navigator for Terminal windows
+function AddTerminalNavigation()
+  -- This could cause issue with terminal programs like `fzf`,
+  -- you are safe as long as you are using <c-n> and <c-p> to navigate through options
+  -- https://github.com/christoomey/vim-tmux-navigator/pull/172#issuecomment-612219227
+  if vim.bo.filetype == 'toggleterm' then
+    vim.api.nvim_buf_set_keymap(0, "t", "<c-h>", "<c-\\><c-n>:TmuxNavigateLeft<cr>", { noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(0, "t", "<c-j>", "<c-\\><c-n>:TmuxNavigateDown<cr>", { noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(0, "t", "<c-k>", "<c-\\><c-n>:TmuxNavigateUp<cr>", { noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(0, "t", "<c-l>", "<c-\\><c-n>:TmuxNavigateRight<cr>", { noremap = true, silent = true })
+  end
+end
