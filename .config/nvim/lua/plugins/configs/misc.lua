@@ -30,7 +30,6 @@ M.lf = function()
     winblend = 5,
     escape_quit = true,
     default_action = "tabedit", -- default action when `Lf` opens a file
-    border = "curved",          -- border kind: single double shadow curved
     height = 0.75,              -- height of the *floating* window
     width = 0.75,               -- width of the *floating* window
     direction = "float",        -- window type: float horizontal vertical
@@ -39,6 +38,7 @@ M.lf = function()
     -- NormalFloat = { guibg = "NONE" },
     -- FloatBorder = { guibg = "NONE", guifg = "NONE" },
     -- },
+    border = vim.g.border_style,
   }
 end
 

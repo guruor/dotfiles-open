@@ -24,7 +24,7 @@ require 'fzf-lua'.setup {
         -- to manually draw the border characters around the preview
         -- window, can be set to 'false' to remove all borders or to
         -- 'none', 'single', 'double', 'thicc' or 'rounded' (default)
-        border     = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
+        border     = vim.g.border_style,
         fullscreen = false, -- start fullscreen?
         -- highlights should optimally be set by the colorscheme using
         -- FzfLuaXXX highlights. If your colorscheme doesn't set these
