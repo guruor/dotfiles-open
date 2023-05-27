@@ -30,15 +30,15 @@ M.lf = function()
     winblend = 5,
     escape_quit = true,
     default_action = "tabedit", -- default action when `Lf` opens a file
-    height = 0.75,              -- height of the *floating* window
-    width = 0.75,               -- width of the *floating* window
-    direction = "float",        -- window type: float horizontal vertical
-    -- highlights = {
-    -- Normal = { guibg = "NONE" },
-    -- NormalFloat = { guibg = "NONE" },
-    -- FloatBorder = { guibg = "NONE", guifg = "NONE" },
-    -- },
     border = vim.g.border_style,
+    height = 0.75, -- height of the *floating* window
+    width = 0.75, -- width of the *floating* window
+    direction = "float", -- window type: float horizontal vertical
+    highlights = {
+      Normal = { guibg = nil },
+      NormalFloat = { guibg = nil },
+      FloatBorder = { guibg = nil, guifg = nil },
+    },
   }
 end
 
