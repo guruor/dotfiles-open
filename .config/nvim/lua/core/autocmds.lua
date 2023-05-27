@@ -5,11 +5,27 @@ local generalSettingsGroup = augroup("General settings", { clear = true })
 
 -------------------------------------- Toggle relative number -----------------------------------------
 local numberToggleGroup = augroup("numbertoggle", { clear = true })
+local function shouldSkipNumberToggle()
+  if vim.bo.buftype == "terminal" then
+    return true
+  end
+
+  local excludedFileTypes = { "lazy", "mason" }
+  for _, fileType in pairs(excludedFileTypes) do
+    if vim.bo.filetype == fileType then
+      return true
+    end
+  end
+
+  return false
+end
 autocmd({ "BufEnter", "FocusGained", "InsertLeave" }, {
   group = numberToggleGroup,
   pattern = "*",
   callback = function()
-    vim.opt.relativenumber = true
+    if not shouldSkipNumberToggle() then
+      vim.opt.relativenumber = true
+    end
   end,
 })
 
@@ -17,7 +33,9 @@ autocmd({ "BufLeave", "FocusLost", "InsertEnter" }, {
   group = numberToggleGroup,
   pattern = "*",
   callback = function()
-    vim.opt.relativenumber = false
+    if not shouldSkipNumberToggle() then
+      vim.opt.relativenumber = false
+    end
   end,
 })
 
@@ -108,17 +126,18 @@ autocmd("FileType", {
 autocmd({ "BufWinEnter", "WinEnter" }, {
   pattern = "term://*",
   callback = function()
-    vim.cmd "startinsert"
+    vim.opt.number = false
+    vim.opt.relativenumber = false
+    vim.cmd.startinsert()
   end,
   group = generalSettingsGroup,
 })
 
-autocmd("TermOpen", {
+autocmd({ "TermOpen" }, {
   pattern = "*",
   callback = function()
-    vim.cmd "startinsert"
-    vim.opt.relativenumber = false
     vim.opt.number = false
+    vim.opt.relativenumber = false
     AddTerminalNavigation()
   end,
   group = generalSettingsGroup,
