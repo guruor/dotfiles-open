@@ -1,4 +1,8 @@
-require("mason").setup()
+require("mason").setup {
+  ui = {
+    border = vim.g.border_style,
+  },
+}
 
 -- https://github.com/williamboman/mason.nvim/blob/main/PACKAGES.md#eslint-lsp
 local mason_tool_installer = require('mason-tool-installer')
