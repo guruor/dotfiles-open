@@ -301,6 +301,7 @@ keys = {
         [" c"] = { ":CalendarH<CR>", "<Plug>CalendarH" },
         [" p"] = { ":VimwikiDiaryPrevDay<CR>", "<Plug>VimwikiDiaryPrevDay" },
         [" n"] = { ":VimwikiDiaryNextDay<CR>", "<Plug>VimwikiDiaryNextDay" },
+        ["s"] = { "<Cmd>lua ChooseVimWiki()<CR>", "ChooseVimWiki (Custom VimwikiUISelect)" },
     }
 }
 wk.register(keys, { prefix = leader })
