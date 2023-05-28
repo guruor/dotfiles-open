@@ -307,8 +307,8 @@ function InitializeVimwikiVars(currPath)
       end
     end
 
-    -- Figure out a way to reload the wiki list
     vim.g.vimwiki_list = updatedVimwikiList
+    -- This reloads vimwiki variables
     vim.api.nvim_call_function("vimwiki#vars#init", {})
   end
 end
