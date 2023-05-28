@@ -272,24 +272,25 @@ function AddTerminalNavigation()
   end
 end
 
-
-local function getVimwikiPathTable(vimwikiList)
+local function getVimwikiAttrTable(vimwikiList, attr)
   local pathTable = {}
+  local wikiNames = {}
 
   for _, obj in ipairs(vimwikiList) do
-    if not pathTable[obj.path] then
-      pathTable[obj.path] = {}
+    if not pathTable[obj[attr]] then
+      pathTable[obj[attr]] = {}
     end
-    table.insert(pathTable[obj.path], obj)
+    table.insert(pathTable[obj[attr]], obj)
+    table.insert(wikiNames, obj.name)
   end
 
-  return pathTable
+  return pathTable, wikiNames
 end
 
 function InitializeVimwikiVars(currPath)
   -- InitializeVimwikiVars prioritizes current path in available vimwiki list
   local updatedVimwikiList = {}
-  local vimwikiPathTable = getVimwikiPathTable(vim.g.vimwiki_list)
+  local vimwikiPathTable, _ = getVimwikiAttrTable(vim.g.vimwiki_list, "path")
 
   -- If current path is one of vimwiki directory then change the wiki variables accordingly
   if vimwikiPathTable[currPath] ~= nil then
@@ -311,4 +312,20 @@ function InitializeVimwikiVars(currPath)
     -- This reloads vimwiki variables
     vim.api.nvim_call_function("vimwiki#vars#init", {})
   end
+end
+
+function ChooseVimWiki()
+  -- Provides a ui using vim.ui.select to choose available vim wikis
+  local vimwikiPathTable, wikiNames = getVimwikiAttrTable(vim.g.vimwiki_list, "name")
+
+  vim.ui.select(wikiNames, { prompt = "Choose a wiki: " }, function(chosenWiki)
+    if chosenWiki then
+      -- TODO: use index file name and extension from vimwiki local variables
+      -- Reference: https://github.com/vimwiki/vimwiki/blob/dev/autoload/vimwiki/vars.vim#L1664
+      local index_file = vimwikiPathTable[chosenWiki][1]["path"] .. "/index.md"
+      vim.api.nvim_call_function("vimwiki#base#edit_file", { "edit", index_file, "" })
+    else
+      print "Current wiki not changed"
+    end
+  end)
 end
