@@ -149,7 +149,7 @@ change_dunst_theme() {
     # Run only when dunst is present on system
     if [ -x "$(command -v dunst)" ]; then
         echo "Requested dunst theme is: $1"
-        config_file="$HOME/voidrice/.config/dunst/dunstrc"
+        config_file="$MY_DOTFILES_DIR/.config/dunst/dunstrc"
         get_actual_path_if_symlink $config_file
 
         theme1=$theme
