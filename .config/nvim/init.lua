@@ -1,1 +1,1 @@
-/Users/govind.r/voidrice/.config/nvim/lua/init.lua
+../../.config/nvim/lua/init.lua
