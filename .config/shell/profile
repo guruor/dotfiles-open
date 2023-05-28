@@ -102,6 +102,9 @@ export VIMWIKI_DIR_ACTIVE_TASKS="${VIMWIKI_DIR}/ActiveTasks/wiki/"
 
 export MOST_USED_VIMWIKI_DIR="${VIMWIKI_DIR_WORK}"
 
+# Tmux default session file
+export TMUX_DEFAULT_SESSION_FILE="$HOME/.config/tmux/private/default-session.json"
+
 # Taskwarrior
 export TASKRC="$HOME/.config/taskwarrior/task/taskrc"
 export TASKDATA="$HOME/Dropbox/taskwarrior"
