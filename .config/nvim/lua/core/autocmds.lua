@@ -197,7 +197,7 @@ autocmd({ "BufRead", "BufNewFile" }, {
 --------------- SSH tunnel config -----------------
 -- Detect file type for tunnel-config file
 autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = vim.fn.expand "$HOME" .. "/voidrice/Private/.config/.ssh/tunnel-config",
+  pattern = vim.fn.expand "$MY_DOTFILES_DIR" .. "/Private/.config/.ssh/tunnel-config",
   callback = function()
     vim.bo.filetype = "sshconfig"
   end,
@@ -298,7 +298,7 @@ autocmd("BufWritePost", {
 
 -- Restart yabai when yabai config is changed
 autocmd("BufWritePost", {
-  pattern = vim.fn.expand "$HOME" .. "/voidrice/.config/yabai/yabairc",
+  pattern = vim.fn.expand "$MY_DOTFILES_DIR" .. "/.config/yabai/yabairc",
   callback = function()
     vim.cmd "!yabai --restart-service; killall Dock"
   end,
@@ -307,7 +307,7 @@ autocmd("BufWritePost", {
 
 -- Restart skhd when skhd config is changed
 autocmd("BufWritePost", {
-  pattern = vim.fn.expand "$HOME" .. "/voidrice/.config/skhd/skhdrc",
+  pattern = vim.fn.expand "$MY_DOTFILES_DIR" .. "/.config/skhd/skhdrc",
   callback = function()
     vim.cmd "!skhd --restart-service;"
   end,

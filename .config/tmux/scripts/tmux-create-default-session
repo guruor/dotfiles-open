@@ -9,14 +9,15 @@
 #     "Notes": {
 #       "windows": {
 #         "Work": "cd $VIMWIKI_DIR_WORK",
-#         "Discussions": "cd $VIMWIKI_DIR_DISCUSSIONS",
+#         "Personal": "cd $VIMWIKI_DIR_PERSONAL",
+#         "Discussions": "cd $VIMWIKI_DIR_DISCUSSIONS"
 #       },
 #       "icon": ""
 #     },
 #     "Scratchpad": {
 #       "windows": {
-#         "Dot": "cd ~/voidrice/",
-#         "Nvim": "cd ~/voidrice/nvim",
+#         "Dot": "cd $MY_DOTFILES_DIR",
+#         "Nvim": "cd $MY_DOTFILES_DIR/.config/nvim"
 #       },
 #       "icon": ""
 #     }
