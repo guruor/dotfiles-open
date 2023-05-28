@@ -24,7 +24,7 @@
 # }
 # ```
 
-session_template_path="$HOME/.config/tmux/private/default-session.json"
+session_template_path="$TMUX_DEFAULT_SESSION_FILE"
 
 session_data=$(cat < "${session_template_path}" | jq -r '.sessions')
 session_names=($(echo "${session_data}" | jq -r 'keys[]'))

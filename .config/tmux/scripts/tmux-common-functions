@@ -7,11 +7,11 @@
 # session_icon_name_map=$(get_default_session_icon_name_map)
 # get_actual_session_name "$session_icon_name_map" ""
 
+session_template_path="$TMUX_DEFAULT_SESSION_FILE"
 
 function get_default_session_icon_name_map(){
-    local session_template_path session_data session_icon_name_map
+    local session_data session_icon_name_map
 
-    session_template_path="$HOME/.config/tmux/private/default-session.json"
     session_data=$([ -r "$session_template_path" ] && cat < "${session_template_path}" | jq -r '.sessions')
 
     session_icon_name_map="$(echo "$session_data" | jq ' to_entries | map( {(.value.icon|tostring) : .key } ) | add ')"
@@ -21,9 +21,8 @@ function get_default_session_icon_name_map(){
 }
 
 function get_default_session_name_icon_map(){
-    local session_template_path session_data session_icon_name_map
+    local session_data session_icon_name_map
 
-    session_template_path="$HOME/.config/tmux/private/default-session.json"
     session_data=$([ -r "$session_template_path" ] && cat < "${session_template_path}" | jq -r '.sessions')
 
     session_name_icon_map="$(echo "$session_data" | jq ' to_entries | map( {(.key) : (.value.icon|tostring) } ) | add ')"
