@@ -344,6 +344,19 @@ autocmd("VimLeave", {
   group = generalSettingsGroup,
 })
 
+-- Vimwiki default directory based on current working directory
+autocmd({ "UIEnter" }, {
+  pattern = "*",
+  callback = function()
+    local wikiPath = vim.fn.expand "$VIMWIKI_DIR"
+    local currPath = vim.fn.getcwd() .. "/"
+    if currPath:find("^" .. wikiPath) ~= nil then
+      InitializeVimwikiVars(currPath)
+    end
+  end,
+  group = generalSettingsGroup,
+})
+
 -- Vimwiki diary template
 autocmd("BufNewFile", {
   pattern = vim.fn.expand "$VIMWIKI_DIR" .. "/**/diary/*.md",

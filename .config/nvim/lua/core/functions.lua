@@ -271,3 +271,44 @@ function AddTerminalNavigation()
     vim.api.nvim_buf_set_keymap(0, "t", "<c-l>", "<c-\\><c-n>:TmuxNavigateRight<cr>", { noremap = true, silent = true })
   end
 end
+
+
+local function getVimwikiPathTable(vimwikiList)
+  local pathTable = {}
+
+  for _, obj in ipairs(vimwikiList) do
+    if not pathTable[obj.path] then
+      pathTable[obj.path] = {}
+    end
+    table.insert(pathTable[obj.path], obj)
+  end
+
+  return pathTable
+end
+
+function InitializeVimwikiVars(currPath)
+  -- InitializeVimwikiVars prioritizes current path in available vimwiki list
+  local updatedVimwikiList = {}
+  local vimwikiPathTable = getVimwikiPathTable(vim.g.vimwiki_list)
+
+  -- If current path is one of vimwiki directory then change the wiki variables accordingly
+  if vimwikiPathTable[currPath] ~= nil then
+    -- Inserting the highest priority wikis first
+    local currentPathWikis = vimwikiPathTable[currPath]
+    vimwikiPathTable[currPath] = {}
+    for _, obj in ipairs(currentPathWikis) do
+      table.insert(updatedVimwikiList, obj)
+    end
+
+    -- Inserting low priority wiki at the end
+    for _, objects in pairs(vimwikiPathTable) do
+      for _, obj in ipairs(objects) do
+        table.insert(updatedVimwikiList, obj)
+      end
+    end
+
+    -- Figure out a way to reload the wiki list
+    vim.g.vimwiki_list = updatedVimwikiList
+    vim.api.nvim_call_function("vimwiki#vars#init", {})
+  end
+end
