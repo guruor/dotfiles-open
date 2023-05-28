@@ -93,7 +93,7 @@ export CM_SELECTIONS="clipboard primary"
 export CM_IGNORE_WINDOW="dmenu"
 
 # Dotfile directory
-export MY_DOTFILES_DIR="$HOME/voidrice/"
+export MY_DOTFILES_DIR="$HOME/voidrice"
 
 # VimWiki
 export VIMWIKI_DIR="$HOME/Dropbox/vimWiki"
