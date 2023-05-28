@@ -11,8 +11,8 @@ pp  ${XDG_PICTURES_DIR:-$HOME/Pictures}
 sc  $HOME/.local/bin
 src $HOME/.local/src
 vv  ${XDG_VIDEOS_DIR:-$HOME/Videos}
-dot  ${XDG_VIDEOS_DIR:-$HOME/voidrice}
-pdot  ${XDG_VIDEOS_DIR:-$HOME/voidrice/Private}
+dot  ${MY_DOTFILES_DIR:-$HOME/voidrice}
+pdot  ${MY_DOTFILES_DIR/Private:-$HOME/voidrice/Private}
 work   $HOME/Workspace
 csk   $HOME/Workspace/csk
 prac   $HOME/Workspace/practice
