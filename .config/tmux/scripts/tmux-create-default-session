@@ -28,7 +28,7 @@
 session_template_path="$TMUX_DEFAULT_SESSION_FILE"
 
 session_data=$(cat < "${session_template_path}" | jq -r '.sessions')
-session_names=($(echo "${session_data}" | jq -r 'keys[]'))
+session_names=($(echo "${session_data}" | jq -r 'keys_unsorted[]'))
 existing_sessions=$(tmux list-sessions -F "#{session_name}" 2>/dev/null)
 
 
@@ -39,7 +39,7 @@ do
     session_icon=$(echo "${session_data}" | jq -r ".${session_name} | .icon")
     echo -e "\n\ns: ${s}, session_name: ${session_icon} ${session_name}\n" >&2
     windows_data=$(echo "${session_data}" | jq -r ".${session_name} | .windows")
-    window_names=($(echo "${windows_data}" | jq -r "keys[]"))
+    window_names=($(echo "${windows_data}" | jq -r "keys_unsorted[]"))
     first_window=${window_names[0]}
     first_window_commands=$(echo "${windows_data}" | jq -r ".${first_window}")
 
