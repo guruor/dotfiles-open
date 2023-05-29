@@ -27,6 +27,13 @@
 
 session_template_path="$TMUX_DEFAULT_SESSION_FILE"
 
+# Sopping tmux existing session and deleting the stored the session in ressurect directory
+if [[ -f "$XDG_DATA_HOME/tmux/resurrect/last" ]]; then
+    echo -e "Removing existing tmux session..." >&2
+    killall tmux;
+    rm -r "$XDG_DATA_HOME/tmux/resurrect/";
+fi
+
 session_data=$(cat < "${session_template_path}" | jq -r '.sessions')
 session_names=($(echo "${session_data}" | jq -r 'keys_unsorted[]'))
 existing_sessions=$(tmux list-sessions -F "#{session_name}" 2>/dev/null)
@@ -68,3 +75,9 @@ do
         fi
     done
 done
+
+# Saving the sessio with tmux-resurrect
+if [[ -f "$XDG_CONFIG_HOME/tmux/plugins/tmux-resurrect/scripts/save.sh" ]]; then
+    echo -e "Saving the session with tmux-ressurect..." >&2
+    sh "$XDG_CONFIG_HOME/tmux/plugins/tmux-resurrect/scripts/save.sh"
+fi
