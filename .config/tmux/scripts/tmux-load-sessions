@@ -8,11 +8,18 @@ tmux_sessions=$(tmux list-sessions -F "#{session_name}" 2>/dev/null)
 session_icon_name_map=$(get_default_session_icon_name_map)
 
 if [[ -z "${tmux_sessions}" ]]; then
-    echo -e "No running tmux session found, reloading the session from tmux-resurrect" >&2
-    tmux start-server
-    tmux new-session -d;
-    echo -e "Waiting for session to load..." >&2
-    sleep 10;
+    echo -e "No running tmux session found" >&2
+    # Saving the sessio with tmux-resurrect
+    if [[ -d "$XDG_CONFIG_HOME/tmux/plugins/tmux-resurrect" ]]; then
+        echo -e "Restoring the session with tmux-ressurect..." >&2
+        tmux start-server
+        tmux new-session -d;
+        echo -e "Waiting for session to load..." >&2
+        # Instead of waiting for random time we can utilise the `post-restore-all` hook from tmux-resurrect here
+        # https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/hooks.md
+        # sh "$XDG_CONFIG_HOME/tmux/plugins/tmux-resurrect/scripts/restore.sh"
+        sleep 10;
+    fi
 fi
 
 tmux_sessions=$(tmux list-sessions -F "#{session_name}" 2>/dev/null)
