@@ -1,7 +1,6 @@
 -- Look for server configurations here
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 
-require "lsp.handlers"
 local lspconfig = require "lspconfig"
 local utils = require "utils"
 local M = {}
