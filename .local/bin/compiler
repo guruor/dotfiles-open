@@ -36,7 +36,7 @@ case "$ext" in
 	c) cc "$file" -o "$base" && "$base" ;;
 	cpp) g++ "$file" -o "$base" && "$base" ;;
 	cs) mcs "$file" && mono "$base".exe ;;
-	go) go run "$file" ;;
+	go) go run "$file" ${args[@]} ;;
 	lua) lua "$file" ;;
 	h) sudo make install ;;
 	java) javac -d classes "$file" && java -cp classes "${1%.*}" ;;
@@ -51,9 +51,9 @@ case "$ext" in
 	mom) preconv "$file" | refer -PS -e | groff -mom -kept -T pdf > "$base".pdf ;;
 	ms) preconv "$file" | refer -PS -e | groff -me -ms -kept -T pdf > "$base".pdf ;;
 	org) emacs "$file" --batch -u "$USER" -f org-latex-export-to-pdf ;;
-	py) python "$file" ;;
+	py) python "$file" ${args[@]} ;;
 	[rR]md) Rscript -e "rmarkdown::render('$file', quiet=TRUE)" ;;
-	rs) cargo run -- $args ;;
+	rs) cargo run -- ${args[@]} ;;
 	sass) sassc -a "$file" "$base.css" ;;
 	scad) openscad -o "$base".stl "$file" ;;
 	sent) setsid -f sent "$file" 2>/dev/null ;;
