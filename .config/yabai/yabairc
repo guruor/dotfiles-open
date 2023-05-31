@@ -76,7 +76,7 @@ yabai -m config mouse_action2               resize
 # ===== Rules ==================================
 # Floating window required SIP to be disabled
 # https://github.com/koekeishiya/yabai/issues/527
-yabai -m rule --add title="^(Notes|Scratchpad|Bottom|Ncmpcpp)$" app="^kitty$" manage=off layer=above sticky=on grid=10:8:1:1:6:8
+yabai -m rule --add title="^(Notes|Scratchpad|Bottom|Ncmpcpp)$" app="^kitty$" manage=off layer=above sticky=on grid=10:8:2:2:4:6
 yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
 yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
 yabai -m rule --add label="macfeh" app="^macfeh$" manage=off
