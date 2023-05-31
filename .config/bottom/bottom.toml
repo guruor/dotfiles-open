@@ -8,7 +8,7 @@
 
 [flags]
 # Whether to hide the average cpu entry.
-#hide_avg_cpu = false
+hide_avg_cpu = true
 # Whether to use dot markers rather than braille.
 #dot_marker = false
 # The update rate of the application.
@@ -55,6 +55,8 @@ battery = true
 color = "gruvbox"
 # Show memory values in the processes widget as values by default
 mem_as_value = true
+enable_cache_memory = true
+enable_gpu_memory = true
 # Show tree mode by default in the processes widget.
 #tree = false
 # Shows an indicator in table widgets tracking where in the list you are.
@@ -168,3 +170,4 @@ mem_as_value = true
 #regex = true
 #case_sensitive = false
 #whole_word = false
+tree = true
