@@ -2,6 +2,8 @@
  
 Inspired by [Luke Smith](https://lukesmith.xyz)'s dotfiles
 
+![MacOs](./screenshots/macos-main.png?raw=true "MacOS Preview")
+
 #### Platform Specific Programs
 
 | App type             | Mac                                       | Linux                                             |
