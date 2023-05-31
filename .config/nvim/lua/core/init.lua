@@ -89,6 +89,7 @@ opt.swapfile = false
 opt.undofile = true
 opt.scrolloff = 5
 opt.fixendofline = false -- Avoid fixing new line end of file
+opt.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 
 opt.complete:append "kspell" -- Spell check
 opt.spelllang = "en_us"
