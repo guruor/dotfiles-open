@@ -115,5 +115,6 @@ yabai -m signal --add event=window_destroyed title!="^(|Fullscreen Controls)$" a
 yabai -m signal --add event=window_minimized action="bash ~/.config/yabai/scripts/signals/window_minimized.sh"
 yabai -m signal --add event=window_deminimized action="bash ~/.config/yabai/scripts/signals/window_deminimized.sh"
 yabai -m signal --add event=space_changed action="bash ~/.config/yabai/scripts/signals/space_changed.sh"
+yabai -m signal --add event=display_changed action="bash ~/.config/yabai/scripts/signals/display_changed.sh"
 
 printf "yabai: configuration loaded...\\n"
