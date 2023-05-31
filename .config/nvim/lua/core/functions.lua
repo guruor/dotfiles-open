@@ -240,7 +240,7 @@ function CloseAllFloatingWindows()
       table.insert(closed_windows, win)
     end
   end
-  print(string.format('Closed %d windows: %s', #closed_windows, vim.inspect(closed_windows)))
+  -- print(string.format("Closed %d windows: %s", #closed_windows, vim.inspect(closed_windows)))
 end
 
 -- https://github.com/rmagatti/auto-session/issues/224
