@@ -33,18 +33,8 @@ function M.setup(dap)
       request = "attach",
       mode = "remote",
       name = "Golang: Remote Attach",
-      connect = {
-        host = "0.0.0.0",
-        port = 38697,
-      },
-      logToFile = true,
+      port = 38697,
       cwd = "${workspaceFolder}",
-      pathMappings = {
-        {
-          localRoot = "${workspaceFolder}",
-          remoteRoot = "/app",
-        },
-      },
       substitutePath = { { from = "${workspaceFolder}", to = "/app" } },
     },
   }
