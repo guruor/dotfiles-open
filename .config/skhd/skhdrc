@@ -105,7 +105,6 @@ shift + lctrl + alt - l : yabai -m window --insert east
 # Float / Unfloat window
 shift + alt - space : \
     yabai -m window --toggle float; \
-    yabai -m window --toggle border; \
     yabai -m window --grid 10:8:2:2:4:6
 
 # Restart Yabai
