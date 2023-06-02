@@ -103,13 +103,14 @@ shift + lctrl + alt - k : yabai -m window --insert north
 shift + lctrl + alt - l : yabai -m window --insert east
 
 # Float / Unfloat window
+# grid=<rows>:<cols>:<start-x>:<start-y>:<width>:<height>
 shift + alt - space : \
     yabai -m window --toggle float; \
-    yabai -m window --grid 10:8:2:2:4:6
+    yabai -m window --grid "10:16:7:5:16:10"
 
 # Restart Yabai
 hyper - r : yabai --restart-service
 
 # Make window native fullscreen
-alt - f         : yabai -m window --toggle zoom-fullscreen
+alt - f         : "${HOME}"/.config/yabai/scripts/yabai_toggle_zoom.sh
 shift + alt - f : yabai -m window --toggle native-fullscreen
