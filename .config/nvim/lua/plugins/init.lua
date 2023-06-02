@@ -171,7 +171,7 @@ local default_plugins = {
           require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
         end,
       },
-      { "windwp/nvim-ts-autotag" },
+      { "windwp/nvim-ts-autotag", event = "VeryLazy" },
       {
         "andymass/vim-matchup",
         event = "VeryLazy",

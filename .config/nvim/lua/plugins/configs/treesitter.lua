@@ -11,6 +11,9 @@ M.options = {
     enable = false,
     disable = {},
   },
+  autotag = {
+    enable = true,
+  },
   ensure_installed = {
     "python",
     "go",
