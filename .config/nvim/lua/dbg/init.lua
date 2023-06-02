@@ -19,11 +19,8 @@ require("dbg.lldb").setup(dap)
 dap.configurations.c = dap.configurations.rust
 dap.configurations.cpp = dap.configurations.rust
 
--- Enable virutal text, requires theHamsta/nvim-dap-virtual-text
-require("nvim-dap-virtual-text").setup()
-vim.g.dap_virtual_text = true
--- Enable virutal text, requires rcarriga/nvim-dap-ui
-require("dapui").setup()
+-- Setup debugger UI layout
+require "dbg.ui"
 -- Enable virutal text, requires mfussenegger/nvim-dap-python, overide it with .vscode/launch.json
 require("dap-python").setup(vim.fn.expand "~/.pyenv/versions/debugpy/bin/python")
 

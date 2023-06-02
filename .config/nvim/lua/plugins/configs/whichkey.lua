@@ -133,10 +133,8 @@ wk.register(keys, { prefix = leader, mode = 'v' })
 keys = {
     d = {
         name = 'Debug',
-        ["b"] = { "<cmd>lua require'dap'.toggle_breakpoint()<CR>", "Toggle Breakpoint" },
-        ["B"] = {
-            "<cmd>lua require\'dap\'.toggle_breakpoint(vim.fn.input(\'Breakpoint Condition: \'), nil, nil, true)<CR>",
-            "Condition" },
+        ["b"] = { ":PBToggleBreakpoint<CR>", "Toggle Breakpoint" },
+        ["B"] = { ":PBClearAllBreakpoints<CR>", "Clear all breakpoints" },
         ["j"] = { "<cmd>lua require\'dap\'.down()<CR>", "Down in stack trace" },
         ["k"] = { "<cmd>lua require\'dap\'.up()<CR>", "Up in stack trace" },
         ["c"] = { "<cmd>lua require\'dap\'.continue()<CR>", "Continue" },
