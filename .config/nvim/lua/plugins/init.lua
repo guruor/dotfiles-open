@@ -208,6 +208,7 @@ local default_plugins = {
     "mfussenegger/nvim-dap",
     keys = { "<leader>d" },
     dependencies = {
+      "Weissle/persistent-breakpoints.nvim",
       "jay-babu/mason-nvim-dap.nvim",
       "theHamsta/nvim-dap-virtual-text",
       "rcarriga/nvim-dap-ui",
