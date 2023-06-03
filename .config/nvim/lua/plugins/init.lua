@@ -80,7 +80,6 @@ local default_plugins = {
     end,
   },
   { "kevinhwang91/nvim-bqf", ft = "qf" }, -- For better preview of quickfix buffers
-  { "stevearc/dressing.nvim", event = "VeryLazy" }, -- For improved vim.ui interfaces
   {
     "stevearc/dressing.nvim",
     event = "VeryLazy",
