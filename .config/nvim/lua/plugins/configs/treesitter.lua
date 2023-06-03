@@ -13,6 +13,10 @@ M.options = {
   },
   autotag = {
     enable = true,
+    filetypes = {
+      "html", "javascript", "typescript", "javascriptreact", "typescriptreact", "svelte", "vue",
+      "tsx", "jsx", "rescript", "css", "lua", "xml", "php", "markdown",
+    },
   },
   ensure_installed = {
     "python",
@@ -65,7 +69,7 @@ M.additional_setup = function()
   -- If you don't like code blocks to be concealed use this to edit the highlight
   -- https://github.com/MDeiml/tree-sitter-markdown/issues/68#issuecomment-1292108829
   vim.treesitter.language.register("markdown", "vimwiki")
-  vim.treesitter.language.register('markdown', 'chatgpt')
+  vim.treesitter.language.register("markdown", "chatgpt")
 
   -- local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
   -- Custom tree-sitter parser for http files, grammar includes rest-nvim format
