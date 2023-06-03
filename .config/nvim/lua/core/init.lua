@@ -13,8 +13,6 @@ cmd "filetype plugin indent on"
 -------------------------------------- globals -----------------------------------------
 g.mapleader = " " -- Space as leader key
 g.maplocalleader = "," -- Comma as local leader key
-g.matchparen_timeout = 20 -- Reducing the time out to avoid sluggishness
-g.matchparen_insert_timeout = 20
 
 -- Setting default border for nvim_open_win
 -- As of now there is no option to set default border
