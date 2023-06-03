@@ -51,9 +51,11 @@ local default_plugins = {
     dependencies = { "nvim-treesitter/nvim-treesitter" },
   },
   {
-    "romgrk/barbar.nvim",
+    "akinsho/bufferline.nvim",
+    version = "*",
+    dependencies = "nvim-tree/nvim-web-devicons",
     init = function()
-      require "plugins.configs.barbar"
+      require "plugins.configs.bufferline"
     end,
   },
   "j-hui/fidget.nvim",
