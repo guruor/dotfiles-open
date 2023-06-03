@@ -315,25 +315,29 @@ local default_plugins = {
     dependencies = { "plenary.nvim", "toggleterm.nvim" },
   },
   -- VimWiki for note management
-  -- vim-polyglot is needed for `plantuml` syntax
   {
     "vimwiki/vimwiki",
-    -- event = "VeryLazy",
-    lazy = false,
-    dependencies = "sheerun/vim-polyglot",
+    ft = { "markdown", "vimwiki" },
+    -- lazy = false,
+    dependencies = {
+      { "mattn/calendar-vim", cmd = { "CalendarH", "CalendarH" } },
+      { "AckslD/nvim-FeMaco.lua", cmd = "FeMaco", config = 'require("femaco").setup()' }, -- For inline code-block edit
+      {
+        "iamcco/markdown-preview.nvim",
+        ft = { "markdown", "vimwiki" },
+        -- lazy = false,
+        build = "cd app && yarn install",
+      },
+      -- {
+      --   -- vim-polyglot is needed for `plantuml` syntax
+      --   "sheerun/vim-polyglot",
+      --   event = "VeryLazy",
+      -- },
+    },
     init = function()
       require "plugins.configs.vimwiki"
     end,
   },
-  { "AckslD/nvim-FeMaco.lua", cmd = "FeMaco", config = 'require("femaco").setup()' }, -- For inline code-block edit
-  { "mattn/calendar-vim", cmd = { "CalendarH", "CalendarH" } },
-  {
-    "iamcco/markdown-preview.nvim",
-    -- ft = { "markdown", "vimwiki" },
-    lazy = false,
-    build = "cd app && yarn install",
-  },
-
   -- Good to have
   { "beauwilliams/focus.nvim", event = "VeryLazy", config = 'require("focus").setup()' },
   {
