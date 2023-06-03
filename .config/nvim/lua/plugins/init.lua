@@ -176,7 +176,6 @@ local default_plugins = {
           require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
         end,
       },
-      { "windwp/nvim-ts-autotag", event = "VeryLazy" },
       -- cmp sources plugins
       {
         "saadparwaiz1/cmp_luasnip",
@@ -330,6 +329,11 @@ local default_plugins = {
     config = function()
       require "plugins.configs.vimwiki"
     end,
+  },
+  {
+    "windwp/nvim-ts-autotag",
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    lazy = false,
   },
   -- Good to have
   { "beauwilliams/focus.nvim", event = "VeryLazy", config = 'require("focus").setup()' },
