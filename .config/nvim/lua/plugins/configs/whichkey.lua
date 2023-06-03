@@ -235,7 +235,6 @@ wk.register(keys, { prefix = leader, mode = 'v' })
 keys = {
     T = {
         name = 'Toggle',
-        ["\\"] = { ":TagbarToggle<CR>", "Toggle tagbar" },
         ["b"] = { ":lua ToggleBackground()<CR>", "Toggle vim background" },
         ["B"] = { ":!toggle-dark-mode<CR>", "Toggle background of all apps" },
         ["n"] = { ":set nonumber!<CR>", "Line numbers" },
