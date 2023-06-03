@@ -64,7 +64,7 @@ local default_plugins = {
   {
     "folke/which-key.nvim",
     keys = { "<leader>", ",", '"', "'", "`" },
-    init = function()
+    config = function()
       require "plugins.configs.whichkey"
     end,
   },
@@ -114,7 +114,8 @@ local default_plugins = {
   },
   {
     "lewis6991/gitsigns.nvim",
-    init = function()
+    event = "VeryLazy",
+    config = function()
       require "plugins.configs.gitsigns"
     end,
   },
@@ -145,7 +146,7 @@ local default_plugins = {
   {
     "hrsh7th/nvim-cmp",
     event = { "InsertEnter", "CmdlineEnter" },
-    init = function()
+    config = function()
       require "plugins.configs.cmp"
     end,
     dependencies = {
@@ -153,7 +154,7 @@ local default_plugins = {
         -- snippet plugin
         "L3MON4D3/LuaSnip",
         dependencies = "rafamadriz/friendly-snippets",
-        init = function()
+        config = function()
           require "plugins.configs.snippets"
         end,
       },
@@ -214,7 +215,7 @@ local default_plugins = {
   {
     "stevearc/overseer.nvim",
     keys = { "<leader>t" },
-    init = function()
+    config = function()
       require "plugins.configs.overseer"
     end,
   },
@@ -245,7 +246,7 @@ local default_plugins = {
     "numToStr/Comment.nvim",
     keys = { { "gc", mode = { "n", "v" }, "gcc" } },
     dependencies = { "JoosepAlviste/nvim-ts-context-commentstring", event = "BufRead" },
-    init = function()
+    config = function()
       require("plugins.configs.misc").comment()
     end,
   },
@@ -277,7 +278,7 @@ local default_plugins = {
     -- branch = "response_body_stored_updated",
     branch = "response_body_stored",
     ft = "http",
-    init = function()
+    config = function()
       require "plugins.configs.rest"
     end,
   },
@@ -302,7 +303,7 @@ local default_plugins = {
   {
     "lmburns/lf.nvim",
     event = "VeryLazy",
-    init = function()
+    config = function()
       require("plugins.configs.misc").lf()
     end,
     dependencies = { "plenary.nvim", "toggleterm.nvim" },
@@ -327,7 +328,7 @@ local default_plugins = {
       --   event = "VeryLazy",
       -- },
     },
-    init = function()
+    config = function()
       require "plugins.configs.vimwiki"
     end,
   },
@@ -335,7 +336,8 @@ local default_plugins = {
   { "beauwilliams/focus.nvim", event = "VeryLazy", config = 'require("focus").setup()' },
   {
     "ron89/thesaurus_query.vim",
-    init = function()
+    event = "VeryLazy",
+    config = function()
       require "plugins.configs.thesaurus"
     end,
   },
@@ -355,8 +357,9 @@ local default_plugins = {
   {
     -- Improve folding
     "kevinhwang91/nvim-ufo",
+    event = "VeryLazy",
     dependencies = { "kevinhwang91/promise-async" },
-    init = function()
+    config = function()
       require "plugins.configs.ufo"
     end,
   },
@@ -403,7 +406,7 @@ local default_plugins = {
       "haydenmeade/neotest-jest",
       "nvim-neotest/neotest-plenary",
     },
-    init = function()
+    config = function()
       require "plugins.configs.neotest"
     end,
   },
