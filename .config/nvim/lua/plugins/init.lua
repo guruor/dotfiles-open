@@ -72,8 +72,8 @@ local default_plugins = {
   },
   {
     "folke/which-key.nvim",
-    keys = { "<leader>", ",", '"', "'", "`" },
-    config = function()
+    -- keys = { "<leader>", ",", '"', "'", "`" },
+    init = function()
       require "plugins.configs.whichkey"
     end,
   },
