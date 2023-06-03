@@ -248,7 +248,11 @@ local default_plugins = {
     end,
   },
   -- easily search for, substitute, and abbreviate multiple variants of a word, replaces vim-abolish
-  { "johmsalas/text-case.nvim", config = 'require("textcase").setup()' },
+  {
+    "johmsalas/text-case.nvim",
+    config = 'require("textcase").setup()',
+    keys = { { "ga", mode = { "n", "v" } } },
+  },
   {
     "ntpeters/vim-better-whitespace",
     init = function()
