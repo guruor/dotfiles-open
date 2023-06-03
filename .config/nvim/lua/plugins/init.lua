@@ -286,12 +286,11 @@ local default_plugins = {
   {
     "kristijanhusak/vim-dadbod-ui",
     ft = "sql",
-    lazy = false, -- Need to load it early, since some autocmds depends on it
     dependencies = {
       "tpope/vim-dadbod",
       "kristijanhusak/vim-dadbod-completion",
     },
-    init = function()
+    config = function()
       if utils.file_exists(vim.fn.expand "$HOME" .. "/.config/nvim/lua/Private/plugins/configs/dadbod.lua") then
         require("Private/plugins/configs/dadbod").setup()
       end
