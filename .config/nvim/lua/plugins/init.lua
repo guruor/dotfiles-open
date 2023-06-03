@@ -241,7 +241,7 @@ local default_plugins = {
   },
   {
     "numToStr/Comment.nvim",
-    keys = { { "gc", mode = { "n", "v" }, "gcc" } },
+    keys = { { "gc", mode = { "n", "v" } } },
     dependencies = { "JoosepAlviste/nvim-ts-context-commentstring", event = "BufRead" },
     config = function()
       require("plugins.configs.misc").comment()
