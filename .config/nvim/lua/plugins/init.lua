@@ -319,7 +319,7 @@ local default_plugins = {
         "iamcco/markdown-preview.nvim",
         ft = { "markdown", "vimwiki" },
         -- lazy = false,
-        build = "cd app && yarn install",
+        build = 'function() vim.fn["mkdp#util#install"]() end',
       },
       -- {
       --   -- vim-polyglot is needed for `plantuml` syntax
