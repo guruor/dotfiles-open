@@ -39,7 +39,7 @@ wk.register(keys, { prefix = localleader })
 wk.register(keys, { prefix = localleader, mode = 'v' })
 
 keys = {
-    ["\\"] = { ":Lspsaga outline<CR>", "Toggle tagbar" },
+    ["\\"] = { ":Lspsaga outline<CR>", "Toggle outline" },
     ["C"] = { ":Code!!<CR>", "Virtual REPL" },
     ["P"] = { ":!opout %<CR>", "Preview files" },
     ["_"] = { "<C-W>s", "Split below" },
