@@ -69,13 +69,6 @@ local default_plugins = {
     end,
   },
   {
-    "majutsushi/tagbar",
-    event = "VeryLazy",
-    init = function()
-      require("plugins.configs.misc").tagbar()
-    end,
-  },
-  {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
     dependencies = {
