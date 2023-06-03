@@ -192,7 +192,6 @@ local default_plugins = {
       },
     },
   },
-
   "bufbuild/vim-buf",
 
   -- Debugging
@@ -261,9 +260,8 @@ local default_plugins = {
   },
   {
     "rmagatti/auto-session",
-    lazy = false,
     opts = require("plugins.configs.misc").auto_session,
-    config = function(_, opts)
+    init = function(_, opts)
       require("auto-session").setup(opts)
     end,
   },
