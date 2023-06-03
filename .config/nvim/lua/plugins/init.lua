@@ -31,9 +31,7 @@ local default_plugins = {
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
     build = ":TSUpdate",
     dependencies = {
-      "nvim-treesitter/nvim-treesitter-context",
       { "LiadOz/nvim-dap-repl-highlights", lazy = false },
-      { "nvim-treesitter/playground", cmd = "TSPlaygroundToggle" },
     },
     opts = require("plugins.configs.treesitter").options,
     config = function(_, opts)
@@ -41,6 +39,16 @@ local default_plugins = {
       require("nvim-treesitter.configs").setup(opts)
       require("plugins.configs.treesitter").additional_setup()
     end,
+  },
+  {
+    "nvim-treesitter/playground",
+    cmd = "TSPlaygroundToggle",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+  },
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    event = "BufRead",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
   },
   {
     "romgrk/barbar.nvim",
