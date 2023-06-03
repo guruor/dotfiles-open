@@ -32,7 +32,6 @@ local default_plugins = {
     build = ":TSUpdate",
     dependencies = {
       "nvim-treesitter/nvim-treesitter-context",
-      "JoosepAlviste/nvim-ts-context-commentstring",
       { "LiadOz/nvim-dap-repl-highlights", lazy = false },
       { "nvim-treesitter/playground", cmd = "TSPlaygroundToggle" },
     },
@@ -241,7 +240,9 @@ local default_plugins = {
   {
     "numToStr/Comment.nvim",
     keys = { { "gc", mode = { "n", "v" } } },
-    dependencies = { "JoosepAlviste/nvim-ts-context-commentstring", event = "BufRead" },
+    dependencies = {
+      { "JoosepAlviste/nvim-ts-context-commentstring", dependencies = "nvim-treesitter/nvim-treesitter" },
+    },
     config = function()
       require("plugins.configs.misc").comment()
     end,
