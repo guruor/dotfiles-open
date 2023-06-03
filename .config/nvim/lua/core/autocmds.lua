@@ -346,7 +346,7 @@ autocmd("VimLeave", {
 
 -- Vimwiki default directory based on current working directory
 autocmd({ "UIEnter" }, {
-  pattern = "*",
+  pattern = "*.md",
   callback = function()
     local wikiPath = vim.fn.expand "$VIMWIKI_DIR"
     local currPath = vim.fn.getcwd() .. "/"
