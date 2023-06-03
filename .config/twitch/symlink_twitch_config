@@ -4,7 +4,7 @@
 TARGET_DIR="$HOME/Library/Application Support/Twitch Studio"
 
 # Define the files to be symlinked
-FILES=("hotkeys.json" "layouts.bak.json" "layouts.json")
+FILES=("hotkeys.json" "layouts.json")
 
 # Loop through the files and create symbolic links
 for FILE in "${FILES[@]}"
