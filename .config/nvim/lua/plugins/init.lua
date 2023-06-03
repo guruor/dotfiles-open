@@ -75,7 +75,7 @@ local default_plugins = {
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
       "jvgrootveld/telescope-zoxide",
     },
-    init = function()
+    config = function()
       require "plugins.configs.telescope"
     end,
   },
