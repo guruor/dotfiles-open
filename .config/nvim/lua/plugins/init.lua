@@ -138,7 +138,6 @@ local default_plugins = {
     dependencies = {
       { "simrat39/rust-tools.nvim", ft = "rs" },
       "jose-elias-alvarez/typescript.nvim",
-      { "fatih/vim-go", ft = "go", build = ":GoUpdateBinaries" },
       {
         "williamboman/mason.nvim",
         cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
@@ -149,6 +148,19 @@ local default_plugins = {
       { "glepnir/lspsaga.nvim", event = "LspAttach" },
       "jose-elias-alvarez/null-ls.nvim",
     },
+  },
+  {
+    "ray-x/go.nvim",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function()
+      require("go").setup()
+    end,
+    event = { "CmdlineEnter" },
+    ft = { "go", "gomod" },
+    build = ':lua require("go.install").update_all_sync()',
   },
   "mhartington/formatter.nvim",
   {
