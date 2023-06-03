@@ -212,7 +212,7 @@ local default_plugins = {
   -- Task runner
   {
     "stevearc/overseer.nvim",
-    keys = { "<leader>t" },
+    keys = { { "<leader>t" } },
     config = function()
       require "plugins.configs.overseer"
     end,
@@ -401,7 +401,7 @@ local default_plugins = {
   },
   {
     "nvim-neotest/neotest",
-    keys = { "<leader>rt" },
+    keys = { { "<leader>rt" } },
     dependencies = {
       "vim-test/vim-test",
       "nvim-neotest/neotest-vim-test",
