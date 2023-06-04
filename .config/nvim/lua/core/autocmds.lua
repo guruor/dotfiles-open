@@ -143,38 +143,6 @@ autocmd({ "TermOpen" }, {
   group = generalSettingsGroup,
 })
 
---------------- Enable folding -----------------
-local foldSettingsGroup = augroup("Fold settings", { clear = true })
-autocmd("BufReadPre", {
-  pattern = "*",
-  callback = function()
-    vim.opt.foldenable = true
-    vim.opt.foldcolumn = "1"
-    vim.opt.foldlevel = 99
-    vim.opt.foldlevelstart = 99
-    vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
-    vim.opt.foldmethod = "indent"
-  end,
-  group = foldSettingsGroup,
-})
-
-autocmd("BufEnter", {
-  pattern = "*.md",
-  callback = function()
-    vim.opt.foldmethod = "expr"
-    vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-  end,
-  group = foldSettingsGroup,
-})
-
-autocmd("BufEnter", {
-  pattern = "*.html",
-  callback = function()
-    vim.opt.foldlevel = 0
-  end,
-  group = foldSettingsGroup,
-})
-
 --------------- Neomutt -----------------
 autocmd({ "BufRead", "BufNewFile" }, {
   pattern = "/tmp/neomutt*",
