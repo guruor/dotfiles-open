@@ -248,8 +248,8 @@ function CloseAllFloatingWindows()
   local closed_windows = {}
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local config = vim.api.nvim_win_get_config(win)
-    if config.relative ~= "" then  -- is_floating_window?
-      vim.api.nvim_win_close(win, false)  -- do not force
+    if config.relative ~= "" then -- is_floating_window?
+      vim.api.nvim_win_close(win, false) -- do not force
       table.insert(closed_windows, win)
     end
   end
@@ -277,7 +277,7 @@ function AddTerminalNavigation()
   -- This could cause issue with terminal programs like `fzf`,
   -- you are safe as long as you are using <c-n> and <c-p> to navigate through options
   -- https://github.com/christoomey/vim-tmux-navigator/pull/172#issuecomment-612219227
-  if vim.bo.filetype == 'toggleterm' then
+  if vim.bo.filetype == "toggleterm" then
     vim.api.nvim_buf_set_keymap(0, "t", "<c-h>", "<c-\\><c-n>:TmuxNavigateLeft<cr>", { noremap = true, silent = true })
     vim.api.nvim_buf_set_keymap(0, "t", "<c-j>", "<c-\\><c-n>:TmuxNavigateDown<cr>", { noremap = true, silent = true })
     vim.api.nvim_buf_set_keymap(0, "t", "<c-k>", "<c-\\><c-n>:TmuxNavigateUp<cr>", { noremap = true, silent = true })
