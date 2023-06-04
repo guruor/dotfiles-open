@@ -165,11 +165,16 @@ local default_plugins = {
   },
   "mhartington/formatter.nvim",
   {
+    -- Doesn't work with lazy loading
     "andymass/vim-matchup",
-    event = "VeryLazy",
+    -- keys = { { "%", mode = { "n", "v" } }, { "g%", mode = { "n", "v" } } },
+    lazy = false,
     config = function()
       vim.g.matchup_matchparen_offscreen = {}
+      vim.g.matchup_matchparen_enabled = 0
+      vim.g.matchup_matchparen_deferred = 1
     end,
+    dependencies = "nvim-treesitter/nvim-treesitter",
   },
   {
     "hrsh7th/nvim-cmp",
