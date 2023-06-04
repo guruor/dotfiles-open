@@ -363,6 +363,9 @@ local default_plugins = {
     end,
   },
   {
+    -- Doesn't work with lazy loading
+    -- For some reason this plugin isn't working with lazy loading,
+    -- it should ideally be enabled for specific filetypes
     "windwp/nvim-ts-autotag",
     dependencies = "nvim-treesitter/nvim-treesitter",
     lazy = false,
