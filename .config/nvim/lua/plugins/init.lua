@@ -31,6 +31,7 @@ local default_plugins = {
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
     build = ":TSUpdate",
     dependencies = {
+      { "JoosepAlviste/nvim-ts-context-commentstring" },
       { "LiadOz/nvim-dap-repl-highlights", lazy = false },
     },
     opts = require("plugins.configs.treesitter").options,
@@ -262,9 +263,6 @@ local default_plugins = {
   {
     "numToStr/Comment.nvim",
     keys = { { "gc", mode = { "n", "v" } } },
-    dependencies = {
-      { "JoosepAlviste/nvim-ts-context-commentstring", dependencies = "nvim-treesitter/nvim-treesitter" },
-    },
     config = function()
       require("plugins.configs.misc").comment()
     end,
