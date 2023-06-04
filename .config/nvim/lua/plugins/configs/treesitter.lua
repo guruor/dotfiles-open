@@ -47,6 +47,7 @@ M.options = {
     "sql",
     "query",
     "dap_repl",
+    "comment"
   },
   context_commentstring = {
     enable_autocmd = false,
