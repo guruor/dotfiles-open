@@ -175,10 +175,15 @@ end
 function RefreshDBUIConnection(connectionName)
   local connection_map = GetDBUIConnectiondMap()
   local conn = connection_map[connectionName]
-  vim.b.dbui_db_key_name = conn.name .. "_" .. conn.source
-  vim.cmd "DBUIFindBuffer"
-  vim.cmd "DBUIFindBuffer"
-  vim.cmd "DBUIToggle"
+  if conn ~= nil then
+    print("Preparing to connect with: " .. conn.name)
+    vim.b.dbui_db_key_name = conn.name .. "_" .. conn.source
+    vim.cmd "DBUIFindBuffer"
+    vim.cmd "DBUIFindBuffer"
+    vim.cmd "DBUIToggle"
+  else
+    print "Dadbod plugin is not ready to connect"
+  end
 end
 
 function ChooseDBUIConnection()
@@ -195,17 +200,25 @@ function ChooseDBUIConnection()
 end
 
 function ChooseDBUIConnectionOptional()
+  local dbuiPath = vim.fn.expand "$DB_QUERIES_PATH"
+  local currPath = vim.fn.getcwd() .. "/"
   print "Choosing db connection..."
-  local cwd = vim.fn.getcwd()
-  if not vim.b.dbui_db_key_name then
-    local connectionDir = cwd:match "^.+/(.+)$"
-    if connectionDir then
-      RefreshDBUIConnection(connectionDir)
+  if currPath:find("^" .. dbuiPath) ~= nil then
+    local cwd = vim.fn.getcwd()
+    if not vim.b.dbui_db_key_name then
+      local connectionDir = cwd:match "^.+/(.+)$"
+      if connectionDir then
+        RefreshDBUIConnection(connectionDir)
+      else
+        ChooseDBUIConnection()
+      end
     else
-      ChooseDBUIConnection()
+      print("Already active connection: " .. vim.b.dbui_db_key_name)
+      local connectionDir = cwd:match "^.+/(.+)$"
+      RefreshDBUIConnection(connectionDir)
     end
   else
-    print("Already active connection: " .. vim.b.dbui_db_key_name)
+    print "Not in DB_QUERIES_PATH"
   end
 end
 
