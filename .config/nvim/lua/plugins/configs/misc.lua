@@ -10,7 +10,7 @@ end
 
 M.gruvbox_material = function()
   vim.g.gruvbox_material_foreground = "material" -- Available values:   `'material'`, `'mix'`, `'original'`
-  vim.g.gruvbox_material_background = "medium"   -- Available values: 'hard', 'medium'(default), 'soft'
+  vim.g.gruvbox_material_background = "medium" -- Available values: 'hard', 'medium'(default), 'soft'
   vim.g.gruvbox_material_better_performance = 1
   vim.g.gruvbox_material_enable_bold = 1
   vim.g.gruvbox_material_enable_italic = 1

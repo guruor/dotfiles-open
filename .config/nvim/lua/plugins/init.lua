@@ -373,7 +373,7 @@ local default_plugins = {
       require "plugins.configs.thesaurus"
     end,
   },
-  { "christoomey/vim-tmux-navigator", event="VeryLazy" }, -- Switch windows with C-[h,j,k,l,\], same for tmux panes
+  { "christoomey/vim-tmux-navigator", event = "VeryLazy" }, -- Switch windows with C-[h,j,k,l,\], same for tmux panes
   { "NvChad/nvim-colorizer.lua", cmd = { "ColorizerToggle" }, config = 'require("colorizer").setup()' },
   {
     "m4xshen/smartcolumn.nvim",
