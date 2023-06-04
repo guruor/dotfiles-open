@@ -173,15 +173,6 @@ autocmd({ "BufRead", "BufNewFile" }, {
 })
 
 --------------- Rest nvim -----------------
--- Detect http filetype
-autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = "*.http",
-  callback = function()
-    vim.bo.filetype = "http"
-  end,
-  group = generalSettingsGroup,
-})
-
 -- Detect file type for env files for rest-nvim
 autocmd({ "BufRead", "BufNewFile" }, {
   pattern = vim.fn.expand "$REST_NVIM_COLLECTION_PATH" .. "/envs/*",
