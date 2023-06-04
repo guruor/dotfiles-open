@@ -3,6 +3,7 @@
 local M = {}
 
 M.options = {
+  auto_install = true,
   highlight = {
     enable = true,
     disable = {},
@@ -17,6 +18,10 @@ M.options = {
       "html", "javascript", "typescript", "javascriptreact", "typescriptreact", "svelte", "vue",
       "tsx", "jsx", "rescript", "css", "lua", "xml", "php", "markdown",
     },
+  },
+  matchup = {
+    enable = true,
+    enable_quotes = true,
   },
   ensure_installed = {
     "python",
