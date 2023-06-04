@@ -59,7 +59,6 @@ local default_plugins = {
       require "plugins.configs.bufferline"
     end,
   },
-  "j-hui/fidget.nvim",
 
   -- Easy search, navigation
   {
@@ -447,6 +446,15 @@ local default_plugins = {
     config = function()
       require "plugins.configs.neotest"
     end,
+  },
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    opts = require("plugins.configs.misc").noice,
+    config = function(_, opts)
+      require("noice").setup(opts)
+    end,
+    dependencies = { "MunifTanjim/nui.nvim", "rcarriga/nvim-notify" },
   },
   -- Yet to explorer
   -- "metakirby5/codi.vim",
