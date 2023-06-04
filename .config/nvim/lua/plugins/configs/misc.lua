@@ -176,5 +176,40 @@ M.dressing = {
   },
 }
 
+M.noice = {
+  presets = {
+    long_message_to_split = true,
+  },
+  lsp = {
+    -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+    override = {
+      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+      ["vim.lsp.util.stylize_markdown"] = true,
+      ["cmp.entry.get_documentation"] = true,
+    },
+  },
+  -- Read this to understand what kind messages needs to be filtered
+  -- https://github.com/folke/noice.nvim/wiki/A-Guide-to-Messages
+  routes = {
+    {
+      filter = { event = "msg_showmode" },
+      view = "cmdline",
+    },
+    {
+      -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes#hide-written-messages
+      filter = {
+        any = {
+          { event = "msg_show", kind = "", find = "[w]" },
+          { event = "msg_show", kind = { "", "echo" }, find = "seconds? ago" },
+          { event = "msg_show", kind = "emsg", find = "E486" },
+          -- { event = "msg_show", kind = { "echo", "echomsg" }, instant = true },
+          -- { event = "msg_show", find = "E325" },
+          -- { event = "msg_show", find = "Found a swap file" },
+        },
+      },
+      opts = { skip = true },
+    },
+  },
+}
 
 return M

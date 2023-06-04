@@ -8,7 +8,6 @@ local M = {}
 -- Adding some lsp related config from kickstart.nvim
 -- https://github.com/nvim-lua/kickstart.nvim/blob/master/init.lua
 require 'lsp.mason-tool-installer'
-require"fidget".setup{}
 -- Setup neovim lua configuration
 require('neodev').setup()
 local mason_lspconfig = require 'mason-lspconfig'
