@@ -313,8 +313,11 @@ local default_plugins = {
     "kristijanhusak/vim-dadbod-ui",
     ft = "sql",
     dependencies = {
-      "tpope/vim-dadbod",
-      "kristijanhusak/vim-dadbod-completion",
+      {
+        "tpope/vim-dadbod",
+        ft = "sql",
+      },
+      { "kristijanhusak/vim-dadbod-completion", ft = "sql" },
     },
     config = function()
       if utils.file_exists(vim.fn.expand "$HOME" .. "/.config/nvim/lua/Private/plugins/configs/dadbod.lua") then
