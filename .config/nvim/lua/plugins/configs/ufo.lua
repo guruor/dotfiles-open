@@ -21,7 +21,7 @@ local handler = function(virtText, lnum, endLnum, width, truncate)
   local newVirtText = {}
   local totalLines = vim.api.nvim_buf_line_count(0)
   local foldedLines = endLnum - lnum
-  local suffix = ("  %d %d%%"):format(foldedLines, foldedLines / totalLines * 100)
+  local suffix = ("  %d %d%%"):format(foldedLines, foldedLines / totalLines * 100)
   local sufWidth = vim.fn.strdisplaywidth(suffix)
   local targetWidth = width - sufWidth
   local curWidth = 0
@@ -49,8 +49,38 @@ local handler = function(virtText, lnum, endLnum, width, truncate)
   return newVirtText
 end
 
+local ftMap = {
+  python = { "lsp", "indent" },
+  go = { "lsp", "treesitter" },
+  vim = "indent",
+  git = "",
+}
+
+local function customizeSelector(bufnr)
+  local function handleFallbackException(err, providerName)
+    if type(err) == "string" and err:match "UfoFallbackException" then
+      return require("ufo").getFolds(providerName, bufnr)
+    else
+      return require("promise").reject(err)
+    end
+  end
+
+  return require("ufo")
+    .getFolds("lsp", bufnr)
+    :catch(function(err)
+      return handleFallbackException(err, "treesitter")
+    end)
+    :catch(function(err)
+      return handleFallbackException(err, "indent")
+    end)
+end
+
 require("ufo").setup {
   open_fold_hl_timeout = 400,
+  provider_selector = function(bufnr, filetype, buftype)
+    -- return { "lsp", "indent" }
+    return ftMap[filetype] or customizeSelector
+  end,
   preview = {
     win_config = {
       border = { "", "─", "", "", "", "─", "", "" },
