@@ -144,7 +144,10 @@ local default_plugins = {
         cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
         build = ":MasonUpdate",
       },
-      "WhoIsSethDaniel/mason-tool-installer.nvim",
+      {
+        "WhoIsSethDaniel/mason-tool-installer.nvim",
+        cmd = { "MasonToolsInstall", "MasonToolsUpdate" },
+      },
       "williamboman/mason-lspconfig.nvim",
       { "glepnir/lspsaga.nvim", event = "LspAttach" },
       "jose-elias-alvarez/null-ls.nvim",
