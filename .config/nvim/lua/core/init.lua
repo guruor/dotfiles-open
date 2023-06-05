@@ -22,7 +22,7 @@ g.maplocalleader = "," -- Comma as local leader key
 local border_style = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' }
 g.border_style = border_style
 -- disable some default providers
-for _, provider in ipairs { "node", "perl", "python3", "ruby" } do
+for _, provider in ipairs { "node", "perl", "ruby" } do
   g["loaded_" .. provider .. "_provider"] = 0
 end
 
