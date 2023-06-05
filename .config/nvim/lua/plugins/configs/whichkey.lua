@@ -286,7 +286,7 @@ keys = {
         name = 'Authoring',
         ["c"] = { "1z=", "Correct misspelled word" },
         ["t"] = { ":ThesaurusQueryReplaceCurrentWord<CR>", "Replace word under cursor with synonym" },
-        ["T"] = { "y:ThesaurusQueryReplace<CR>", "Replace visual selection with synonym" }
+        ["T"] = { "y:ThesaurusQueryReplace <C-r>\"<CR>", "Replace visual selection with synonym", silent = false }
     }
 }
 wk.register(keys, { prefix = leader })

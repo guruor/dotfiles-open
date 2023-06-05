@@ -389,7 +389,7 @@ local default_plugins = {
   { "beauwilliams/focus.nvim", event = "VeryLazy", config = 'require("focus").setup()' },
   {
     "ron89/thesaurus_query.vim",
-    event = "VeryLazy",
+    keys = { { "<leader>a" } },
     config = function()
       require "plugins.configs.thesaurus"
     end,

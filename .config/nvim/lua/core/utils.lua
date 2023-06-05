@@ -126,7 +126,7 @@ M.FirstRunSetup = function()
     vim.cmd "silent !pyenv install 3.10.0 || true"
     vim.cmd "silent !pyenv virtualenv 3.10.0 nvim || true"
     vim.cmd 'silent !pyenv virtualenv 3.10.0 debugpy || true " Creating a virtualenv for debugpy for python debugging'
-    vim.cmd("silent !" .. pyenvPath .. "/nvim/bin/python -m pip install neovim pynvim")
+    vim.cmd("silent !" .. pyenvPath .. "/nvim/bin/python -m pip install pynvim")
     vim.cmd("silent !" .. pyenvPath .. "/debugpy/bin/python -m pip install debugpy")
   end
 end

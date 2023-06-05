@@ -11,10 +11,12 @@ if not vim.fn.isdirectory(vim.fn.system('echo -n "${XDG_CONFIG_HOME:-$HOME/.conf
 end
 
 local home_dir = vim.fn.expand "$HOME"
-vim.opt.thesaurus = home_dir .. "/.config/nvim/thesaurus/mthesaur.txt"
+local thesaurus_path = home_dir .. "/.config/nvim/thesaurus/mthesaur.txt"
+vim.g.tq_mthesaur_file = thesaurus_path
+vim.opt.thesaurus = thesaurus_path
+vim.g.tq_python_version = 3
 vim.opt.dictionary = "/usr/share/dict/words"
 
-vim.g.tq_mthesaur_file = home_dir .. "/.config/nvim/thesaurus/mthesaur.txt"
 -- local tq_enabled_backends=["openoffice_en", "datamuse_com", "mthesaur_txt"]
 -- Preventing thesaurus_query from binding any keys, will map custom keys using whichkey
 vim.g.tq_map_keys = 0
