@@ -138,6 +138,7 @@ autocmd({ "TermOpen" }, {
   callback = function()
     vim.opt.number = false
     vim.opt.relativenumber = false
+    vim.cmd ":DisableWhitespace"
     AddTerminalNavigation()
   end,
   group = generalSettingsGroup,

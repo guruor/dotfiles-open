@@ -241,6 +241,7 @@ keys = {
         ["ff"] = { ":FocusToggle<CR>", "Focus nvim" },
         ["r"] = { ":set norelativenumber!<CR>", "Relative line numbers" },
         ["w"] = { ":set wrap!<CR>", "Word wrap" },
+        ["W"] = { ":ToggleWhitespace<CR>", "Whitespace" },
         ["c"] = { ":ColorizerToggle<CR>", "Colorizer" },
         ["l"] = { ":Twilight<CR>", "Twilight" },
         ["i"] = { ":IndentBlanklineToggle<CR>", "Indent lines" },
