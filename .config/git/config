@@ -85,9 +85,6 @@
     excludesfile = ~/.config/git/ignore
     pager = delta
 
-[include]
-     path = ~/.config/delta/themes.gitconfig
-
 [delta]
     features = gruvmax-fang
     paging = always
@@ -153,9 +150,6 @@
 [credential]
     helper = store
 
-[gpg]
-    program = gpg
-
 [url "git@github.com:"]
     insteadOf = "gh:"
     pushInsteadOf = "gh:"
@@ -173,3 +167,5 @@
 
 [include]
   path = ~/.config/git/config-private
+  path = ~/.config/delta/themes.gitconfig
+
