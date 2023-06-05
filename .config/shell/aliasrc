@@ -5,7 +5,6 @@
 
 # Verbosity and settings that you pretty much just always are going to want.
 alias \
-	c="clear" \
 	cp="cp -iv" \
 	mv="mv -iv" \
 	rm="rm -vI" \
@@ -38,15 +37,16 @@ alias \
 	trem="transmission-remote" \
 	YT="youtube-viewer" \
 	sdn="sudo shutdown -h now" \
-	f="$FILE" \
-	e="$EDITOR" \
-	v="$EDITOR" \
+	f='$FILE' \
+	e='$EDITOR' \
+	v='$EDITOR' \
+  c='$EDITOR -u ${MYVIMRCLSP} --listen ~/.cache/nvim/sockets/nvim-$RANDOM.sock' \
+  code='$EDITOR -u ${MYVIMRCLSP} --listen ~/.cache/nvim/sockets/nvim-$RANDOM.sock' \
 	p="sudo pacman" \
 	xi="sudo xbps-install" \
 	xr="sudo xbps-remove -R" \
 	xq="xbps-query" \
     tt="taskwarrior-tui" \
-    code='nvim -u ${MYVIMRCLSP} --listen ~/.cache/nvim/sockets/nvim-$RANDOM.sock' \
     lf="lfimg" \
 	# z="zathura" \
 
