@@ -1,5 +1,5 @@
 vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
-vim.opt.foldcolumn = "1"
+vim.opt.foldcolumn = "0"
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
 vim.opt.foldenable = true
@@ -19,7 +19,7 @@ end)
 
 local handler = function(virtText, lnum, endLnum, width, truncate)
   local newVirtText = {}
-  local totalLines = vim.api.nvim_buf_line_count(0)
+  -- local totalLines = vim.api.nvim_buf_line_count(0)
   local foldedLines = endLnum - lnum
   -- local suffix = (" 󰦸 %d %d%%"):format(foldedLines, foldedLines / totalLines * 100)
   local suffix = (" 󰦷 %d"):format(foldedLines)
