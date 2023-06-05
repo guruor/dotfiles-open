@@ -51,13 +51,13 @@ keys = {
     ["U"] = { ":UndotreeToggle<CR>", "Undo Tree" },
     ["o"] = { ":Lf<CR>", "Open LF file explorer" },
     ["O"] = { ":lua require('lf').start(vim.fn.getcwd())<CR>", "Open LF file explorer" },
-    ["S"] = { ":%s//gc<Left><Left><Left>", "Find and replace/substitute" }
+    ["S"] = { ":%s/<C-r><C-w>//gc<Left><Left><Left>", "Find and replace/substitute", silent = false }
 }
 wk.register(keys, { prefix = leader })
 wk.register(keys, { prefix = leader, mode = 'v' })
 
 keys_visual = copy(keys)
-keys_visual["S"] = { '"hy:%s/<C-r>h//gc<left><left><left>', "Find and replace/substitute visual selected" }
+keys_visual["S"] = { '"hy:%s/<C-r>h//gc<left><left><left>', "Find and replace/substitute visual selected", silent = false }
 wk.register(keys_visual, { prefix = leader, mode = 'v' })
 
 keys = {
