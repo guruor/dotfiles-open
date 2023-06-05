@@ -15,6 +15,11 @@ M.general = {
     ["<C-s>"] = { "<C-O><cmd> w <CR>", "save file" },
   },
   n = {
+    -- Same functionality as default but keeps the cursor in center
+    ["<C-u>"] = { "<C-u>zz", "Scroll up" },
+    ["<C-d>"] = { "<C-d>zz", "Scroll down" },
+    ["n"] = { "nzzzv", "Search next" },
+    ["N"] = { "Nzzzv", "Search prev" },
     ["<C-c>"] = { "<Esc>", "Escape" },
     -- switch between windows
     ["<C-h>"] = { "<C-w>h", "window left" },
