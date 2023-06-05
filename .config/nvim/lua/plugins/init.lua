@@ -1,6 +1,14 @@
 local utils = require "utils"
 
 -- All plugins have lazy=true by default,to load a plugin on startup just lazy=false
+--
+-- This is the load sequence followed by lazy, can be seen by doing `:h lazy.nvim-lazy.nvim-startup-sequence`:
+--
+-- 1. All the plugins’ `init()` functions are executed
+-- 2. All plugins with `lazy=false` are loaded. This includes sourcing `/plugin` and `/ftdetect` files. (`/after` will not be sourced yet)
+-- 3. All files from `/plugin` and `/ftdetect` directories in you rtp are sourced (excluding `/after`)
+-- 4. All `/after/plugin` files are sourced (this includes `/after` from plugins)
+
 -- List of all default plugins & their definitions
 local default_plugins = {
 
@@ -18,12 +26,14 @@ local default_plugins = {
       require("plugins.configs.misc").gruvbox_material()
       return require "plugins.configs.colorscheme"
     end,
+    lazy = false,
   },
   {
     "nvim-lualine/lualine.nvim",
     init = function()
       require "plugins.configs.statusline"
     end,
+    lazy = false,
   },
   { "vimpostor/vim-tpipeline", lazy = false }, -- Merges vim statusline with tmux
   {
@@ -58,6 +68,7 @@ local default_plugins = {
     init = function()
       require "plugins.configs.bufferline"
     end,
+    lazy = false,
   },
 
   -- Easy search, navigation
@@ -69,6 +80,7 @@ local default_plugins = {
     init = function()
       require "plugins.configs.fzf"
     end,
+    lazy = false,
   },
   {
     "folke/which-key.nvim",
@@ -76,6 +88,7 @@ local default_plugins = {
     init = function()
       require "plugins.configs.whichkey"
     end,
+    lazy = false,
   },
   {
     "nvim-telescope/telescope.nvim",
@@ -255,6 +268,7 @@ local default_plugins = {
     config = function(_, opts)
       require("indent_blankline").setup(opts)
     end,
+    lazy = false,
   },
 
   { "mbbill/undotree", cmd = "UndotreeToggle" },
@@ -285,6 +299,7 @@ local default_plugins = {
     init = function()
       require("plugins.configs.misc").whitespace()
     end,
+    lazy = false,
   },
   {
     "rmagatti/auto-session",
@@ -292,6 +307,7 @@ local default_plugins = {
     init = function(_, opts)
       require("auto-session").setup(opts)
     end,
+    lazy = false,
   },
 
   -- Better working environment
