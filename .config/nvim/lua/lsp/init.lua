@@ -383,9 +383,6 @@ lspconfig.clangd.setup {
 -- Neovim's built-in LSP with a highly performant UI.
 require("lspsaga").setup()
 
--- " LspSaga remove border highlighting
--- " highlight SagaBorder guifg=#ffffff guibg=None
-vim.api.nvim_set_hl(0, 'SagaBorder', { fg = "#ffffff", bg = nil })
 lspconfig_ui.default_options.border = vim.g.border_style
 
 
