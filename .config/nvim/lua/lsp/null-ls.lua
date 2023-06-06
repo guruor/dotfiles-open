@@ -5,6 +5,8 @@ local methods = require("null-ls.methods")
 
 local FORMATTING = methods.internal.FORMATTING
 
+local home_dir=os.getenv("HOME")
+local cbfmt_config_file = home_dir .. "/.config/cbfmt/cbfmt.toml"
 local cbfmt = h.make_builtin({
     name = "cbfmt",
     meta = {
@@ -19,6 +21,8 @@ local cbfmt = h.make_builtin({
             "--stdin-filepath",
             "$FILENAME",
             "--best-effort",
+            "--config",
+            cbfmt_config_file,
         },
         to_stdin = true,
     },
