@@ -1,42 +1,21 @@
 local null_ls = require("null-ls")
 
-local h = require("null-ls.helpers")
-local methods = require("null-ls.methods")
-
-local FORMATTING = methods.internal.FORMATTING
-
-local home_dir=os.getenv("HOME")
-local cbfmt_config_file = home_dir .. "/.config/cbfmt/cbfmt.toml"
-local cbfmt = h.make_builtin({
-    name = "cbfmt",
-    meta = {
-        url = "https://github.com/lukas-reineke/cbfmt",
-        description = "A tool to format codeblocks inside markdown and org documents.",
-    },
-    method = FORMATTING,
-    filetypes = { "markdown", "org", "vimwiki" },
-    generator_opts = {
-        command = "cbfmt",
-        args = {
-            "--stdin-filepath",
-            "$FILENAME",
-            "--best-effort",
-            "--config",
-            cbfmt_config_file,
-        },
-        to_stdin = true,
-    },
-    factory = h.formatter_factory,
-})
-
 local formatting = null_ls.builtins.formatting
 local diagnostics = null_ls.builtins.diagnostics
 local completion = null_ls.builtins.completion
 
+-- Use this doc to extend existing formatters
+-- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTIN_CONFIG.md
+local cbfmt_config_file = os.getenv("HOME") .. "/.config/cbfmt/cbfmt.toml"
 null_ls.setup({
     debug = true,
     sources = {
-        cbfmt,
+        -- Using cbfmt config file to format the codeblocks
+        -- Added support for vimwiki code block formatting in cbfmt formatter
+        formatting.cbfmt.with({
+            extra_filetypes = { "vimwiki" },
+            extra_args = { "--config", cbfmt_config_file, },
+        }),
         formatting.stylua,
         -- prettierd already support a lot of filetypes
         -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/prettierd.lua
