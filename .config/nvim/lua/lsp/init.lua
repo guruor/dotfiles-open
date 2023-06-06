@@ -2,6 +2,7 @@
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 
 local lspconfig = require "lspconfig"
+local lspconfig_ui = require('lspconfig.ui.windows')
 local utils = require "utils"
 local M = {}
 
@@ -385,6 +386,7 @@ require("lspsaga").setup()
 -- " LspSaga remove border highlighting
 -- " highlight SagaBorder guifg=#ffffff guibg=None
 vim.api.nvim_set_hl(0, 'SagaBorder', { fg = "#ffffff", bg = nil })
+lspconfig_ui.default_options.border = vim.g.border_style
 
 
 return M
