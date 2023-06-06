@@ -38,7 +38,12 @@ null_ls.setup({
     sources = {
         cbfmt,
         formatting.stylua,
-        formatting.prettierd,
+        -- prettierd already support a lot of filetypes
+        -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/prettierd.lua
+        -- Extending the formatting for `vimwiki` filetype
+        formatting.prettier.with({
+            extra_filetypes = { "vimwiki" },
+        }),
 
         formatting.autopep8,
         formatting.isort,
