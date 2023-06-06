@@ -43,3 +43,7 @@ if vim.api.nvim_win_get_option(0, "diff") then
     vim.api.nvim_set_hl(0, 'DiffText')
     vim.api.nvim_set_hl(0, 'MatchParen')
 end
+
+-- " LspSaga remove border highlighting
+-- " highlight SagaBorder guifg=#ffffff guibg=None
+vim.api.nvim_set_hl(0, 'SagaBorder', { fg = "#ffffff", bg = nil })
