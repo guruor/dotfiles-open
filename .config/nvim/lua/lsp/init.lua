@@ -41,48 +41,6 @@ vim.lsp.protocol.CompletionItemKind = {
     TypeParameter = " [type]",
 }
 
-M.symbol_kind_icons = {
-    Function = "",
-    Method = "",
-    Variable = "",
-    Constant = "",
-    Interface = "練",
-    Field = "ﰠ",
-    Property = "",
-    Struct = "",
-    Enum = "",
-    Class = "",
-    File = "",
-    Module = "",
-    Namespace = "",
-    Package = "",
-    Constructor = "",
-    String = "",
-    Number = "",
-    Boolean = "◩",
-    Array = "",
-    Object = "",
-    Key = "",
-    Null = "ﳠ",
-    EnumMember = "",
-    Event = "",
-    Operator = "",
-    TypeParameter = "",
-}
-
-M.symbol_kind_colors = {
-    Function = "green",
-    Method = "green",
-    Variable = "blue",
-    Constant = "red",
-    Interface = "cyan",
-    Field = "blue",
-    Property = "blue",
-    Struct = "cyan",
-    Enum = "yellow",
-    Class = "magenta",
-}
-
 local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
 for type, icon in pairs(signs) do
 	local hl = "DiagnosticSign" .. type
