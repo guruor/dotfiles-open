@@ -9,9 +9,10 @@ local mason_tool_installer = require('mason-tool-installer')
 local language_servers = {
   'clangd', 'gopls', 'pyright', 'rust-analyzer', 'vim-language-server', 'json-lsp',
   'yaml-language-server', 'css-lsp', 'html-lsp', 'dockerfile-language-server',
-  'terraform-ls', 'typescript-language-server', 'sqlls', 'efm',
+  'terraform-ls', 'typescript-language-server', 'sqlls',
   'vim-language-server', 'lua-language-server',
   'buf-language-server',
+  -- 'efm',
   -- you can pin a tool to a particular version
   -- { 'golangci-lint', version = 'v1.47.0' },
   -- you can turn off/on auto_update per tool
