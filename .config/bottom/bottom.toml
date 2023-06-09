@@ -72,6 +72,11 @@ enable_gpu_memory = true
 # Hides advanced options to stop a process on Unix-like systems.
 #disable_advanced_kill = false
 
+# These are flags around the process widget.
+[processes]
+#columns = ["PID", "Name", "CPU%", "Mem%", "R/s", "W/s", "T.Read", "T.Write", "User", "State"]
+columns = ["PID", "Name", "CPU%", "Mem%", "User"]
+
 # These are all the components that support custom theming.  Note that colour support
 # will depend on terminal support.
 
