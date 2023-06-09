@@ -18,7 +18,9 @@ rate = 1000
 # Whether to set CPU% on a process to be based on the total CPU or just current usage.
 #current_usage = false
 # Whether to group processes with the same name together by default.
-group_processes = true
+group_processes = false
+# Show tree mode by default in the processes widget, works only when group_processes is false
+tree = true
 # Whether to make process searching case sensitive by default.
 #case_sensitive = false
 # Whether to make process searching look for matching the entire word by default.
@@ -57,8 +59,6 @@ color = "gruvbox"
 mem_as_value = true
 enable_cache_memory = true
 enable_gpu_memory = true
-# Show tree mode by default in the processes widget.
-#tree = false
 # Shows an indicator in table widgets tracking where in the list you are.
 #show_table_scroll_position = false
 # Show processes as their commands by default in the process widget.
@@ -170,4 +170,3 @@ enable_gpu_memory = true
 #regex = true
 #case_sensitive = false
 #whole_word = false
-tree = true
