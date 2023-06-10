@@ -1,9 +1,10 @@
 [tool.pyright]
 include = ["src"]
-exclude = ["**/node_modules",
-    "**/__pycache__",
-    "src/experimental",
-    "src/typestubs"
+exclude = [
+  "**/node_modules",
+  "**/__pycache__",
+  "src/experimental",
+  "src/typestubs",
 ]
 ignore = ["src/oldstuff"]
 stubPath = "src/stubs"
@@ -14,43 +15,52 @@ venv = "atlas"
 # Default values for these rules: https://github.com/microsoft/pyright/blob/main/docs/configuration.md#diagnostic-rule-defaults
 # Enable below carefully, the more rules we enable the more CPU utilization will happen for pyright node service,
 # Neovim will also consume the CPU when rendering those messages
-typeCheckingMode = "basic"  # Possible values "off", "basic", "strict"
+typeCheckingMode = "basic"             # Possible values "off", "basic", "strict"
 reportGeneralTypeIssues = "warning"
 reportPropertyTypeMismatch = "warning"
-reportMissingImports = "error"
-reportMissingTypeStubs = "warning"
 # reportUnknownVariableType = "information"
 # reportUnknownParameterType = "information"
 # reportUnknownArgumentType = "information"
 # reportUnknownMemberType = "information"
 # reportOptionalMemberAccess = "information"
 # reportFunctionMemberAccess = "information"
+useLibraryCodeForTypes = true
 
-pythonVersion = "3.6"
+# Disabling linter and formatting features, will be convered by ruff
+reportMissingImports = "none"
+reportMissingTypeStubs = "none"
+reportMissingModuleSource = "none"
+reportUndefinedVariable = "none"
+disableLanguageServices = true
+disableOrganizeImports = true
+
+pythonVersion = "3.16"
 pythonPlatform = "Linux"
 
-executionEnvironments = [
-  { root = "src" }
-]
+executionEnvironments = [{ root = "src" }]
 
-[tool.pylint]
-[MASTER]
-extend-ignore = "E0101,E0213,E1101,E1102,E1111,E1136,C0103,C0114,C0115,C0116,C0202,C0415,W0105,W0212,W0613,W0622,R0903,R0913,R1720"
-[FORMAT]
-max-line-length = 120
+# [tool.pylint]
+# extend-ignore = "E0101,E0213,E1101,E1102,E1111,E1136,C0103,C0114,C0115,C0116,C0202,C0415,W0105,W0212,W0613,W0622,R0903,R0913,R1720"
+# max-line-length = 120
+#
+#
+# [tool.autopep8]
+# max-line-length = 120
+# ignore = "E0101,E0213,E1101,E1102,E1111,E1136,C0103,C0114,C0115,C0116,C0202,C0415,W0105,W0212,W0613,W0622,R0903,R0913,R1720,F541"
+# aggressive = 2
+#
+# [tool.black]
+# line-length = 120
+# include = '\.pyi?$'
+# extend-exclude = '''
+# A regex preceded with ^/ will apply only to files and directories
+# in the root of the project.
+# ^/foo.py  # exclude a file named foo.py in the root of the project (in addition to the defaults)
+# '''
+# target-version = ['py37']
 
-
-[tool.autopep8]
-max-line-length = 120
-ignore = "E0101,E0213,E1101,E1102,E1111,E1136,C0103,C0114,C0115,C0116,C0202,C0415,W0105,W0212,W0613,W0622,R0903,R0913,R1720,F541"
-aggressive = 2
-
-[tool.black]
+[tool.ruff]
 line-length = 120
-include = '\.pyi?$'
-extend-exclude = '''
-A regex preceded with ^/ will apply only to files and directories
-in the root of the project.
-^/foo.py  # exclude a file named foo.py in the root of the project (in addition to the defaults)
-'''
-target-version = ['py37']
+
+[tool.ruff.pydocstyle]
+convention = "google" # Accepts: "google", "numpy", or "pep257".

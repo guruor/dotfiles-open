@@ -28,8 +28,8 @@ null_ls.setup {
       extra_filetypes = { "vimwiki" },
     },
 
-    formatting.autopep8,
-    formatting.isort,
+    diagnostics.ruff,
+    formatting.ruff,
 
     formatting.gofmt,
     formatting.goimports,
