@@ -9,6 +9,11 @@ local cbfmt_config_file = os.getenv "HOME" .. "/.config/cbfmt/cbfmt.toml"
 null_ls.setup {
   debug = true,
   sources = {
+    -- Rust based generic formatter, really fast and extensible with wasm plugins
+    -- It lacks range formatting as of now,
+    formatting.dprint.with {
+      extra_filetypes = { "vimwiki" },
+    },
     -- Using cbfmt config file to format the codeblocks
     -- Added support for vimwiki code block formatting in cbfmt formatter
     formatting.cbfmt.with {
