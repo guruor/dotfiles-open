@@ -20,11 +20,11 @@ local language_servers = {
 }
 
 local linters_and_formatters = {
-    "isort", "black", "flake8", "autopep8", "mypy",
+    "ruff",
     "goimports", "staticcheck",  "json-to-struct", "gotests", "gomodifytags", "golines", "gofumpt", "impl", "revive",
     "jq", "fixjson",
-     "prettier", "prettierd", "markdownlint", "cbfmt",
     "misspell", "proselint",
+    "prettierd", "markdownlint", "cbfmt",
     "stylua", "luaformatter", "luacheck",
     "vint",
     "shellcheck",
