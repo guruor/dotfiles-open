@@ -2,6 +2,7 @@ local null_ls = require "null-ls"
 
 local formatting = null_ls.builtins.formatting
 local diagnostics = null_ls.builtins.diagnostics
+local code_actions = null_ls.builtins.code_actions
 
 -- Use this doc to extend existing formatters
 -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTIN_CONFIG.md
@@ -24,7 +25,7 @@ null_ls.setup {
     -- prettierd already support a lot of filetypes
     -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/lua/null-ls/builtins/formatting/prettierd.lua
     -- Extending the formatting for `vimwiki` filetype
-    formatting.prettier.with {
+    formatting.prettierd.with {
       extra_filetypes = { "vimwiki" },
     },
 
@@ -39,6 +40,9 @@ null_ls.setup {
     formatting.pg_format,
     -- formatting.sql_formatter,
 
-    diagnostics.eslint,
+    -- Faster alternative to eslint for JS and TS
+    -- diagnostics.deno_lint,
+    diagnostics.eslint_d,
+    code_actions.eslint_d,
   },
 }
