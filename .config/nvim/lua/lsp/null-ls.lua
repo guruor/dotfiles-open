@@ -44,5 +44,11 @@ null_ls.setup {
     -- diagnostics.deno_lint,
     diagnostics.eslint_d,
     code_actions.eslint_d,
+
+    -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#vale
+    -- Faster alternative to textlint and proselint
+    diagnostics.vale.with {
+      extra_filetypes = { "vimwiki" },
+    },
   },
 }
