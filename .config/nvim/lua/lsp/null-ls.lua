@@ -61,5 +61,8 @@ null_ls.setup {
     -- Git hunk actions to stage unstage changes
     code_actions.gitsigns,
 
+    -- OpenAPI linter for yaml and json
+    diagnostics.vacuum,
+
   },
 }
