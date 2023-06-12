@@ -3,6 +3,7 @@ local null_ls = require "null-ls"
 local formatting = null_ls.builtins.formatting
 local diagnostics = null_ls.builtins.diagnostics
 local code_actions = null_ls.builtins.code_actions
+local hover = null_ls.builtins.hover
 
 -- Use this doc to extend existing formatters
 -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTIN_CONFIG.md
@@ -48,6 +49,12 @@ null_ls.setup {
     -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#vale
     -- Faster alternative to textlint and proselint
     diagnostics.vale.with {
+      extra_filetypes = { "vimwiki" },
+    },
+
+    -- As of now it is not working with lspsaga hover_doc,
+    -- use the <leader><L><k> mapping for lsp hover
+    hover.dictionary.with {
       extra_filetypes = { "vimwiki" },
     },
   },
