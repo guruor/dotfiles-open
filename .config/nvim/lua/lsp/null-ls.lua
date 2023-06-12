@@ -57,5 +57,9 @@ null_ls.setup {
     hover.dictionary.with {
       extra_filetypes = { "vimwiki" },
     },
+
+    -- Git hunk actions to stage unstage changes
+    code_actions.gitsigns,
+
   },
 }
