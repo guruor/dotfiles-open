@@ -37,7 +37,6 @@ esac
 export MACHINE=$machine
 
 unsetopt PROMPT_SP
-
 # Default programs:
 export EDITOR="nvim"
 export TERMINAL="st"
@@ -159,6 +158,10 @@ export AUTOSSH_GATETIME=0
 
 export SSH_LOGFILE="${HOME}/.cache/ssh.log"
 export SSH_TUNNEL_CONFIG="${HOME}/.ssh/tunnel-config"
+
+
+# VALE variables
+export VALE_CONFIG_PATH="${HOME}/vale/.vale.ini"
 
 # Specifying the local binary path to avoid conflict with `shortctus` utility available on macos
 [ ! -f ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ] && $HOME/.local/bin/shortcuts >/dev/null 2>&1 &
