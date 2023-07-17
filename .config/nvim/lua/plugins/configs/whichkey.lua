@@ -199,8 +199,8 @@ keys = {
         name = 'LSP',
         ["gd"] = { "<Cmd>Lspsaga goto_definition()<CR>", "Definition" },
         ["gD"] = { "<Cmd>Lspsaga peek_definition()<CR>", "Peek definition" },
-        ["gr"] = { "<Cmd>Lspsaga lsp_finder<CR>", "References" },
-        ["gi"] = { "<Cmd>Lspsaga lsp_finder<CR>", "Implementation" },
+        ["gr"] = { "<Cmd>Lspsaga finder<CR>", "References" },
+        ["gi"] = { "<Cmd>Lspsaga finder<CR>", "Implementation" },
         ["gt"] = { "<Cmd>Lspsaga peek_type_definition<CR>", "Type definition" },
         ["i"] = { "<Cmd>Lspsaga incoming_calls<CR>", "Incoming calls" },
         ["o"] = { "<Cmd>Lspsaga outgoing_calls<CR>", "Outgoing calls" },
@@ -213,7 +213,7 @@ keys = {
         ["dl"] = { "<Cmd>Lspsaga show_line_diagnostics<CR>", "Line Diagnostic" },
         ["da"] = { "<Cmd>Lspsaga show_buf_diagnostics<CR>", "All diagnostic" },
         ["r"] = { "<Cmd>Lspsaga rename ++project<CR>", "Rename" },
-        ["R"] = { "<Cmd>Lspsaga lsp_finder<CR>", "References" },
+        ["R"] = { "<Cmd>Lspsaga finder<CR>", "References" },
     }
 }
 wk.register(keys, { prefix = leader })

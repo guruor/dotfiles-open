@@ -65,7 +65,7 @@ local on_attach = function(client)
     utils.map('n', 'gd', '<Cmd>Lspsaga goto_definition<CR>', {buffer = true})
     utils.map('n', 'gD', '<Cmd>Lspsaga goto_type_definition<CR>', {buffer = true})
     utils.map('n', 'K', '<Cmd>Lspsaga hover_doc<CR>', {buffer = true})
-    utils.map('n', 'gr', '<Cmd>Lspsaga lsp_finder<CR>', {buffer = true})
+    utils.map('n', 'gr', '<Cmd>Lspsaga finder<CR>', {buffer = true})
 
     if not vim.g.should_enable_efm then
         -- print("Enabling null-ls")
