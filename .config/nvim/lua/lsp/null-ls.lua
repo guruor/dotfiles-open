@@ -9,7 +9,11 @@ local hover = null_ls.builtins.hover
 -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTIN_CONFIG.md
 local cbfmt_config_file = os.getenv "HOME" .. "/.config/cbfmt/cbfmt.toml"
 null_ls.setup {
-  debug = true,
+  debug = false,
+  log_level = "warn", -- "off", "error", "warn", "info", "debug", "trace"
+  debounce = 3000,
+  default_timeout = 5000,
+  border = vim.g.border_style,
   sources = {
     -- Rust based generic formatter, really fast and extensible with wasm plugins
     -- It lacks range formatting as of now,
