@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Default terminal, we should ideally be using screen-256color to distinguise between serminal $TERM with tmux $TERM
+# Use below commands to add `tmux-256color` support, this will avoid duplicate (repeat) character issue, if doesn't work use `screen-256color`
+# https://stackoverflow.com/questions/45931164/duplicated-characters-and-non-updating-input-using-tmux-in-zsh/74042519#74042519
+
+echo -e "Regenerating terminfo database..."
+
+brew install ncurses
+"$(brew --prefix)"/opt/ncurses/bin/infocmp tmux-256color > ~/.config/tmux/tmux-256color.info
+tic -xe tmux-256color ~/.config/tmux/tmux-256color.info
+infocmp tmux-256color | head
+
+echo -e "\n\nDatabase generated, please restart tmux session."
