@@ -161,7 +161,7 @@ export SSH_TUNNEL_CONFIG="${HOME}/.ssh/tunnel-config"
 
 
 # VALE variables
-export VALE_CONFIG_PATH="${HOME}/vale/.vale.ini"
+export VALE_CONFIG_PATH="${HOME}/.config/vale/vale.ini"
 
 # Specifying the local binary path to avoid conflict with `shortctus` utility available on macos
 [ ! -f ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ] && $HOME/.local/bin/shortcuts >/dev/null 2>&1 &
