@@ -119,7 +119,7 @@ cmp.setup.cmdline(":", {
 
 cmp.setup.filetype({ "markdown", "vimwiki" }, {
   sources = cmp.config.sources({
-    { name = "spell", keyword_length = 2 },
+    -- { name = "spell", keyword_length = 4 },
     { name = "calc" },
   }, {
     { name = "buffer" },
