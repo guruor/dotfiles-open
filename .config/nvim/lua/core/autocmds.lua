@@ -348,3 +348,11 @@ autocmd("BufNewFile", {
 --   end,
 --   group = generalSettingsGroup,
 -- })
+
+autocmd("FileType", {
+  pattern = { "dap-float", "vim" },
+  callback = function()
+    vim.keymap.set("n", "q", "<cmd>close!<CR>")
+  end,
+  group = augroup("Easy close", { clear = true }),
+})
