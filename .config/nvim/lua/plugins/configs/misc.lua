@@ -27,13 +27,16 @@ M.lf = function()
   vim.g.lf_netrw = 1
 
   require("lf").setup {
+    default_action = "tabedit", -- default action when `Lf` opens a file
+    default_actions = { -- default action keybindings
+      ["<C-t>"] = "tabedit",
+      ["<C-x>"] = "split",
+      ["<C-v>"] = "vsplit",
+      ["<C-o>"] = "tab drop",
+    },
     winblend = 5,
     escape_quit = true,
-    default_action = "tabedit", -- default action when `Lf` opens a file
     border = vim.g.border_style,
-    height = 0.75, -- height of the *floating* window
-    width = 0.75, -- width of the *floating* window
-    direction = "float", -- window type: float horizontal vertical
     highlights = {
       Normal = { guibg = nil },
       NormalFloat = { guibg = nil },
