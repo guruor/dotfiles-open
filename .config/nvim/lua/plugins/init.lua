@@ -257,6 +257,8 @@ local default_plugins = {
   {
     "stevearc/overseer.nvim",
     keys = { { "<leader>t" } },
+    cmd = { "OverseerRun", "OverseerToggle", "OverseerQuickAction" },
+    event = "VeryLazy",
     config = function()
       require "plugins.configs.overseer"
     end,
