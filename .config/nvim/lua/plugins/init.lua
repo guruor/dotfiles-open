@@ -122,10 +122,10 @@ local default_plugins = {
       "Gwrite",
       "Ggrep",
       "Glgrep",
-      "Gmove",
-      "Gdelete",
-      "Gremove",
-      "Gbrowse",
+      "GMove",
+      "GDelete",
+      "GRemove",
+      "GBrowse",
     },
     dependencies = {
       "tommcdo/vim-fubitive", -- GBrowse bitbucket support
