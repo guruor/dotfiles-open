@@ -353,6 +353,8 @@ local default_plugins = {
   {
     "lmburns/lf.nvim",
     event = "VeryLazy",
+    -- keys = { { "<leader>o", { mode = { "n", "v" } } }, { "<leader>O", { mode = { "n", "v" } } } },
+    -- cmd = { "Lf" },
     config = function()
       require("plugins.configs.misc").lf()
     end,
