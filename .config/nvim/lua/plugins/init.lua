@@ -171,9 +171,11 @@ local default_plugins = {
     dependencies = {
       "neovim/nvim-lspconfig",
       "nvim-treesitter/nvim-treesitter",
+      "ray-x/guihua.lua",
     },
-    config = function()
-      require("go").setup()
+    opts = require("plugins.configs.misc").go,
+    config = function(_, opts)
+      require("go").setup(opts)
     end,
     event = { "CmdlineEnter" },
     ft = { "go", "gomod" },
