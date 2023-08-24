@@ -167,7 +167,8 @@ export VALE_CONFIG_PATH="${HOME}/.config/vale/vale.ini"
 [ ! -f ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ] && $HOME/.local/bin/shortcuts >/dev/null 2>&1 &
 
 # Initialising golang version manager
-[ -f "$HOME/.gvm/scripts/gvm" ] && source "$HOME/.gvm/scripts/gvm"
+# Initializing gvm, reset GOBIN, GOROOT, and GOPATH
+# [ -f "$HOME/.gvm/scripts/gvm" ] && source "$HOME/.gvm/scripts/gvm"
 
 # Loads support for direnv to load .envrc defined in specific directory
 command -v direnv > /dev/null && eval "$(direnv hook zsh)"
