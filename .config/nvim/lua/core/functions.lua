@@ -342,3 +342,19 @@ function ChooseVimWiki()
     end
   end)
 end
+
+-- Define a custom function to join string with comma with single quote surround
+function FormatQuoteAndJoin()
+  -- Enter command-line mode
+  vim.cmd "'<,'>s/.*/'&',/"
+  vim.cmd "'<,'>j!"
+  vim.cmd "s/,$//"
+end
+
+-- Define a custom function to split lines at commas and remove quotes
+function UnquoteAndSplit()
+  -- Enter command-line mode
+  vim.cmd "silent '<,'>s/^'\\(.*\\)'$/\\1/g"
+  vim.cmd "silent '<,'>s/ //ge"
+  vim.cmd "silent '<,'>s/','/\\r/g"
+end
