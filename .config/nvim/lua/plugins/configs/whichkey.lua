@@ -51,14 +51,9 @@ keys = {
     ["U"] = { ":UndotreeToggle<CR>", "Undo Tree" },
     ["o"] = { ":Lf<CR>", "Open LF file explorer" },
     ["O"] = { ":lua require('lf').start(vim.fn.getcwd())<CR>", "Open LF file explorer" },
-    ["S"] = { ":%s/<C-r><C-w>//gc<Left><Left><Left>", "Find and replace/substitute", silent = false }
 }
 wk.register(keys, { prefix = leader })
 wk.register(keys, { prefix = leader, mode = 'v' })
-
-keys_visual = copy(keys)
-keys_visual["S"] = { '"hy:%s/<C-r>h//gc<left><left><left>', "Find and replace/substitute visual selected", silent = false }
-wk.register(keys_visual, { prefix = leader, mode = 'v' })
 
 keys = {
     F = {
@@ -262,23 +257,37 @@ wk.register(keys, { prefix = leader, mode = 'v' })
 keys = {
     m = {
         name = 'Macro',
-        ["j"] = { ":!jq .<CR>", "Format selection as json" },
-        ["q"] = { ":%s!sqlformat --reindent --keywords upper --identifiers lower -<CR>", "Format SQL query" },
-        ["n"] = { ":%s/\\n/\r/g<CR>", "Replace \n with newline charFormat sqlalchemy query from logs" },
-        ["{"] = { ":%s/\\%V{/{{/g | %s/\\%V}/}}/g<CR>",
-            "Replace braces with double braces for multiline formatted string" },
-        ["\""] = { ":%s/'/\"/g<CR>", "Replace ' with \"" },
-        ["'"] = { ":%s/\"/'/g<CR>", "Replace \" with '" },
+        ["fj"] = { ":!jq .<CR>", "Format selection as json" },
+        ["fq"] = { ":%s!sqlformat --reindent --keywords upper --identifiers lower -<CR>", "Format SQL query" },
         ["e"] = { ":!date -d @<C-R><C-W><CR>", "Epoch to System time" }
     }
 }
 
 wk.register(keys, { prefix = leader })
 keys_visual = copy(keys)
-keys_visual["m"]["q"] = { ":'<,'>!sqlformat --reindent --keywords upper --identifiers lower -<CR>",
+keys_visual["m"]["fq"] = { ":'<,'>!sqlformat --reindent --keywords upper --identifiers lower -<CR>",
     "Format selected SQL query" }
-keys_visual["m"]["\""] = { ":s/'/\"/g<CR>", "Replace ' with \" for selected text" }
-keys_visual["m"]["'"] = { ":s/\"/'/g<CR>", "Replace \" with ' for selected text" }
+keys_visual["m"]["j"] = { ":lua FormatQuoteAndJoin()<CR>", "Join string with comma with single quote surround" }
+wk.register(keys_visual, { prefix = leader, mode = 'v' })
+
+keys = {
+    ["ms"] = {
+        name = 'Substitute Macro',
+        [" "] = { ":%s/<C-r><C-w>//gc<Left><Left><Left>", "Find and replace/substitute", silent = false },
+        ["{"] = { ":%s/\\%V{/{{/g | %s/\\%V}/}}/g<CR>", "Replace braces with double braces for multiline formatted string" },
+        ["\""] = { ":%s/'/\"/g<CR>", "Replace ' with \"" },
+        ["'"] = { ":%s/\"/'/g<CR>", "Replace \" with '" },
+        ["n"] = { ":%s/\\n/\r/g<CR>", "Replace \n with newline charFormat sqlalchemy query from logs" },
+    }
+}
+
+wk.register(keys, { prefix = leader })
+keys_visual = copy(keys)
+keys_visual["ms"]["s"] = { ':s///gc<Left><Left><Left><Left>', "Find and replace/substitute inside visual selection", silent = false }
+keys_visual["ms"]["v"] = { '"hy:%s/<C-r>h//gc<left><left><left>', "Find and replace/substitute visual selected", silent = false }
+keys_visual["ms"]["\""] = { ":s/'/\"/g<CR>", "Replace ' with \" for selected text" }
+keys_visual["ms"]["'"] = { ":s/\"/'/g<CR>", "Replace \" with ' for selected text" }
+keys_visual["ms"][","] = { ":lua UnquoteAndSplit()<CR>", "Split lines at commas and remove quotes" }
 wk.register(keys_visual, { prefix = leader, mode = 'v' })
 
 keys = {
