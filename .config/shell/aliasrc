@@ -58,9 +58,9 @@ alias \
     tl="tldr --list | fzf --preview 'tldr {} --color always' | xargs navi --tldr" \
 
 
-if (( $+commands[exa] )); then
-    alias ls="exa -b --git"
-    alias recent="exa -b --git -snew"
+if (( $+commands[eza] )); then
+    alias ls="eza -b --git"
+    alias recent="eza -b --git -snew"
     tree () {
         local depth dirsonly
         while [[ $1 == -L || $1 == -d ]]; do
@@ -73,7 +73,7 @@ if (( $+commands[exa] )); then
                 shift
             fi
         done
-        exa -bT --git $depth $dirsonly $@
+        eza -bT --git $depth $dirsonly $@
     }
 else
     alias ls="ls --color=auto"
