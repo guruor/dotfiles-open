@@ -59,8 +59,8 @@ alias \
 
 
 if (( $+commands[eza] )); then
-    alias ls="eza -b --git"
-    alias recent="eza -b --git -snew"
+    alias ls="eza -b --git --icons"
+    alias recent="eza -b --git -snew --icons"
     tree () {
         local depth dirsonly
         while [[ $1 == -L || $1 == -d ]]; do
@@ -73,7 +73,7 @@ if (( $+commands[eza] )); then
                 shift
             fi
         done
-        eza -bT --git $depth $dirsonly $@
+        eza -bT --icons --git $depth $dirsonly $@
     }
 else
     alias ls="ls --color=auto"
