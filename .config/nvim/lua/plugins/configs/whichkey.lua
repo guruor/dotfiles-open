@@ -278,6 +278,7 @@ keys = {
         ["\""] = { ":%s/'/\"/g<CR>", "Replace ' with \"" },
         ["'"] = { ":%s/\"/'/g<CR>", "Replace \" with '" },
         ["n"] = { ":%s/\\n/\r/g<CR>", "Replace \n with newline charFormat sqlalchemy query from logs" },
+        ["c"] = { ":%s/ \\(-[Hkd]\\|--data-raw\\) / \\\\\\r\\1 /g<CR>", "Break curl to multi-line" },
     }
 }
 
@@ -288,6 +289,7 @@ keys_visual["ms"]["v"] = { '"hy:%s/<C-r>h//gc<left><left><left>', "Find and repl
 keys_visual["ms"]["\""] = { ":s/'/\"/g<CR>", "Replace ' with \" for selected text" }
 keys_visual["ms"]["'"] = { ":s/\"/'/g<CR>", "Replace \" with ' for selected text" }
 keys_visual["ms"][","] = { ":lua UnquoteAndSplit()<CR>", "Split lines at commas and remove quotes" }
+keys_visual["ms"]["c"] = { ":s/ \\(-[Hkd]\\|--data-raw\\) / \\\\\\r\\1 /g<CR>", "Break curl to multi-line" }
 wk.register(keys_visual, { prefix = leader, mode = 'v' })
 
 keys = {
