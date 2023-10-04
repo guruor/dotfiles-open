@@ -358,3 +358,35 @@ function UnquoteAndSplit()
   vim.cmd "silent '<,'>s/ //ge"
   vim.cmd "silent '<,'>s/','/\\r/g"
 end
+
+-- Creates mapping command for whichkey, to be used with normal and visual mode both
+function AddSubstituteMappings(commonCommands, normalKeys, visualKeys, subkey)
+  for key, cmd in pairs(commonCommands) do
+    local cmdCommandEscaped = cmd.command:gsub("\\", "\\\\"):gsub("%%", "%%%%")
+    cmdCommandEscaped = cmdCommandEscaped:gsub("'", "\\'"):gsub('"', '\\"')
+
+    print(cmdCommandEscaped)
+    local normalCmd = (":lua vim.cmd(':%%s%s')<CR>"):format(cmdCommandEscaped)
+    local visualCmd = (":lua vim.cmd(':s%s')<CR>"):format(cmdCommandEscaped)
+
+    local normalMapping = { normalCmd, cmd.description }
+    local visualMapping = { visualCmd, cmd.description }
+
+    if subkey then
+      if not normalKeys[subkey] then
+        normalKeys[subkey] = {}
+      end
+      normalKeys[subkey][key] = normalMapping
+
+      if not visualKeys[subkey] then
+        visualKeys[subkey] = {}
+      end
+      visualKeys[subkey][key] = visualMapping
+    else
+      normalKeys[key] = normalMapping
+      visualKeys[key] = visualMapping
+    end
+  end
+
+  return normalKeys, visualKeys
+end
