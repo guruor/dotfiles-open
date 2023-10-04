@@ -365,7 +365,6 @@ function AddSubstituteMappings(commonCommands, normalKeys, visualKeys, subkey)
     local cmdCommandEscaped = cmd.command:gsub("\\", "\\\\"):gsub("%%", "%%%%")
     cmdCommandEscaped = cmdCommandEscaped:gsub("'", "\\'"):gsub('"', '\\"')
 
-    print(cmdCommandEscaped)
     local normalCmd = (":lua vim.cmd(':%%s%s')<CR>"):format(cmdCommandEscaped)
     local visualCmd = (":lua vim.cmd(':s%s')<CR>"):format(cmdCommandEscaped)
 
