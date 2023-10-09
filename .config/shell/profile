@@ -173,3 +173,7 @@ export VALE_CONFIG_PATH="${HOME}/.config/vale/vale.ini"
 # Loads support for direnv to load .envrc defined in specific directory
 command -v direnv > /dev/null && eval "$(direnv hook zsh)"
 
+eval "$(pyenv init --path)"
+
+alias python=python3
+

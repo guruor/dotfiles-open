@@ -481,3 +481,6 @@ def_key "x"
   delete_stored_playlist
 def_key "P"
   show_playlist
+def_key "B"
+	seek_forward
+

@@ -2,7 +2,7 @@
   "shouldUseDefaults": true,
   "defaultEvaluationDate": 1683790605929,
   "created": 1683790606931,
-  "lastModified": 1686213121485,
+  "lastModified": 1695291929939,
   "hotkeySettings": [
     {
       "hotkey": [],
@@ -151,6 +151,31 @@
         "KeyD"
       ],
       "id": "disableWebcam",
+      "oneshot": true
+    },
+    {
+      "hotkey": [],
+      "id": "toggleInGameOverlay",
+      "oneshot": true
+    },
+    {
+      "hotkey": [
+        "Alt",
+        "Meta",
+        "Control",
+        "KeyR"
+      ],
+      "id": "startLocalRecording",
+      "oneshot": true
+    },
+    {
+      "hotkey": [
+        "Alt",
+        "Meta",
+        "Control",
+        "KeyE"
+      ],
+      "id": "stopLocalRecording",
       "oneshot": true
     }
   ]
