@@ -275,19 +275,24 @@ keys = {
         name = 'Substitute Macro',
         [" "] = { ":%s/<C-r><C-w>//gc<Left><Left><Left>", "Find and replace/substitute", silent = false },
         ["{"] = { ":%s/\\%V{/{{/g | %s/\\%V}/}}/g<CR>", "Replace braces with double braces for multiline formatted string" },
-        ["\""] = { ":%s/'/\"/g<CR>", "Replace ' with \"" },
-        ["'"] = { ":%s/\"/'/g<CR>", "Replace \" with '" },
         ["n"] = { ":%s/\\n/\r/g<CR>", "Replace \n with newline charFormat sqlalchemy query from logs" },
     }
 }
 
-wk.register(keys, { prefix = leader })
 keys_visual = copy(keys)
 keys_visual["ms"]["s"] = { ':s///gc<Left><Left><Left><Left>', "Find and replace/substitute inside visual selection", silent = false }
 keys_visual["ms"]["v"] = { '"hy:%s/<C-r>h//gc<left><left><left>', "Find and replace/substitute visual selected", silent = false }
-keys_visual["ms"]["\""] = { ":s/'/\"/g<CR>", "Replace ' with \" for selected text" }
-keys_visual["ms"]["'"] = { ":s/\"/'/g<CR>", "Replace \" with ' for selected text" }
 keys_visual["ms"][","] = { ":lua UnquoteAndSplit()<CR>", "Split lines at commas and remove quotes" }
+
+-- Substitute commands which are common for both normal and visual mode
+local commonSubstituteCommands = {
+    ["\""] = { command = "/'/\"/g", description = "Replace ' with \"" },
+    ["'"] = { command = "/\"/'/g", description = "Replace \" with '" },
+    c = { command = "/\\(-[Hkd]\\|--data-raw\\) / \\\\\\r\\1 /g", description = "Break curl to multi-line" },
+}
+
+keys, keys_visual = AddSubstituteMappings(commonSubstituteCommands, keys, keys_visual, "ms")
+wk.register(keys, { prefix = leader })
 wk.register(keys_visual, { prefix = leader, mode = 'v' })
 
 keys = {
