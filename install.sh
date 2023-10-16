@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-blue='\e[1;34m'
-red='\e[1;31m'
-white='\e[0;37m'
+blue=$(tput setaf 4)
+red=$(tput setaf 1)
+white=$(tput setaf 7)
 dotfiles_repo_dir=$(pwd)
 backup_dir="$HOME/.dotfiles.orig"
 dotfiles_home_dir=(.config .local .ssh .editorconfig .profile .ripgreprc .xinitrc .xprofile .zprofile)
@@ -121,7 +121,7 @@ uninstall_dotfiles() {
 symlink_only_dir_files(){
     source_dir=${1}
     target_dir=${2}
-    mkdir -p ${target_dir}; 
+    mkdir -p ${target_dir};
     # Creating empty directory structure if path is of directory
     echo -e "${blue}Creating directory structure and symlink for ${source_dir}\n${white}" >&2
     echo -e "${blue}Creating directory structure for ${source_dir}\n${white}" >&2
