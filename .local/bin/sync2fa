@@ -3,9 +3,10 @@
 # Dependent on https://github.com/beemdevelopment/Aegis/blob/master/docs/decrypt.py, renamed as aegis-decrypt
 # example usage: sync2fa $HOME/aegis-backup.json $HOME/passdb.kdbx $HOME/secret.txt
 
-blue='\e[1;34m'
-red='\e[1;31m'
-white='\e[0;37m'
+blue=$(tput setaf 4)
+red=$(tput setaf 1)
+white=$(tput setaf 7)
+# reset=$(tput sgr0)
 tmp_dir=$(mktemp -d -t aegis-XXXXXXXXXX)
 
 help() {

@@ -9,9 +9,9 @@ help() {
     exit
 }
 
-blue='\e[1;34m'
-red='\e[1;31m'
-white='\e[0;37m'
+blue=$(tput setaf 4)
+red=$(tput setaf 1)
+white=$(tput setaf 7)
 tmp_dir=$(mktemp -d -t bw-XXXXXXXXXX)
 dump_file=$tmp_dir/bw.json
 keepass_db=$1
