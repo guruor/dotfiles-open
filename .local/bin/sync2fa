@@ -62,7 +62,7 @@ keepass_import() {
     keepass_db_secret=$(find_keepass_secret)
     # Import to KeePassXC
     echo -e -n "\n${blue}KeePass Password: ${white}"
-    read -s password
+    read -rs password
     if [[ -f "${keepass_db}" ]]; then
         echo -e "\n\n${blue}Backing up existing db${white}\n\n"
         mv "${keepass_db}" "${keepass_db}.bak"
@@ -72,7 +72,7 @@ keepass_import() {
 
     echo -e "\n\n${blue}Importing Aegis backup to newly created KeePass DB${white}\n\n"
     echo -e -n "\n\n${blue}KeePass Password again: ${white}\n\n"
-    pimport -af -vvv --out "${keepass_db}" -k "${keepass_db_secret}" keepassxc aegis "${aegis_backup}"
+    pimport -af -vvv keepassxc aegis "${aegis_backup}" --out "${keepass_db}" -k "${keepass_db_secret}"
 }
 
 pass_otp_import() {
@@ -91,7 +91,7 @@ cleanup() {
 find_file_in_directory() {
     local search_dir="$1"
     local prompt="$2"
-    local regex="$3"  # New parameter for prefix search
+    local regex="$3"
     local selected_file
 
     # Search for files with the specified prefix and suffix in the directory and its subdirectories
