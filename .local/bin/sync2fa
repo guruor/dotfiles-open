@@ -1,18 +1,60 @@
 #!/bin/bash
 # Imports Aegis encrypted backup to KeePassXC
 # Dependent on https://github.com/beemdevelopment/Aegis/blob/master/docs/decrypt.py, renamed as aegis-decrypt
-# example usage: sync2fa $HOME/aegis-backup.json $HOME/passdb.kdbx $HOME/secret.txt
+# Example usage: sync2fa <path_to_aegis_backup> <path_to_keepass_db> <path_to_keepass_secret>
 
 blue=$(tput setaf 4)
 red=$(tput setaf 1)
 white=$(tput setaf 7)
-# reset=$(tput sgr0)
+reset=$(tput sgr0)
 tmp_dir=$(mktemp -d -t aegis-XXXXXXXXXX)
 
 help() {
     echo "Import Aegis encrypted backup to KeePassXC"
     echo "   Ex:    sync2fa <path_to_aegis_backup> <path_to_keepass_db> <path_to_keepass_secret> "
     exit
+}
+
+prompt_for_keepass_import() {
+    read -p "Import to KeePassXC? (y/n): " import
+    if [ "$import" = "y" ] || [ "$import" = "Y" ]; then
+        keepass_import
+    fi
+}
+
+prompt_for_pass_otp_import() {
+    read -p "Import to Pass-OTP? (y/n): " import
+    if [ "$import" = "y" ] || [ "$import" = "Y" ]; then
+        pass_otp_import
+    fi
+}
+
+keepass_import() {
+    # Import to KeePassXC
+    echo -e -n "\n${blue}KeePass Password: ${white}"
+    read -s password
+    if [[ -f "$keepass_db" ]]; then
+        echo -e "\n\n${blue}Backing up existing db${white}\n\n"
+        mv $keepass_db $keepass_db.bak
+    fi
+    echo -e "\n\n${blue}Creating new KeePass DB${white}\n\n"
+    printf '%s\n%s\n' "$password" "$password" | keepassxc-cli db-create -p -k $keepass_db_secret $keepass_db
+
+    echo -e "\n\n${blue}Importing Aegis backup to newly created KeePass DB${white}\n\n"
+    echo -e -n "\n\n${blue}KeePass Password again: ${white}\n\n"
+    pimport -af -vvv --out $keepass_db -k $keepass_db_secret keepassxc aegis $dump_file
+}
+
+pass_otp_import() {
+    # Import to Pass-OTP
+    echo -e -n "\n${blue}Importing Aegis backup to Pass-OTP${white}\n\n"
+    pimport -af -vvv pass aegis $dump_file
+}
+
+cleanup() {
+    echo -e "\n\n${blue}Removing temp files${white}"
+    # Securely delete the file once it is restored in KeePass
+    rm -rf $tmp_dir
 }
 
 if [[ $# -eq 0 ]] ; then
@@ -24,30 +66,14 @@ dump_file=$tmp_dir/aegis.json
 keepass_db=$2
 keepass_db_secret=$3
 
-echo -e "${blue}Starting keepass-aegis sync${white}"
+echo -e "${blue}Starting KeePass-Aegis sync${white}"
 
 # Creating temp directory to store decrypted Aegis backup
-echo -e "${blue}Creating temp directory and decrypting aegis backup ${white}"
+echo -e "${blue}Creating temp directory and decrypting Aegis backup${white}"
 echo -e "${blue}Enter Aegis password: ${white}"
 aegis-decrypt --input $aegis_backup_file > $dump_file
 
-# Exporting the dump to keepass, while making a backup of existing db
-echo -e -n "\n\n${blue}KeePass Password: ${white}"; read -s password
-if [[ -f "$keepass_db" ]]; then
-    echo -e "\n\n${blue}Backing up existing db${white}\n\n"
-    mv $keepass_db $keepass_db.bak
-fi
-echo -e "\n\n${blue}Creating new KeePass DB${white}\n\n"
-printf '%s\n%s\n' "$password" "$password" | keepassxc-cli db-create -p -k $keepass_db_secret $keepass_db
+prompt_for_keepass_import
+prompt_for_pass_otp_import
 
-
-echo -e "\n\n${blue}Importing aegis backup to newly created keepass db${white}\n\n"
-echo -e -n "\n\n${blue}KeePass Password again: ${white}\n\n";
-pimport -af -vvv --out $keepass_db -k $keepass_db_secret keepassxc aegis $dump_file
-# Importing to pass-otp as well to be used with pass-fzf
-pimport -af -vvv pass aegis $dump_file
-
-echo -e "\n\n${blue}Removing temp files${white}"
-# Securely delete the file once it is restored in keepass,
-# https://www.howtogeek.com/425232/how-to-securely-delete-files-on-linux/
-rm -rf $tmp_dir
+cleanup
