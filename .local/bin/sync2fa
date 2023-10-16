@@ -1,7 +1,8 @@
 #!/bin/bash
-# Imports Aegis encrypted backup to KeePassXC
+# Imports Aegis encrypted backup to KeePassXC and pass-otp
+#
+# It is integractive guide, will help you through the process, install the tools as needed
 # Dependent on https://github.com/beemdevelopment/Aegis/blob/master/docs/decrypt.py, renamed as aegis-decrypt
-# Example usage: sync2fa <path_to_aegis_backup> <path_to_keepass_db> <path_to_keepass_secret>
 
 blue=$(tput setaf 4)
 red=$(tput setaf 1)
@@ -9,71 +10,140 @@ white=$(tput setaf 7)
 reset=$(tput sgr0)
 tmp_dir=$(mktemp -d -t aegis-XXXXXXXXXX)
 
-help() {
-    echo "Import Aegis encrypted backup to KeePassXC"
-    echo "   Ex:    sync2fa <path_to_aegis_backup> <path_to_keepass_db> <path_to_keepass_secret> "
-    exit
+check_dependencies() {
+    if ! command -v aegis-decrypt &> /dev/null; then
+        echo -e "${red}Error: 'aegis-decrypt' command not found. Make sure Aegis is installed and accessible.${white}"
+        exit 1
+    fi
+
+    if ! command -v fd &> /dev/null; then
+        echo -e "${red}Error: 'fd' command not found. Make sure fd is installed and accessible.${white}"
+        exit 1
+    fi
+
+    if ! command -v fzf &> /dev/null; then
+        echo -e "${red}Error: 'fzf' command not found. Make sure fzf is installed and accessible.${white}"
+        exit 1
+    fi
+
+    if ! command -v keepassxc-cli &> /dev/null; then
+        echo -e "${red}Error: 'keepassxc-cli' command not found. Make sure KeePassXC is installed.${white}"
+        exit 1
+    fi
+
+    if ! command -v pimport &> /dev/null; then
+        echo -e "${red}Error: 'pimport' command not found. Make sure the 'pass-import' package is installed.${white}"
+        exit 1
+    fi
+
+    if ! python3 -c "import certifi" 2>/dev/null; then
+        echo -e "${red}Error: The 'certifi' package is missing. Please install it using 'pip3 install certifi'.${white}"
+        exit 1
+    fi
 }
 
 prompt_for_keepass_import() {
-    read -p "Import to KeePassXC? (y/n): " import
+    read -rp "Import to KeePassXC? (y/n): " import
     if [ "$import" = "y" ] || [ "$import" = "Y" ]; then
-        keepass_import
+        keepass_import "${decrypted_aegis_backup_file}"
     fi
 }
 
 prompt_for_pass_otp_import() {
-    read -p "Import to Pass-OTP? (y/n): " import
+    read -rp "Import to Pass-OTP? (y/n): " import
     if [ "$import" = "y" ] || [ "$import" = "Y" ]; then
-        pass_otp_import
+        pass_otp_import "${decrypted_aegis_backup_file}"
     fi
 }
 
 keepass_import() {
+    aegis_backup="$1"
+    keepass_db=$(find_keepass_db)
+    keepass_db_secret=$(find_keepass_secret)
     # Import to KeePassXC
     echo -e -n "\n${blue}KeePass Password: ${white}"
     read -s password
-    if [[ -f "$keepass_db" ]]; then
+    if [[ -f "${keepass_db}" ]]; then
         echo -e "\n\n${blue}Backing up existing db${white}\n\n"
-        mv $keepass_db $keepass_db.bak
+        mv "${keepass_db}" "${keepass_db}.bak"
     fi
     echo -e "\n\n${blue}Creating new KeePass DB${white}\n\n"
-    printf '%s\n%s\n' "$password" "$password" | keepassxc-cli db-create -p -k $keepass_db_secret $keepass_db
+    printf '%s\n%s\n' "$password" "$password" | keepassxc-cli db-create -p --set-key-file "${keepass_db_secret}" "${keepass_db}"
 
     echo -e "\n\n${blue}Importing Aegis backup to newly created KeePass DB${white}\n\n"
     echo -e -n "\n\n${blue}KeePass Password again: ${white}\n\n"
-    pimport -af -vvv --out $keepass_db -k $keepass_db_secret keepassxc aegis $dump_file
+    pimport -af -vvv --out "${keepass_db}" -k "${keepass_db_secret}" keepassxc aegis "${aegis_backup}"
 }
 
 pass_otp_import() {
+    aegis_backup="$1"
     # Import to Pass-OTP
     echo -e -n "\n${blue}Importing Aegis backup to Pass-OTP${white}\n\n"
-    pimport -af -vvv pass aegis $dump_file
+    pimport -af -vvv pass aegis "${aegis_backup}"
 }
 
 cleanup() {
-    echo -e "\n\n${blue}Removing temp files${white}"
+    echo -e "\n\n${blue}Removing decrypted sensitive data${white}"
     # Securely delete the file once it is restored in KeePass
-    rm -rf $tmp_dir
+    rm -rf "${tmp_dir}"
 }
 
-if [[ $# -eq 0 ]] ; then
-    help
-fi
+find_file_in_directory() {
+    local search_dir="$1"
+    local prompt="$2"
+    local regex="$3"  # New parameter for prefix search
+    local selected_file
 
-aegis_backup_file=$1
-dump_file=$tmp_dir/aegis.json
-keepass_db=$2
-keepass_db_secret=$3
+    # Search for files with the specified prefix and suffix in the directory and its subdirectories
+    local files
+    files=$(fd --type f --type l --max-depth 5 "${regex}" "$search_dir" | sort -r)
 
+    if [ -z "$files" ]; then
+        echo -e "${red}Error: No files with the regex '${regex}' found in '$search_dir' or its subdirectories.${white}"
+        exit 1
+    fi
+
+    # Use fzf to let the user choose from the list of files
+    selected_file=$(echo "$files" | fzf --prompt "$prompt")
+    if [ -z "$selected_file" ]; then
+        echo -e "${red}No file selected. Exiting.${white}"
+        exit 1
+    fi
+
+    echo "$selected_file"
+}
+
+find_aegis_backup() {
+    # Use the generic method to search for Aegis backup files with 'json' extension and 'aegis-backup-' prefix
+    find_file_in_directory "$PWD" "Select Aegis backup file: " "aegis-backup-.*json"
+}
+
+find_keepass_db() {
+    # Use the generic method to search for KeePassXC database files with 'kdbx' extension
+    find_file_in_directory "$PWD" "Select KeePass database file: " ".*kdbx"
+}
+
+find_keepass_secret() {
+    # Use the generic method to search for KeePassXC database secret key with 'key' extension
+    find_file_in_directory "$HOME/.ssh" "Select KeePass database secret key: " ""
+}
+
+# Use trap to call the cleanup function when the script exits
+trap cleanup EXIT
+
+# Check for dependencies
+check_dependencies
+
+encrypted_aegis_backup_file=$(find_aegis_backup)
+decrypted_aegis_backup_file=$tmp_dir/aegis.json
 echo -e "${blue}Starting KeePass-Aegis sync${white}"
 
 # Creating temp directory to store decrypted Aegis backup
 echo -e "${blue}Creating temp directory and decrypting Aegis backup${white}"
 echo -e "${blue}Enter Aegis password: ${white}"
-aegis-decrypt --input $aegis_backup_file > $dump_file
+aegis-decrypt --input "${encrypted_aegis_backup_file}" > "${decrypted_aegis_backup_file}"
 
 prompt_for_keepass_import
 prompt_for_pass_otp_import
 
-cleanup
+exit 0
