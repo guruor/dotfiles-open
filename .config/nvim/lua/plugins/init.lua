@@ -140,6 +140,13 @@ local default_plugins = {
       require "plugins.configs.gitsigns"
     end,
   },
+  { "sindrets/diffview.nvim",
+    cmd = { "DiffviewOpen" },
+    opts = require("plugins.configs.misc").diffview,
+    config = function(_, opts)
+      require("diffview").setup(opts)
+    end,
+  },
 
   -- Syntax, formatting and auto-completion, not needed when using treesitter
   -- {"sheerun/vim-polyglot", lazy=false},

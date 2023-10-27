@@ -123,6 +123,16 @@ autocmd("FileType", {
 -------------------------------------- new-commands ------------------------------------------
 local new_cmd = vim.api.nvim_create_user_command
 
+new_cmd("DiffviewToggle", function(e)
+  local view = require("diffview.lib").get_current_view()
+
+  if view then
+    vim.cmd("DiffviewClose")
+  else
+    vim.cmd("DiffviewOpen " .. e.args)
+  end
+end, { nargs = "*" })
+
 new_cmd("SampleCommand", function()
   print "SampleCommand triggered"
 end, {})
