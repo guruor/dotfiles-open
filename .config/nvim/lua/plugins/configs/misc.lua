@@ -69,28 +69,21 @@ M.smartcolumn = {
 
 M.blankline = {
   enabled = true,
-  char = "┊",
-  context_char = "│",
-  filetype_exclude = {
-    "help",
-    "terminal",
-    "lazy",
-    "lspinfo",
-    "TelescopePrompt",
-    "TelescopeResults",
-    "mason",
-    "make",
-    "",
-  },
-  buftype_exclude = { "terminal" },
-  show_trailing_blankline_indent = false,
-  show_first_indent_level = false,
-  show_current_context = true,
-  show_current_context_start = false,
-  show_end_of_line = true,
-  space_char_blankline = " ",
-  use_treesitter = true,
-  strict_tabs = true,
+  exclude = {
+    filetypes = {
+      "help",
+      "terminal",
+      "lazy",
+      "lspinfo",
+      "TelescopePrompt",
+      "TelescopeResults",
+      "mason",
+      "make",
+      "markdown",
+      "vimwiki",
+      "",
+    },
+  }
 }
 
 M.chatgpt = {
