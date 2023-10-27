@@ -228,4 +228,12 @@ M.noice = {
   },
 }
 
+M.diffview = {
+  view = {
+    merge_tool = {
+      layout = "diff3_mixed",
+    }
+  }
+}
+
 return M

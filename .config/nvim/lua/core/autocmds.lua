@@ -355,4 +355,29 @@ autocmd("FileType", {
     vim.keymap.set("n", "q", "<cmd>close!<CR>")
   end,
   group = augroup("Easy close", { clear = true }),
+
+--------------- Disabling focus.nvim -------------------
+local focusDisableFiletypes = { 'neo-tree' }
+local focusDisableBuftypes = { 'nofile', 'prompt', 'popup' }
+
+local disableFocusAugroup = augroup('FocusDisable', { clear = true })
+
+vim.api.nvim_create_autocmd('WinEnter', {
+    group = disableFocusAugroup,
+    callback = function(_)
+        if vim.tbl_contains(focusDisableBuftypes, vim.bo.buftype) then
+            vim.b.focus_disable = true
+        end
+    end,
+    desc = 'Disable focus autoresize for BufType',
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+    group = disableFocusAugroup,
+    callback = function(_)
+        if vim.tbl_contains(focusDisableFiletypes, vim.bo.filetype) then
+            vim.b.focus_disable = true
+        end
+    end,
+    desc = 'Disable focus autoresize for FileType',
 })
