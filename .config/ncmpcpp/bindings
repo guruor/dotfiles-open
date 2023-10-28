@@ -482,4 +482,4 @@ def_key "x"
 def_key "P"
   show_playlist
 def_key "B"
-	seek_forward
+  seek_forward
