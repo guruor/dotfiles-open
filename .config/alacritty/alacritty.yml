@@ -105,19 +105,19 @@ window:
 # Font configuration
 font:
   normal:
-    family: FiraCode Nerd Font
+    family: Fisa Code
     style: Regular
 
   bold:
-    family: FiraCode Nerd Font
+    family: Fisa Code
     style: Bold
 
   italic:
-    family: FiraCode Nerd Font
+    family: Fisa Code
     style: Italic
 
   bold_italic:
-    family: FiraCode Nerd Font
+    family: Fisa Code
     style: Bold Italic
 
   size: 14
