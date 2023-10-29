@@ -18,8 +18,8 @@ else
 end
 
 -- Setting colorscheme
--- vim.cmd('colorscheme gruvbox')
-vim.cmd('colorscheme gruvbox-material')
+vim.cmd('colorscheme ' .. vim.g.current_colorscheme)
+
 -- Setting colorscheme overriding laststatus, so needed to redeclare
 -- vim.opt.laststatus = 3
 
@@ -35,6 +35,9 @@ vim.cmd('colorscheme gruvbox-material')
 vim.api.nvim_set_hl(0, 'WinSeparator', { guibg = nil })
 vim.api.nvim_set_hl(0, 'FloatBorder', { guibg = nil })
 vim.api.nvim_set_hl(0, 'NormalFloat', { guibg = nil })
+
+-- Gruvbox material by default underlines the unused variable, this will make the text grey like a comment
+vim.api.nvim_set_hl(0, 'DiagnosticUnnecessary', { link = 'Comment' })
 
 -- Turns off highlighting on the bits of code that are changed, so the line that is
 -- changed is highlighted but the actual text that has changed stands out on the line and is readable.

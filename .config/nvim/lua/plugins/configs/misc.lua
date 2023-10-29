@@ -1,20 +1,12 @@
 local M = {}
 
-M.gruvbox = function()
-  vim.g.gruvbox_contrast_light = "medium"
-  vim.g.gruvbox_contrast_dark = "medium"
-  vim.g.gruvbox_invert_selection = 0
-  vim.g.gruvbox_italic = 1
-  vim.g.gruvbox_sign_column = "bg0"
-end
-
 M.gruvbox_material = function()
   vim.g.gruvbox_material_foreground = "material" -- Available values:   `'material'`, `'mix'`, `'original'`
   vim.g.gruvbox_material_background = "medium" -- Available values: 'hard', 'medium'(default), 'soft'
   vim.g.gruvbox_material_better_performance = 1
   vim.g.gruvbox_material_enable_bold = 1
   vim.g.gruvbox_material_enable_italic = 1
-  vim.g.gruvbox_material_disable_italic_comment = 1
+  vim.g.gruvbox_material_disable_italic_comment = 0
   vim.g.gruvbox_material_transparent_background = 0
 end
 
