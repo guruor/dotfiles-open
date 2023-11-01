@@ -51,11 +51,6 @@ local default_plugins = {
     end,
   },
   {
-    "nvim-treesitter/playground",
-    cmd = "TSPlaygroundToggle",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-  },
-  {
     "nvim-treesitter/nvim-treesitter-context",
     event = "BufRead",
     dependencies = { "nvim-treesitter/nvim-treesitter" },

@@ -247,7 +247,6 @@ keys = {
         ["s"] = { ":lua ToggleTpipeline()<CR>", "Toggle tpipeline" },
         ["S"] = { ":set spell!<CR>", "Spell" },
         ["fc"] = { ":lua ToggleFoldcolumn()<CR>", "Spell" },
-        ["tsp"] = { ":TSPlaygroundToggle<CR>", "TSPlaygroundToggle" },
         ["gh"] = { ":Gitsigns toggle_signs<CR>", "Toggle git hunks" },
         ["gb"] = { ":Gitsigns toggle_current_line_blame<CR>", "Toggle line git blame" },
     }
