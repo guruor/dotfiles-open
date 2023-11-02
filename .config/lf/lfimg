@@ -1,27 +1,26 @@
 #!/bin/sh
 # https://github.com/gokcehan/lf/wiki/Previews
 # https://github.com/neeshy/lfimg
+# https://github.com/thimc/lfimg/blob/master/lfrun
 
 set -e
 
-if [ -n "$DISPLAY" ]; then
-  export FIFO_UEBERZUG="${TMPDIR:-/tmp}/lf-ueberzug-$$"
+cleanup() {
+  exec 3>&-
+  rm "$FIFO_UEBERZUG"
+}
 
-  cleanup() {
-    exec 3>&-
-    rm "$FIFO_UEBERZUG"
-  }
 
-  mkfifo "$FIFO_UEBERZUG"
-  ueberzug layer -s <"$FIFO_UEBERZUG" &
-  exec 3>"$FIFO_UEBERZUG"
-  trap cleanup EXIT
-
-  if ! [ -d "$HOME/.cache/lf" ]; then
-    mkdir -p "$HOME/.cache/lf"
-  fi
-
-  lf "$@" 3>&-
+# This utilises the ueberzug(pp) where output backend can be configured in ~/config/ueberzug/config.json
+# Currently using kitty protocol, will work with both kitty and wezterm
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+	lf "$@"
 else
-  exec lf "$@"
+	[ ! -d "$HOME/.cache/lf" ] && mkdir --parents "$HOME/.cache/lf"
+	export FIFO_UEBERZUG="$HOME/.cache/lf/ueberzug-$$"
+	mkfifo "$FIFO_UEBERZUG"
+	ueberzug layer -s <"$FIFO_UEBERZUG" -p json &
+	exec 3>"$FIFO_UEBERZUG"
+	trap cleanup EXIT
+	lf "$@" 3>&-
 fi
