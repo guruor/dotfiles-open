@@ -1,0 +1,8 @@
+{
+    "layer": {
+        "silent": true,
+        "use-escape-codes": false,
+        "no-stdin": false,
+        "output": "kitty"
+    }
+}
