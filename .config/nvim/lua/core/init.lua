@@ -63,7 +63,7 @@ opt.backup = false -- This is recommended by coc
 opt.writebackup = false -- This is recommended by coc
 -- Don't pass messages to |ins-completion-menu|., reduces status message, disable nvim intro
 opt.shortmess:append "atFcsI"
-opt.signcolumn = "yes" -- Always show the signcolumn, otherwise it would shift the text each time
+opt.signcolumn = "yes:1" -- Always show the signcolumn, otherwise it would shift the text each time
 opt.updatetime = 250 -- Faster completion, interval for writing swap file to disk, also used by gitsigns
 opt.timeoutlen = 500 -- By default timeoutlen is 1000 ms
 opt.ttimeoutlen = 0 -- By default ttimeoutlen is 1000 ms
@@ -79,8 +79,8 @@ opt.fillchars:append "stlnc:-" -- Fills inactive horizontal split with `-` symbo
 opt.wrap = false
 opt.breakindent = true
 opt.title = true
-opt.number = false
-opt.numberwidth = 2
+opt.number = true
+opt.numberwidth = 3
 opt.relativenumber = true
 -- opt.colorcolumn="120"                   -- Handling this with smartcolumn plugin
 opt.swapfile = false
