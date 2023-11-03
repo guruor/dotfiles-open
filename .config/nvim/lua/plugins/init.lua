@@ -378,6 +378,7 @@ local default_plugins = {
   {
     "vimwiki/vimwiki",
     ft = { "markdown", "vimwiki" },
+    keys = { { "<leader>w", mode = { "n", "v" } } },
     -- lazy = false,
     dependencies = {
       { "mattn/calendar-vim", cmd = { "CalendarH", "CalendarH" } },
@@ -394,9 +395,13 @@ local default_plugins = {
       --   event = "VeryLazy",
       -- },
     },
-    config = function()
+    init = function()
       require "plugins.configs.vimwiki"
     end,
+    config = function()
+      local currPath = vim.fn.getcwd() .. "/"
+      InitializeVimwikiVars(currPath)
+    end
   },
   {
     "windwp/nvim-ts-autotag",
