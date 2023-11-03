@@ -77,14 +77,6 @@ local default_plugins = {
     lazy = false,
   },
   {
-    "folke/which-key.nvim",
-    -- keys = { "<leader>", ",", '"', "'", "`" },
-    init = function()
-      require "plugins.configs.whichkey"
-    end,
-    lazy = false,
-  },
-  {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
     dependencies = {
@@ -498,6 +490,18 @@ local default_plugins = {
       require("noice").setup(opts)
     end,
     dependencies = { "MunifTanjim/nui.nvim", "rcarriga/nvim-notify" },
+  },
+  -- Only load whichkey after all the gui
+  {
+    "folke/which-key.nvim",
+    keys = { "<leader>", ",", "<c-r>", "<c-w>", '"', "'", "`", "c", "v", "g" },
+    cmd = "WhichKey",
+    init = function()
+      require "plugins.configs.whichkey"
+    end,
+    config = function(_, opts)
+      require("which-key").setup(opts)
+    end,
   },
   -- Yet to explorer
   -- "metakirby5/codi.vim",
