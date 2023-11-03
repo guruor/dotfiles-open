@@ -41,10 +41,11 @@ vim.lsp.protocol.CompletionItemKind = {
     TypeParameter = " [type]",
 }
 
-local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
-for type, icon in pairs(signs) do
-	local hl = "DiagnosticSign" .. type
-	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+local signs = { "Error", "Warn", "Hint", "Info" }
+for i in pairs(signs) do
+	local hl = "DiagnosticSign" .. signs[i]
+	-- vim.fn.sign_define(hl, { text = "•", texthl = hl, linehl='', numhl = '' })
+	vim.fn.sign_define(hl, { text = "", texthl = '', linehl='', numhl = hl })
 end
 
 -- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
