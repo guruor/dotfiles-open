@@ -138,7 +138,7 @@ local default_plugins = {
       })
     end,
     opts = function()
-      return require("plugins.configs.gitsigns")
+      return require("plugins.configs.gitsigns").options
     end,
     config = function(_, opts)
       require("gitsigns").setup(opts)
