@@ -197,12 +197,13 @@ local default_plugins = {
     -- Doesn't work with lazy loading
     "andymass/vim-matchup",
     -- keys = { { "%", mode = { "n", "v" } }, { "g%", mode = { "n", "v" } } },
-    lazy = false,
-    config = function()
+    event = { "BufReadPost" },
+    init = function()
       vim.g.matchup_matchparen_offscreen = {}
       vim.g.matchup_matchparen_enabled = 0
       vim.g.matchup_matchparen_deferred = 1
     end,
+    config = true,
     dependencies = "nvim-treesitter/nvim-treesitter",
   },
   {
@@ -285,7 +286,7 @@ local default_plugins = {
     config = function(_, opts)
       require("ibl").setup(opts)
     end,
-    lazy = false,
+    event = { "BufReadPost" },
   },
 
   { "mbbill/undotree", cmd = "UndotreeToggle" },
@@ -316,7 +317,8 @@ local default_plugins = {
     init = function()
       require("plugins.configs.misc").whitespace()
     end,
-    lazy = false,
+    event = { "BufReadPost" },
+    cmd = { "ToggleWhitespace", "DisableWhitespace" }
   },
   {
     "rmagatti/auto-session",
