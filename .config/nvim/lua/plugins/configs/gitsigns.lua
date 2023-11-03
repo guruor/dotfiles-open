@@ -1,4 +1,6 @@
-require('gitsigns').setup {
+local M = {}
+
+M.options = {
   signs = {
     add = { text = '+' },
     change = { text = '~' },
@@ -78,3 +80,5 @@ require('gitsigns').setup {
     map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
   end
 }
+
+return M
