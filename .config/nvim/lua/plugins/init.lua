@@ -397,12 +397,12 @@ local default_plugins = {
     end,
   },
   {
-    -- Doesn't work with lazy loading
-    -- For some reason this plugin isn't working with lazy loading,
-    -- it should ideally be enabled for specific filetypes
     "windwp/nvim-ts-autotag",
     dependencies = "nvim-treesitter/nvim-treesitter",
-    lazy = false,
+    ft = require("plugins.configs.treesitter").options.autotag.filetypes,
+    config = function ()
+      require('nvim-ts-autotag').setup()
+    end,
   },
   -- Good to have
   { "beauwilliams/focus.nvim", event = "VeryLazy", config = 'require("focus").setup()' },
