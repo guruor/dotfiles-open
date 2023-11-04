@@ -41,13 +41,14 @@ local default_plugins = {
     build = ":TSUpdate",
     dependencies = {
       { "JoosepAlviste/nvim-ts-context-commentstring" },
-      { "LiadOz/nvim-dap-repl-highlights", lazy = false },
+      { "LiadOz/nvim-dap-repl-highlights" },
     },
-    opts = require("plugins.configs.treesitter").options,
-    config = function(_, opts)
+    init = function()
+      -- dap-repl must be initialized before treesiter initialisation
       require("nvim-dap-repl-highlights").setup()
-      require("nvim-treesitter.configs").setup(opts)
-      require("plugins.configs.treesitter").additional_setup()
+      local ts = require("plugins.configs.treesitter")
+      require("nvim-treesitter.configs").setup(ts.options)
+      ts.additional_setup()
     end,
   },
   {
