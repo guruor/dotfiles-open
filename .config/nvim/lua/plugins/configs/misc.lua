@@ -73,6 +73,7 @@ M.blankline = {
       "make",
       "markdown",
       "vimwiki",
+      "norg",
       "",
     },
   }
