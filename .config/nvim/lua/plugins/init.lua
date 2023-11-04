@@ -376,6 +376,17 @@ local default_plugins = {
     end,
     dependencies = { "plenary.nvim", "toggleterm.nvim" },
   },
+  {
+    "lukas-reineke/headlines.nvim",
+    ft = { "markdown", "vimwiki", "norg" },
+    dependencies = { "nvim-treesitter/nvim-treesitter", "vimwiki/vimwiki" },
+    config = function(_, opts)
+      require("plugins.configs.headlines").SetHighlights()
+      -- Loading it here, as it requires the treesitter queries to be available
+      opts = require("plugins.configs.headlines").options
+      require("headlines").setup(opts)
+    end,
+  },
   -- VimWiki for note management
   {
     "vimwiki/vimwiki",
@@ -515,6 +526,17 @@ local default_plugins = {
   -- Yet to explorer
   -- "metakirby5/codi.vim",
   -- { "junegunn/vim-easy-align", run = { "EasyAlign" } },
+  {
+    "nvim-neorg/neorg",
+    build = ":Neorg sync-parsers",
+    cmd = { 'Neorg' },
+    ft = { 'norg' },
+    dependencies = { "nvim-lua/plenary.nvim", "folke/zen-mode.nvim" },
+    opts = require("plugins.configs.neorg").options,
+    config = function(_, opts)
+      require("neorg").setup(opts)
+    end,
+  },
 }
 
 local config = require("core.utils").load_config()
