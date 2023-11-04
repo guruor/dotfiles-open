@@ -54,6 +54,7 @@ local default_plugins = {
     "nvim-treesitter/nvim-treesitter-context",
     event = "BufRead",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
+    opts = require("plugins.configs.misc").treesitter_context,
   },
   {
     "akinsho/bufferline.nvim",

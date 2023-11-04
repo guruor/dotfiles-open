@@ -221,4 +221,8 @@ M.diffview = {
   }
 }
 
+M.treesitter_context = {
+  max_lines = 2
+}
+
 return M
