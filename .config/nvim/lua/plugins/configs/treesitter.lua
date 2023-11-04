@@ -31,6 +31,7 @@ M.options = {
     "json",
     "markdown",
     "markdown_inline",
+    "norg",
     "yaml",
     "toml",
     "http",
