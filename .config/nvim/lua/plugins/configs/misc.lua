@@ -61,6 +61,7 @@ M.smartcolumn = {
 
 M.blankline = {
   enabled = true,
+  scope = { enabled = false },
   exclude = {
     filetypes = {
       "help",
