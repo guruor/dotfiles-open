@@ -531,7 +531,12 @@ local default_plugins = {
     build = ":Neorg sync-parsers",
     cmd = { 'Neorg' },
     ft = { 'norg' },
-    dependencies = { "nvim-lua/plenary.nvim", "folke/zen-mode.nvim" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "folke/zen-mode.nvim",
+      "max397574/neorg-contexts",
+      { "pysan3/neorg-templates", dependencies = { "L3MON4D3/LuaSnip" } }
+    },
     opts = require("plugins.configs.neorg").options,
     config = function(_, opts)
       require("neorg").setup(opts)

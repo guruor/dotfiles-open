@@ -326,6 +326,13 @@ autocmd("BufNewFile", {
   group = generalSettingsGroup,
 })
 
+-- Neorg load default journal template
+vim.api.nvim_create_autocmd("BufNewFile", {
+  command = "Neorg templates fload journal",
+  pattern = vim.fn.expand "$NEORG_DIR" .. "/**/journal/*.norg",
+})
+
+
 --------------- Auto resize `dbout` buffer and sql buffer for dadbod-ui -----------------
 -- autocmd("WinEnter", {
 --   pattern = { "*" },
