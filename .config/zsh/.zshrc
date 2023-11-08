@@ -20,6 +20,8 @@ if [[ ! -d "$ZSH_PLUGIN_DIR"  ]]; then
     curl -O https://raw.githubusercontent.com/junegunn/fzf/master/shell/completion.zsh
 fi
 
+FPATH="$ZSH_PLUGIN_DIR/zsh-completions/src:${FPATH}"
+
 # Load syntax highlighting; should be last.
 source $ZSH_PLUGIN_DIR/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh 2>/dev/null
 source $ZSH_PLUGIN_DIR/zsh-pyenv-lazy/pyenv-lazy.plugin.zsh 2>/dev/null
@@ -269,6 +271,9 @@ if [[ $MACHINE == "Mac" ]]; then
     BREW_PREFIX="/opt/homebrew"
     export HOMEBREW_NO_AUTO_UPDATE=1
     _evalcache "${BREW_PREFIX}/bin/brew" shellenv
+    # Adds zsh completions from brew
+    FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+
     # Make all GNU flavor commands available, may override same-name BSD flavor commands
     export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:${PATH}"
     export MANPATH="$(brew --prefix)/opt/coreutils/libexec/gnuman:${MANPATH}"
