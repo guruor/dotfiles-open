@@ -319,6 +319,23 @@ keys = {
 wk.register(keys, { prefix = leader })
 wk.register(keys, { prefix = leader, mode = 'v' })
 
+-- Neorg mappings
+keys = {
+    n = {
+        name = 'Neorg mappings',
+        ["i"] = { "", "Insert date" },
+        ["l"] = { "", "List actions" },
+        ["m"] = { "", "Navigation mode" },
+        ["n"] = { "", "Notes" },
+        ["t"] = { "", "GTD actions" },
+        ["I"] = { ":Neorg index<CR>", "Index" },
+        ["j"] = { ":Neorg journal<CR>", "Journal" },
+        ["Tc"] = { ":Neorg toggle-concealer<CR>", "Toggle concealing" },
+    }
+}
+wk.register(keys, { prefix = leader })
+wk.register(keys, { prefix = leader, mode = 'v' })
+
 
 -- Adding file or buffer specific mapping with autocmds
 -- Reference https://github.com/folke/which-key.nvim/issues/276#issuecomment-1117432067

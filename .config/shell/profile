@@ -104,6 +104,14 @@ export VIMWIKI_DIR_ACTIVE_TASKS="${VIMWIKI_DIR}/ActiveTasks/wiki/"
 
 export MOST_USED_VIMWIKI_DIR="${VIMWIKI_DIR_WORK}"
 
+# Neorg
+export NEORG_DIR="$HOME/Dropbox/Neorg"
+export NEORG_DIR_PERSONAL="${NEORG_DIR}/Personal"
+export NEORG_DIR_WORK="${NEORG_DIR}/Work"
+export NEORG_DIR_INTERVIEWS="${NEORG_DIR}/InterviewsTaken"
+export NEORG_DIR_DISCUSSIONS="${NEORG_DIR}/Discussions"
+export NEORG_DIR_ACTIVE_TASKS="${NEORG_DIR}/ActiveTasks"
+
 # Tmux default session file
 export TMUX_DEFAULT_SESSION_FILE="$HOME/.config/tmux/private/default-session.json"
 
