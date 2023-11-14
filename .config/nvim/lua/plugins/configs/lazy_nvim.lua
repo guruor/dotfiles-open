@@ -17,8 +17,8 @@ return {
     -- automatically check for plugin updates
     enabled = true,
     concurrency = nil, ---@type number? set to 1 to check for updates very slowly
-    notify = true, -- get a notification when new updates are found
-    frequency = 14400, -- check for updates 4 hour
+    notify = false, -- get a notification when new updates are found
+    frequency = 86400, -- check for updates every day
   },
 
   performance = {
