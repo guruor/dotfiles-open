@@ -214,7 +214,16 @@ local default_plugins = {
     ft = { "go", "gomod" },
     build = ':lua require("go.install").update_all_sync()',
   },
-  "mhartington/formatter.nvim",
+  {
+    'stevearc/conform.nvim',
+    event = { "BufWritePre" },
+    cmd = { "ConformInfo" },
+    keys = { "<leader>l" },
+    opts = require("plugins.configs.conform"),
+    init = function()
+      vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+    end,
+  },
   {
     -- Doesn't work with lazy loading
     "andymass/vim-matchup",
