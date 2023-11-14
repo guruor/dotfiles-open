@@ -186,10 +186,7 @@ keys = {
     }
 }
 wk.register(keys, { prefix = leader })
-keys_visual = copy(keys)
-keys_visual["L"]["="] = { "<cmd>update | lua require('conform').format({ async = true, lsp_fallback = true })<CR>", "Format" },
-wk.register(keys_visual, { prefix = leader, mode = 'v' })
-
+wk.register(keys, { prefix = leader, mode = 'v' })
 
 keys = {
     l = {
@@ -214,9 +211,7 @@ keys = {
     }
 }
 wk.register(keys, { prefix = leader })
-keys_visual = copy(keys)
-keys_visual["l"]["="] = { "<cmd>update | lua require('conform').format({ async = true, lsp_fallback = true })<CR>", "Range Format" }
-wk.register(keys_visual, { prefix = leader, mode = 'v' })
+wk.register(keys, { prefix = leader, mode = 'v' })
 
 keys = {
     t = {
