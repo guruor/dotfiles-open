@@ -195,6 +195,7 @@ local default_plugins = {
       "williamboman/mason-lspconfig.nvim",
       { "glepnir/lspsaga.nvim", event = "LspAttach" },
       { "jose-elias-alvarez/null-ls.nvim" },
+      "b0o/schemastore.nvim",
       -- { dir = "~/Workspace/vim-plugins/null-ls.nvim" },
     },
   },
