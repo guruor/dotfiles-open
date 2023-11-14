@@ -123,6 +123,7 @@ keys = {
         ["hp"] = { ":Gitsigns preview_hunk<CR>", "Preview hunk" },
     }
 }
+
 wk.register(keys, { prefix = leader })
 wk.register(keys, { prefix = leader, mode = 'v' })
 
@@ -173,7 +174,7 @@ keys = {
         ["o"] = { "<cmd>lua vim.lsp.buf.outgoing_calls()<CR>", "Outgoing calls" },
         ["a"] = { ":lua vim.lsp.buf.code_action()<CR>", "Action" },
         ["k"] = { ":lua vim.lsp.buf.hover()<CR>", "Hover" },
-        ["="] = { ":update | FormatWrite<CR>", "FormatWrite" },
+        ["="] = { "<cmd>update | lua require('conform').format({ async = true, lsp_fallback = true })<CR>", "Format" },
         ["dd"] = { ":lua vim.diagnostic.setloclist()<CR>", "Diagnostic" },
         ["d]"] = { ":lua vim.diagnostic.goto_next()<CR>", "Next diagnostic" },
         ["d["] = { ":lua vim.diagnostic.goto_prev()<CR>", "Prev diagnostic" },
@@ -186,7 +187,7 @@ keys = {
 }
 wk.register(keys, { prefix = leader })
 keys_visual = copy(keys)
-keys_visual["L"]["="] = { ":update | '<,'>FormatWrite<CR>", "Range FormatWrite" }
+keys_visual["L"]["="] = { "<cmd>update | lua require('conform').format({ async = true, lsp_fallback = true })<CR>", "Format" },
 wk.register(keys_visual, { prefix = leader, mode = 'v' })
 
 
@@ -202,7 +203,7 @@ keys = {
         ["o"] = { "<Cmd>Lspsaga outgoing_calls<CR>", "Outgoing calls" },
         ["a"] = { "<Cmd>Lspsaga code_action<CR>", "Action" },
         ["k"] = { "<Cmd>Lspsaga hover_doc<CR>", "Hover" },
-        ["="] = { "<cmd> update | lua vim.lsp.buf.format { async = true }<CR>", "Format" },
+        ["="] = { "<cmd>update | lua require('conform').format({ async = true, lsp_fallback = true })<CR>", "Format" },
         ["dd"] = { "<Cmd>Lspsaga show_buf_diagnostics<CR>", "Diagnostic" },
         ["d]"] = { "<Cmd>Lspsaga diagnostic_jump_next<CR>", "Next diagnostic" },
         ["d["] = { "<Cmd>Lspsaga diagnostic_jump_prev<CR>", "Prev diagnostic" },
@@ -214,7 +215,7 @@ keys = {
 }
 wk.register(keys, { prefix = leader })
 keys_visual = copy(keys)
-keys_visual["l"]["="] = { "<cmd> update | lua vim.lsp.buf.format { async = true }<CR>", "Range Format" }
+keys_visual["l"]["="] = { "<cmd>update | lua require('conform').format({ async = true, lsp_fallback = true })<CR>", "Range Format" }
 wk.register(keys_visual, { prefix = leader, mode = 'v' })
 
 keys = {

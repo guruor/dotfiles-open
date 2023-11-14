@@ -70,9 +70,6 @@ M.default_on_attach_func = function(_)
     -- print("Enabling null-ls")
     require "lsp.null-ls"
   end
-  -- null-ls provides support for formatting, but still keeping formatter.nvim as backup
-  -- It also mimics range formatting with hack of using temporary buffer
-  require "lsp.formatter"
 end
 
 M.default_on_attach_func_without_formatting_support = function(client)
