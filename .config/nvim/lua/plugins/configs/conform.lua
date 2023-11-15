@@ -17,8 +17,8 @@ return {
       end
     end,
     json = { { "prettierd", "prettier" } },
-    markdown = { "prettierd" },
-    vimwiki = { "prettierd" },
+    markdown = { "prettierd", "cbfmt" },
+    vimwiki = { "prettierd", "cbfmt" },
     javascript = { "prettierd" },
     typescript = { "prettierd" },
     rust = { "rustfmt" },
