@@ -1,7 +1,6 @@
 local lsp_utils = require "lsp.utils"
 local lspconfig = require "lspconfig"
 local lspconfig_ui = require "lspconfig.ui.windows"
-lsp_utils.LspKindSetup()
 lsp_utils.DiagnosticSignSetup()
 
 -- Adding some lsp related config from kickstart.nvim

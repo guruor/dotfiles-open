@@ -11,36 +11,6 @@ M.DiagnosticSignSetup = function()
   end
 end
 
-M.LspKindSetup = function()
-  vim.lsp.protocol.CompletionItemKind = {
-    Text = " [text]",
-    Method = " [method]",
-    Function = " [function]",
-    Constructor = " [constructor]",
-    Field = "ﰠ [field]",
-    Variable = " [variable]",
-    Class = " [class]",
-    Interface = " [interface]",
-    Module = " [module]",
-    Property = " [property]",
-    Unit = " [unit]",
-    Value = " [value]",
-    Enum = " [enum]",
-    Keyword = " [key]",
-    Snippet = "﬌ [snippet]",
-    Color = " [color]",
-    File = " [file]",
-    Reference = " [reference]",
-    Folder = " [folder]",
-    EnumMember = " [enum member]",
-    Constant = " [constant]",
-    Struct = " [struct]",
-    Event = "⌘ [event]",
-    Operator = " [operator]",
-    TypeParameter = " [type]",
-  }
-end
-
 M.get_default_capabilities = function()
   -- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
   local capabilities = vim.lsp.protocol.make_client_capabilities()
