@@ -17,7 +17,6 @@ local default_plugins = {
   "nvim-lua/plenary.nvim",
 
   -- Editor look and feel
-  "rktjmp/lush.nvim",
   "nvim-tree/nvim-web-devicons",
   {
     "sainnhe/gruvbox-material",
