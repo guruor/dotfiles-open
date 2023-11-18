@@ -17,8 +17,18 @@ $lf -remote "send $id set previewer ${XDG_CONFIG_HOME:-$HOME/.config}/lf/preview
 
 # cmds/functions
 # Check this tips section for more customizations: https://github.com/gokcehan/lf/wiki/Tips#edit-and-reload-config-file
-cmd open $$OPENER $fx
-cmd open-choose $OPENER_CHOOSE="true" $OPENER $fx
+# cmd open $OPENER $fx
+cmd open ${{
+  test -L $fx && fx=$(readlink -f $fx)
+  OPENER="${XDG_CONFIG_HOME:-$HOME/.config}/lf/opener"
+  $OPENER $fx
+}}
+
+cmd open-choose ${{
+  test -L $fx && fx=$(readlink -f $fx)
+  OPENER="${XDG_CONFIG_HOME:-$HOME/.config}/lf/opener"
+  OPENER_CHOOSE="true" $OPENER $fx
+}}
 
 cmd edit ${{
     if [ -d "$fx" ]; then
