@@ -549,6 +549,13 @@ local default_plugins = {
       require("neorg").setup(opts)
     end,
   },
+  {
+    "m4xshen/hardtime.nvim",
+    dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" },
+    cmd = { "Hardtime" },
+    opts = true,
+    lazy = false,
+  },
 }
 
 local config = require("core.utils").load_config()
