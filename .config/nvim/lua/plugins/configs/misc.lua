@@ -227,32 +227,4 @@ M.treesitter_context = {
   max_lines = 2
 }
 
-M.gitlinker = function()
-  return {
-    -- mapping = false,
-    mapping = {
-      -- copy git link to clipboard
-      -- ["<leader>gb"] = { action = require("gitlinker.actions").clipboard, desc = "Copy git link to clipboard", },
-      -- open git link in browser
-      ["<leader>gB"] = { action = require("gitlinker.actions").system, desc = "Open git link in browser" },
-    },
-    override_rules = {
-      {
-        "^git@github%-personal:([%.%-%w]+)/([_%.%-%w]+)$",
-        "https://github.com/%1/%2/blob/",
-      },
-      {
-        "^git@bitbucket%-work:([%.%-%w]+)/([_%.%-%w]+)$",
-        "https://bitbucket.org/%1/%2/src/",
-      },
-      {
-        "^git@gitlab%-work:([%.%-%w]+)/([_%.%-%w]+)$",
-        "https://gitlab.com/%1/%2/blob/",
-      },
-    },
-    -- debug = true,
-    -- file_log = true,
-  }
-end
-
 return M
