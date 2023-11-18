@@ -378,13 +378,12 @@ local default_plugins = {
   -- File navigator, uses LF file manager to navigate and change working directory
   {
     "lmburns/lf.nvim",
-    event = "VeryLazy",
-    -- keys = { { "<leader>o", { mode = { "n", "v" } } }, { "<leader>O", { mode = { "n", "v" } } } },
-    -- cmd = { "Lf" },
-    config = function()
-      require("plugins.configs.misc").lf()
+    init = function()
+      vim.g.lf_netrw = 1
     end,
-    dependencies = { "plenary.nvim", "toggleterm.nvim" },
+    cmd = { "Lf" },
+    opts = require("plugins.configs.misc").lf,
+    dependencies = "toggleterm.nvim",
   },
   {
     "lukas-reineke/headlines.nvim",

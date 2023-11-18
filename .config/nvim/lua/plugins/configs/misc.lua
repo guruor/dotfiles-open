@@ -15,27 +15,17 @@ M.tagbar = function()
   vim.g.tagbar_iconchars = { "↠", "↡" }
 end
 
-M.lf = function()
-  vim.g.lf_netrw = 1
-
-  require("lf").setup {
-    default_action = "tabedit", -- default action when `Lf` opens a file
-    default_actions = { -- default action keybindings
-      ["<C-t>"] = "tabedit",
-      ["<C-x>"] = "split",
-      ["<C-v>"] = "vsplit",
-      ["<C-o>"] = "tab drop",
-    },
-    winblend = 5,
-    escape_quit = true,
-    border = vim.g.border_style,
-    highlights = {
-      Normal = { guibg = nil },
-      NormalFloat = { guibg = nil },
-      FloatBorder = { guibg = nil, guifg = nil },
-    },
-  }
-end
+M.lf = {
+  default_action = "tabedit",
+  winblend = 5,
+  escape_quit = false,
+  border = vim.g.border_style,
+  highlights = {
+    Normal = { guibg = nil },
+    NormalFloat = { guibg = nil },
+    FloatBorder = { guibg = nil, guifg = nil },
+  },
+}
 
 M.whitespace = function()
   vim.g.better_whitespace_enabled = 1
