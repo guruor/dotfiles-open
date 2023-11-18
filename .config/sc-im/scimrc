@@ -1,8 +1,46 @@
-# Looks really nice with Solarized color scheme
-color "type=HEADINGS fg=DEFAULT_COLOR bg=BLACK bold=0"
-color "type=CELL_SELECTION fg=WHITE bg=GREEN bold=1"set autocalc
-
+## Behaviour
+set autocalc
 set numeric
-set numeric_decimal=0
-set overlap
 set xlsx_readformulas
+set newline_action=l
+set ignorecase
+# For converting datetimes to IST +5:30 (5.5×3600)=19800 Seconds
+set tm_gmtoff=19800
+set copy_to_clipboard_delimited_tab
+# Content overflows into next column
+set overlap
+# Scroll half page at a time instead of full
+set half_page_scroll
+# Avoided replace long content with *
+set truncate
+# See debug messages in screen
+set debug
+
+
+## map
+nnoremap "<C-u>" "<C-b>"
+nnoremap "<C-d>" "<C-f>"
+
+nnoremap "Uc" ":unfreezecol<cr>"
+nnoremap "Ur" ":unfreezerow<cr>"
+vnoremap "U"  ":unfreezecol<cr>:unfreezerow<cr>"
+## unfreeze (fr, fc)
+nnoremap "ff" ":unfreeze<cr>"
+
+
+## Formatting
+nnoremap "fd" "<C-d>"
+nnoremap "fs" ":format \"0.0##,#E+###\"<cr>"
+nnoremap "fp" ":format \"#,###,##0%\"<cr>"
+nnoremap "fa" ":format \"$#,###,##0.00 ;($#,###,##0.00)\"<cr>"
+
+# Left right scroll (alt-h, alt-l)
+nnoremap "˙" "zH"
+nnoremap "¬" "zL"
+
+# Row select
+nnoremap "V" "g0v$"
+
+# Reverse the pasting so that always paste with moving references
+nnoremap "p" "Pc"
+nnoremap "Pc" "p"
