@@ -140,10 +140,9 @@ map o open
 map O open-choose
 map e edit
 
-map A rename # at the very end
-map I push A<c-a> # at the very beginning
-map i push A<a-b><a-b><a-f> # before extention
-map a push A<a-b> # after extention
+map I :rename; cmd-home
+map a rename
+map A :rename; cmd-end
 map B bulkrename
 map b $setbg $f
 
