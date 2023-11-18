@@ -478,13 +478,11 @@ local default_plugins = {
   },
   {
     "ggandor/leap.nvim",
-    event = "VeryLazy",
-    dependencies = {},
+    keys = {"s", "S"},
     config = function()
       require("leap").set_default_keymaps()
     end,
   },
-  -- Testing
   {
     "akinsho/toggleterm.nvim",
     version = "*",
