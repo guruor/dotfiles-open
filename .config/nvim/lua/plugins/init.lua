@@ -39,7 +39,6 @@ local default_plugins = {
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
     build = ":TSUpdate",
     dependencies = {
-      { "JoosepAlviste/nvim-ts-context-commentstring" },
       { "LiadOz/nvim-dap-repl-highlights" },
     },
     init = function()
@@ -316,6 +315,9 @@ local default_plugins = {
     config = function()
       require("plugins.configs.misc").comment()
     end,
+    dependencies = {
+      "JoosepAlviste/nvim-ts-context-commentstring",
+    }
   },
   -- easily search for, substitute, and abbreviate multiple variants of a word, replaces vim-abolish
   {
