@@ -2,7 +2,7 @@ local utils = require "utils"
 local wk = require("which-key")
 
 local leader = "<Space>"
-local localleader = ","
+local localleader = "\\"
 
 utils.map("n", localleader, '<cmd>lua require("which-key").show(",", {mode = "n", auto = true})<CR>')
 utils.map("v", localleader, '<cmd>lua require("which-key").show(",", {mode = "v", auto = true})<CR>')
@@ -10,36 +10,12 @@ utils.map("v", localleader, '<cmd>lua require("which-key").show(",", {mode = "v"
 local keys
 local keys_visual
 
-keys = {
-    ["j"] = { ":BufferLineCyclePrev<CR>", "Jump to left tab" },
-    ["k"] = { ":BufferLineCycleNext<CR>", "Jump to right tab" },
-    ["<lt>"] = { ":BufferLineMovePrev<CR>", "Move tab left" },
-    [">"] = { ":BufferLineMoveNext<CR>", "Move tab right" },
-    ["1"] = { '<cmd>lua require("bufferline").go_to(1, true)<CR>', "which_key_ignore" },
-    ["2"] = { '<cmd>lua require("bufferline").go_to(2, true)<CR>', "which_key_ignore" },
-    ["3"] = { '<cmd>lua require("bufferline").go_to(3, true)<CR>', "which_key_ignore" },
-    ["4"] = { '<cmd>lua require("bufferline").go_to(4, true)<CR>', "which_key_ignore" },
-    ["5"] = { '<cmd>lua require("bufferline").go_to(5, true)<CR>', "which_key_ignore" },
-    ["6"] = { '<cmd>lua require("bufferline").go_to(6, true)<CR>', "which_key_ignore" },
-    ["7"] = { '<cmd>lua require("bufferline").go_to(7, true)<CR>', "which_key_ignore" },
-    ["8"] = { '<cmd>lua require("bufferline").go_to(8, true)<CR>', "which_key_ignore" },
-    ["9"] = { '<cmd>lua require("bufferline").go_to(9, true)<CR>', "which_key_ignore" },
-    ["u"] = { ":update<CR>", "Save file" },
-    -- Closing float windows before deleting the current buffer
-    ["d"] = { ":lua CloseAllFloatingWindows();vim.api.nvim_command('bdelete')<CR>", "Delete buffer" },
-    ["D"] = { ":lua CloseAllFloatingWindows(); vim.api.nvim_command('bufdo bdelete');<CR>", "Delete all buffers" },
-    -- Closing float windows before closing the current window
-    ["q"] = { ":lua CloseAllFloatingWindows();vim.api.nvim_command('quit')<CR>", "Quit" },
-    ["x"] = { ":q!<CR>", "Close without saving" },
-    ["Q"] = { ":qa!<CR>", "Quit all" }
-}
-
+keys = {}
 
 wk.register(keys, { prefix = localleader })
 wk.register(keys, { prefix = localleader, mode = 'v' })
 
 keys = {
-    ["\\"] = { ":Lspsaga outline<CR>", "Toggle outline" },
     ["C"] = { ":Code!!<CR>", "Virtual REPL" },
     ["P"] = { ":!opout %<CR>", "Preview files" },
     ["_"] = { "<C-W>s", "Split below" },
@@ -52,6 +28,38 @@ keys = {
     ["o"] = { ":Lf<CR>", "Open LF file explorer" },
     ["O"] = { ":lua require('lf').start(vim.fn.getcwd())<CR>", "Open LF file explorer" },
 }
+wk.register(keys, { prefix = leader })
+wk.register(keys, { prefix = leader, mode = 'v' })
+
+keys = {
+    b = {
+        name = 'Buffers',
+        ["p"] = { ":BufferLineCyclePrev<CR>", "Jump to previous tab" },
+        ["n"] = { ":BufferLineCycleNext<CR>", "Jump to next tab" },
+        ["j"] = { ":BufferLineCyclePrev<CR>", "Jump to previous tab" },
+        ["k"] = { ":BufferLineCycleNext<CR>", "Jump to next tab" },
+        ["<lt>"] = { ":BufferLineMovePrev<CR>", "Move tab left" },
+        [">"] = { ":BufferLineMoveNext<CR>", "Move tab right" },
+        ["1"] = { '<cmd>lua require("bufferline").go_to(1, true)<CR>', "which_key_ignore" },
+        ["2"] = { '<cmd>lua require("bufferline").go_to(2, true)<CR>', "which_key_ignore" },
+        ["3"] = { '<cmd>lua require("bufferline").go_to(3, true)<CR>', "which_key_ignore" },
+        ["4"] = { '<cmd>lua require("bufferline").go_to(4, true)<CR>', "which_key_ignore" },
+        ["5"] = { '<cmd>lua require("bufferline").go_to(5, true)<CR>', "which_key_ignore" },
+        ["6"] = { '<cmd>lua require("bufferline").go_to(6, true)<CR>', "which_key_ignore" },
+        ["7"] = { '<cmd>lua require("bufferline").go_to(7, true)<CR>', "which_key_ignore" },
+        ["8"] = { '<cmd>lua require("bufferline").go_to(8, true)<CR>', "which_key_ignore" },
+        ["9"] = { '<cmd>lua require("bufferline").go_to(9, true)<CR>', "which_key_ignore" },
+        ["u"] = { ":update<CR>", "Save file" },
+        -- Closing float windows before deleting the current buffer
+        ["d"] = { ":lua CloseAllFloatingWindows();vim.api.nvim_command('bdelete')<CR>", "Delete buffer" },
+        ["D"] = { ":lua CloseAllFloatingWindows(); vim.api.nvim_command('bufdo bdelete');<CR>", "Delete all buffers" },
+        -- Closing float windows before closing the current window
+        ["q"] = { ":lua CloseAllFloatingWindows();vim.api.nvim_command('quit')<CR>", "Quit" },
+        ["x"] = { ":q!<CR>", "Close without saving" },
+        ["Q"] = { ":qa!<CR>", "Quit all" }
+   }
+}
+
 wk.register(keys, { prefix = leader })
 wk.register(keys, { prefix = leader, mode = 'v' })
 
@@ -189,6 +197,7 @@ wk.register(keys, { prefix = leader, mode = 'v' })
 keys = {
     l = {
         name = 'LSP',
+        ["\\"] = { ":Lspsaga outline<CR>", "Toggle outline" },
         ["gd"] = { "<Cmd>Lspsaga goto_definition()<CR>", "Definition" },
         ["gD"] = { "<Cmd>Lspsaga peek_definition()<CR>", "Peek definition" },
         ["gr"] = { "<Cmd>Lspsaga finder<CR>", "References" },
