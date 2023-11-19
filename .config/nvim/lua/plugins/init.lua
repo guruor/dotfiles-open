@@ -56,6 +56,13 @@ local default_plugins = {
     opts = require("plugins.configs.misc").treesitter_context,
   },
   {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    event = "BufRead",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    -- opts = require("plugins.configs.misc").treesitter_textobjects,
+    contig = true
+  },
+  {
     "akinsho/bufferline.nvim",
     version = "*",
     dependencies = "nvim-tree/nvim-web-devicons",
