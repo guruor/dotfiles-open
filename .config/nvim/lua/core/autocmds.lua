@@ -347,15 +347,6 @@ vim.api.nvim_create_autocmd("BufNewFile", {
 --   group = generalSettingsGroup,
 -- })
 
---------------- Changing commentstring for filetypes -------------------
--- autocmd("FileType", {
---   pattern = { "markdown" },
---   callback = function()
---     vim.bo.commentstring = "<!-- %s -->"
---   end,
---   group = generalSettingsGroup,
--- })
-
 local easyCloseGroup = augroup("Easy close", { clear = true })
 local easyCloseBufTypes = { 'nofile', 'prompt', 'popup' }
 

@@ -36,12 +36,6 @@ M.whitespace = function()
   vim.g.better_whitespace_guicolor = "#3c3836"
 end
 
-M.comment = function()
-  require("Comment").setup {
-    pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
-  }
-end
-
 M.smartcolumn = {
   colorcolumn = "120",
   disabled_filetypes = { "help", "text", "markdown" },
@@ -215,6 +209,21 @@ M.diffview = {
 
 M.treesitter_context = {
   max_lines = 2
+}
+
+M.ts_context_commentstring = {
+  enable_autocmd = false,
+  languages = {
+    javascript = {
+      __default = "// %s",
+      jsx_element = "{/* %s */}",
+      jsx_fragment = "{/* %s */}",
+      jsx_attribute = "// %s",
+      comment = "// %s",
+    },
+    typescript = { __default = "// %s", __multiline = "/* %s */" },
+    http = { __default = "# %s", __multiline = "<!-- %s -->" },
+  },
 }
 
 return M
