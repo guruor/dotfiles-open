@@ -1,7 +1,7 @@
 # Luke's lf settings
 
 # Basic vars
-set shell zsh
+set shell sh
 set shellopts '-eu'
 set ifs "\n"
 set scrolloff 10
@@ -47,6 +47,12 @@ cmd delete ${{
 	printf "delete?[y/N]"
 	read ans
 	[ $ans = "y" ] && rm -rf -- $fx
+}}
+
+${{ mkdir -p ~/.trash }}
+
+cmd trash ${{
+    mv $fx ~/.trash
 }}
 
 cmd moveto ${{
@@ -126,7 +132,9 @@ map <c-f> $lf -remote "send $id select '$(fzf)'"
 map J $lf -remote "send $id cd $(cut -d'	' -f2 ${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs | fzf)"
 map gh
 map g top
-map D delete
+map d
+map dd trash
+map dD delete
 map C copyto
 map M moveto
 map <c-n> push :mkdir<space>
