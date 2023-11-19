@@ -51,21 +51,6 @@ M.options = {
     "dap_repl",
     "comment"
   },
-  context_commentstring = {
-    enable_autocmd = false,
-    enable = true,
-    config = {
-      javascript = {
-        __default = "// %s",
-        jsx_element = "{/* %s */}",
-        jsx_fragment = "{/* %s */}",
-        jsx_attribute = "// %s",
-        comment = "// %s",
-      },
-      typescript = { __default = "// %s", __multiline = "/* %s */" },
-      http = { __default = "# %s", __multiline = "<!-- %s -->" },
-    },
-  },
   query_linter = {
     enable = true,
     use_virtual_text = true,
