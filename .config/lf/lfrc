@@ -9,6 +9,9 @@ set icons
 set period 1
 set hidden
 set hiddenfiles ".*:*.aux:*.log:*.bbl:*.bcf:*.blg:*.run.xml"
+# Using modified time here for sorting, https://github.com/gokcehan/lf/issues/1323#issuecomment-1619078744
+set sortby time; set info time
+set reverse true
 
 # Vars that depend on environmental variables
 $lf -remote "send $id set cleaner ${XDG_CONFIG_HOME:-$HOME/.config}/lf/cleaner"
