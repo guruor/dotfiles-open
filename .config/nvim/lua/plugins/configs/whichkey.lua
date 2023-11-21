@@ -10,21 +10,20 @@ utils.map("v", localleader, '<cmd>lua require("which-key").show(",", {mode = "v"
 local keys
 local keys_visual
 
-keys = {}
+keys = {
+    name = 'Localleader mappings',
+    ["P"] = { ":!opout %<CR>", "Preview files" },
+    ["c"] = { ':exec ":w! | :vs | :te compiler % ".input("Enter args: ")<CR>', "Compile" },
+    ["U"] = { ":UndotreeToggle<CR>", "Undo Tree" },
+}
 
 wk.register(keys, { prefix = localleader })
 wk.register(keys, { prefix = localleader, mode = 'v' })
 
 keys = {
-    ["C"] = { ":Code!!<CR>", "Virtual REPL" },
-    ["P"] = { ":!opout %<CR>", "Preview files" },
+    name = 'Leader mappings',
     ["_"] = { "<C-W>s", "Split below" },
     ["|"] = { "<C-W>v", "Split right" },
-    ["c"] = { ':exec ":w! | :vs | :te compiler % ".input("Enter args: ")<CR>', "Compile" },
-    ["X"] = { ":split | term<CR>", "Terminal" },
-    ["."] = { ":tabnew $MYVIMRC<CR>", "Open Init" },
-    ["R"] = { ":source $MYVIMRC<CR>", "Reload Init" },
-    ["U"] = { ":UndotreeToggle<CR>", "Undo Tree" },
     ["o"] = { ":Lf<CR>", "Open LF file explorer" },
     ["O"] = { ":lua require('lf').start(vim.fn.getcwd())<CR>", "Open LF file explorer" },
 }
