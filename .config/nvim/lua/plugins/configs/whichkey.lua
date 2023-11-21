@@ -124,9 +124,6 @@ keys = {
         ["P"] = { ":Git pull<CR>", "Pull" },
         ["<lt>"] = { ":diffget //3<CR>", "Get changes from right" },
         [">"] = { ":diffget //2<CR>", "Get changes from left" },
-        ["]"] = { ":Gitsigns next_hunk<CR>", "Next hunk" },
-        ["["] = { ":Gitsigns prev_hunk<CR>", "Previous hunk" },
-        ["hp"] = { ":Gitsigns preview_hunk<CR>", "Preview hunk" },
     }
 }
 
@@ -250,8 +247,6 @@ keys = {
         ["s"] = { ":lua ToggleTpipeline()<CR>", "Toggle tpipeline" },
         ["S"] = { ":set spell!<CR>", "Spell" },
         ["fc"] = { ":lua ToggleFoldcolumn()<CR>", "Toggle foldcolumn" },
-        ["gh"] = { ":Gitsigns toggle_signs<CR>", "Toggle git hunks" },
-        ["gb"] = { ":Gitsigns toggle_current_line_blame<CR>", "Toggle line git blame" },
     }
 }
 wk.register(keys, { prefix = leader })
