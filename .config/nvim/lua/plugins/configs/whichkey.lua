@@ -4,9 +4,6 @@ local wk = require("which-key")
 local leader = "<Space>"
 local localleader = "\\"
 
-utils.map("n", localleader, '<cmd>lua require("which-key").show(",", {mode = "n", auto = true})<CR>')
-utils.map("v", localleader, '<cmd>lua require("which-key").show(",", {mode = "v", auto = true})<CR>')
-
 local keys
 local keys_visual
 

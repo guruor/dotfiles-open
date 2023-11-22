@@ -12,7 +12,7 @@ cmd "filetype plugin indent on"
 
 -------------------------------------- globals -----------------------------------------
 g.mapleader = " " -- Space as leader key
-g.maplocalleader = "," -- Comma as local leader key
+g.maplocalleader = "\\" -- Comma as local leader key
 
 -- Setting default border for nvim_open_win
 -- As of now there is no option to set default border
