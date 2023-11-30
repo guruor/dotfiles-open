@@ -224,6 +224,27 @@ local default_plugins = {
     dependencies = "nvim-treesitter/nvim-treesitter",
   },
   {
+    -- autopairing of (){}[] etc
+    "echasnovski/mini.pairs",
+    event = "VeryLazy",
+    opts = {},
+    keys = {
+      {
+        "<leader>Tp",
+        function()
+          local Util = require("lazy.core.util")
+          vim.g.minipairs_disable = not vim.g.minipairs_disable
+          if vim.g.minipairs_disable then
+            Util.warn("Disabled auto pairs", { title = "Option" })
+          else
+            Util.info("Enabled auto pairs", { title = "Option" })
+          end
+        end,
+        desc = "Toggle auto pairs",
+      },
+    },
+  },
+  {
     "hrsh7th/nvim-cmp",
     event = { "InsertEnter", "CmdlineEnter" },
     config = function()
@@ -236,18 +257,6 @@ local default_plugins = {
         dependencies = "rafamadriz/friendly-snippets",
         config = function()
           require "plugins.configs.snippets"
-        end,
-      },
-      {
-        -- autopairing of (){}[] etc
-        "windwp/nvim-autopairs",
-        opts = { fast_wrap = {}, disable_filetype = { "TelescopePrompt", "vim" } },
-        config = function(_, opts)
-          require("nvim-autopairs").setup(opts)
-
-          -- setup cmp for autopairs
-          local cmp_autopairs = require "nvim-autopairs.completion.cmp"
-          require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
         end,
       },
       -- cmp sources plugins
