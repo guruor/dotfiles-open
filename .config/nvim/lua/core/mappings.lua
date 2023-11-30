@@ -59,8 +59,7 @@ M.general = {
   },
 }
 
--- Silent mappings
-local opts = { silent = true }
-vim.keymap.set("n", "<Esc>", ":noh <CR>", opts)
+-- Clear search with <esc>
+vim.keymap.set({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })
 
 return M
