@@ -165,7 +165,10 @@ M.go = {
 
 M.noice = {
   presets = {
+    bottom_search = true,
+    command_palette = true,
     long_message_to_split = true,
+    inc_rename = true,
   },
   lsp = {
     -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
