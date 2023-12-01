@@ -569,6 +569,14 @@ local default_plugins = {
     },
   },
   {
+    'echasnovski/mini.bracketed',
+    version = false,
+    event = "VeryLazy",
+    config = function(_, opts)
+      require('mini.bracketed').setup(opts)
+    end
+  },
+  {
     "akinsho/toggleterm.nvim",
     version = "*",
     config = true,
