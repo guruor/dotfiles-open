@@ -30,6 +30,7 @@ wk.register(keys, { prefix = leader, mode = 'v' })
 keys = {
     b = {
         name = 'Buffers',
+        ["b"] = { "<cmd>e #<cr>", "Switch to Other Buffer" },
         ["p"] = { ":BufferLineCyclePrev<CR>", "Jump to previous tab" },
         ["n"] = { ":BufferLineCycleNext<CR>", "Jump to next tab" },
         ["j"] = { ":BufferLineCyclePrev<CR>", "Jump to previous tab" },
