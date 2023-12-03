@@ -23,6 +23,15 @@ M.options = {
     enable = true,
     enable_quotes = true,
   },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "<C-space>",
+      node_incremental = "<C-space>",
+      scope_incremental = false,
+      node_decremental = "<bs>",
+    },
+  },
   ensure_installed = {
     "python",
     "go",

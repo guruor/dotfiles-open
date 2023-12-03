@@ -36,7 +36,11 @@ local default_plugins = {
   { "vimpostor/vim-tpipeline", lazy = false }, -- Merges vim statusline with tmux
   {
     "nvim-treesitter/nvim-treesitter",
-    cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
+    cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo", "TSUpdateSync", "TSUpdate" },
+    keys = {
+      { "<c-space>", desc = "Increment selection" },
+      { "<bs>", desc = "Decrement selection", mode = "x" },
+    },
     build = ":TSUpdate",
     dependencies = {
       { "LiadOz/nvim-dap-repl-highlights" },
