@@ -628,6 +628,15 @@ local default_plugins = {
   -- "metakirby5/codi.vim",
   -- { "junegunn/vim-easy-align", run = { "EasyAlign" } },
   {
+    "3rd/image.nvim",
+    ft = { "markdown", "vimwiki", "norg" },
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    opts = require("plugins.configs.image").options,
+    config = function(_, opts)
+      require("image").setup(opts)
+    end
+  },
+  {
     "nvim-neorg/neorg",
     build = ":Neorg sync-parsers",
     cmd = { 'Neorg' },
