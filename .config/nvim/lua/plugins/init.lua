@@ -63,8 +63,56 @@ local default_plugins = {
     "nvim-treesitter/nvim-treesitter-textobjects",
     event = "BufRead",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
-    -- opts = require("plugins.configs.misc").treesitter_textobjects,
-    contig = true
+    config = function()
+      -- When in diff mode, we want to use the default
+      -- vim text objects c & C instead of the treesitter ones.
+      local move = require("nvim-treesitter.textobjects.move") ---@type table<string,fun(...)>
+      local configs = require("nvim-treesitter.configs")
+      for name, fn in pairs(move) do
+        if name:find("goto") == 1 then
+          move[name] = function(q, ...)
+            if vim.wo.diff then
+              local config = configs.get_module("textobjects.move")[name] ---@type table<string,string>
+              for key, query in pairs(config or {}) do
+                if q == query and key:find("[%]%[][cC]") then
+                  vim.cmd("normal! " .. key)
+                  return
+                end
+              end
+            end
+            return fn(q, ...)
+          end
+        end
+      end
+    end,
+  },
+  {
+    -- Extend and create a/i textobjects, also extends nvim-treesitter/nvim-treesitter-textobjects
+    "echasnovski/mini.ai",
+    -- keys = {
+    --   { "a", mode = { "x", "o" } },
+    --   { "i", mode = { "x", "o" } },
+    -- },
+    event = "VeryLazy",
+    opts = function()
+      local ai = require("mini.ai")
+      return {
+        n_lines = 500,
+        custom_textobjects = {
+          o = ai.gen_spec.treesitter({
+            a = { "@block.outer", "@conditional.outer", "@loop.outer" },
+            i = { "@block.inner", "@conditional.inner", "@loop.inner" },
+          }, {}),
+          f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }, {}),
+          c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }, {}),
+          t = { "<([%p%w]-)%f[^<%w][^<>]->.-</%1>", "^<.->().*()</[^/]->$" },
+        },
+      }
+    end,
+    config = function(_, opts)
+      require("mini.ai").setup(opts)
+      -- TODO: register all text objects with which-key similar to LazyVim
+    end,
   },
   {
     "akinsho/bufferline.nvim",
