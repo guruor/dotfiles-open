@@ -46,13 +46,15 @@ function get_docker_container_name_by_service() {
 function docker_start_service() {
     # Here profile name is same as service name
     compose_file="$1"
-    profile_name="$2"
+    service_name="$2"
+    compose_profiles="$3"
 
-    if is_docker_container_running "$compose_file" "$profile_name"; then
-        echo -e "Service ${profile_name} is already running"
+    if is_docker_container_running "$compose_file" "$service_name"; then
+        echo -e "Service ${service_name} is already running"
     else
-        echo -e "Starting service ${profile_name}..."
-        COMPOSE_PROFILES="$profile_name" docker compose -f "$compose_file"  up -d
+        echo -e "Starting service ${service_name}..."
+        # COMPOSE_PROFILES="$compose_profiles" docker compose -f "$compose_file"  up -d
+        docker compose -f "$compose_file"  restart "$service_name"
     fi
 }
 
