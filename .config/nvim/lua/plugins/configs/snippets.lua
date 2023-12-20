@@ -12,7 +12,7 @@ local date = function() return { os.date('%Y-%m-%d') } end
 ls.config.set_config {
     history = true,
     region_check_events = "CursorMoved,CursorHold,InsertEnter",
-    delete_check_events = "InsertLeave",
+    delete_check_events = "TextChanged",
     enable_autosnippets = true,
 }
 
