@@ -4,7 +4,8 @@
 -- Use a sub-list to run only the first available formatter
 -- javascript = { { "prettierd", "prettier" } },
 
--- TODO: Add support for cbfmt for markdown and neorg
+-- TODO: Add support for cbfmt for neorg
+-- https://github.com/lukas-reineke/cbfmt/issues/37
 return {
   formatters_by_ft = {
     go = { "gofmt", "goimports", "goimports-reviser", "gofumpt", "golines" },
