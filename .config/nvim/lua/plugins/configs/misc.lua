@@ -211,7 +211,9 @@ M.diffview = {
 }
 
 M.treesitter_context = {
-  max_lines = 2
+  mode = "cursor",
+  max_lines = 3,
+}
 }
 
 M.ts_context_commentstring = {
