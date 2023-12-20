@@ -10,7 +10,7 @@ local utils = require "utils"
 -- 4. All `/after/plugin` files are sourced (this includes `/after` from plugins)
 
 -- List of all default plugins & their definitions
-vim.g.colors_name = 'gruvbox-material'
+vim.g.current_colorscheme = 'gruvbox-material'
 local default_plugins = {
 
   -- Common lua utils used by other plugins
@@ -320,7 +320,7 @@ local default_plugins = {
   },
   {
     "hrsh7th/nvim-cmp",
-    event = { "InsertEnter", "CmdlineEnter" },
+    event = { "InsertEnter" },
     config = function()
       require "plugins.configs.cmp"
     end,
