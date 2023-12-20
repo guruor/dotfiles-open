@@ -30,6 +30,7 @@ for _, provider in ipairs { "node", "perl", "ruby" } do
   g["loaded_" .. provider .. "_provider"] = 0
 end
 
+-- We can use https://github.com/linux-cultist/venv-selector.nvim for dynamic choice
 g.python3_host_prog = home_dir .. "/.pyenv/versions/nvim/bin/python"
 
 -- netrw
