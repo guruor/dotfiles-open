@@ -295,7 +295,6 @@ export ZSH_PYENV_LAZY_VIRTUALENV=true
 
 _evalcache starship init zsh
 _evalcache zoxide init zsh
-_evalcache navi widget zsh
 
 # Trigger asl logs cleaning, since it slows down shell on macos
 # clean-asl-logs
