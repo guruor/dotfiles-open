@@ -287,6 +287,9 @@ fi
 export PATH="$PATH:${CARGO_HOME}/bin"
 [ -f "${CARGO_HOME}/env" ] && source "${CARGO_HOME}/env"
 
+# Adds Rancher Desktop to path, setting it after brew setup to avoid overriding docker binary path by brew
+export PATH="$HOME/.rd/bin:$PATH"
+
 # Initializing pyev, used by zsh-pyenv-lazy
 export ZSH_PYENV_LAZY_VIRTUALENV=true
 
