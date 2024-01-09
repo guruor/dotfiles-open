@@ -26,6 +26,8 @@
 # ```
 
 session_template_path="$TMUX_DEFAULT_SESSION_FILE"
+session_creation_timeout=0.1
+window_creation_timeout=0.3
 
 # Sopping tmux existing session and deleting the stored the session in ressurect directory
 if [[ -f "$XDG_DATA_HOME/tmux/resurrect/last" ]]; then
@@ -55,8 +57,8 @@ do
     else
         echo -e "Creating new session: ${session_icon} ${session_name} and window ${first_window}" >&2
         echo -e "Commands: ${first_window_commands}\n" >&2
-        tmux new-session -d -s "${session_icon}" -n "${first_window}";
-        tmux send-keys -t "${session_icon}":"${first_window}" "${first_window_commands}" ENTER; sleep .3
+        tmux new-session -d -s "${session_icon}" -n "${first_window}"; sleep $session_creation_timeout;
+        tmux send-keys -t "${session_icon}":"${first_window}" "${first_window_commands}" ENTER; sleep $window_creation_timeout;
     fi
 
     existing_windows=$(tmux list-windows -t "${session_icon}" -F "#{window_name}")
@@ -70,13 +72,13 @@ do
             echo -e "Creating new window: ${window_name}" >&2
             commands=$(echo "${windows_data}" | jq -r ".${window_name}")
             echo -e "Commands: ${commands}\n" >&2
-            tmux new-window -n  "${window_name}" -t "${session_icon}";
-            tmux send-keys -t "${session_icon}":"${window_name}" "${commands}" ENTER; sleep .3;
+            tmux new-window -n  "${window_name}" -t "${session_icon}"; sleep $session_creation_timeout;
+            tmux send-keys -t "${session_icon}":"${window_name}" "${commands}" ENTER; sleep $window_creation_timeout;
         fi
     done
 done
 
-# Saving the sessio with tmux-resurrect
+# Saving the session with tmux-resurrect
 if [[ -f "$XDG_CONFIG_HOME/tmux/plugins/tmux-resurrect/scripts/save.sh" ]]; then
     echo -e "Saving the session with tmux-ressurect..." >&2
     sh "$XDG_CONFIG_HOME/tmux/plugins/tmux-resurrect/scripts/save.sh"
