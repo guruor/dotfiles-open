@@ -310,8 +310,6 @@ _evalcache pyenv init -
 # export DOCKER_DEFAULT_PLATFORM=linux/arm64 # Same as linux/aarch64
 # export DOCKER_DEFAULT_PLATFORM=linux/amd64 # Installing pandas with pip was taking forever with amd64
 
-export GOTESTS_TEMPLATE="testify"
-
 [[ -d "${HOME}/powerlevel10k" ]] || git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
 source ~/powerlevel10k/powerlevel10k.zsh-theme
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
