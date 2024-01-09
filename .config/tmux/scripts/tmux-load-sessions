@@ -9,7 +9,7 @@ session_icon_name_map=$(get_default_session_icon_name_map)
 
 if [[ -z "${tmux_sessions}" ]]; then
     echo -e "No running tmux session found" >&2
-    # Saving the sessio with tmux-resurrect
+    # Saving the session with tmux-resurrect
     if [[ -d "$XDG_CONFIG_HOME/tmux/plugins/tmux-resurrect" ]]; then
         echo -e "Restoring the session with tmux-ressurect..." >&2
         tmux start-server
