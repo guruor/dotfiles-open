@@ -42,7 +42,7 @@ setopt prompt_subst
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 setopt autocd		# Automatically cd into typed directory.
-stty stop undef		# Disable ctrl-s to freeze terminal.
+stty stop undef <$TTY >$TTY     # Disable ctrl-s to freeze terminal.
 setopt interactive_comments
 
 # History in cache directory:
