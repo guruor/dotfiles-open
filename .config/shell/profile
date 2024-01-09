@@ -30,6 +30,7 @@ export PATH="$ASDF_DATA_DIR/bin:$ASDF_DATA_DIR/shims:$PATH"
 # Golang environment variables, default GOPATH is ~/go
 export GOPATH="${XDG_DATA_HOME:-$HOME/.local/share}/go"
 export GOBIN="$GOPATH/bin"
+export GOTESTS_TEMPLATE="testify"
 # Adds `GOBIN` to $PATH
 export PATH="$PATH:$GOBIN"
 
