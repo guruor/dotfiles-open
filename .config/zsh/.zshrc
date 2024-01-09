@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # Luke's config for the Zoomer Shell
 
 # ZSH plugins
@@ -293,8 +300,9 @@ export PATH="$HOME/.rd/bin:$PATH"
 # Initializing pyev, used by zsh-pyenv-lazy
 export ZSH_PYENV_LAZY_VIRTUALENV=true
 
-_evalcache starship init zsh
 _evalcache zoxide init zsh
+_evalcache pyenv init -
+# _evalcache starship init zsh
 
 # Trigger asl logs cleaning, since it slows down shell on macos
 # clean-asl-logs
@@ -303,3 +311,8 @@ _evalcache zoxide init zsh
 # export DOCKER_DEFAULT_PLATFORM=linux/amd64 # Installing pandas with pip was taking forever with amd64
 
 export GOTESTS_TEMPLATE="testify"
+
+[[ -d "${HOME}/powerlevel10k" ]] || git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+source ~/powerlevel10k/powerlevel10k.zsh-theme
+# To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
+[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
