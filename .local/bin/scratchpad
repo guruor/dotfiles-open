@@ -4,21 +4,17 @@
 # or
 # Opens an empty terminal in home directory
 
-# To alias access to this script
-shopt -s expand_aliases
-source "${HOME}/.config/shell/aliasrc"
-
 # Open tmux session if exist
 session_name="Scratchpad"
 source "$HOME/.local/bin/tmux/tmux-common-functions"
-session_name_icon_map=$(get_default_session_name_icon_map)
-session_icon=$(get_session_icon "$session_name_icon_map" "$session_name")
-session_exist=$(tmux has-session -t "${session_icon}")
+session_icon=$(does_session_exist_by_name "${session_name}")
 
-if [[ "${session_exist}" ]]; then
+# echo -e "Tmux session ${session_name} attach status: ${session_icon}"
+if [[ "${session_icon}" ]]; then
+    echo -e "Attaching to tmux session ${session_icon} ${session_name}.." >&2
     tmux a -t "${session_icon}"
 else
-    echo -e "Tmux session ${session_icon} ${session_name} doesn't exist."
+    echo -e "Tmux session ${session_icon} ${session_name} doesn't exist." >&2
     echo -e "Moving to home directory"
     # Open empty terminal in home directory
     cd "$HOME" || return
