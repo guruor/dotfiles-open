@@ -51,3 +51,36 @@ function get_session_icon(){
     echo -e "\nSession icon: \n\n$session_icon" >&2
     echo -e "$session_icon"
 }
+
+function does_session_exist(){
+    local session_icon=$1
+    echo -e "Checking if tmux session ${session_icon} exist" >&2
+    tmux_sessions=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | rg "${session_icon}" | head -n 1)
+    if [[ "${tmux_sessions}" ]]; then
+      echo "${session_icon}"
+    else
+      echo false
+    fi
+}
+
+function does_session_exist_by_name(){
+    local session_name=$1
+    session_name_icon_map=$(get_default_session_name_icon_map)
+    session_icon=$(get_session_icon "$session_name_icon_map" "$session_name")
+    does_exist=$(does_session_exist "${session_icon}")
+    echo "${does_exist}"
+}
+
+function attach_session(){
+    local session_name=$1
+    does_exist=$(does_session_exist_by_name "${session_name}")
+
+    if [[ "${does_exist}" ]]; then
+        echo -e "Attaching to tmux session ${session_icon} ${session_name}.." >&2
+        tmux a -t "${session_icon}"
+        echo true
+    else
+        echo -e "Tmux session ${session_icon} ${session_name} doesn't exist." >&2
+        echo false
+    fi
+}
