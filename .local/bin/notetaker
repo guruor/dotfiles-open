@@ -45,11 +45,13 @@ else
     source "$HOME/.local/bin/tmux/tmux-common-functions"
     session_name_icon_map=$(get_default_session_name_icon_map)
     session_icon=$(get_session_icon "$session_name_icon_map" "$session_name")
-    tmux_sessions=$(tmux list-sessions -F "#{session_name}" | rg "${session_icon}" | head -n 1)
+    session_exist=$(tmux has-session -t "${session_icon}")
 
-    if [[ "${tmux_sessions}" ]]; then
+    if [[ "${session_exist}" ]]; then
         tmux a -t "${session_icon}"
     else
+        echo -e "Tmux session ${session_icon} ${session_name} doesn't exist."
+        echo -e "Opening QuickNote in $MOST_USED_NEORG_DIR directory"
         # Use most used note directory
         open_quicknote "${MOST_USED_NEORG_DIR}"
     fi
