@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Opens tmux session named `Scratchpad`
+# or
+# Opens an empty terminal in home directory
+
+# To alias access to this script
+shopt -s expand_aliases
+source "${HOME}/.config/shell/aliasrc"
+
+# Open tmux session if exist
+session_name="Scratchpad"
+source "$HOME/.local/bin/tmux/tmux-common-functions"
+session_name_icon_map=$(get_default_session_name_icon_map)
+session_icon=$(get_session_icon "$session_name_icon_map" "$session_name")
+session_exist=$(tmux has-session -t "${session_icon}")
+
+if [[ "${session_exist}" ]]; then
+    tmux a -t "${session_icon}"
+else
+    echo -e "Tmux session ${session_icon} ${session_name} doesn't exist."
+    echo -e "Moving to home directory"
+    # Open empty terminal in home directory
+    cd "$HOME" || return
+fi
