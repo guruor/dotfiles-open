@@ -124,6 +124,8 @@ export NEORG_DIR_INTERVIEWS="${NEORG_DIR}/InterviewsTaken"
 export NEORG_DIR_DISCUSSIONS="${NEORG_DIR}/Discussions"
 export NEORG_DIR_ACTIVE_TASKS="${NEORG_DIR}/ActiveTasks"
 
+export MOST_USED_NEORG_DIR="${NEORG_DIR_WORK}"
+
 # Tmux default session file
 export TMUX_DEFAULT_SESSION_FILE="$HOME/.config/tmux/private/default-session.json"
 

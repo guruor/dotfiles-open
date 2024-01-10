@@ -51,6 +51,6 @@ else
         tmux a -t "${session_icon}"
     else
         # Use most used note directory
-        open_quicknote "${MOST_USED_VIMWIKI_DIR}"
+        open_quicknote "${MOST_USED_NEORG_DIR}"
     fi
 fi
