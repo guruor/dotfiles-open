@@ -37,6 +37,12 @@ source $ZSH_PLUGIN_DIR/zsh-completions/zsh-completions.plugin.zsh  2>/dev/null
 source $ZSH_PLUGIN_DIR/evalcache/evalcache.plugin.zsh  2>/dev/null
 # source $ZSH_PLUGIN_DIR/zsh-async/async.plugin.zsh 2>/dev/null
 
+# Autoload zsh modules when they are referenced
+zmodload -a zsh/stat stat
+zmodload -a zsh/zpty zpty
+zmodload -a zsh/zprof zprof
+zmodload -a zsh/mapfile mapfile
+
 # Enable colors and change prompt:
 autoload -U colors && colors	# Load colors
 
