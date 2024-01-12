@@ -327,9 +327,20 @@ autocmd("BufNewFile", {
 })
 
 -- Neorg load default journal template
-vim.api.nvim_create_autocmd("BufNewFile", {
-  command = "Neorg templates fload journal",
-  pattern = vim.fn.expand "$NEORG_DIR" .. "/**/journal/*.norg",
+autocmd({ "BufNew", "BufNewFile" }, {
+  callback = function(args)
+    local toc = "index.norg"
+    vim.schedule(function()
+      if vim.fn.fnamemodify(args.file, ":t") == toc then
+        return
+      end
+      if args.event == "BufNewFile" or (args.event == "BufNew" and FileExistsAndIsEmpty(args.file)) then
+        vim.api.nvim_cmd({ cmd = "Neorg", args = { "templates", "fload", "journal" } }, {})
+      end
+    end)
+  end,
+  desc = "Load new workspace entries with a Neorg template",
+  pattern = { vim.fn.expand "$NEORG_DIR" .. "/**/journal/*.norg" },
 })
 
 

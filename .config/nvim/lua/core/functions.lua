@@ -389,3 +389,14 @@ function AddSubstituteMappings(commonCommands, normalKeys, visualKeys, subkey)
 
   return normalKeys, visualKeys
 end
+
+function FileExistsAndIsEmpty(filepath)
+  local file = io.open(filepath, "r") -- Open the file in read mode
+  if file ~= nil then
+    local content = file:read "*all" -- Read the entire content of the file
+    file:close() -- Close the file
+    return content == "" -- Check if the content is empty
+  else
+    return false
+  end
+end
