@@ -1,0 +1,27 @@
+## Prompts or Themes
+romkatv/powerlevel10k kind:fpath
+
+## Completions
+# For completion, use `kind:fpath` annotation
+ohmyzsh/ohmyzsh path:plugins/docker kind:fpath
+ohmyzsh/ohmyzsh path:plugins/docker-compose kind:fpath
+ohmyzsh/ohmyzsh path:plugins/ripgrep kind:fpath
+ohmyzsh/ohmyzsh path:plugins/pass kind:fpath
+sharkdp/fd path:contrib/completion/_fd kind:fpath
+junegunn/fzf path:shell/completion.zsh kind:fpath
+
+# Plugins, use `kind:defer` for plugins which support async loading
+Aloxaf/fzf-tab kind:defer
+zdharma-continuum/fast-syntax-highlighting kind:defer
+zsh-users/zsh-autosuggestions kind:defer
+zsh-users/zsh-completions
+mroth/evalcache
+davidparsson/zsh-pyenv-lazy
+junegunn/fzf path:shell/key-bindings.zsh
+romkatv/zsh-bench kind:path
+#jeffreytse/zsh-vi-mode
+
+## OhMyZsh plugins
+# Provides cross platform `clipcopy` and `clippaste` functions
+#ohmyzsh/ohmyzsh path:lib/clipboard.zsh
+ohmyzsh/ohmyzsh path:plugins/magic-enter
