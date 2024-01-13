@@ -1,3 +1,8 @@
+# Install antidote zsh plugin manager if not present
+if [[ ! -d "${ZDOTDIR:-$HOME}/.antidote" ]]; then
+  git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-$HOME}/.antidote
+fi
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -5,37 +10,15 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Luke's config for the Zoomer Shell
-
-# ZSH plugins
-ZSH_PLUGIN_DIR="$HOME/.local/share/zsh/plugins"
-if [[ ! -d "$ZSH_PLUGIN_DIR"  ]]; then
-    mkdir -p "$ZSH_PLUGIN_DIR"
-    # If number of plugins increases, use `Sheldon` https://github.com/rossmacarthur/sheldon to manage plugins
-    git -C "$ZSH_PLUGIN_DIR" clone https://github.com/zdharma-continuum/fast-syntax-highlighting
-    git -C "$ZSH_PLUGIN_DIR" clone https://github.com/zsh-users/zsh-completions
-    git -C "$ZSH_PLUGIN_DIR" clone https://github.com/zsh-users/zsh-autosuggestions
-    git -C "$ZSH_PLUGIN_DIR" clone https://github.com/davidparsson/zsh-pyenv-lazy
-    git -C "$ZSH_PLUGIN_DIR" clone https://github.com/mroth/evalcache
-    # git -C "$ZSH_PLUGIN_DIR" clone https://github.com/mafredri/zsh-async
-    cd "$ZSH_PLUGIN_DIR/zsh-completions/src"
-    curl -O https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker
-    curl -O https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose
-    curl -O https://git.zx2c4.com/password-store/plain/src/completion/pass.zsh-completion
-    curl -O https://raw.githubusercontent.com/sharkdp/fd/master/contrib/completion/_fd
-    curl -O https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/ripgrep/_ripgrep
-    curl -O https://raw.githubusercontent.com/junegunn/fzf/master/shell/completion.zsh
+# Lazy-load antidote and generate the static load file only when needed
+zsh_plugins=${ZDOTDIR:-$HOME}/.zsh_plugins
+if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
+  (
+    source ${ZDOTDIR:-$HOME}/.antidote/antidote.zsh
+    antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
+  )
 fi
-
-FPATH="$ZSH_PLUGIN_DIR/zsh-completions/src:${FPATH}"
-
-# Load syntax highlighting; should be last.
-source $ZSH_PLUGIN_DIR/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh 2>/dev/null
-source $ZSH_PLUGIN_DIR/zsh-pyenv-lazy/pyenv-lazy.plugin.zsh 2>/dev/null
-source $ZSH_PLUGIN_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh  2>/dev/null
-source $ZSH_PLUGIN_DIR/zsh-completions/zsh-completions.plugin.zsh  2>/dev/null
-source $ZSH_PLUGIN_DIR/evalcache/evalcache.plugin.zsh  2>/dev/null
-# source $ZSH_PLUGIN_DIR/zsh-async/async.plugin.zsh 2>/dev/null
+source ${zsh_plugins}.zsh
 
 # Autoload zsh modules when they are referenced
 zmodload -a zsh/stat stat
@@ -279,7 +262,7 @@ export PATH="$HOME/.rd/bin:$PATH"
 export ZSH_PYENV_LAZY_VIRTUALENV=true
 
 _evalcache zoxide init zsh
-_evalcache pyenv init -
+# _evalcache pyenv init -
 # _evalcache starship init zsh
 
 # Trigger asl logs cleaning, since it slows down shell on macos
@@ -288,7 +271,7 @@ _evalcache pyenv init -
 # export DOCKER_DEFAULT_PLATFORM=linux/arm64 # Same as linux/aarch64
 # export DOCKER_DEFAULT_PLATFORM=linux/amd64 # Installing pandas with pip was taking forever with amd64
 
-[[ -d "${HOME}/powerlevel10k" ]] || git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
-source ~/powerlevel10k/powerlevel10k.zsh-theme
+# Loads powerlevel10k installed with antidote plugin
+autoload -Uz promptinit && promptinit && prompt powerlevel10k
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
