@@ -31,6 +31,7 @@ return {
     toml = { "taplo" },
     terraform = { "terraform_fmt" },
     yaml = { "prettierd" },
+    nix = { "alejandra", "nixpkgs-fmt", "nixfmt" },
     -- Run formatter on all filetypes
     ["*"] = { "trim_whitespace" },
   },
