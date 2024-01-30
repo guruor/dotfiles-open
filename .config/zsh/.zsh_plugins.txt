@@ -20,6 +20,8 @@ davidparsson/zsh-pyenv-lazy
 junegunn/fzf path:shell/key-bindings.zsh
 romkatv/zsh-bench kind:path
 #jeffreytse/zsh-vi-mode
+# Reminds you to use existing aliases for commands you just typed
+MichaelAquilina/zsh-you-should-use
 
 ## OhMyZsh plugins
 # Provides cross platform `clipcopy` and `clippaste` functions
