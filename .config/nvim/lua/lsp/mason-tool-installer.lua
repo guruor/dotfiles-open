@@ -12,7 +12,7 @@ local language_servers = {
   'terraform-ls', 'typescript-language-server', 'sqlls',
   'vim-language-server', 'lua-language-server',
   'buf-language-server',
-  'nil_ls',
+  -- 'nil_ls',
   -- 'efm',
   -- you can pin a tool to a particular version
   -- { 'golangci-lint', version = 'v1.47.0' },
