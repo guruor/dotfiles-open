@@ -52,6 +52,10 @@ mason_lspconfig.setup_handlers {
   end,
 }
 
+-- Mason lspconfig doesn't support `nixd` yet
+-- To install use: nix-env -iA nixpkgs.nixd
+lspconfig.nixd.setup{}
+
 if vim.g.should_enable_efm then
   -- print("Enabling efm-langserver")
   lspconfig.efm.setup(require "lsp.servers.efm")
