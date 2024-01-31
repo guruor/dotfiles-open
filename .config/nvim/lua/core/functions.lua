@@ -1,5 +1,13 @@
 local utils = require "utils"
 
+function ListToSet(list)
+  local set = {}
+  for _, l in ipairs(list) do
+    set[l] = true
+  end
+  return set
+end
+
 vim.g.hidden_all = 0
 -- Function for toggling the bottom statusbar:
 function ToggleHiddenAll()
