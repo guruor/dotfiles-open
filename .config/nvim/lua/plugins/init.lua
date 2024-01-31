@@ -669,6 +669,7 @@ local default_plugins = {
     event = { 'BufReadPre', 'BufNewFile' },
   },
   {
+    -- Vim subword movement with w, e, b
     'chrisgrieser/nvim-spider',
     config = load_config('configs.spider'),
     event = { 'BufReadPre', 'BufNewFile' },
