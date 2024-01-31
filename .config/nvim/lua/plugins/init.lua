@@ -661,6 +661,16 @@ local default_plugins = {
       require("image").setup(opts)
     end
   },
+  -- {
+  --   -- https://github.com/3rd/image.nvim/issues/91, works only with luarocks 5.1
+  --   "3rd/image.nvim",
+  --   ft = { "markdown", "vimwiki", "norg" },
+  --   dependencies = "nvim-treesitter/nvim-treesitter",
+  --   opts = require("plugins.configs.image").options,
+  --   config = function(_, opts)
+  --     require("image").setup(opts)
+  --   end
+  -- },
   {
     "nvim-neorg/neorg",
     build = ":Neorg sync-parsers",
