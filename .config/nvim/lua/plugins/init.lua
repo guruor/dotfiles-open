@@ -1,5 +1,9 @@
 local utils = require "utils"
 
+local function load_config(package)
+    return function() require('plugins.' .. package) end
+end
+
 -- All plugins have lazy=true by default,to load a plugin on startup just lazy=false
 --
 -- This is the load sequence followed by lazy, can be seen by doing `:h lazy.nvim-lazy.nvim-startup-sequence`:
@@ -28,12 +32,13 @@ local default_plugins = {
   },
   {
     "nvim-lualine/lualine.nvim",
-    init = function()
-      require "plugins.configs.statusline"
-    end,
-    lazy = false,
+    config = load_config('configs.statusline'),
+    event = { 'BufReadPre', 'BufNewFile' },
   },
-  { "vimpostor/vim-tpipeline", lazy = false }, -- Merges vim statusline with tmux
+  {
+    "vimpostor/vim-tpipeline",
+    event = { 'BufReadPre', 'BufNewFile' },
+  }, -- Merges vim statusline with tmux
   {
     "nvim-treesitter/nvim-treesitter",
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo", "TSUpdateSync", "TSUpdate" },
@@ -45,13 +50,14 @@ local default_plugins = {
     dependencies = {
       { "LiadOz/nvim-dap-repl-highlights" },
     },
-    init = function()
+    config = function()
       -- dap-repl must be initialized before treesiter initialisation
       require("nvim-dap-repl-highlights").setup()
       local ts = require("plugins.configs.treesitter")
       require("nvim-treesitter.configs").setup(ts.options)
       ts.additional_setup()
     end,
+    event = { 'BufReadPre', 'BufNewFile' },
   },
   {
     "nvim-treesitter/nvim-treesitter-context",
@@ -118,10 +124,8 @@ local default_plugins = {
     "akinsho/bufferline.nvim",
     version = "*",
     dependencies = "nvim-tree/nvim-web-devicons",
-    init = function()
-      require "plugins.configs.bufferline"
-    end,
-    lazy = false,
+    config = load_config('configs.bufferline'),
+    event = { 'BufReadPre', 'BufNewFile' },
   },
 
   -- Easy search, navigation
@@ -130,10 +134,8 @@ local default_plugins = {
     dependencies = {
       { "junegunn/fzf", build = "./install --bin" },
     },
-    init = function()
-      require "plugins.configs.fzf"
-    end,
-    lazy = false,
+    cmd = { 'FzfLua' },
+    config = load_config('configs.fzf'),
   },
   {
     "nvim-telescope/telescope.nvim",
@@ -142,14 +144,12 @@ local default_plugins = {
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
       "jvgrootveld/telescope-zoxide",
     },
-    config = function()
-      require "plugins.configs.telescope"
-    end,
+    config = load_config('configs.telescope'),
   },
   { "kevinhwang91/nvim-bqf", ft = "qf" }, -- For better preview of quickfix buffers
   {
     "stevearc/dressing.nvim",
-    event = "VeryLazy",
+    event = { 'BufReadPre', 'BufNewFile' },
     opts = require("plugins.configs.misc").dressing,
   }, -- For improved vim.ui interfaces
 
@@ -210,12 +210,22 @@ local default_plugins = {
       require("diffview").setup(opts)
     end,
   },
+  {
+    "NeogitOrg/neogit",
+    cmd = { "Neogit" },
+    opts = require("plugins.configs.misc").neogit,
+  },
 
   -- Syntax, formatting and auto-completion, not needed when using treesitter
   -- {"sheerun/vim-polyglot", lazy=false},
 
   -- Managing and installing LSP servers
-  "folke/neodev.nvim",
+  {
+    'folke/neodev.nvim',
+    ft = { 'lua', 'vim' },
+    config = true
+  },
+  -- Explore https://github.com/hinell/lsp-timeout.nvim
   {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -302,9 +312,7 @@ local default_plugins = {
         and "echo 'NOTE: jsregexp is optional, so not a big deal if it fails to build'; make install_jsregexp"
       or nil,
     dependencies = { "rafamadriz/friendly-snippets" },
-    config = function()
-      require "plugins.configs.snippets"
-    end,
+    config = load_config('configs.snippets'),
     -- stylua: ignore
     keys = {
       {
@@ -321,9 +329,7 @@ local default_plugins = {
   {
     "hrsh7th/nvim-cmp",
     event = { "InsertEnter" },
-    config = function()
-      require "plugins.configs.cmp"
-    end,
+    config = load_config('configs.cmp'),
     dependencies = {
       -- cmp sources plugins
       {
@@ -362,10 +368,7 @@ local default_plugins = {
     "stevearc/overseer.nvim",
     keys = { { "<leader>t" } },
     cmd = { "OverseerRun", "OverseerToggle", "OverseerQuickAction" },
-    event = "VeryLazy",
-    config = function()
-      require "plugins.configs.overseer"
-    end,
+    config = load_config('configs.overseer'),
   },
 
   {
@@ -498,9 +501,7 @@ local default_plugins = {
     -- branch = "response_body_stored_updated",
     branch = "response_body_stored",
     ft = "http",
-    config = function()
-      require "plugins.configs.rest"
-    end,
+    config = load_config('configs.rest'),
   },
 
   -- DB query executer
@@ -509,7 +510,9 @@ local default_plugins = {
     ft = "sql",
     dependencies = {
       {
-        "tpope/vim-dadbod",
+        -- "tpope/vim-dadbod",
+        "G0V1NDS/vim-dadbod",
+        -- dir = "~/Workspace/vim-plugins/vim-dadbod",
         ft = "sql",
       },
       { "kristijanhusak/vim-dadbod-completion", ft = "sql" },
@@ -534,7 +537,7 @@ local default_plugins = {
   {
     "lukas-reineke/headlines.nvim",
     ft = { "markdown", "vimwiki", "norg" },
-    dependencies = { "nvim-treesitter/nvim-treesitter", "vimwiki/vimwiki" },
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
     config = function(_, opts)
       require("plugins.configs.headlines").SetHighlights()
       -- Loading it here, as it requires the treesitter queries to be available
@@ -584,9 +587,7 @@ local default_plugins = {
   {
     "ron89/thesaurus_query.vim",
     keys = { { "<leader>a" } },
-    config = function()
-      require "plugins.configs.thesaurus"
-    end,
+    config = load_config('configs.thesaurus'),
   },
   { "christoomey/vim-tmux-navigator", event = "VeryLazy" }, -- Switch windows with C-[h,j,k,l,\], same for tmux panes
   { "NvChad/nvim-colorizer.lua", cmd = { "ColorizerToggle" }, config = 'require("colorizer").setup()' },
@@ -646,7 +647,6 @@ local default_plugins = {
     "akinsho/toggleterm.nvim",
     version = "*",
     config = true,
-    event = "VeryLazy",
     keys = {
       { "<c-q>", [[:ToggleTerm<cr>]], silent = true },
       { "<c-q>", [[<c-\><c-n>:ToggleTerm<cr>]], mode = "t", silent = true },
@@ -665,9 +665,7 @@ local default_plugins = {
       "haydenmeade/neotest-jest",
       "nvim-neotest/neotest-plenary",
     },
-    config = function()
-      require "plugins.configs.neotest"
-    end,
+    config = load_config('configs.neotest'),
   },
   {
     "folke/noice.nvim",
@@ -724,7 +722,7 @@ local default_plugins = {
     dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" },
     cmd = { "Hardtime" },
     opts = true,
-    lazy = false,
+    event = { 'BufReadPre', 'BufNewFile' },
   },
 }
 
