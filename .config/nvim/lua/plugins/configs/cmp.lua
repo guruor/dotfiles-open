@@ -96,6 +96,7 @@ cmp.setup {
   },
   -- https://github.com/hrsh7th/nvim-cmp/wiki/List-of-sources
   sources = cmp.config.sources({
+    { name = "copilot", group_index = 2 },
     { name = "nvim_lsp_signature_help", keyword_length = 2 },
     { name = "nvim_lsp", keyword_length = 3 },
     { name = "path", keyword_length = 2 },
