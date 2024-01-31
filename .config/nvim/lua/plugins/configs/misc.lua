@@ -214,6 +214,18 @@ M.treesitter_context = {
   mode = "cursor",
   max_lines = 3,
 }
+
+M.neogit = {
+  -- Hides the hints at the top of the status buffer
+  disable_hint = false,
+  -- Disables signs for sections/items/hunks
+  disable_signs = true,
+  -- signs = {
+  --   -- { CLOSED, OPENED }
+  --   hunk = { "", "" },
+  --   item = { "▸", "▾" },
+  --   section = { ">", "v" },
+  -- }
 }
 
 M.ts_context_commentstring = {
