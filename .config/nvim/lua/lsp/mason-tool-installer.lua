@@ -1,11 +1,20 @@
-require("mason").setup {
+local status_ok, mason = pcall(require, 'mason')
+if not status_ok then
+    return
+end
+
+local mason_tool_installer_status_ok, mason_tool_installer = pcall(require, 'mason-tool-installer')
+if not mason_tool_installer_status_ok then
+    return
+end
+
+mason.setup {
   ui = {
     border = vim.g.border_style,
   },
 }
 
 -- https://github.com/williamboman/mason.nvim/blob/main/PACKAGES.md#eslint-lsp
-local mason_tool_installer = require('mason-tool-installer')
 local language_servers = {
   'clangd', 'gopls', 'pyright', 'rust-analyzer', 'vim-language-server', 'json-lsp',
   'yaml-language-server', 'css-lsp', 'html-lsp', 'dockerfile-language-server',

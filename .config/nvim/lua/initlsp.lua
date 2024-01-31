@@ -5,8 +5,5 @@
 -- /___/_/ /_/_/\__(_)_/\__,_/\__,_/
 
 -- Core functionality
+vim.g.initlsp = 1
 require("init")
-
--- LSP related config
-require("dbg")
-require("lsp")

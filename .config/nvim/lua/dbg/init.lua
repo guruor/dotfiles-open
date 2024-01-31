@@ -1,8 +1,17 @@
+local dap_status_ok, dap = pcall(require, 'dap')
+if not dap_status_ok then
+    return
+end
+
+local mason_nvim_dap_status_ok, mason_dap = pcall(require, 'mason-nvim-dap')
+if not mason_nvim_dap_status_ok then
+    return
+end
+
 -- https://alpha2phi.medium.com/neovim-dap-enhanced-ebc730ff498b
 -- :DIInstall jsnode_dbg
 -- :DIInstall go_delve_dbg
-local dap = require "dap"
-require("mason-nvim-dap").setup {
+mason_dap.setup {
   ensure_installed = { "python", "delve", "codelldb", "js", "node2", "bash" },
   automatic_setup = true,
 }

@@ -219,49 +219,6 @@ local default_plugins = {
   -- Syntax, formatting and auto-completion, not needed when using treesitter
   -- {"sheerun/vim-polyglot", lazy=false},
 
-  -- Managing and installing LSP servers
-  {
-    'folke/neodev.nvim',
-    ft = { 'lua', 'vim' },
-    config = true
-  },
-  -- Explore https://github.com/hinell/lsp-timeout.nvim
-  {
-    "neovim/nvim-lspconfig",
-    dependencies = {
-      { "simrat39/rust-tools.nvim", ft = "rs" },
-      "jose-elias-alvarez/typescript.nvim",
-      {
-        "williamboman/mason.nvim",
-        cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
-        build = ":MasonUpdate",
-      },
-      {
-        "WhoIsSethDaniel/mason-tool-installer.nvim",
-        cmd = { "MasonToolsInstall", "MasonToolsUpdate" },
-      },
-      "williamboman/mason-lspconfig.nvim",
-      { "glepnir/lspsaga.nvim", event = "LspAttach" },
-      { "jose-elias-alvarez/null-ls.nvim" },
-      "b0o/schemastore.nvim",
-      -- { dir = "~/Workspace/vim-plugins/null-ls.nvim" },
-    },
-  },
-  {
-    "ray-x/go.nvim",
-    dependencies = {
-      "neovim/nvim-lspconfig",
-      "nvim-treesitter/nvim-treesitter",
-      "ray-x/guihua.lua",
-    },
-    opts = require("plugins.configs.misc").go,
-    config = function(_, opts)
-      require("go").setup(opts)
-    end,
-    event = { "CmdlineEnter" },
-    ft = { "go", "gomod" },
-    build = ':lua require("go.install").update_all_sync()',
-  },
   {
     'stevearc/conform.nvim',
     event = { "BufWritePre" },
@@ -348,20 +305,6 @@ local default_plugins = {
     },
   },
   "bufbuild/vim-buf",
-
-  -- Debugging
-  {
-    "mfussenegger/nvim-dap",
-    keys = { "<leader>d" },
-    dependencies = {
-      "Weissle/persistent-breakpoints.nvim",
-      "jay-babu/mason-nvim-dap.nvim",
-      "theHamsta/nvim-dap-virtual-text",
-      "rcarriga/nvim-dap-ui",
-      "jbyuki/one-small-step-for-vimkind",
-      "mfussenegger/nvim-dap-python",
-    },
-  },
 
   -- Task runner
   {
@@ -680,6 +623,7 @@ local default_plugins = {
   {
     "folke/which-key.nvim",
     keys = { "<leader>", ",", "<c-r>", "<c-w>", '"', "'", "`", "c", "v", "g" },
+    event = "VeryLazy",
     cmd = "WhichKey",
     init = function()
       require "plugins.configs.whichkey"
@@ -721,8 +665,102 @@ local default_plugins = {
     "m4xshen/hardtime.nvim",
     dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" },
     cmd = { "Hardtime" },
-    opts = true,
+    opts = { max_count = 5 },
     event = { 'BufReadPre', 'BufNewFile' },
+  },
+  {
+    'zbirenbaum/copilot.lua',
+    dependencies = { 'zbirenbaum/copilot-cmp' },
+    config = load_config('configs.copilot'),
+    event = 'InsertEnter',
+  }
+}
+
+local lsp_plugins = {
+  {
+    "glepnir/lspsaga.nvim",
+    event = "LspAttach",
+    config = true,
+  },
+  {
+    "ray-x/go.nvim",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      "nvim-treesitter/nvim-treesitter",
+      "ray-x/guihua.lua",
+    },
+    opts = require("plugins.configs.misc").go,
+    config = function(_, opts)
+      require("go").setup(opts)
+    end,
+    -- event = { "CmdlineEnter" },
+    ft = { "go", "gomod" },
+    build = ':lua require("go.install").update_all_sync()',
+  },
+  -- Managing and installing LSP servers
+  {
+    'folke/neodev.nvim',
+    ft = { 'lua', 'vim' },
+    config = true
+  },
+  -- Explore https://github.com/hinell/lsp-timeout.nvim
+  {
+    "neovim/nvim-lspconfig",
+    dependencies = {
+      { "simrat39/rust-tools.nvim", ft = "rs" },
+      "jose-elias-alvarez/typescript.nvim",
+      {
+        "williamboman/mason.nvim",
+        cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
+        build = ":MasonUpdate",
+      },
+      {
+        "WhoIsSethDaniel/mason-tool-installer.nvim",
+        cmd = { "MasonToolsInstall", "MasonToolsUpdate" },
+      },
+      "williamboman/mason-lspconfig.nvim",
+      { "jose-elias-alvarez/null-ls.nvim" },
+      "b0o/schemastore.nvim",
+      -- { dir = "~/Workspace/vim-plugins/null-ls.nvim" },
+    },
+    config = function()
+      require("lsp")
+    end,
+    event = { 'BufReadPre', 'BufNewFile' },
+  },
+  -- Debugging
+  {
+    "mfussenegger/nvim-dap",
+    keys = { "<leader>d" },
+    cmd = { 'DapUIToggle', 'DapToggleRepl', 'DapToggleBreakpoint' },
+    config = function()
+      require("dbg")
+    end,
+    dependencies = {
+      "Weissle/persistent-breakpoints.nvim",
+      "jay-babu/mason-nvim-dap.nvim",
+      "theHamsta/nvim-dap-virtual-text",
+      "rcarriga/nvim-dap-ui",
+      "jbyuki/one-small-step-for-vimkind",
+      "mfussenegger/nvim-dap-python",
+    },
+  },
+  {
+    -- Enable virutal text, requires theHamsta/nvim-dap-virtual-text
+    "theHamsta/nvim-dap-virtual-text",
+    init = function()
+      vim.g.dap_virtual_text = true
+    end,
+    config = true
+  },
+  {
+    "Weissle/persistent-breakpoints.nvim",
+    opts = {
+      load_breakpoints_event = { "BufReadPost" },
+    },
+    config = function(_, opts)
+      require("persistent-breakpoints").setup(opts)
+    end,
   },
 }
 
@@ -730,6 +768,10 @@ local config = require("core.utils").load_config()
 
 if #config.plugins > 0 then
   table.insert(default_plugins, { import = config.plugins })
+end
+
+if vim.g.initlsp == 1 then
+  table.insert(default_plugins, lsp_plugins)
 end
 
 require("lazy").setup(default_plugins, config.lazy_nvim)
