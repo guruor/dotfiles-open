@@ -641,25 +641,7 @@ local default_plugins = {
     keys = { "<leader>", ",", "<c-r>", "<c-w>", '"', "'", "`", "c", "v", "g" },
     event = "VeryLazy",
     cmd = "WhichKey",
-    init = function()
-      require "plugins.configs.whichkey"
-    end,
-    config = function(_, opts)
-      require("which-key").setup(opts)
-    end,
-  },
-  -- Yet to explorer
-  -- "metakirby5/codi.vim",
-  -- { "junegunn/vim-easy-align", run = { "EasyAlign" } },
-  {
-    -- https://github.com/3rd/image.nvim/issues/91, works only with luarocks 5.1
-    "3rd/image.nvim",
-    ft = { "markdown", "vimwiki", "norg" },
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    opts = require("plugins.configs.image").options,
-    config = function(_, opts)
-      require("image").setup(opts)
-    end
+    config = load_config("configs.whichkey"),
   },
   -- {
   --   -- https://github.com/3rd/image.nvim/issues/91, works only with luarocks 5.1
