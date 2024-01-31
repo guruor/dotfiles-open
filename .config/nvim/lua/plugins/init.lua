@@ -533,7 +533,11 @@ local default_plugins = {
     config = load_config('configs.thesaurus'),
   },
   { "christoomey/vim-tmux-navigator", event = "VeryLazy" }, -- Switch windows with C-[h,j,k,l,\], same for tmux panes
-  { "NvChad/nvim-colorizer.lua", cmd = { "ColorizerToggle" }, config = 'require("colorizer").setup()' },
+  {
+    -- Color picker and highlighter plugin for Neovim.
+    'uga-rosa/ccc.nvim',
+    cmd = { 'CccHighlighterToggle', 'CccConvert', 'CccPick' },
+  },
   {
     "m4xshen/smartcolumn.nvim",
     event = "VeryLazy",
