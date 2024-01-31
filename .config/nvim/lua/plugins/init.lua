@@ -669,6 +669,11 @@ local default_plugins = {
     event = { 'BufReadPre', 'BufNewFile' },
   },
   {
+    'chrisgrieser/nvim-spider',
+    config = load_config('configs.spider'),
+    event = { 'BufReadPre', 'BufNewFile' },
+  },
+  {
     'zbirenbaum/copilot.lua',
     dependencies = { 'zbirenbaum/copilot-cmp' },
     config = load_config('configs.copilot'),
