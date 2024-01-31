@@ -18,7 +18,7 @@ else
 end
 
 -- Setting colorscheme
-vim.cmd('colorscheme ' .. vim.g.current_colorscheme)
+-- vim.cmd('colorscheme ' .. vim.g.current_colorscheme)
 
 -- Setting colorscheme overriding laststatus, so needed to redeclare
 -- vim.opt.laststatus = 3

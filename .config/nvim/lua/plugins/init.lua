@@ -14,7 +14,7 @@ end
 -- 4. All `/after/plugin` files are sourced (this includes `/after` from plugins)
 
 -- List of all default plugins & their definitions
-vim.g.current_colorscheme = 'gruvbox-material'
+-- vim.g.current_colorscheme = 'gruvbox-material'
 local default_plugins = {
 
   -- Common lua utils used by other plugins
@@ -23,22 +23,26 @@ local default_plugins = {
   -- Editor look and feel
   "nvim-tree/nvim-web-devicons",
   {
-    "sainnhe/gruvbox-material",
-    init = function()
-      require("plugins.configs.misc").gruvbox_material()
-      return require "plugins.configs.colorscheme"
-    end,
+    'linrongbin16/colorbox.nvim',
     lazy = false,
+    priority = 1000,
+    -- required by 'mcchrish/zenbones.nvim'
+    dependencies = "rktjmp/lush.nvim",
+    build = function() require('colorbox').update() end,
+    config = function()
+      require("plugins.configs.colorscheme")
+      require("plugins.configs.colorboxconf")
+    end
   },
   {
     "nvim-lualine/lualine.nvim",
     config = load_config('configs.statusline'),
     event = { 'BufReadPre', 'BufNewFile' },
   },
-  {
-    "vimpostor/vim-tpipeline",
-    event = { 'BufReadPre', 'BufNewFile' },
-  }, -- Merges vim statusline with tmux
+  -- {
+  --   "vimpostor/vim-tpipeline",
+  --   event = { 'BufReadPre', 'BufNewFile' },
+  -- }, -- Merges vim statusline with tmux
   {
     "nvim-treesitter/nvim-treesitter",
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo", "TSUpdateSync", "TSUpdate" },
