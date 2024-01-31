@@ -326,6 +326,7 @@ keys = {
         ["t"] = { "", "GTD actions" },
         ["I"] = { ":Neorg index<CR>", "Index" },
         ["j"] = { ":Neorg journal<CR>", "Journal" },
+        ["e"] = { "<Cmd>exec 'Neorg export to-file /tmp/temp.md' | sleep 500m | tabe /tmp/temp.md<Cr>", "Export" },
         ["Tc"] = { ":Neorg toggle-concealer<CR>", "Toggle concealing" },
     }
 }
