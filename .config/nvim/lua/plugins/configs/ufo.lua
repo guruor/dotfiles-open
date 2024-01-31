@@ -1,22 +1,3 @@
-vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
-vim.opt.foldcolumn = "0"
-vim.opt.foldlevel = 99
-vim.opt.foldlevelstart = 99
-vim.opt.foldenable = true
-
--- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
-vim.keymap.set("n", "zR", require("ufo").openAllFolds)
-vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
-vim.keymap.set("n", "zr", require("ufo").openFoldsExceptKinds)
-vim.keymap.set("n", "zm", require("ufo").closeFoldsWith) -- closeAllFolds == closeFoldsWith(0)
-vim.keymap.set("n", "K", function()
-  local winid = require("ufo").peekFoldedLinesUnderCursor()
-  if not winid then
-    -- vim.lsp.buf.hover()
-    vim.cmd [[ Lspsaga hover_doc ]]
-  end
-end)
-
 local handler = function(virtText, lnum, endLnum, width, truncate)
   local newVirtText = {}
   -- local totalLines = vim.api.nvim_buf_line_count(0)
@@ -76,7 +57,10 @@ local function customizeSelector(bufnr)
     end)
 end
 
-require("ufo").setup {
+local M = {}
+
+M.options = {
+  filetype_exclude = { 'help', 'alpha', 'dashboard', 'neo-tree', 'Trouble', 'lazy', 'mason' },
   open_fold_hl_timeout = 400,
   provider_selector = function(bufnr, filetype, buftype)
     -- return { "lsp", "indent" }
@@ -98,3 +82,27 @@ require("ufo").setup {
   close_fold_kinds = { "imports", "comment" },
   fold_virt_text_handler = handler,
 }
+
+M.SetVimOptions = function()
+  vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+  -- vim.opt.foldcolumn = "auto:2"
+  vim.opt.foldcolumn = "0"
+  vim.opt.foldlevel = 99
+  vim.opt.foldlevelstart = 99
+  vim.opt.foldenable = true
+
+  -- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
+  vim.keymap.set("n", "zR", require("ufo").openAllFolds)
+  vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
+  vim.keymap.set("n", "zr", require("ufo").openFoldsExceptKinds)
+  vim.keymap.set("n", "zm", require("ufo").closeFoldsWith) -- closeAllFolds == closeFoldsWith(0)
+  vim.keymap.set("n", "K", function()
+    local winid = require("ufo").peekFoldedLinesUnderCursor()
+    if not winid then
+      -- vim.lsp.buf.hover()
+      vim.cmd [[ Lspsaga hover_doc ]]
+    end
+  end)
+end
+
+return M

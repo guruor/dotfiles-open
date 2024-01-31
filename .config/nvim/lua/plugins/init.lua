@@ -553,15 +553,23 @@ local default_plugins = {
   -- annotation generator/docstring
   { "danymat/neogen", config = true, event = "VeryLazy" },
   { "rcarriga/nvim-notify", event = "VeryLazy" },
-  {
-    -- Improve folding
-    "kevinhwang91/nvim-ufo",
-    event = "VeryLazy",
-    dependencies = { "kevinhwang91/promise-async" },
-    config = function()
-      require "plugins.configs.ufo"
-    end,
-  },
+  -- {
+  --   -- Improve folding
+  --   "kevinhwang91/nvim-ufo",
+  --   -- event = "VeryLazy",
+  --   lazy = false,
+  --   dependencies = {
+  --     "nvim-treesitter/nvim-treesitter",
+  --     "kevinhwang91/promise-async",
+  --   },
+  --   init = function()
+  --     require("plugins.configs.ufo").SetVimOptions()
+  --   end,
+  --   opts = require("plugins.configs.ufo").options,
+  --   config = function(_, opts)
+  --     require("ufo").setup(opts)
+  --   end,
+  -- },
   {
     "jackMort/ChatGPT.nvim",
     cmd = { "ChatGPT", "ChatGPTActAs", "ChatGPTEditWithInstructions" },
