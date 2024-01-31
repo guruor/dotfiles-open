@@ -1,9 +1,13 @@
--- Add this if needed
--- TODO: Add https://github.com/Weissle/persistent-breakpoints.nvim
+local dap_status_ok, dap = pcall(require, 'dap')
+if not dap_status_ok then
+    return
+end
 
-local dap = require "dap"
--- Enable virutal text, requires rcarriga/nvim-dap-ui
-local dapui = require "dapui"
+local dap_ui_status_ok, dapui = pcall(require, 'dapui')
+if not dap_ui_status_ok then
+    return
+end
+
 dapui.setup {
   -- icons = { expanded = "?", collapsed = "?" },
   mappings = {
@@ -53,12 +57,3 @@ dap.listeners.before.event_exited["dapui_config"] = function()
   -- dapui.close()
   dap.repl.close()
 end
-
--- Loading the breakpoints
-require("persistent-breakpoints").setup {
-  load_breakpoints_event = { "BufReadPost" },
-}
-
--- Enable virutal text, requires theHamsta/nvim-dap-virtual-text
-require("nvim-dap-virtual-text").setup()
-vim.g.dap_virtual_text = true

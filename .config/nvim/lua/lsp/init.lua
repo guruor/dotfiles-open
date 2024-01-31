@@ -1,14 +1,20 @@
+local lspconfig_status_ok, lspconfig = pcall(require, 'lspconfig')
+if not lspconfig_status_ok then
+    return
+end
+
+local mason_lspconfig_status_ok, mason_lspconfig = pcall(require, 'mason-lspconfig')
+if not mason_lspconfig_status_ok then
+    return
+end
+
 local lsp_utils = require "lsp.utils"
-local lspconfig = require "lspconfig"
 local lspconfig_ui = require "lspconfig.ui.windows"
 lsp_utils.DiagnosticSignSetup()
 
 -- Adding some lsp related config from kickstart.nvim
 -- https://github.com/nvim-lua/kickstart.nvim/blob/master/init.lua
 require "lsp.mason-tool-installer"
--- Setup neovim lua configuration
-require("neodev").setup()
-local mason_lspconfig = require "mason-lspconfig"
 
 -- Single flag to toggle efm-langserver and null-ls
 -- Both serves the same purpose of providing support for external linters and formatters
@@ -60,8 +66,5 @@ if vim.g.should_enable_efm then
   -- print("Enabling efm-langserver")
   lspconfig.efm.setup(require "lsp.servers.efm")
 end
-
--- Neovim's built-in LSP with a highly performant UI.
-require("lspsaga").setup()
 
 lspconfig_ui.default_options.border = vim.g.border_style
