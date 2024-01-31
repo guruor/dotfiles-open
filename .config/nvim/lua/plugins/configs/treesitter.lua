@@ -67,7 +67,8 @@ M.options = {
     "sql",
     "query",
     "dap_repl",
-    "comment"
+    "comment",
+    "regex"
   },
   query_linter = {
     enable = true,
