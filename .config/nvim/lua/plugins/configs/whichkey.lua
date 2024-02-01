@@ -110,6 +110,7 @@ keys = {
         ["b"] = { ":Git blame<CR>", "Blame" },
         ["B"] = { ":GitLink!<CR>", "Open commit in browser" },
         ["c"] = { ":Git commit<CR>", "Commit" },
+        ["C"] = { ":FzfLua git_branches<CR>", "Checkout branch" },
         ["d"] = { ":DiffviewToggle<CR>", "DiffviewToggle" },
         -- ["d"] = { ":Gvdiffsplit!<CR>", "Diff vertical split" },
         ["D"] = { ":Git diff<CR>", "Diff" },
