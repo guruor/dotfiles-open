@@ -629,7 +629,9 @@ local function customGrepProject(text, cwd)
     require("fzf-lua").grep(opts)
 end
 
-function FzfSearchInSpecificDirectory()
+local new_cmd = vim.api.nvim_create_user_command
+
+new_cmd("FzfSearchInSpecificDirectory", function()
     vim.ui.input({ prompt = "Directory: ", default = "./", completion = "dir" }, function(dir)
         dir = vim.trim(dir or "")
         if dir == "" then
@@ -645,18 +647,18 @@ function FzfSearchInSpecificDirectory()
             customGrepProject(pattern, dir)
         end)
     end)
-end
+end, { nargs = "*" })
 
 -- lua require'fzf-lua'.grep_project({ fzf_cli_args= '--query='..vim.fn.shellescape(vim.fn.expand('<cword>')) })
 -- Triggers telescope grep_string with word under the cursor by default in select mode
-function FzfGrepProjectWithSelection()
+new_cmd("FzfGrepProjectWithSelection", function()
     local text = utils.GetVisualorCursorText("", true)
     customGrepProject(text)
-end
+end, { nargs = "*" })
 
-function FzfBlinesWithSelection()
+new_cmd("FzfBlinesWithSelection", function()
     local text = utils.GetVisualorCursorText("", true)
     require("fzf-lua").blines({
         fzf_cli_args = '--query=' .. vim.fn.shellescape(text)
     })
-end
+end, { nargs = "*" })
