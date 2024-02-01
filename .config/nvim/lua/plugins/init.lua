@@ -138,7 +138,7 @@ local default_plugins = {
     dependencies = {
       { "junegunn/fzf", build = "./install --bin" },
     },
-    cmd = { 'FzfLua' },
+    cmd = { 'FzfLua', 'FzfGrepProjectWithSelection', 'FzfBlinesWithSelection', 'FzfSearchInSpecificDirectory' },
     config = load_config('configs.fzf'),
   },
   {
