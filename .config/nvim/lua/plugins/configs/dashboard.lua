@@ -38,7 +38,7 @@ dashboard.setup {
         desc = "  Postman",
         group = "Label",
         action = "cd $REST_NVIM_COLLECTION_PATH | FzfLua files",
-        key = "p",
+        key = "P",
       },
       {
         desc = "  DB",
