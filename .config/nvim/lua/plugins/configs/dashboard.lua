@@ -32,7 +32,7 @@ dashboard.setup {
         desc = "  Search",
         group = "Label",
         action = 'FzfGrepProjectWithSelection',
-        key = "s",
+        key = "f",
       },
       {
         desc = "  Postman",
