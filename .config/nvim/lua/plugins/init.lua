@@ -776,6 +776,17 @@ local lsp_plugins = {
       require("persistent-breakpoints").setup(opts)
     end,
   },
+  {
+    'nvimdev/dashboard-nvim',
+    config = load_config('configs.dashboard'),
+    -- Only load when no arguments
+    event = function()
+        if vim.fn.argc() == 0 then
+            return 'VimEnter'
+        end
+    end,
+    cmd = 'Dashboard',
+  }
 }
 
 local config = require("core.utils").load_config()
