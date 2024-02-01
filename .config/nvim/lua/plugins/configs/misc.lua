@@ -38,7 +38,7 @@ end
 
 M.smartcolumn = {
   colorcolumn = "120",
-  disabled_filetypes = { "help", "text", "markdown" },
+  disabled_filetypes = { "help", "text", "markdown", "dashboard" },
   custom_colorcolumn = {},
   scope = "file",
 }
