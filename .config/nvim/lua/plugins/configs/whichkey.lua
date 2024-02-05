@@ -107,6 +107,7 @@ wk.register(keys, { prefix = leader, mode = 'v' })
 keys = {
     g = {
         name = 'Git',
+        ["a"] = { ":Git commit --amend<CR>", "Ammend Commit" },
         ["b"] = { ":Git blame<CR>", "Blame" },
         ["B"] = { ":GitLink!<CR>", "Open commit in browser" },
         ["c"] = { ":Git commit<CR>", "Commit" },
