@@ -28,18 +28,28 @@ require("colorbox").setup {
     end,
   },
   background = "dark",
-  debug = true,
+  debug = false,
+  -- timing = 'startup',
+  -- policy = 'single', -- 'shuffle', 'single', 'in_order', 'reverse_order'
   policy = {
     mapping = {
-      yaml = "everforest",
-      markdown = "kanagawa",
       norg = "github_dark",
+      markdown = "onedark", -- "nord", "onedark", "github_dark"
       http = "edge", -- "edge", "gruvbox-baby", "nord", "onedark_vivid", "solarized8_flat"
       sql = sql_colorscheme,
-      dbui = sql_colorscheme,
+      python = "github_dark",
+      json = "gruvbox",
+      javascript = "gruvbox-baby",
+      typescript = "gruvbox-baby",
+      go = "github_dark",
+      dashboard = "github_dark",
+      yaml = "everforest",
+      toml = "everforest",
+      lua = "tokyonight-storm",
+      vim = "tokyonight-storm",
     },
-    fallback = "gruvbox-material",
-    -- fallback = "github_dark",
+    empty = "gruvbox-material",
+    -- fallback = "gruvbox-material", -- "github_dark"
   },
   timing = "filetype",
   setup = {
