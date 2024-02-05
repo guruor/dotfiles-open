@@ -77,10 +77,10 @@ opt.incsearch = true
 opt.ignorecase = true
 opt.smartcase = true
 opt.hlsearch = true
-opt.statusline = "-" -- hide file name in statusline
-opt.fillchars:append "vert:│" -- Fills vertical split with `|` symbol
-opt.fillchars:append "stl:-" -- Fills horizontal split with `-` symbol
-opt.fillchars:append "stlnc:-" -- Fills inactive horizontal split with `-` symbol
+opt.statusline = "┈" -- hide file name in statusline
+opt.fillchars:append "vert:┊" -- Fills vertical split with `|` symbol
+opt.fillchars:append "stl:┈" -- Fills horizontal split with `-` symbol
+opt.fillchars:append "stlnc:┄" -- Fills inactive horizontal split with `-` symbol
 opt.wrap = false
 opt.breakindent = true
 opt.title = true
