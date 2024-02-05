@@ -49,18 +49,6 @@ autocmd({ "BufWritePre" }, {
   end,
 })
 
---------------- Disabling syntax highlighting for larger files -------------------
-autocmd("FileType", {
-  pattern = { "*" },
-  callback = function()
-    if vim.api.nvim_buf_line_count(0) > 500000 then
-      vim.bo.syntax = "off"
-      vim.bo.foldmethod = "manual"
-    end
-  end,
-  group = generalSettingsGroup,
-})
-
 --------------- Using different indentation pattern for Makefile -----------------
 autocmd("FileType", {
   pattern = { "make" },

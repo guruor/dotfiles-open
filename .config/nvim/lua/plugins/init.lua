@@ -792,6 +792,10 @@ local lsp_plugins = {
         end
     end,
     cmd = 'Dashboard',
+  },
+  {
+    "LunarVim/bigfile.nvim",
+    event = "VeryLazy",
   }
 }
 
