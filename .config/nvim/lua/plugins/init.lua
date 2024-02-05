@@ -32,17 +32,23 @@ local default_plugins = {
     config = function()
       require("plugins.configs.colorscheme")
       require("plugins.configs.colorboxconf")
+      -- Needed this to clear duplicate statusline after colorscheme change
+      vim.g.tpipeline_clearstl = 1
     end
   },
   {
     "nvim-lualine/lualine.nvim",
     config = load_config('configs.statusline'),
-    event = { 'BufReadPre', 'BufNewFile' },
+    -- event = { 'BufReadPre', 'BufNewFile' },
+    lazy = false,
+    priority = 999,
   },
-  -- {
-  --   "vimpostor/vim-tpipeline",
-  --   event = { 'BufReadPre', 'BufNewFile' },
-  -- }, -- Merges vim statusline with tmux
+  {
+    "vimpostor/vim-tpipeline",
+    -- event = { 'BufReadPre', 'BufNewFile' }, -- Can't lazy load, if lazy loaded duplicate statusline appears
+    lazy = false,
+    priority = 998,
+  }, -- Merges vim statusline with tmux
   {
     "nvim-treesitter/nvim-treesitter",
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo", "TSUpdateSync", "TSUpdate" },
