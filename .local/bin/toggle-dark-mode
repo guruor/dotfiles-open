@@ -53,12 +53,8 @@ change_kitty_theme() {
     echo "Requested kitty theme is: $1"
     config_file="$HOME/.config/kitty/kitty.conf"
     theme=$1
-    get_actual_path_if_symlink $config_file
 
-    sd "^include gruvbox_.*\.conf$" "include $theme.conf" $config_file
-
-    # Reloading all active instances of `st`
-    pidof kitty | xargs kill -SIGUSR1
+    kitten themes --reload-in=all "$theme"
 }
 
 change_bottom_theme() {
@@ -191,7 +187,7 @@ toggledark() {
 stopdark() {
     change_xresources_theme gruvbox-light
     change_alacritty_theme gruvbox_light
-    change_kitty_theme gruvbox_light
+    change_kitty_theme "Gruvbox Light"
     change_vim_background light
     change_bat_theme gruvbox-light
     change_tmux_theme light
@@ -206,7 +202,7 @@ stopdark() {
 startdark() {
     change_xresources_theme gruvbox-dark
     change_alacritty_theme gruvbox_dark
-    change_kitty_theme gruvbox_dark
+    change_kitty_theme "Gruvbox Dark"
     change_vim_background dark
     change_bat_theme gruvbox-dark
     change_tmux_theme dark
