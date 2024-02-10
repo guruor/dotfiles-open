@@ -14,6 +14,7 @@ local fav_colorschemes = {
 
 local colorschemes_set = ListToSet(fav_colorschemes)
 local sql_colorscheme = "onedark" -- "PaperColor", "onedark", "palenight"
+local go_colorscheme = "github_dark"
 
 require("colorbox").setup {
   filter = {
@@ -35,13 +36,16 @@ require("colorbox").setup {
     mapping = {
       norg = "github_dark",
       markdown = "onedark", -- "nord", "onedark", "github_dark"
+      vimwiki = "onedark",
       http = "edge", -- "edge", "gruvbox-baby", "nord", "onedark_vivid", "solarized8_flat"
       sql = sql_colorscheme,
+      psql = sql_colorscheme,
       python = "github_dark",
       json = "gruvbox",
       javascript = "gruvbox-baby",
       typescript = "gruvbox-baby",
-      go = "github_dark",
+      go = go_colorscheme,
+      gomod = go_colorscheme,
       dashboard = "github_dark",
       yaml = "everforest",
       toml = "everforest",
