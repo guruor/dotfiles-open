@@ -693,6 +693,10 @@ local default_plugins = {
     dependencies = { 'zbirenbaum/copilot-cmp' },
     config = load_config('configs.copilot'),
     event = 'InsertEnter',
+  },
+  {
+    "lambdalisue/suda.vim",
+    cmd = { "SudaRead","SudaWrite" },
   }
 }
 
