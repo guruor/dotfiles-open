@@ -15,6 +15,95 @@ end
 
 -- List of all default plugins & their definitions
 -- vim.g.current_colorscheme = 'gruvbox-material'
+
+local lsp_plugins = {
+  {
+    "glepnir/lspsaga.nvim",
+    event = "LspAttach",
+    config = true,
+  },
+  {
+    "ray-x/go.nvim",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      "nvim-treesitter/nvim-treesitter",
+      "ray-x/guihua.lua",
+    },
+    opts = require("plugins.configs.misc").go,
+    config = function(_, opts)
+      require("go").setup(opts)
+    end,
+    -- event = { "CmdlineEnter" },
+    ft = { "go", "gomod" },
+    build = ':lua require("go.install").update_all_sync()',
+  },
+  -- Managing and installing LSP servers
+  {
+    'folke/neodev.nvim',
+    ft = { 'lua', 'vim' },
+    config = true
+  },
+  -- Explore https://github.com/hinell/lsp-timeout.nvim
+  {
+    "neovim/nvim-lspconfig",
+    dependencies = {
+      { "simrat39/rust-tools.nvim", ft = "rs" },
+      "jose-elias-alvarez/typescript.nvim",
+      {
+        "williamboman/mason.nvim",
+        cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
+        build = ":MasonUpdate",
+      },
+      {
+        "WhoIsSethDaniel/mason-tool-installer.nvim",
+        cmd = { "MasonToolsInstall", "MasonToolsUpdate" },
+      },
+      "williamboman/mason-lspconfig.nvim",
+      { "jose-elias-alvarez/null-ls.nvim" },
+      "b0o/schemastore.nvim",
+      -- { dir = "~/Workspace/vim-plugins/null-ls.nvim" },
+    },
+    config = function()
+      require("lsp")
+    end,
+    event = { 'BufReadPre', 'BufNewFile' },
+  },
+  -- Debugging
+  {
+    "mfussenegger/nvim-dap",
+    keys = { "<leader>d" },
+    cmd = { 'DapUIToggle', 'DapToggleRepl', 'DapToggleBreakpoint' },
+    config = function()
+      require("dbg")
+    end,
+    dependencies = {
+      "Weissle/persistent-breakpoints.nvim",
+      "jay-babu/mason-nvim-dap.nvim",
+      "theHamsta/nvim-dap-virtual-text",
+      "rcarriga/nvim-dap-ui",
+      "jbyuki/one-small-step-for-vimkind",
+      "mfussenegger/nvim-dap-python",
+    },
+  },
+  {
+    -- Enable virutal text, requires theHamsta/nvim-dap-virtual-text
+    "theHamsta/nvim-dap-virtual-text",
+    init = function()
+      vim.g.dap_virtual_text = true
+    end,
+    config = true
+  },
+  {
+    "Weissle/persistent-breakpoints.nvim",
+    opts = {
+      load_breakpoints_event = { "BufReadPost" },
+    },
+    config = function(_, opts)
+      require("persistent-breakpoints").setup(opts)
+    end,
+  },
+}
+
 local default_plugins = {
 
   -- Common lua utils used by other plugins
@@ -647,7 +736,7 @@ local default_plugins = {
     keys = { "<leader>", ",", "<c-r>", "<c-w>", '"', "'", "`", "c", "v", "g" },
     event = "VeryLazy",
     cmd = "WhichKey",
-    config = load_config("configs.whichkey"),
+    init = load_config("configs.whichkey"), -- Can't lazy load, else dynamic mappings don't load
   },
   -- {
   --   -- https://github.com/3rd/image.nvim/issues/91, works only with luarocks 5.1
@@ -697,94 +786,6 @@ local default_plugins = {
   {
     "lambdalisue/suda.vim",
     cmd = { "SudaRead","SudaWrite" },
-  }
-}
-
-local lsp_plugins = {
-  {
-    "glepnir/lspsaga.nvim",
-    event = "LspAttach",
-    config = true,
-  },
-  {
-    "ray-x/go.nvim",
-    dependencies = {
-      "neovim/nvim-lspconfig",
-      "nvim-treesitter/nvim-treesitter",
-      "ray-x/guihua.lua",
-    },
-    opts = require("plugins.configs.misc").go,
-    config = function(_, opts)
-      require("go").setup(opts)
-    end,
-    -- event = { "CmdlineEnter" },
-    ft = { "go", "gomod" },
-    build = ':lua require("go.install").update_all_sync()',
-  },
-  -- Managing and installing LSP servers
-  {
-    'folke/neodev.nvim',
-    ft = { 'lua', 'vim' },
-    config = true
-  },
-  -- Explore https://github.com/hinell/lsp-timeout.nvim
-  {
-    "neovim/nvim-lspconfig",
-    dependencies = {
-      { "simrat39/rust-tools.nvim", ft = "rs" },
-      "jose-elias-alvarez/typescript.nvim",
-      {
-        "williamboman/mason.nvim",
-        cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
-        build = ":MasonUpdate",
-      },
-      {
-        "WhoIsSethDaniel/mason-tool-installer.nvim",
-        cmd = { "MasonToolsInstall", "MasonToolsUpdate" },
-      },
-      "williamboman/mason-lspconfig.nvim",
-      { "jose-elias-alvarez/null-ls.nvim" },
-      "b0o/schemastore.nvim",
-      -- { dir = "~/Workspace/vim-plugins/null-ls.nvim" },
-    },
-    config = function()
-      require("lsp")
-    end,
-    event = { 'BufReadPre', 'BufNewFile' },
-  },
-  -- Debugging
-  {
-    "mfussenegger/nvim-dap",
-    keys = { "<leader>d" },
-    cmd = { 'DapUIToggle', 'DapToggleRepl', 'DapToggleBreakpoint' },
-    config = function()
-      require("dbg")
-    end,
-    dependencies = {
-      "Weissle/persistent-breakpoints.nvim",
-      "jay-babu/mason-nvim-dap.nvim",
-      "theHamsta/nvim-dap-virtual-text",
-      "rcarriga/nvim-dap-ui",
-      "jbyuki/one-small-step-for-vimkind",
-      "mfussenegger/nvim-dap-python",
-    },
-  },
-  {
-    -- Enable virutal text, requires theHamsta/nvim-dap-virtual-text
-    "theHamsta/nvim-dap-virtual-text",
-    init = function()
-      vim.g.dap_virtual_text = true
-    end,
-    config = true
-  },
-  {
-    "Weissle/persistent-breakpoints.nvim",
-    opts = {
-      load_breakpoints_event = { "BufReadPost" },
-    },
-    config = function(_, opts)
-      require("persistent-breakpoints").setup(opts)
-    end,
   },
   {
     'nvimdev/dashboard-nvim',
