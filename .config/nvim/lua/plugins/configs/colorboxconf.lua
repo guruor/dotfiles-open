@@ -34,6 +34,7 @@ require("colorbox").setup {
   -- policy = 'single', -- 'shuffle', 'single', 'in_order', 'reverse_order'
   policy = {
     mapping = {
+      org = "github_dark",
       norg = "github_dark",
       markdown = "onedark", -- "nord", "onedark", "github_dark"
       vimwiki = "onedark",
@@ -50,6 +51,7 @@ require("colorbox").setup {
       yaml = "everforest",
       toml = "everforest",
       lua = "tokyonight-storm",
+      nix = "tokyonight-storm",
       vim = "tokyonight-storm",
     },
     empty = "gruvbox-material",
