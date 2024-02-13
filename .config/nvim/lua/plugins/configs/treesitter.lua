@@ -50,7 +50,6 @@ M.options = {
     "markdown",
     "markdown_inline",
     "norg",
-    "norg_meta",
     "yaml",
     "toml",
     "http",
