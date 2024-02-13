@@ -209,13 +209,6 @@ bindkey -Mvicmd "\e" escape-clear
 #     stty -echo && sleep 0.2 && xdotool type --delay 15 'tmux' && stty echo
 # fi
 
-if [[ ! -d "$NVM_DIR" ]]; then
-    # https://github.com/nvm-sh/nvm/blob/master/README.md#additional-notes
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-else
-    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh" --no-use  # This loads nvm
-fi
-
 # We are using evalcache to cache eval operations
 # Make sure to trigger `_evalcache_clear` if cache needs to be cleared
 
