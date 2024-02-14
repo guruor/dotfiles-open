@@ -19,19 +19,25 @@ dashboard.setup {
       append = { "", "  Let's Work  " },
     },
     packages = { enable = true }, -- show how many plugins neovim loaded
-    project = { enable = true, limit = 8 },
+    project = {
+      enable = true,
+      limit = 8,
+      action = function(path)
+        require("fzf-lua").files { cwd = path }
+      end,
+    },
     mru = { limit = 8 },
     shortcut = {
       {
         desc = "  Files",
         group = "Label",
-        action = 'FzfLua files',
+        action = "FzfLua files",
         key = "p",
       },
       {
         desc = "  Search",
         group = "Label",
-        action = 'FzfGrepProjectWithSelection',
+        action = "FzfGrepProjectWithSelection",
         key = "f",
       },
       {
