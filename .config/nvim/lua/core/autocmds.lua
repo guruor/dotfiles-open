@@ -10,7 +10,7 @@ local function shouldSkipNumberToggle()
     return true
   end
 
-  local excludedFileTypes = { "lazy", "mason" }
+  local excludedFileTypes = { "lazy", "mason", "dashboard" }
   for _, fileType in pairs(excludedFileTypes) do
     if vim.bo.filetype == fileType then
       return true
