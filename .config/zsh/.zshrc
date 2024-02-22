@@ -1,3 +1,5 @@
+unsetopt PROMPT_SP
+
 # Install antidote zsh plugin manager if not present
 if [[ ! -d "${ZDOTDIR:-$HOME}/.antidote" ]]; then
   git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-$HOME}/.antidote
@@ -212,20 +214,31 @@ bindkey -Mvicmd "\e" escape-clear
 # We are using evalcache to cache eval operations
 # Make sure to trigger `_evalcache_clear` if cache needs to be cleared
 
-if [[ ${machine} == "Linux" ]]; then
-	if $(pacman -Qs libxft-bgra >/dev/null 2>&1); then
-		# Start graphical server on user's current tty if not already running.
-		[ "$(tty)" = "/dev/tty1" ] && ! pidof -s Xorg >/dev/null 2>&1 && exec startx
-	else
-		echo "\033[31mIMPORTANT\033[0m: Note that \033[32m\`libxft-bgra\`\033[0m must be installed for this build of dwm.
-	Please run:
-		\033[32myay -S libxft-bgra-git\033[0m
-	and replace \`libxft\`. Afterwards, you may start the graphical server by running \`startx\`."
-	fi
+unameOut="$(uname -s)"
+case "${unameOut}" in
+    Linux*)     machine=Linux;;
+    Darwin*)    machine=Mac;;
+    CYGWIN*)    machine=Cygwin;;
+    MINGW*)     machine=MinGw;;
+    *)          machine="UNKNOWN:${unameOut}"
+esac
 
-	# Switch escape and caps if tty and no passwd required:
-	sudo -n loadkeys ${XDG_DATA_HOME:-$HOME/.local/share}/larbs/ttymaps.kmap 2>/dev/null
-fi
+export MACHINE=$machine
+
+# if [[ ${machine} == "Linux" ]]; then
+# 	if $(pacman -Qs libxft-bgra >/dev/null 2>&1); then
+# 		# Start graphical server on user's current tty if not already running.
+# 		[ "$(tty)" = "/dev/tty1" ] && ! pidof -s Xorg >/dev/null 2>&1 && exec startx
+# 	else
+# 		echo "\033[31mIMPORTANT\033[0m: Note that \033[32m\`libxft-bgra\`\033[0m must be installed for this build of dwm.
+# 	Please run:
+# 		\033[32myay -S libxft-bgra-git\033[0m
+# 	and replace \`libxft\`. Afterwards, you may start the graphical server by running \`startx\`."
+# 	fi
+#
+# 	# Switch escape and caps if tty and no passwd required:
+# 	sudo -n loadkeys ${XDG_DATA_HOME:-$HOME/.local/share}/larbs/ttymaps.kmap 2>/dev/null
+# fi
 
 if [[ $MACHINE == "Mac" ]]; then
     # Brew Stuff
