@@ -20,6 +20,15 @@ local commonHeadlineConfig = {
     "Headline6",
     "Headline7",
   },
+  bullet_highlights = {
+    "@text.title.1.marker.markdown",
+    "@text.title.2.marker.markdown",
+    "@text.title.3.marker.markdown",
+    "@text.title.4.marker.markdown",
+    "@text.title.5.marker.markdown",
+    "@text.title.6.marker.markdown",
+  },
+  bullets = { "◉", "○", "✸", "✿" },
 }
 
 local markdownHeadlineConfig = {
@@ -75,7 +84,17 @@ local norgHeadlineConfig = {
 
           (quote1_prefix) @quote
       ]]
-  )
+  ),
+  headline_highlights = { "Headline" },
+    bullet_highlights = {
+        "@neorg.headings.1.prefix",
+        "@neorg.headings.2.prefix",
+        "@neorg.headings.3.prefix",
+        "@neorg.headings.4.prefix",
+        "@neorg.headings.5.prefix",
+        "@neorg.headings.6.prefix",
+    },
+    bullets = { "◉", "○", "✸", "✿" },
 }
 
 norgHeadlineConfig = utils.merge(norgHeadlineConfig, commonHeadlineConfig)
