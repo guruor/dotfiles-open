@@ -287,6 +287,7 @@ local commonSubstituteCommands = {
     ["\""] = { command = "/'/\"/g", description = "Replace ' with \"" },
     ["'"] = { command = "/\"/'/g", description = "Replace \" with '" },
     c = { command = "/\\(-[Hkd]\\|--data-raw\\) / \\\\\\r\\1 /g", description = "Break curl to multi-line" },
+    l = { command = "/\\( AND\\| OR\\)/ \\r\\1/g", description = "Break lucene query" },
 }
 
 keys, keys_visual = AddSubstituteMappings(commonSubstituteCommands, keys, keys_visual, "ms")
