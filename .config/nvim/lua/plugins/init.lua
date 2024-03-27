@@ -748,17 +748,25 @@ local default_plugins = {
   --     require("image").setup(opts)
   --   end
   -- },
+  --
+  {
+    "vhyrro/luarocks.nvim",
+    priority = 1000,
+    lazy = false,
+    config = true,
+  },
   {
     "nvim-neorg/neorg",
-    build = ":Neorg sync-parsers",
-    cmd = { 'Neorg' },
-    ft = { 'norg' },
     dependencies = {
       "nvim-lua/plenary.nvim",
+      "luarocks.nvim",
       "folke/zen-mode.nvim",
       "max397574/neorg-contexts",
       { "pysan3/neorg-templates", dependencies = { "L3MON4D3/LuaSnip" } }
     },
+    -- build = ":Neorg sync-parsers",
+    cmd = { 'Neorg' },
+    ft = { 'norg' },
     opts = require("plugins.configs.neorg").options,
     config = function(_, opts)
       require("neorg").setup(opts)
