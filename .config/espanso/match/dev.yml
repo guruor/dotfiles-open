@@ -1,0 +1,11 @@
+name: dev
+parent: default
+
+matches:
+  # UNIX shebangs
+  - trigger: ":#sh"
+    replace: "#!/usr/bin/env sh"
+  - trigger: ":#bash"
+    replace: "#!/usr/bin/env bash"
+  - trigger: ":#python3"
+    replace: "#!/usr/bin/env python3"
