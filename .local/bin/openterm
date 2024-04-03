@@ -1,0 +1,89 @@
+#!/bin/bash
+#
+# Open new terminal window with a program and specific title
+# Kind of wrapper over terminals like kitty, alacritty and wezterm
+
+# Function to display usage information
+usage() {
+        echo "Usage: $0 [--title <title>] [--shell <shell>] [--cmd-str <command>]"
+        echo "Options:"
+        echo "  --title <title>        Set the title for the terminal window"
+        echo "  --shell <shell>        Specify the shell to execute"
+        echo "  --cmd-str <command>    Specify the command to execute"
+        exit 1
+}
+
+# Default values
+terminal="$TERMINAL"
+WIN_TITLE="New window"
+DEFAULT_SHELL="$SHELL"
+CMD_STR="$SHELL"
+
+# Parse command line options
+while [[ $# -gt 0 ]]; do
+        case "$1" in
+        --title)
+                WIN_TITLE="$2"
+                shift 2
+                ;;
+        --shell)
+                DEFAULT_SHELL="$2"
+                shift 2
+                ;;
+        --cmd-str)
+                CMD_STR="$2"
+                shift 2
+                ;;
+        *)
+                echo "Error: Unknown option: $1"
+                usage
+                ;;
+        esac
+done
+
+# Check if mandatory options are provided
+if [ -z "$WIN_TITLE" ] || [ -z "$DEFAULT_SHELL" ] || [ -z "$CMD_STR" ]; then
+        echo "Error: Mandatory options missing."
+        usage
+fi
+
+# Execute the command based on the selected terminal emulator
+case "$TERMINAL" in
+kitty)
+        # kitty -1 --title "$WIN_TITLE" -e "$DEFAULT_SHELL" -lc "$CMD_STR; exec ${DEFAULT_SHELL}"
+        kitty -1 --title "$WIN_TITLE" -e "$DEFAULT_SHELL" -lc "$CMD_STR;" &
+        ;;
+alacritty)
+        # Check if an Alacritty window with the specified title exists
+        window_exists=$(ps aux | grep -v grep | grep "$TERMINAL" 2>/dev/null)
+        if [ -n "$window_exists" ]; then
+                # Alacritty window exists, so creating a window in the same session
+                alacritty msg create-window --title "$WIN_TITLE" -e "$DEFAULT_SHELL" -lc "$CMD_STR;" &
+        else
+                # Alacritty window doesn't exist, creating a new session instance
+                alacritty --title "$WIN_TITLE" -e "$DEFAULT_SHELL" -lc "$CMD_STR;" &
+        fi
+        ;;
+wezterm)
+        # Check if a Wezterm window with the specified title exists
+        window_exists=$(ps aux | grep -v grep | grep "$TERMINAL" 2>/dev/null)
+        if [ -n "$window_exists" ]; then
+                # Wezterm window exists, so creating a window in the same session
+                wezterm cli spawn --new-window -- "$DEFAULT_SHELL" -lc "$CMD_STR;" &
+        else
+                # Wezterm window doesn't exist, creating a new session instance
+                wezterm start -- "$DEFAULT_SHELL" -lc "$CMD_STR;" &
+        fi
+        sleep 1
+        # Getting latest window ID
+        window_id=$(wezterm cli list --format json | jq '.[-1].window_id')
+        wezterm cli set-window-title --window-id "$window_id" "$WIN_TITLE"
+        ;;
+*)
+        echo "Error: Unsupported terminal emulator: $TERMINAL"
+        usage
+        ;;
+esac
+
+# Keep the terminal open
+# read -rp "Press Enter to exit..."
