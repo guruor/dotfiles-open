@@ -81,24 +81,28 @@ kitty)
 alacritty)
         log_message "Starting alacritty" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
         # Check if an Alacritty window with the specified title exists
-        window_exists=$(ps aux | grep -v grep | grep "$TERMINAL" 2>/dev/null)
+        window_exists=$(pgrep "$TERMINAL")
         if [ -n "$window_exists" ]; then
                 # Alacritty window exists, so creating a window in the same session
+                log_message "Creating new alacritty to existing session" "window_exists: $window_exists"
                 alacritty msg create-window --title "$WIN_TITLE" -e "$DEFAULT_SHELL" -lc "$CMD_STR;" &
         else
                 # Alacritty window doesn't exist, creating a new session instance
+                log_message "Starting new alacritty session" "window_exists: $window_exists"
                 alacritty --title "$WIN_TITLE" -e "$DEFAULT_SHELL" -lc "$CMD_STR;" &
         fi
         ;;
 wezterm)
         log_message "Starting wezterm" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
         # Check if a Wezterm window with the specified title exists
-        window_exists=$(ps aux | grep -v grep | grep "$TERMINAL" 2>/dev/null)
+        window_exists=$(pgrep "$TERMINAL")
         if [ -n "$window_exists" ]; then
                 # Wezterm window exists, so creating a window in the same session
+                log_message "Creating new wezterm to existing session" "window_exists: $window_exists"
                 wezterm cli spawn --new-window -- "$DEFAULT_SHELL" -lc "$CMD_STR;" &
         else
                 # Wezterm window doesn't exist, creating a new session instance
+                log_message "Starting new wezterm session" "window_exists: $window_exists"
                 wezterm start -- "$DEFAULT_SHELL" -lc "$CMD_STR;" &
         fi
         sleep 2
