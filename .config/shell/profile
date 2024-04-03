@@ -39,7 +39,7 @@ command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 
 # Default programs:
 export EDITOR="nvim"
-export TERMINAL="wezterm"
+export TERMINAL="kitty"
 export BROWSER="firefox"
 
 # ~/ Clean-up:
