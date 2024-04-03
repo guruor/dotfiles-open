@@ -26,8 +26,8 @@ tmux_sessions=$(tmux list-sessions -F "#{session_name}" 2>/dev/null)
 if [[ "${tmux_sessions}" ]]; then
     for session_name in ${tmux_sessions} ; do
         actual_session_name=$(get_actual_session_name "$session_icon_name_map" "$session_name")
-        echo -e "Kitty window name: $actual_session_name and tmux session name: $session_name" >&2
-        kitty -1 --title "${actual_session_name}" -e "${SHELL}" -lc "tmux a -t ${session_name}; ${SHELL}";
+        echo -e "Terminal window name: $actual_session_name and tmux session name: $session_name" >&2
+        openterm --title "${actual_session_name}" --shell "${SHELL}" --cmd-str "tmux a -t ${session_name}; ${SHELL}";
         sleep 1;
     done
 else

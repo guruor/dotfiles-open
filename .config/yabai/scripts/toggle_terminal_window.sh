@@ -3,15 +3,12 @@
 
 window_name="${1:=Scratchpad}"
 command_str="${2}"
-# terminal="alacritty"
-terminal="kitty"
+terminal="$TERMINAL"
 function toggle_window() {
     # Checking if window is already open
     term_window=$(yabai -m query --windows | jq "map(select((.app == \"$terminal\") and .title == \"$window_name\"))[0] // empty");
     if [[ -z "$term_window" ]]; then
-        # $terminal --title "$window_name" -e $SHELL -lc "${command_str}; $SHELL";
-        # When opening kitty window, opening with single instance mode
-        $terminal -1 --title "$window_name" -e "$SHELL" -lc "${command_str}; $SHELL";
+        openterm --title "$window_name" --shell "$SHELL" --cmd-str "${command_str}; $SHELL";
     else
         window_id=$(echo "$term_window" | jq '.id')
         window_space_id=$(echo "$term_window" | jq '.space')
