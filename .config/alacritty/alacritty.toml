@@ -1,0 +1,29 @@
+# import = ["~/.config/alacritty/themes/themes/gruvbox_dark.toml"]
+import = ["~/.config/alacritty/themes/themes/github_dark.toml"]
+
+[shell]
+program = "/bin/zsh"
+args = ["--login"]
+
+[window]
+decorations = "None"
+opacity = 1
+
+[font]
+size = 14
+
+[font.normal]
+family = "Fisa Code"
+style = "Regular"
+
+[font.bold]
+family = "Fisa Code"
+style = "Bold"
+
+[font.italic]
+family = "Fisa Code"
+style = "Italic"
+
+[font.bold_italic]
+family = "Fisa Code"
+style = "Bold Italic"
