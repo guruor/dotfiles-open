@@ -16,7 +16,7 @@ usage() {
 }
 
 # Default values
-TERMINAL="${TERMINAL:-alacritty}"
+TERMINAL="${TERMINAL:-kitty}"
 WIN_TITLE="New window"
 DEFAULT_SHELL="$SHELL"
 CMD_STR="$SHELL"
