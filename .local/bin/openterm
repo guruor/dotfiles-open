@@ -5,17 +5,18 @@
 
 # Function to display usage information
 usage() {
-        echo "Usage: $0 [--title <title>] [--shell <shell>] [--cmd-str <command>] [--debug]"
+        echo "Usage: $0 [--title <title>] [--shell <shell>] [--cmd-str <command>] [--terminal <terminal>] [--debug]"
         echo "Options:"
         echo "  --title <title>        Set the title for the terminal window"
         echo "  --shell <shell>        Specify the shell to execute"
         echo "  --cmd-str <command>    Specify the command to execute"
+        echo "  --terminal <terminal>  New window will be created in this terminal"
         echo "  --debug                Enable debug mode and log output to a file"
         exit 1
 }
 
 # Default values
-TERMINAL="${TERMINAL:-kitty}"
+TERMINAL="${TERMINAL:-alacritty}"
 WIN_TITLE="New window"
 DEFAULT_SHELL="$SHELL"
 CMD_STR="$SHELL"
@@ -36,6 +37,10 @@ while [[ $# -gt 0 ]]; do
                 ;;
         --cmd-str)
                 CMD_STR="$2"
+                shift 2
+                ;;
+        --terminal)
+                TERMINAL="$2"
                 shift 2
                 ;;
         --debug)
@@ -60,7 +65,7 @@ log_message() {
 }
 
 # First log
-log_message "Input given" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR, Editor: $EDITOR, Browser: $BROWSER, XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
+log_message "Input given" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
 
 # Check if mandatory options are provided
 if [ -z "$WIN_TITLE" ] || [ -z "$DEFAULT_SHELL" ] || [ -z "$CMD_STR" ]; then
