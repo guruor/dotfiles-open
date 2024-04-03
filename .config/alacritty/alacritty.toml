@@ -8,6 +8,7 @@ args = ["--login"]
 [window]
 decorations = "None"
 opacity = 1
+option_as_alt = "Both"
 
 [font]
 size = 14
