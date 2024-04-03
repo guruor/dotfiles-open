@@ -1,23 +1,27 @@
 #!/bin/bash
 #
 # Open new terminal window with a program and specific title
-# Kind of wrapper over terminals like kitty, alacritty and wezterm
+# Kind of wrapper over terminals like kitty, alacritty, and wezterm
 
 # Function to display usage information
 usage() {
-        echo "Usage: $0 [--title <title>] [--shell <shell>] [--cmd-str <command>]"
+        echo "Usage: $0 [--title <title>] [--shell <shell>] [--cmd-str <command>] [--debug]"
         echo "Options:"
         echo "  --title <title>        Set the title for the terminal window"
         echo "  --shell <shell>        Specify the shell to execute"
         echo "  --cmd-str <command>    Specify the command to execute"
+        echo "  --debug                Enable debug mode and log output to a file"
         exit 1
 }
 
 # Default values
-terminal="$TERMINAL"
+TERMINAL="${TERMINAL:-kitty}"
 WIN_TITLE="New window"
 DEFAULT_SHELL="$SHELL"
 CMD_STR="$SHELL"
+DEBUG=false
+LOG_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/openterm"
+LOG_FILE="$LOG_DIR/openterm.log"
 
 # Parse command line options
 while [[ $# -gt 0 ]]; do
@@ -34,6 +38,10 @@ while [[ $# -gt 0 ]]; do
                 CMD_STR="$2"
                 shift 2
                 ;;
+        --debug)
+                DEBUG=true
+                shift
+                ;;
         *)
                 echo "Error: Unknown option: $1"
                 usage
@@ -41,19 +49,35 @@ while [[ $# -gt 0 ]]; do
         esac
 done
 
+# Function to log messages
+log_message() {
+        local message="$1"
+        local params="${@:2}"
+        if [ "$DEBUG" = true ]; then
+                mkdir -p "$LOG_DIR"
+                echo "$(date +'%Y-%m-%d %H:%M:%S') - $message - Parameters: $params" >>"$LOG_FILE"
+        fi
+}
+
+# First log
+log_message "Input given" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR, Editor: $EDITOR, Browser: $BROWSER, XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
+
 # Check if mandatory options are provided
 if [ -z "$WIN_TITLE" ] || [ -z "$DEFAULT_SHELL" ] || [ -z "$CMD_STR" ]; then
         echo "Error: Mandatory options missing."
+        # Logging message for terminal emulator startup
+        log_message "Input Error " "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
         usage
 fi
 
 # Execute the command based on the selected terminal emulator
 case "$TERMINAL" in
 kitty)
-        # kitty -1 --title "$WIN_TITLE" -e "$DEFAULT_SHELL" -lc "$CMD_STR; exec ${DEFAULT_SHELL}"
+        log_message "Starting kitty" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
         kitty -1 --title "$WIN_TITLE" -e "$DEFAULT_SHELL" -lc "$CMD_STR;" &
         ;;
 alacritty)
+        log_message "Starting alacritty" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
         # Check if an Alacritty window with the specified title exists
         window_exists=$(ps aux | grep -v grep | grep "$TERMINAL" 2>/dev/null)
         if [ -n "$window_exists" ]; then
@@ -65,6 +89,7 @@ alacritty)
         fi
         ;;
 wezterm)
+        log_message "Starting wezterm" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
         # Check if a Wezterm window with the specified title exists
         window_exists=$(ps aux | grep -v grep | grep "$TERMINAL" 2>/dev/null)
         if [ -n "$window_exists" ]; then
@@ -75,7 +100,7 @@ wezterm)
                 wezterm start -- "$DEFAULT_SHELL" -lc "$CMD_STR;" &
         fi
         sleep 1
-        # Getting latest window ID
+        # Getting the latest window ID
         window_id=$(wezterm cli list --format json | jq '.[-1].window_id')
         wezterm cli set-window-title --window-id "$window_id" "$WIN_TITLE"
         ;;
@@ -84,6 +109,9 @@ wezterm)
         usage
         ;;
 esac
+
+# Logging message for terminal emulator startup
+log_message "Started $TERMINAL"
 
 # Keep the terminal open
 # read -rp "Press Enter to exit..."
