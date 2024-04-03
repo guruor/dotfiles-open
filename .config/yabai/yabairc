@@ -71,7 +71,7 @@ yabai -m config mouse_action2               resize
 # Floating window required SIP to be disabled
 # https://github.com/koekeishiya/yabai/issues/527
 # grid=<rows>:<cols>:<start-x>:<start-y>:<width>:<height>
-yabai -m rule --add title="^(Notes|Scratchpad|Bottom|Ncmpcpp)$" app="^kitty$" manage=off sub-layer=above sticky=on grid="10:16:8:5:16:10"
+yabai -m rule --add title="^(Notes|Scratchpad|Bottom|Ncmpcpp)$" app="^(kitty|wezterm-gui|alacritty)$" manage=off sub-layer=above sticky=on grid="10:16:8:5:16:10"
 yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
 yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
 yabai -m rule --add label="macfeh" app="^macfeh$" manage=off
@@ -93,9 +93,9 @@ yabai -m rule --add app="^Notification Centre$" manage=off
 yabai -m rule --add app="^VLC$" title!="^(|Fullscreen Controls)$" manage=off
 
 # Moves the apps to specific space
-yabai -m rule --add title="^(Code)$" app="^kitty$" space=1
-yabai -m rule --add title="^(Servers)$" app="^kitty$" space=2
-yabai -m rule --add title="^(Postman|Databases)$" app="^kitty$" space=3
+yabai -m rule --add title="^(Code)$" app="^kitty|wezterm-gui|alacritty$" space=1
+yabai -m rule --add title="^(Servers)$" app="^kitty|wezterm-gui|alacritty$" space=2
+yabai -m rule --add title="^(Postman|Databases)$" app="^kitty|wezterm-gui|alacritty$" space=3
 yabai -m rule --add app="^(Brave Browser|Google Chrome|Firefox|Microsoft Edge|Safari)$" space=4
 yabai -m rule --add app="^(Slack|WhatsApp|Microsoft Teams|Telegram)$" space=5
 yabai -m rule --add app="^(Twitch Studio)$" space=8
