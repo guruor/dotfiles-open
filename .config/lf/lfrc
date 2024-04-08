@@ -108,6 +108,18 @@ cmd yank_path &{{
 	# echo -n $f | xclip -selection clipboard
 }}
 
+cmd paste %{{
+    set -- $(cat ~/.local/share/lf/files)
+    mode="$1"
+    shift
+    case "$mode" in
+        copy) cp -r --backup=numbered -- "$@" .;;
+        move) mv --backup=numbered -- "$@" .;;
+    esac
+    rm ~/.local/share/lf/files
+    lf -remote "send clear"
+}}
+
 cmd z %{{
 	result="$(zoxide query --exclude $PWD $@)"
 	lf -remote "send $id cd $result"
@@ -164,7 +176,8 @@ map V push :!nvim<space>
 map y
 map yn yank_name
 map yp yank_path
-map yy copy
+map yyy copy
+map yym cut
 map zp toggle_preview
 
 map p
