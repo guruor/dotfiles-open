@@ -80,6 +80,7 @@ yabai -m rule --add label="System Preferences" app="^System Preferences$" title=
 yabai -m rule --add label="Alfred Preferences" app="^Alfred Preferences$" title=".*" manage=off
 yabai -m rule --add app="Raycast" title=".*" manage=off
 yabai -m rule --add app="Maccy" title=".*" manage=off
+yabai -m rule --add app="CopyQ" title=".*" manage=off
 yabai -m rule --add label="App Store" app="^App Store$" manage=off
 yabai -m rule --add label="Activity Monitor" app="^Activity Monitor$" manage=off
 yabai -m rule --add label="KeePassXC" app="^KeePassXC$" manage=off
