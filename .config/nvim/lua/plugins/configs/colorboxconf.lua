@@ -15,6 +15,7 @@ local fav_colorschemes = {
 local colorschemes_set = ListToSet(fav_colorschemes)
 local sql_colorscheme = "onedark" -- "PaperColor", "onedark", "palenight"
 local go_colorscheme = "github_dark"
+local shell_colorscheme = "github_dark"
 
 require("colorbox").setup {
   filter = {
@@ -53,6 +54,8 @@ require("colorbox").setup {
       lua = "tokyonight-storm",
       nix = "tokyonight-storm",
       vim = "tokyonight-storm",
+      sh = shell_colorscheme,
+      bash = shell_colorscheme,
     },
     empty = "gruvbox-material",
     -- fallback = "gruvbox-material", -- "github_dark"
