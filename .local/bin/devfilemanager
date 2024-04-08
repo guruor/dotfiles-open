@@ -1,0 +1,241 @@
+#!/usr/bin/env bash
+#
+#/' devfilemanager - A tool to manage local development files and changes
+#/' Tool to manage local dev files/changes
+#/' It provides some function like creating a common directory for porject which contains the local changes like:
+#/' - .vscode/tasks.json
+#/' - .vscode/launch.json
+#/' - .patches/*.diff # Represents local git patches as backup
+#/' - Local Dockerfile or docker-compose file
+#/' Provides sub functions to link them to project directory and open them in new terminal
+#/'
+#/' Usage:
+#/'   devfilemanager [options] [command] [arguments]
+#/'
+#/' Commands:
+#/'   create-dir          Create the local dev files directory for the current repo
+#/'   open                Open the local dev files directory in nvim
+#/'   openf               Provides option to switch to dev files of local project with fzf
+#/'   link <file_to_link> Link local dev files and folders to the code repo
+#/'   save-diff [patch_file_name] Save the current changes as a patch in local dev files patches directory
+#/'   remove_dir          Delete the local dev files directory
+#/'
+#/' Options:
+#/'   -h, --help          Show this help message and exit
+#/'   -v, --version       Show version information and exit
+#
+
+# Function to print usage information
+usage() {
+        grep '^#/' "$0" | cut -c4-
+        exit 1
+}
+
+# Function to print version information
+version() {
+        echo "devfilemanager v1.0.0"
+        exit 1
+}
+
+# Function to validate required environment variables
+validate_env_variables() {
+        local missing_vars=()
+
+        if [[ -z "${WORKSPACE_PATH}" ]]; then
+                missing_vars+=("WORKSPACE_PATH")
+        fi
+
+        if [[ -z "${WORKSPACE_DEVFILEMANAGER_PATH}" ]]; then
+                missing_vars+=("WORKSPACE_DEVFILEMANAGER_PATH")
+        fi
+
+        if [[ -z "${WORKSPACE_DEVFILEMANAGER_DEFAULT_FILES}" ]]; then
+                missing_vars+=("WORKSPACE_DEVFILEMANAGER_DEFAULT_FILES")
+        fi
+
+        if [[ -z "${MY_DOTFILES_DIR}" ]]; then
+                missing_vars+=("MY_DOTFILES_DIR")
+        fi
+
+        if [[ ${#missing_vars[@]} -gt 0 ]]; then
+                echo "Error: The following environment variable(s) are not set: ${missing_vars[*]}" >&2
+                exit 1
+        fi
+}
+
+validate() {
+        validate_env_variables
+
+        # Check if PWD is within WORKSPACE_PATH
+        if [[ "${PWD}" != "${WORKSPACE_PATH}"* ]]; then
+                echo "Error: Current directory is not within WORKSPACE_PATH." >&2
+                exit 1
+        fi
+}
+
+get_dev_files_path() {
+        validate
+        # Creates the local dev files directory for the current repo
+
+        # This method should be called from the repo directory
+        # Here ${WORKSPACE_PATH}/${repo_path_relative_to_workspace} is repo directory
+        # echo -e "\nCurrent project path: ${PWD}" >&2
+        repo_path_relative_to_workspace="${PWD#${WORKSPACE_PATH}/}"
+        # echo -e "\nCurrent project path relative to workspace path: ${repo_path_relative_to_workspace}" >&2
+        repo_local_files_path="${WORKSPACE_DEVFILEMANAGER_PATH}/${repo_path_relative_to_workspace}"
+        # echo -e "\nExpected local dev files path for this project: ${repo_local_files_path}" >&2
+        echo "${repo_local_files_path}"
+}
+
+# Function to create the local dev files directory for the current repo
+create_dir() {
+        repo_local_files_path=$(get_dev_files_path)
+        # Creating dev files directory for the repo if doesn't exist
+        if [[ ! -d "${repo_local_files_path}" ]]; then
+                echo -e "\nCreating local dev directory: ${repo_local_files_path}" >&2
+                echo -e "\nCopying default local dev files from ${WORKSPACE_DEVFILEMANAGER_DEFAULT_FILES}" >&2
+                cp -r "${WORKSPACE_DEVFILEMANAGER_DEFAULT_FILES}" "${repo_local_files_path}"
+        else
+                echo -e "\nLocal dev files path already exists: ${repo_local_files_path}" >&2
+        fi
+
+        echo "${repo_local_files_path}"
+}
+
+remove_dir() {
+        repo_local_files_path=$(get_dev_files_path)
+        echo -e "\nRemoving local dev files path: ${repo_local_files_path}" >&2
+        rm -r "${repo_local_files_path}"
+}
+
+# Function to open the local dev files directory in nvim
+open() {
+        validate
+        dev_files_path=$(create_dir)
+        cd "${dev_files_path}" || return
+        nvim -u "${MYVIMRCLSP}" --listen "$HOME/.cache/nvim/sockets/nvim-$RANDOM.sock"
+}
+
+# Function to link local dev files and folders to the code repo
+link() {
+        validate
+        # links local dev files and folders to code repo
+        file_to_link=$1
+
+        # this method should be called from the repo directory
+        repo_path="$PWD"
+        repo_local_files_path=$(create_dir)
+
+        # linking specific file only if exists
+        if [[ -n "${file_to_link}" ]]; then
+                if [[ -f "${repo_local_files_path}/${file_to_link}" || -d "${repo_local_files_path}/${file_to_link}" ]]; then
+                        ln -sf "${repo_local_files_path}/${file_to_link}" "${repo_path}/"
+                else
+                        echo -e "\nno file/directory found named ${file_to_link}" >&2
+                fi
+        else
+                # files_or_dirs_to_symlink=(".vscode" ".patches" ".gitignore" ".fdignore")
+
+                # Populate dirs_to_symlink variable with files and directories at root level
+                mapfile -t files_or_dirs_to_symlink < <(find "${repo_local_files_path}" -maxdepth 1 -mindepth 1 -exec basename {} \;)
+                # Symlink the specified directories if they exist
+                for name in "${files_or_dirs_to_symlink[@]}"; do
+                        echo -e "\nLinking ${name}" >&2
+                        ln -sf "${repo_local_files_path}/${name}" "${repo_path}/"
+                done
+
+                # copying dockerfile_local_sym to project repo instead of symlinking it, due issue with docker build and compose command
+
+                if [[ -f "${repo_local_files_path}/dockerfile_local_sym" ]]; then
+                        rm -rf "${repo_path}/dockerfile_local" || true
+                        cp "${repo_local_files_path}/dockerfile_local_sym" "${repo_path}/dockerfile_local"
+                fi
+        fi
+}
+
+openf() {
+        validate_env_variables
+        cd "${WORKSPACE_DEVFILEMANAGER_PATH}" || exit
+        cd "$(fd --type d --max-depth 3 | fzf)" || exit
+        nvim
+}
+
+# Function to save the current changes as a patch in local dev files patches directory
+save_diff() {
+        validate
+        # saves the current changes as a patch in local dev files `patches` directory
+        patch_file_name="${1:=dev_changes}"
+
+        # this method should be called from the repo directory
+        repo_local_files_path=$(create_dir)
+
+        # creating diff only when there are any change in untracked files
+        if [[ $(git status --porcelain --untracked-files=no) ]]; then
+                # backing up previous patch file, using cp from /bin because, cp is aliased to -iv in aliasrc
+                if [[ -f "${repo_local_files_path}/.patches/${patch_file_name}.patch" ]]; then
+                        echo -e "\nbacking up previous diff ${patch_file_name}.patch to ${patch_file_name}.bak.patch" >&2
+                        /bin/cp -rf "${repo_local_files_path}/.patches/${patch_file_name}.patch" "${repo_local_files_path}/.patches/${patch_file_name}.bak.patch" 2>/dev/null
+                fi
+
+                echo -e "\ncreating ${patch_file_name}.patch" >&2
+                git --no-pager diff --no-color head >"${repo_local_files_path}/.patches/${patch_file_name}.patch"
+
+                # replacing git stash named `dev_changes`, check the git config
+                echo -e "\nsaving local changes to stash as well" >&2
+                git str-named "${patch_file_name}"
+
+                echo -e "\nresetting local changes" >&2
+                git reset --hard
+
+                echo -e "\ncurrent status: " >&2
+                git s
+
+                # symlinking .patches directory in code repo
+                link ".patches"
+        else
+                echo -e "\nno local changes to save in a patch" >&2
+        fi
+}
+
+# Main function
+main() {
+        # Parse options
+        while [[ $# -gt 0 ]]; do
+                case "$1" in
+                -h | --help)
+                        usage
+                        ;;
+                -v | --version)
+                        version
+                        ;;
+                create-dir)
+                        create_dir
+                        ;;
+                open)
+                        open
+                        ;;
+                openf)
+                        openf
+                        ;;
+                link)
+                        shift
+                        link "$1"
+                        ;;
+                save-diff)
+                        shift
+                        save_diff "$1"
+                        ;;
+                remove-dir)
+                        remove_dir
+                        ;;
+                *)
+                        echo "Invalid command: $1" >&2
+                        usage
+                        ;;
+                esac
+                shift
+        done
+}
+
+# Run the main function
+main "$@"

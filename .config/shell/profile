@@ -95,6 +95,11 @@ export CM_IGNORE_WINDOW="dmenu"
 # Dotfile directory
 export MY_DOTFILES_DIR="$HOME/voidrice"
 
+# Project path
+export WORKSPACE_PATH="$HOME/Workspace"
+export WORKSPACE_DEVFILEMANAGER_PATH="$WORKSPACE_PATH/local_dev_files"
+export WORKSPACE_DEVFILEMANAGER_DEFAULT_FILES="$WORKSPACE_PATH/local_dev_files/default"
+
 # VimWiki
 export VIMWIKI_DIR="$HOME/Dropbox/vimWiki"
 export VIMWIKI_DIR_PERSONAL="${VIMWIKI_DIR}/Personal/wiki/"
