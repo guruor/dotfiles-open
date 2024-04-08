@@ -118,3 +118,4 @@ yabai -m signal --add event=space_changed action="bash ~/.config/yabai/scripts/s
 yabai -m signal --add event=display_changed action="bash ~/.config/yabai/scripts/signals/display_changed.sh"
 
 printf "yabai: configuration loaded...\\n"
+# vim: ft=sh
