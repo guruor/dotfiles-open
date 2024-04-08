@@ -76,7 +76,7 @@ fi
 case "$TERMINAL" in
 kitty)
         log_message "Starting kitty" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
-        kitty -1 --title "$WIN_TITLE" --working-directory "$HOME" -e "$DEFAULT_SHELL" -lc "$CMD_STR;" &
+        kitty --single-instance --title "$WIN_TITLE" --working-directory "$HOME" -e "$DEFAULT_SHELL" -lc "$CMD_STR;" &
         ;;
 alacritty)
         log_message "Starting alacritty" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
@@ -95,7 +95,7 @@ alacritty)
 wezterm)
         log_message "Starting wezterm" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
         # Check if a Wezterm window with the specified title exists
-        window_exists=$(pgrep "$TERMINAL")
+        window_exists=$(pgrep "wezterm-gui")
         if [ -n "$window_exists" ]; then
                 # Wezterm window exists, so creating a window in the same session
                 log_message "Creating new wezterm to existing session" "window_exists: $window_exists"
@@ -107,9 +107,11 @@ wezterm)
         fi
         sleep 2
         # Getting the latest window ID
-        window_id=$(wezterm cli list --format json | jq '.[-1].window_id')
+        window_id=$(wezterm cli list --format json | jq 'sort_by(.window_id)' | jq '.[-1].window_id')
         if [ -n "$window_id" ]; then
+          log_message "Setting title for wezterm window: $window_id"
           wezterm cli set-window-title --window-id "$window_id" "$WIN_TITLE"
+          wezterm cli set-tab-title --tab-id "$window_id" "$WIN_TITLE"
         fi
         ;;
 *)
