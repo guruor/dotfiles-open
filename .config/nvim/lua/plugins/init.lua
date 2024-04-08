@@ -813,7 +813,7 @@ local default_plugins = {
   },
   {
     "LunarVim/bigfile.nvim",
-    event = "VeryLazy",
+    lazy = false,
   }
 }
 
