@@ -6,7 +6,7 @@ command_str="${2}"
 TERMINAL="${TERMINAL:-kitty}"
 function toggle_window() {
     # Checking if window is already open
-    term_window=$(yabai -m query --windows | jq "map(select((.app == \"$TERMINAL\") and .title == \"$window_name\"))[0] // empty");
+    term_window=$(yabai -m query --windows | jq "map(select((.app | startswith(\"$TERMINAL\")) and .title == \"$window_name\"))[0] // empty");
     if [[ -z "$term_window" ]]; then
         openterm --title "$window_name" --shell "$SHELL" --cmd-str "${command_str}; $SHELL";
     else
