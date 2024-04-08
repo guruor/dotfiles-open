@@ -253,6 +253,14 @@ autocmd("BufWritePost", {
   group = postSaveSettingsGroup,
 })
 
+autocmd("BufWritePost", {
+  pattern = vim.fn.expand "$MY_DOTFILES_DIR" .. "/.config/borders/bordersrc",
+  callback = function()
+    vim.cmd "!brew services restart borders"
+  end,
+  group = postSaveSettingsGroup,
+})
+
 -- Restart skhd when skhd config is changed
 autocmd("BufWritePost", {
   pattern = vim.fn.expand "$MY_DOTFILES_DIR" .. "/.config/skhd/skhdrc",
