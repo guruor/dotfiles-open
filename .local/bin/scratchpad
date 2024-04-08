@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Opens tmux session named `Scratchpad`
+# Opens tmux session named `Pad`
 # or
 # Opens an empty terminal in home directory
 
 # Open tmux session if exist
-session_name="Scratchpad"
+session_name="Pad"
 source "$HOME/.local/bin/tmux/tmux-common-functions"
 session_icon=$(does_session_exist_by_name "${session_name}")
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Reference for floating window with yabai (https://github.com/Granitosaurus/bin/blob/master/dropdown)
 
-window_name="${1:=Scratchpad}"
+window_name="${1:=Pad}"
 command_str="${2}"
 TERMINAL="${TERMINAL:-kitty}"
 function toggle_window() {
