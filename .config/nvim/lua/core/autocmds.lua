@@ -151,15 +151,6 @@ autocmd({ "BufRead", "BufNewFile" }, {
   group = augroup("Dadbod sql", { clear = true }),
 })
 
---------------- SSH tunnel config -----------------
--- Detect file type for tunnel-config file
-autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = vim.fn.expand "$MY_DOTFILES_DIR" .. "/Private/.config/.ssh/tunnel-config",
-  callback = function()
-    vim.bo.filetype = "sshconfig"
-  end,
-  group = generalSettingsGroup,
-})
 
 --------------- Rest nvim -----------------
 -- Detect file type for env files for rest-nvim
