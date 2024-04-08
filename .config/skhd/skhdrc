@@ -38,7 +38,7 @@ meh - l : yabai -m query --spaces --space \
 # meh - return : "${HOME}"/.config/yabai/scripts/open_iterm2.sh
 meh - return : openterm --title "New window"
 meh - space : yabai -m window --warp east; yabai -m window --focus west # Move window to left and focus
-meh - 0x29 : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Scratchpad" "scratchpad" # Mapping semicolon(;) to open floating terminal
+meh - 0x29 : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Pad" "scratchpad" # Mapping semicolon(;) to open floating terminal
 meh - o : openterm --title "File Manager" --shell "$SHELL" --cmd-str "lf -command zi ~; $SHELL"
 meh - n : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Notes" "notetaker"
 meh - r : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Bottom" "btm -b" # Opens process monitoring tool
