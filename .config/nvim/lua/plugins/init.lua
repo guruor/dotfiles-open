@@ -807,6 +807,11 @@ local default_plugins = {
     cmd = 'Dashboard',
   },
   {
+    "karb94/neoscroll.nvim",
+    config = true,
+    event = "VeryLazy",
+  },
+  {
     "LunarVim/bigfile.nvim",
     event = "VeryLazy",
   }
