@@ -637,6 +637,9 @@ local default_plugins = {
     -- Color picker and highlighter plugin for Neovim.
     'uga-rosa/ccc.nvim',
     cmd = { 'CccHighlighterToggle', 'CccConvert', 'CccPick' },
+    opts = {
+      highlighter = { auto_enable = true, lsp = true },
+    },
   },
   {
     "m4xshen/smartcolumn.nvim",
