@@ -158,12 +158,13 @@ local default_plugins = {
     end,
     event = { 'BufReadPre', 'BufNewFile' },
   },
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    event = "BufRead",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    opts = require("plugins.configs.misc").treesitter_context,
-  },
+  -- Won't be required with lspsaga, saga already shows breadcrumbs for same purpose
+  -- {
+  --   "nvim-treesitter/nvim-treesitter-context",
+  --   event = "BufRead",
+  --   dependencies = { "nvim-treesitter/nvim-treesitter" },
+  --   opts = require("plugins.configs.misc").treesitter_context,
+  -- },
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
     event = "BufRead",
