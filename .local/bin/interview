@@ -1,0 +1,192 @@
+#!/usr/bin/env bash
+# This script takes candidate name as input and
+# creates a new google doc to be shared with the candidate for live coding round/LLD/HLD round.
+# It creates a local note file also in name of candidate, this can be used to take notes.
+# Collective summary from these notes can be submitted to recruiter flow
+#
+# This script expects two template files in interview data directory:
+# 1. questions-template.md -> this contains the questions you ask the candidate
+# 2. feedback-template.md -> this contains the feedback template
+#
+# Note file is combination of both these templates.
+#
+# If you want all the google docs to be put in a common directory in google drive,
+# you can create a folder in drive and get the folder id
+# Check this to obtain Id of a drive folder: https://ploi.io/documentation/database/where-do-i-get-google-drive-folder-id#:~:text=Getting%20this%20folder%20ID%20is,be%20put%20in%20that%20folder.
+#
+#/' Usage:
+#/'   interview [options] [command] [arguments]
+#/'
+#/' Commands:
+#/'   new                 Starts the interview for the candidate
+#/'   open                Open the interview directory in nvim
+#/'
+#/' Options:
+#/'   -h, --help          Show this help message and exit
+#
+
+# Function to print usage information
+usage() {
+        grep '^#/' "$0" | cut -c4-
+        exit 1
+}
+
+current_date=$(date +%Y-%m-%d)
+# Set preferred notetaker format like md for markdown, norg for neorg
+note_ext="norg"
+# note_ext="md"
+
+get_interview_directory() {
+        echo "${NEORG_DIR_INTERVIEWS}"
+}
+
+get_unique_doc_name() {
+        local candidate_name="${1}"
+        unique_doc_name="${current_date}: Interview with ${candidate_name}"
+        echo "${unique_doc_name}"
+}
+
+get_heading_symbol() {
+        if [[ "$note_ext" == "md" ]]; then
+                echo "#"
+        else
+                echo "*"
+        fi
+}
+
+validate_env_variables() {
+        local missing_vars=()
+
+        if [[ -z "${NEORG_DIR_INTERVIEWS}" ]]; then
+                missing_vars+=("NEORG_DIR_INTERVIEWS")
+        fi
+
+        if [[ -z "${GDRIVE_INTERVIEW_FOLDER_ID}" ]]; then
+                missing_vars+=("GDRIVE_INTERVIEW_FOLDER_ID")
+        fi
+
+        if [[ ${#missing_vars[@]} -gt 0 ]]; then
+                echo "Error: The following environment variable(s) are not set: ${missing_vars[*]}" >&2
+                exit 1
+        fi
+}
+
+validate_interview_directory() {
+        local interview_directory
+        interview_directory=$(get_interview_directory)
+        # local interview_directory="${VIMWIKI_DIR_INTERVIEWS}"
+        if [[ ! -d "$interview_directory" ]]; then
+                echo -e "\nDirectory doesn't exist $interview_directory" >&2
+                exit 0
+        fi
+}
+
+validate_interview_templates() {
+        local interview_directory
+        interview_directory=$(get_interview_directory)
+
+        expected_templates=(questions-template feedback-template)
+        for template in "${expected_templates[@]}"; do
+                if [[ ! -f "$interview_directory/$template.${note_ext}" ]]; then
+                        echo -e "\nQuestion template doesn't exist: $interview_directory/$template.${note_ext}" >&2
+                        exit 0
+                fi
+        done
+}
+
+# Function to encode URL
+urlencode() {
+        python3 -c "import sys, urllib.parse as ul; print (ul.quote_plus(sys.argv[1]))" "${1}"
+}
+
+# Function to create Google Doc
+create_google_doc() {
+        local candidate_name="${1}"
+        local folder_id="${GDRIVE_INTERVIEW_FOLDER_ID}" # Interview folder id on Google Drive
+        local google_doc_base_url="https://docs.google.com/document/u/0"
+        local unique_doc_name urlencoded_doc_title
+        unique_doc_name=$(get_unique_doc_name "${candidate_name}")
+        urlencoded_doc_title=$(urlencode "${unique_doc_name}")
+
+        local doc_url="${google_doc_base_url}/create?title=${urlencoded_doc_title}"
+
+        if [[ "${folder_id}" ]]; then
+                doc_url="${google_doc_base_url}/create?usp=drive_web&folder=${folder_id}&title=${urlencoded_doc_title}"
+        fi
+
+        echo "${doc_url}"
+        open "${doc_url}"
+}
+
+# Function to combine templates and create note file
+create_note_file() {
+        local candidate_name="${1}"
+        local interview_directory unique_doc_name new_note_file_escaped heading_symbol
+        interview_directory=$(get_interview_directory)
+        unique_doc_name=$(get_unique_doc_name "${candidate_name}")
+        local new_note_file="${unique_doc_name}.${note_ext}"
+        # Excaped file path
+        new_note_file_escaped="${new_note_file// /_}"
+
+        # Validating if required template files exist
+        validate_interview_templates
+        echo -e "\nCreating new note file: ${interview_directory}/${new_note_file_escaped}" >&2
+
+        heading_symbol=$(get_heading_symbol)
+        echo -e "${heading_symbol} ${candidate_name}\n\n" >"${interview_directory}/${new_note_file_escaped}"
+        {
+                cat "${interview_directory}/questions-template.${note_ext}"
+                echo -e "\n\n"
+                cat "${interview_directory}/feedback-template.${note_ext}"
+        } >>"${interview_directory}/${new_note_file_escaped}"
+
+        openterm --title "Interview" --shell "${SHELL}" --cmd-str "cd ${interview_directory}; $EDITOR -u ${MYVIMRCLSP} ${new_note_file_escaped}"
+}
+
+new_interview() {
+        read -rp "Enter candidate name [Richard]: " candidate_name
+        # Check if candidate name is provided
+        if [[ -z "${candidate_name}" ]]; then
+                echo "Usage: $0 <candidate_name>"
+                exit 1
+        fi
+
+        # Create Note file
+        create_note_file "$candidate_name"
+
+        # Create Google Doc
+        create_google_doc "$candidate_name"
+}
+
+open_dir() {
+        local interview_directory
+        interview_directory=$(get_interview_directory)
+        openterm --title "Interview" --shell "${SHELL}" --cmd-str "cd ${interview_directory}; $EDITOR -u ${MYVIMRCLSP}"
+}
+
+main() {
+        validate_env_variables
+        validate_interview_directory
+
+        # Parse options
+        while [[ $# -gt 0 ]]; do
+                case "$1" in
+                -h | --help)
+                        usage
+                        ;;
+                new)
+                        new_interview
+                        ;;
+                open)
+                        open_dir
+                        ;;
+                *)
+                        echo "Invalid command: $1" >&2
+                        usage
+                        ;;
+                esac
+                shift
+        done
+}
+
+main "$1"
