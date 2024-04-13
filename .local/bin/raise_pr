@@ -1,0 +1,232 @@
+#!/usr/bin/env bash
+
+function get_lower_branch() {
+        # Lower branch: A branch lower in hierarchy than the target branch, which should have all the commits before moving to the target branch
+        local dest_branch=$1
+        local main_branches
+        IFS=$' ' read -r -d '' -a main_branches < <(get_main_branches)
+
+        echo -e "\nDestination branch: $dest_branch" >&2
+        local branch_position=-1
+        for ((count = 0; count < ${#main_branches[@]}; count++)); do
+                if [[ "${main_branches[count]}" = "${dest_branch}" ]]; then
+                        branch_position=${count}
+                        break
+                fi
+        done
+
+        if [[ $branch_position -ge 1 ]]; then
+                local lower_branch
+                ((lower_branch_position = branch_position - 1))
+                lower_branch=${main_branches[lower_branch_position]}
+                echo -e "\nlower_branch: ${lower_branch}" >&2
+        else
+                echo -e "\nThis is the lowest main branch, no need to check missing commits for this." >&2
+        fi
+
+        echo "$lower_branch"
+}
+
+function did_lower_branch_missed_commits() {
+        # Check for missing commits in lower branch
+        # Here lower branch refers to a branch lower in hierarchy then the target branch, which should have all the commits before moving to target branch
+        local source_branch dest_branch
+        source_branch=$1
+        dest_branch=$2
+
+        lower_branch=$(get_lower_branch "${dest_branch}")
+
+        if [ -z "${lower_branch}" ]; then
+                echo -e "SUCCESS : No lower branch to compare with" >&2
+        else
+                echo -e "\nChecking branch logs..." >&2
+                # echo -e "\nFetching latest changes..." >&2
+                # git fetch -a
+                echo -e "\ngit log origin/${lower_branch}..origin/${source_branch} --no-merges\n" >&2
+                log_diff=$(git log origin/"${lower_branch}..origin/${source_branch}" --no-merges --pretty=format:"%h%x09%an%x09%ad%x09%s")
+                log_cmd_return=$(echo "${log_diff}" | head -c1 | wc -c)
+                if [ -n "${log_diff}" ] && [ "${log_cmd_return}" -ne 0 ]; then
+                        comment_msg="NOTE : the changes are not merged in [${lower_branch}]. Please merge below changes in [$lower_branch] before merging in [${dest_branch}]\n\n${log_diff}"
+                        echo -e "${comment_msg}" >&2
+                        return 0
+                else
+                        echo -e "SUCCESS : All the changes are merged in lower hierarchy branch" >&2
+                fi
+        fi
+
+        return 1
+}
+
+function get_source_branch() {
+        # Using current branch as source branch
+        git rev-parse --abbrev-ref HEAD
+}
+
+function get_destination_branch() {
+        # Choosing destination branch from available top branch choices
+        git branch --color=always --sort=-committerdate | grep -v '/HEAD\\s' | fzf --ansi | sed 's/^..//' | awk '{print $1}' | sed "s#^remotes/[^/]*/##"
+}
+
+function is_hotfix() {
+        local source_branch="${1}"
+        # Checking if source branch name starts with filtered hotfix suffix
+        for prefix in "${hotfix_prefixes[@]}"; do
+                if grep -q -io "^$prefix" <<<"$source_branch"; then
+                        return 0 # Return success (true) if a match is found
+                fi
+        done
+
+        return 1 # Return failure (false) if no match is found
+}
+
+function generate_pr_url() {
+        local source_branch dest_branch
+        source_branch="${1}"
+        dest_branch="${2}"
+        echo -e "\nGetting repo URL:" >&2
+        # Getting repo path from configured origin remote
+        repo_push_url=$(git remote get-url --push origin)
+
+        # Getting repo path based on URL type, logic will vary if repo ssh or http
+        if [[ $repo_push_url == "https://"* ]]; then
+                repo_path=$(echo "$repo_push_url" | cut -d "/" -f4- | cut -d "." -f1)
+        else
+                repo_path=$(echo "$repo_push_url" | cut -d ":" -f2 | cut -d "." -f1)
+        fi
+
+        echo -e "\nRepo Path: ${repo_path}\nSource branch: ${source_branch}\nDestination branch: ${dest_branch}\n\n" >&2
+        if [[ $repo_push_url == *bitbucket* ]]; then
+                pr_url="https://bitbucket.org/${repo_path}/pull-requests/new?source=${source_branch}&dest=${dest_branch}"
+        elif [[ $repo_push_url == *gitlab* ]]; then
+                pr_url="https://gitlab.com/${repo_path}/merge_requests/new?merge_request%5Bsource_branch%5D=${source_branch}&merge_request%5Btarget_branch%5D=${dest_branch}"
+        elif [[ $repo_push_url == *github* ]]; then
+                pr_url="https://github.com/${repo_path}/compare/${dest_branch}...${source_branch}"
+        fi
+
+        echo "${pr_url}"
+}
+
+function raise_pr() {
+        local source_branch dest_branch
+        source_branch="${1:-$(get_source_branch)}"
+        dest_branch="${2:-$(get_destination_branch)}"
+
+        validate_for_missing_commit "$source_branch" "$dest_branch"
+        pr_url=$(generate_pr_url "$source_branch" "$dest_branch")
+
+        echo "$pr_url"
+
+        # Raises pull request against selected destination branch from current branch
+        open "$pr_url"
+}
+
+function validate() {
+        # Gets pull request URL for selected destination branch from current branch
+        inside_git_repo="$(git rev-parse --is-inside-work-tree 2>/dev/null)"
+        # Return if not a git repository
+        if ! [ "$inside_git_repo" ]; then
+                echo "Not in git repo" >&2
+                exit 0
+        fi
+
+}
+
+# Function to validate something
+function validate_for_missing_commit() {
+        local source_branch dest_branch
+        source_branch="${1:-$(get_source_branch)}"
+        dest_branch="${2:-$(get_destination_branch)}"
+
+        if is_hotfix "$source_branch"; then
+                echo -e "\nSkipping diff check since it is a hotfix\n" >&2
+        else
+                # Validating if all source branch commits are present in previous lower branch
+                echo -e "\nValidating if all source branch commits are present in previous lower branch:" >&2
+                if did_lower_branch_missed_commits "${source_branch}" "${dest_branch}"; then
+                        exit 0
+                fi
+        fi
+}
+
+# Function to get branches
+get_main_branches() {
+        local main_branch_str
+        # Implementation to retrieve branches
+        main_branch_str=$(git config --get core.mainbranches)
+        if [[ -z "${main_branch_str}" ]]; then
+                echo "Main branches are not defined in local git config. Use below command to set them:" >&2
+                echo "${0} --set-branches" >&2
+                exit 1
+        fi
+
+        echo "$main_branch_str" # Output branches as newline-separated string
+}
+
+# Function to set branches
+function set_main_branches() {
+        # Prompt the user to enter branches
+        echo "Enter branches one by one (Press Enter after each branch, type 'done' when finished):" >&2
+        branches=()
+        while true; do
+                read -r branch
+                if [[ $branch == "done" ]]; then
+                        break
+                fi
+                branches+=("$branch")
+        done
+
+        # Combine branches into a newline-separated string
+        branch_string=$(printf "%s " "${branches[@]}")
+
+        # Output the combined branch string
+        echo -e "\nBranches entered:" >&2
+        echo "$branch_string" >&2
+
+        # Set the branches using git config
+        git config --replace-all core.mainbranches "$branch_string"
+
+        echo -e "\nBranches set successfully" >&2
+}
+
+# Function to display usage instructions
+function usage() {
+        echo "Usage: $0 [OPTIONS]"
+        echo "Options:"
+        echo "  -r, --raise       Raise a pull request"
+        echo "  -v, --validate    Validate something"
+        echo "  -g, --get-branches    Get branches"
+        echo "  -s, --set-branches    Set branches"
+        exit 1
+}
+
+declare -a hotfix_prefixes=("VVIMP")
+
+# If no arguments provided, trigger raise_pr function
+if [[ $# -eq 0 ]]; then
+        raise_pr "$1" "$2"
+fi
+# Parse command-line arguments
+while [[ $# -gt 0 ]]; do
+        case "$1" in
+        -r | --raise)
+                validate
+                raise_pr "$1" "$2"
+                ;;
+        -v | --validate)
+                validate
+                validate_for_missing_commit "$1" "$2"
+                ;;
+        -g | --get-branches)
+                validate
+                get_main_branches
+                ;;
+        -s | --set-branches)
+                validate
+                set_main_branches
+                ;;
+        *)
+                usage
+                ;;
+        esac
+        shift
+done
