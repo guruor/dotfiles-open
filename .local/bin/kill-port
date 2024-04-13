@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+function kill_port() {
+        PORT_NUMBER=$1
+        if [[ "${PORT_NUMBER}" ]]; then
+                lsof_output=$(lsof -i tcp:"${PORT_NUMBER}")
+
+                if [[ "${lsof_output}" ]]; then
+                        echo -e "lsof output for port: ${PORT_NUMBER}:\n${lsof_output}"
+                        pid=$(lsof -i tcp:"${PORT_NUMBER}" -t | fzf)
+                        echo -e "\nKilling process $pid running at port ${PORT_NUMBER}..."
+                        if [[ "$pid" ]]; then
+                                kill "$pid"
+                        else
+                                echo -e "\nStopped."
+                        fi
+                else
+                        echo -e "\nNo process running on port ${PORT_NUMBER}"
+                fi
+        fi
+}
+
+kill_port "${1}"
