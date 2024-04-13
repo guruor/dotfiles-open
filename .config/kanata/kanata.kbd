@@ -1,0 +1,105 @@
+;; vim: set ft=lisp
+
+;; global configuration options
+(defcfg
+      process-unmapped-keys yes
+      log-layer-changes no
+)
+
+;; Only one defsrc is allowed.
+;;
+;; defsrc defines the keys that will be intercepted by kanata. The order of the
+;; keys matches with deflayer declarations and all deflayer declarations must
+;; have the same number of keys as defsrc. Any keys not listed in defsrc will
+;; be passed straight to the operating system.
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           spc            ralt rmet rctl
+)
+
+(defvar
+      tap-time 200
+      hold-time 250
+)
+
+(defalias
+      ;; switch layer aliases
+      qwr (layer-switch qwerty)
+      arr (layer-switch arrows)
+      ;; mse (layer-switch mouse)
+
+      ;; toggle layer aliases
+      lay (layer-toggle layers)
+
+      ;; tap-hold keys with letters for tap and layer change for hold
+      grl (tap-hold-release 200 200 grv @lay)
+
+      ;; Key combos
+      meh (multi lctl lsft lalt)
+      hyper (multi lmet @meh)
+
+      ;; tap for esc, hold for meh (lctl + lsft + lalt)
+      caps (tap-hold $tap-time $hold-time esc @meh)
+
+)
+
+;; The first layer defined is the layer that will be active by default when
+;; kanata starts up. This layer is the standard QWERTY layout except for the
+;; backtick/grave key (@grl) which is an alias for a tap-hold key.
+(deflayer qwerty
+  @grl    1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab     q    w    e    r    t    y    u    i    o    p    [    ]    \
+  @caps   a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft    z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           spc            ralt rmet rctl
+)
+
+(deflayer layers
+  _    lrld @qwr @arr _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  caps    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _              _              _    _    _
+)
+
+(deflayer arrows
+  @grl    f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  _
+  _    _    _    _    _    _    C-S-tab pgup up pgdn C-tab _  _    _
+  _    _    _    _    _    _    home left down rght end  _    _
+  _    _    _    _    _    _    _    _    C-w  _    _    _
+  _    _    _              _              _    _    _
+)
+
+;; Mouse is not supported yet on Macos
+;; (defalias
+;;   mwu (mwheel-up 50 120)
+;;   mwd (mwheel-down 50 120)
+;;   mwl (mwheel-left 50 120)
+;;   mwr (mwheel-right 50 120)
+;;
+;;   ms↑ (movemouse-up 1 1)
+;;   ms← (movemouse-left 1 1)
+;;   ms↓ (movemouse-down 1 1)
+;;   ms→ (movemouse-right 1 1)
+;;
+;;   ma↑ (movemouse-accel-up 1 1000 1 5)
+;;   ma← (movemouse-accel-left 1 1000 1 5)
+;;   ma↓ (movemouse-accel-down 1 1000 1 5)
+;;   ma→ (movemouse-accel-right 1 1000 1 5)
+;;
+;;   sm (setmouse 32228 32228)
+;;
+;;   fst (movemouse-speed 200)
+;;   slw (movemouse-speed 50)
+;; )
+;;
+;; (deflayer mouse
+;;   @grl    @mwu @mwd @mwl @mwr _    _    _    _    _    @ma↑ _    _    _
+;;   _    pgup bck  _    fwd  _    _    _    _    @ma← @ma↓ @ma→ _    _
+;;   _    pgdn mlft _    mrgt mmid _    mbck mfwd _    @ms↑ _    _
+;;   @fst _    mltp _    mrtp mmtp _    mbtp mftp @ms← @ms↓ @ms→
+;;   @slw    _    _              _              _    _    _
+;; )
