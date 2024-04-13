@@ -106,18 +106,6 @@ cmd yank_path &{{
 	echo $f | cb
 }}
 
-cmd paste %{{
-    set -- $(cat ~/.local/share/lf/files)
-    mode="$1"
-    shift
-    case "$mode" in
-        copy) cp -r --backup=numbered -- "$@" .;;
-        move) mv --backup=numbered -- "$@" .;;
-    esac
-    rm ~/.local/share/lf/files
-    lf -remote "send clear"
-}}
-
 cmd z %{{
 	result="$(zoxide query --exclude $PWD $@)"
 	lf -remote "send $id cd $result"
