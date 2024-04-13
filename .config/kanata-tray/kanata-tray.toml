@@ -1,0 +1,22 @@
+'$schema' = 'https://raw.githubusercontent.com/rszyma/kanata-tray/main/doc/config_schema.json'
+
+[general]
+allow_concurrent_presets = false
+
+[defaults]
+kanata_executable = '' # if empty or omitted, system $PATH will be searched.
+kanata_config = ''     # if empty or not omitted, kanata default config locations will be used.
+tcp_port = 5829        # if not specified, defaults to 5829
+
+[defaults.layer_icons]
+# mouse = 'mouse.png'
+# qwerty = 'qwerty.ico'
+# '*' = 'other_layers.ico'
+
+
+[presets.'main cfg']
+kanata_config = '~/.config/kanata/kanata.kbd'
+autorun = true
+# kanata_executable = ''
+# layer_icons = {  }
+# tcp_port = 1234
