@@ -40,10 +40,7 @@ case "$RESP" in
 		exit 1
 esac
 
-if command -v pbcopy &> /dev/null ; then
-    COPY_CMD="pbcopy"
-else
-    COPY_CMD="xsel"
-fi
+COPY_CMD="cb"
+
 
 echo "$RETURN_VALUE" | eval "$COPY_CMD"

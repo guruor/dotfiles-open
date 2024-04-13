@@ -5,7 +5,7 @@
     ba = branch -a --sort=-committerdate
     bf = !git branch --color=always --sort=-committerdate -vv | grep -v '/HEAD\\s'  | fzf --ansi | sed 's/^..//' | awk '{print $1}' | sed "s#^remotes/[^/]*/##"
     bfd = !git bf | xargs git branch -D
-    bfc = !git bf | pbcopy
+    bfc = !git bf | cb
     bccib = "!zsh -c \"source $HOME/.config/zsh/.zshrc; create_git_branches $1 stage uat master pre-prod;\""
     c = commit -m
     ca = commit -am
@@ -37,7 +37,7 @@
     l1 = log --all --date=short --color=always --format='%C(green)%ad %C(auto)%h %C(blue)%<(15,trunc)%an %C(auto)%<(65,trunc)%s%d%C(reset)'
     # Pick commits from log with fzf
     logf = "!f() { git l1 \"${1:-.}\" | fzf --ansi --multi | cut -d' ' -f2; }; f"
-    logfc = "!git logf | pbcopy"
+    logfc = "!git logf | cb"
     # Searches a change in commit history of the branch
     search = "!f() { git log -S \"$1\"; }; f"
     # Cherry pick selected commit with fzf

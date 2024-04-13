@@ -99,13 +99,11 @@ cmd slink %{{
 }}
 
 cmd yank_name &{{
-	echo -n $(basename $f) | pbcopy
-	# echo -n $(basename $f) | xclip -selection clipboard
+	echo $(basename $f) | cb
 }}
 
 cmd yank_path &{{
-	echo -n $f | pbcopy
-	# echo -n $f | xclip -selection clipboard
+	echo $f | cb
 }}
 
 cmd paste %{{
