@@ -1,0 +1,160 @@
+#!/bin/bash
+
+function get_plist_file_path() {
+        local package_name="$1"
+        local plist_directory="$HOME/.config/$program_name"
+        # Ensure the directory exists
+        mkdir -p "$plist_directory"
+        echo "$plist_directory/$package_name.plist"
+}
+
+# Function to create plist file
+function create_plist() {
+        local package_name="$1"
+        local program_name="$2"
+        local stdout_log="/tmp/${program_name}.out.log"
+        local stderr_log="/tmp/${program_name}.err.log"
+        local path_value=$PATH
+        local plist_file
+        plist_file=$(get_plist_file_path "${package_name}")
+        # Write the plist content to a file
+        cat <<EOF >"$plist_file"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>$package_name</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>sudo</string>
+        <string>/Users/$(whoami)/.local/bin/$program_name</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>$path_value</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+        <key>Crashed</key>
+        <true/>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>$stdout_log</string>
+    <key>StandardErrorPath</key>
+    <string>$stderr_log</string>
+    <key>ProcessType</key>
+    <string>Interactive</string>
+    <key>Nice</key>
+    <integer>-20</integer>
+</dict>
+</plist>
+EOF
+
+        # Validate if plist file is created successfully
+        if [ ! -f "$plist_file" ]; then
+                echo "Failed to create plist file." >&2
+                exit 1
+        fi
+
+        echo "Generated plist file: $plist_file" >&2
+        # Set permissions for plist file
+        chmod 644 "$plist_file"
+}
+
+# Function to prompt user for consent
+function prompt_user_consent() {
+        read -rep $'\nThis script will require the "sudo" permission for "kanata" to allow keyboard input capture. \nAre you sure you want to proceed? [Y/n] ' response
+        case "$response" in
+        [yY][eE][sS] | [yY] | "") ;;
+        *)
+                echo "Aborted." >&2
+                exit 0
+                ;;
+        esac
+}
+
+# Function to grant sudo access to kanata if not already granted
+function grant_access_to_kanata() {
+        # Check if sudoers files already exist
+        if [[ -e /etc/sudoers.d/kanata && -e /etc/sudoers.d/kanata-tray ]]; then
+                echo "Sudo access for kanata and tray is already granted."
+                return
+        fi
+
+        # Prompt user for consent
+        prompt_user_consent
+
+        # Set sudoers configuration
+        echo "$(whoami) ALL=(ALL) NOPASSWD: $(which kanata)" | sudo tee /etc/sudoers.d/kanata
+        echo "$(whoami) ALL=(ALL) NOPASSWD: $(which kanata-tray)" | sudo tee /etc/sudoers.d/kanata-tray
+}
+
+# Function to start the service
+function start_service() {
+        local package_name="$1"
+
+        # Check if the service is already loaded or running
+        if launchctl list | grep -q "$package_name"; then
+                echo "Service $package_name is already loaded or running." >&2
+                exit 1
+        fi
+
+        # Load and start the service
+        plist_file=$(get_plist_file_path "${package_name}")
+        launchctl load -w "$plist_file"
+        launchctl start "$package_name"
+}
+
+# Function to stop the service
+function stop_service() {
+        local package_name="$1"
+
+        # Check if the service is loaded or running
+        if ! launchctl list | grep -q "$package_name"; then
+                echo "Service $package_name is not loaded or running." >&2
+                exit 1
+        fi
+
+        # Unload the service
+        plist_file=$(get_plist_file_path "${package_name}")
+        launchctl unload -w "$plist_file"
+}
+
+# Function to display usage help
+function usage() {
+        echo "Usage: $0 [--start | --stop]"
+        echo "Options:"
+        echo "  --start    Start the service"
+        echo "  --stop     Stop the service"
+        exit 1
+}
+
+# Main function
+function main() {
+        local package_name="com.rszyma.kanata-tray"
+        local program_name
+        program_name=$(echo "$package_name" | cut -d. -f3)
+
+        case "$1" in
+        --start)
+                create_plist "$package_name" "$program_name"
+                grant_access_to_kanata
+                start_service "$package_name"
+                ;;
+        --stop)
+                stop_service "$package_name"
+                ;;
+        *)
+                usage
+                ;;
+        esac
+}
+
+# Run the script
+main "$@"
