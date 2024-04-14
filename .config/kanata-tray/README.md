@@ -22,9 +22,8 @@ cp ./dist/kanata-tray ~/.local/bin
 ln -sf $HOME/.config/kanata-tray/kanata-tray.toml $HOME/Library/Application\ Support/kanata-tray/kanata-tray.toml
 ```
 
-### Running as service
+### Starting the service
+
 ```sh
-chmod 644 ~/.config/kanata-tray/kanata-tray.plist
-launchctl load ~/.config/kanata-tray/kanata-tray.plist
-launchctl start kanata-tray
+./mac-service --start
 ```
