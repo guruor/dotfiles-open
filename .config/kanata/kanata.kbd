@@ -4,6 +4,7 @@
 (defcfg
       process-unmapped-keys yes
       log-layer-changes no
+      linux-x11-repeat-delay-rate 300,50
 )
 
 ;; Only one defsrc is allowed.
