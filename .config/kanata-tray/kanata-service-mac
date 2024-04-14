@@ -3,6 +3,8 @@
 function get_plist_file_path() {
         local package_name="$1"
         local plist_directory="$HOME/.config/$program_name"
+        # To load the service on system start then the plist file should go to `LaunchDaemons`
+        # local plist_directory="/Library/LaunchDaemons"
         # Ensure the directory exists
         mkdir -p "$plist_directory"
         echo "$plist_directory/$package_name.plist"
