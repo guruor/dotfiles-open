@@ -3,9 +3,9 @@ parent: default
 
 matches:
   # UNIX shebangs
-  - trigger: ":#sh"
+  - trigger: "#sh"
     replace: "#!/usr/bin/env sh"
-  - trigger: ":#bash"
+  - trigger: "#bash"
     replace: "#!/usr/bin/env bash"
-  - trigger: ":#python3"
+  - trigger: "#python3"
     replace: "#!/usr/bin/env python3"
