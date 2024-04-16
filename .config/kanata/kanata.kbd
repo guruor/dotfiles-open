@@ -14,11 +14,12 @@
 ;; have the same number of keys as defsrc. Any keys not listed in defsrc will
 ;; be passed straight to the operating system.
 (defsrc
-  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
-  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
-  caps a    s    d    f    g    h    j    k    l    ;    '    ret
-  lsft z    x    c    v    b    n    m    ,    .    /    rsft
-  lctl lmet lalt           spc            ralt rmet rctl
+  esc     f1      f2      f3      f4      f5      f6      f7      f8      f9      f10       f11     f12
+  grv      1       2       3       4       5       6       7       8       9        0        -       =       brdn
+  tab      q       w       e       r       t       y       u       i       o        p        [       ]       \
+  caps     a       s       d       f       g       h       j       k       l        ;        '       ret
+  lsft     z       x       c       v       b       n       m       ,       .        /        rsft
+  lctl     lmet    lalt                    spc                     ralt    fn     rctl
 )
 
 (defvar
@@ -34,6 +35,7 @@
 
       ;; toggle layer aliases
       lay (layer-toggle layers)
+      fn (layer-toggle function)
 
       ;; tap-hold keys with letters for tap and layer change for hold
       grl (tap-hold-release 200 200 grv @lay)
@@ -50,28 +52,43 @@
 ;; The first layer defined is the layer that will be active by default when
 ;; kanata starts up. This layer is the standard QWERTY layout except for the
 ;; backtick/grave key (@grl) which is an alias for a tap-hold key.
+;; All keys => https://github.com/jtroo/kanata/blob/c748a01fa71c897cf9f3fe300b7e47a28ff06162/parser/src/keys/mod.rs#L252
+;;  "🎛" => OsCode::KEY_DASHBOARD,
+
 (deflayer qwerty
-  @grl    1    2    3    4    5    6    7    8    9    0    -    =    bspc
-  tab     q    w    e    r    t    y    u    i    o    p    [    ]    \
-  @caps   a    s    d    f    g    h    j    k    l    ;    '    ret
-  lsft    z    x    c    v    b    n    m    ,    .    /    rsft
-  lctl lmet lalt           spc            ralt rmet rctl
+  _       brdn    brup    🎛    apps    bldn    blup    prev     pp      next    mute    vold    volu
+  @grl       _       _     _      _       _       _       _       _       _       _       _       _      _
+  _          _       _     _      _       _       _       _       _       _       _       _       _      _
+  @caps      _       _     _      _       _       _       _       _       _       _       _       _
+  _          _       _     _      _       _       _       _       _       _       _       _
+  _          _       _                    _                      @fn      _       _
+)
+
+(deflayer function
+  _         f1      f2      f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
+  @grl      _       _       _     _     _     _     _     _     _     _     _     _     _
+  _         _       _       _     _     _     _     _     _     _     _     _     _     _
+  _         _       _       _     _     _     _     _     _     _     _     _     _
+  _         _       _       _     _     _     _     _     _     _     _     _
+  _         _       _                   _                 _     _     _
 )
 
 (deflayer layers
-  _    lrld @qwr @arr _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _
-  caps    _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _              _              _    _    _
+  _         _       _       _     _     _     _     _     _     _     _     _     _
+  _         lrld    @qwr    @arr  _     _     _     _     _     _     _     _     _     _
+  _         _       _       _     _     _     _     _     _     _     _     _     _     _
+  _         _       _       _     _     _     _     _     _     _     _     _     _
+  _         _       _       _     _     _     _     _     _     _     _     _
+  _         _       _                   _                 _     _     _
 )
 
 (deflayer arrows
-  @grl    f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  _
-  _    _    _    _    _    _    C-S-tab pgup up pgdn C-tab _  _    _
-  _    _    _    _    _    _    home left down rght end  _    _
-  _    _    _    _    _    _    _    _    C-w  _    _    _
-  _    _    _              _              _    _    _
+  _         _       _       _     _     _     _       _       _     _     _     _     _
+  @grl      _       _       _     _     _     _       _       _     _     _     _     _     _
+  _         _       _       _     _     _     _       _       _     _     _     _     _     _
+  _         _       _       _     _     _     left    down    up  rght    _     _     _
+  _         _       _       _     _     _     _       _       _     _     _     _
+  _         _       _                   _                     _     _     _
 )
 
 ;; Mouse is not supported yet on Macos
@@ -98,6 +115,8 @@
 ;; )
 ;;
 ;; (deflayer mouse
+
+;;   _       _    _    _    _    _    _    _    _    _    _    _    _
 ;;   @grl    @mwu @mwd @mwl @mwr _    _    _    _    _    @ma↑ _    _    _
 ;;   _    pgup bck  _    fwd  _    _    _    _    @ma← @ma↓ @ma→ _    _
 ;;   _    pgdn mlft _    mrgt mmid _    mbck mfwd _    @ms↑ _    _
