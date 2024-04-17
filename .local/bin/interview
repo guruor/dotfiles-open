@@ -103,19 +103,22 @@ urlencode() {
 create_google_doc() {
         local candidate_name="${1}"
         local folder_id="${GDRIVE_INTERVIEW_FOLDER_ID}" # Interview folder id on Google Drive
-        local google_doc_base_url="https://docs.google.com/document/u/0"
+        local google_doc_base_url="https://docs.google.com/document"
         local unique_doc_name urlencoded_doc_title
         unique_doc_name=$(get_unique_doc_name "${candidate_name}")
         urlencoded_doc_title=$(urlencode "${unique_doc_name}")
+        local users=(0)
 
-        local doc_url="${google_doc_base_url}/create?title=${urlencoded_doc_title}"
+        for user in "${users[@]}"; do
+          local google_doc_user_url="$google_doc_base_url/u/$user"
+          local doc_url="${google_doc_user_url}/create?title=${urlencoded_doc_title}"
+          if [[ "${folder_id}" ]]; then
+                  doc_url="${google_doc_user_url}/create?usp=drive_web&folder=${folder_id}&title=${urlencoded_doc_title}"
+          fi
 
-        if [[ "${folder_id}" ]]; then
-                doc_url="${google_doc_base_url}/create?usp=drive_web&folder=${folder_id}&title=${urlencoded_doc_title}"
-        fi
-
-        echo "${doc_url}"
-        open "${doc_url}"
+          echo "${doc_url}"
+          open "${doc_url}"
+        done
 }
 
 # Function to combine templates and create note file
