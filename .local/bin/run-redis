@@ -1,0 +1,116 @@
+#!/bin/bash
+
+# Function to set up Redis instances
+setup_redis_instances() {
+    local base_dir="$1"
+    local ports=("${@:2}")
+
+    rm -rf "$base_dir"
+    mkdir -p "$base_dir"
+
+    for port in "${ports[@]}"; do
+        local node_dir="$base_dir/$port"
+        mkdir -p "$node_dir"
+        cat <<EOF > "$node_dir/redis.conf"
+port $port
+appendonly yes
+EOF
+        if [ "$cluster_mode" = "c" ]; then
+            cat <<EOF >> "$node_dir/redis.conf"
+cluster-enabled yes
+cluster-config-file $node_dir/nodes.conf
+cluster-node-timeout 5000
+EOF
+        fi
+    done
+}
+
+# Function to start Redis instances
+start_redis_instances() {
+    local base_dir="$1"
+    local ports=("${@:2}")
+
+    if [ "$use_tmux" = "y" ]; then
+        tmux new-session -d -s "$session_name" -n "$session_name"
+        for port in "${ports[@]}"; do
+            local node_dir="$base_dir/$port"
+            tmux send-keys -t "$session_name" "redis-server $node_dir/redis.conf" Enter
+            if [ "$cluster_mode" = "m" ]; then
+                tmux split-window -h -t "$session_name"
+                tmux select-layout -t "$session_name" tiled
+            fi
+        done
+    else
+        for port in "${ports[@]}"; do
+            local node_dir="$base_dir/$port"
+            redis-server "$node_dir/redis.conf" &
+        done
+        wait
+    fi
+}
+
+# Function to initialize Redis cluster
+initialize_redis_cluster() {
+    if [ "$redis_mode" = "c" ]; then
+        if [ "$cluster_mode" = "m" ]; then
+            # Wait for Redis to start
+            sleep 1
+            local cmd="redis-cli --cluster create"
+            for port in "${ports[@]}"; do
+                cmd+=" 127.0.0.1:$port"
+            done
+            cmd+=" --cluster-replicas 1 --cluster-yes"
+            eval "$cmd"
+        fi
+    fi
+}
+
+# Main script
+
+echo "Do you want to use tmux for session management? (y/n)"
+read use_tmux
+
+echo "Do you want to run standalone Redis or in cluster mode? (s/c)"
+read redis_mode
+
+default_port=6379
+if [ "$redis_mode" = "s" ]; then
+    read -rp "Enter the port number [$default_port]: " port
+    ports=("${port:-$default_port}")
+elif [ "$redis_mode" = "c" ]; then
+    echo "Do you want to run single port Redis or multiple? (s/m)"
+    read -r cluster_mode
+    if [ "$cluster_mode" = "s" ]; then
+        read -rp "Enter the port number [$default_port]: " port
+        ports=("${port:-$default_port}")
+    elif [ "$cluster_mode" = "m" ]; then
+        default_start_port=7000
+        default_end_port=7006
+        read -rp "Enter the start port [$default_start_port]: " start
+        read -rp "Enter the end port [$default_end_port]: " end
+        ports=($(seq "${start:-$default_start_port}" 1 "${end:-$default_end_port}"))
+    else
+        echo "Invalid input. Please enter s or m."
+        exit 1
+    fi
+else
+    echo "Invalid input. Please enter s or c."
+    exit 1
+fi
+
+session_name="redis"
+base_dir="$HOME/$session_name"
+
+# Set up Redis instances
+setup_redis_instances "$base_dir" "${ports[@]}"
+
+# Start Redis instances
+start_redis_instances "$base_dir" "${ports[@]}"
+
+# Initialize Redis cluster
+initialize_redis_cluster
+
+# Optionally, attach tmux session
+if [ "$use_tmux" = "y" ]; then
+    tmux -2 attach-session -d -t "$session_name"
+fi
