@@ -73,7 +73,12 @@ read use_tmux
 echo "Do you want to run standalone Redis or in cluster mode? (s/c)"
 read redis_mode
 
-default_port=6379
+if [ -z "$REDIS_PORT" ]; then
+    default_port=6379
+else
+    default_port="$REDIS_PORT"
+fi
+
 if [ "$redis_mode" = "s" ]; then
     read -rp "Enter the port number [$default_port]: " port
     ports=("${port:-$default_port}")
@@ -84,8 +89,13 @@ elif [ "$redis_mode" = "c" ]; then
         read -rp "Enter the port number [$default_port]: " port
         ports=("${port:-$default_port}")
     elif [ "$cluster_mode" = "m" ]; then
-        default_start_port=7000
-        default_end_port=7006
+        default_start_port="$default_port"
+        read -rp "Enter the number of Redis instances: " instance_count
+        if (( instance_count < 5 )); then
+            echo "Minimum number of instances for a cluster is 5. Setting it to 5."
+            instance_count=5
+        fi
+        default_end_port=$((default_start_port + instance_count - 1))
         read -rp "Enter the start port [$default_start_port]: " start
         read -rp "Enter the end port [$default_end_port]: " end
         ports=($(seq "${start:-$default_start_port}" 1 "${end:-$default_end_port}"))
