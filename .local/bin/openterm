@@ -7,11 +7,12 @@
 usage() {
         echo "Usage: $0 [--title <title>] [--shell <shell>] [--cmd-str <command>] [--terminal <terminal>] [--debug]"
         echo "Options:"
-        echo "  --title <title>        Set the title for the terminal window"
-        echo "  --shell <shell>        Specify the shell to execute"
-        echo "  --cmd-str <command>    Specify the command to execute"
-        echo "  --terminal <terminal>  New window will be created in this terminal"
-        echo "  --debug                Enable debug mode and log output to a file"
+        echo "  --title <title>                 Set the title for the terminal window"
+        echo "  --shell <shell>                 Specify the shell to execute"
+        echo "  --cmd-str <command>             Specify the command to execute"
+        echo "  --working-directory <command>   Specify the default path for the terminal"
+        echo "  --terminal <terminal>           New window will be created in this terminal"
+        echo "  --debug                         Enable debug mode and log output to a file"
         exit 1
 }
 
@@ -20,6 +21,7 @@ TERMINAL="${TERMINAL:-kitty}"
 WIN_TITLE="New window"
 DEFAULT_SHELL="$SHELL"
 CMD_STR="$SHELL"
+WORKING_DIR="$HOME"
 DEBUG=false
 LOG_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/openterm"
 LOG_FILE="$LOG_DIR/openterm.log"
@@ -37,6 +39,10 @@ while [[ $# -gt 0 ]]; do
                 ;;
         --cmd-str)
                 CMD_STR="$2"
+                shift 2
+                ;;
+        --working-directory)
+                WORKING_DIR="$2"
                 shift 2
                 ;;
         --terminal)
@@ -76,7 +82,7 @@ fi
 case "$TERMINAL" in
 kitty)
         log_message "Starting kitty" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
-        kitty --single-instance --title "$WIN_TITLE" --working-directory "$HOME" -e "$DEFAULT_SHELL" -lc "$CMD_STR;" &
+        kitty --single-instance --title "$WIN_TITLE" --working-directory "$WORKING_DIR" -e "$DEFAULT_SHELL" -lc "$CMD_STR;" &
         ;;
 alacritty)
         log_message "Starting alacritty" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
@@ -85,11 +91,11 @@ alacritty)
         if [ -n "$window_exists" ]; then
                 # Alacritty window exists, so creating a window in the same session
                 log_message "Creating new alacritty to existing session" "window_exists: $window_exists"
-                alacritty msg create-window --title "$WIN_TITLE" --working-directory "$HOME" -e "$DEFAULT_SHELL" -lc "$CMD_STR;" &
+                alacritty msg create-window --title "$WIN_TITLE" --working-directory "$WORKING_DIR" -e "$DEFAULT_SHELL" -lc "$CMD_STR;" &
         else
                 # Alacritty window doesn't exist, creating a new session instance
                 log_message "Starting new alacritty session" "window_exists: $window_exists"
-                alacritty --title "$WIN_TITLE" --working-directory "$HOME" -e "$DEFAULT_SHELL" -lc "$CMD_STR;" &
+                alacritty --title "$WIN_TITLE" --working-directory "$WORKING_DIR" -e "$DEFAULT_SHELL" -lc "$CMD_STR;" &
         fi
         ;;
 wezterm)
@@ -99,11 +105,11 @@ wezterm)
         if [ -n "$window_exists" ]; then
                 # Wezterm window exists, so creating a window in the same session
                 log_message "Creating new wezterm to existing session" "window_exists: $window_exists"
-                wezterm cli spawn --cwd "$HOME" --new-window -- "$DEFAULT_SHELL" -lc "$CMD_STR;" &
+                wezterm cli spawn --cwd "$WORKING_DIR" --new-window -- "$DEFAULT_SHELL" -lc "$CMD_STR;" &
         else
                 # Wezterm window doesn't exist, creating a new session instance
                 log_message "Starting new wezterm session" "window_exists: $window_exists"
-                wezterm start --cwd "$HOME" -- "$DEFAULT_SHELL" -lc "$CMD_STR;" &
+                wezterm start --cwd "$WORKING_DIR" -- "$DEFAULT_SHELL" -lc "$CMD_STR;" &
         fi
         sleep 2
         # Getting the latest window ID
