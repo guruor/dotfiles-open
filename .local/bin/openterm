@@ -82,7 +82,7 @@ fi
 case "$TERMINAL" in
 kitty)
         log_message "Starting kitty" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
-        kitty --single-instance --title "$WIN_TITLE" --working-directory "$WORKING_DIR" -e "$DEFAULT_SHELL" -lc "$CMD_STR;" &
+        kitty --single-instance --title "$WIN_TITLE" --working-directory "$WORKING_DIR" -e "$DEFAULT_SHELL" -lc "$CMD_STR;"
         ;;
 alacritty)
         log_message "Starting alacritty" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
