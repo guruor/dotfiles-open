@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# Function to initialize PostgreSQL data directory and start server
+start_postgres_server() {
+  local db_name="$1"
+  local db_user="$2"
+  local db_password="$3"
+  local db_port="$4"  # Added argument for server port
+
+  if ! pg_ctl status | grep "no server running"; then
+    echo -e "\nPostgres server is already running. Stopping the server." >&2
+    pg_ctl stop
+  fi
+
+  # Start PostgreSQL server on specified port
+  export PGPORT="$db_port"
+  echo -e "\nStarting the server\n" >&2
+  pg_ctl start
+
+  # Create user only if it doesn't exist
+  if ! psql -t -U postgres -h localhost -c "SELECT rolname FROM pg_catalog.pg_roles WHERE rolname = '$db_user'" | grep -q "$db_user"; then
+    echo -e "\nCreating user '$db_user'..." >&2
+    psql -U postgres -h localhost -c "CREATE USER $db_user; ALTER USER $db_user WITH SUPERUSER;"
+  else
+    echo -e "\nUser '$db_user' already exists." >&2
+  fi
+
+  # Set PostgreSQL environment variables
+  export PGUSER="$db_user"
+  export PGPASSWORD="$db_password"
+  export PGDATABASE="$db_name"
+
+  # Create database
+  createdb "$db_name"
+
+  # Test connection
+  echo -e "\nRunning test query..." >&2
+  if ! psql -U "$db_user" -c "SELECT COUNT(*) FROM pg_catalog.pg_roles WHERE rolname = '$db_name'" >/dev/null; then
+      echo -e "\nError: Failed to connect to the database." >&2
+      exit 1
+  fi
+  echo -e "\nConnection successful. Test query executed." >&2
+}
+
+# Function to read PostgreSQL database details from user input or environment variables
+read_postgres_details() {
+  local default_db=${PGDATABASE:-postgres}
+  local default_user=${PGUSER:-postgres}
+  local default_password=${PGPASSWORD:-postgres}
+  local default_port=${PGPORT:-5432}
+
+  read -rp "Enter PostgreSQL database name [$default_db]: " db_name
+  db_name="${db_name:-$default_db}"
+
+  read -rp "Enter PostgreSQL username [$default_user]: " db_user
+  db_user="${db_user:-$default_user}"
+
+  read -rsp "Enter PostgreSQL password [$default_password]: " db_password
+  db_password="${db_password:-$default_password}"
+  echo >&2 # for newline after password input
+
+  read -rp "Enter PostgreSQL port [$default_port]: " db_port
+  db_port="${db_port:-$default_port}"
+
+  # Return the database details
+  echo "$db_name $db_user $db_password $db_port"
+}
+
+# Main script
+
+# Read PostgreSQL database details
+db_details=$(read_postgres_details)
+read db_name db_user db_password db_port <<< "$db_details"
+
+# Start PostgreSQL server
+start_postgres_server "$db_name" "$db_user" "$db_password" "$db_port"
