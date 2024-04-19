@@ -19,6 +19,18 @@ echo -e "Tmux session icon: ${session_icon}"
 echo -e "Tmux window name: ${window_name}"
 echo -e "Commands to run: ${cmd_list}"
 
+# Check if session exists
+if ! tmux has-session -t "${session_icon}" 2>/dev/null; then
+    # Create session if it doesn't exist
+    tmux new-session -d -s "${session_icon}"
+fi
+
+# Check if window exists in the session
+if ! tmux list-windows -t "${session_icon}" | grep -q "${window_name}" 2>/dev/null; then
+    # Create window if it doesn't exist
+    tmux new-window -t "${session_icon}" -n "${window_name}" "zsh"
+fi
+
 # -F Formats list-pages command output to specific format
 # -f Filter the output to specific format
 tmux_panes=$(tmux list-panes -a -F "#{session_name}:#{window_name}.#{pane_index},#{pane_tty}" -f "#{m:${session_icon}:${window_name},#{session_name}:#{window_name}}")
