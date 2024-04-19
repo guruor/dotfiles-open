@@ -368,7 +368,7 @@ require 'fzf-lua'.setup {
         -- default options are controlled by 'rg|grep_opts'
         -- cmd            = "rg --vimgrep",
         grep_opts      = "--binary-files=without-match --line-number --recursive --color=auto --perl-regexp",
-        rg_opts        = "--column --hidden --smart-case --no-heading --color=always --max-columns=512",
+        rg_opts        = "--column --line-number --hidden --smart-case --no-heading --color=always --max-columns=512",
         fzf_opts    = {
             ['--delimiter'] = "'[\\]:]'",
             ["--with-nth"]  = '2..',
