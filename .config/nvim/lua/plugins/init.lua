@@ -567,15 +567,13 @@ local default_plugins = {
     end,
   },
 
-  -- File navigator, uses LF file manager to navigate and change working directory
+  -- File navigator, uses terminal file manager to navigate and change working directory
   {
-    "lmburns/lf.nvim",
-    init = function()
-      vim.g.lf_netrw = 1
+    "rolv-apneseth/tfm.nvim",
+    opts = require("plugins.configs.misc").tfm,
+    config = function(_, opts)
+      require("tfm").setup(opts)
     end,
-    cmd = { "Lf" },
-    opts = require("plugins.configs.misc").lf,
-    dependencies = "toggleterm.nvim",
   },
   {
     "lukas-reineke/headlines.nvim",
