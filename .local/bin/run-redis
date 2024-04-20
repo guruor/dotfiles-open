@@ -2,20 +2,22 @@
 
 # Function to set up Redis instances
 setup_redis_instances() {
-    local base_dir="$1"
+    local config_dir="$1"
     local ports=("${@:2}")
 
-    rm -rf "$base_dir"
-    mkdir -p "$base_dir"
+    rm -rf "$config_dir"
+    mkdir -p "$config_dir"
 
     for port in "${ports[@]}"; do
-        local node_dir="$base_dir/$port"
+        local node_dir="$config_dir/$port"
         mkdir -p "$node_dir"
+        echo -e "\nCreating redis.conf in $node_dir" >&2
         cat <<EOF > "$node_dir/redis.conf"
 port $port
 appendonly yes
 EOF
-        if [ "$cluster_mode" = "c" ]; then
+        if [ "$cluster_mode" = "m" ]; then
+            echo -e "\nAppending cluster info in redis.conf for $node_dir" >&2
             cat <<EOF >> "$node_dir/redis.conf"
 cluster-enabled yes
 cluster-config-file $node_dir/nodes.conf
@@ -27,100 +29,132 @@ EOF
 
 # Function to start Redis instances
 start_redis_instances() {
-    local base_dir="$1"
+    local config_dir="$1"
     local ports=("${@:2}")
 
-    if [ "$use_tmux" = "y" ]; then
-        tmux new-session -d -s "$session_name" -n "$session_name"
-        for port in "${ports[@]}"; do
-            local node_dir="$base_dir/$port"
-            tmux send-keys -t "$session_name" "redis-server $node_dir/redis.conf" Enter
-            if [ "$cluster_mode" = "m" ]; then
-                tmux split-window -h -t "$session_name"
-                tmux select-layout -t "$session_name" tiled
-            fi
-        done
-    else
-        for port in "${ports[@]}"; do
-            local node_dir="$base_dir/$port"
+    # Stop any existing Redis instances
+    pkill redis-server
+    sleep 3
+
+    for port in "${ports[@]}"; do
+        local node_dir="$config_dir/$port"
+
+        if [ "$run_in_background" = "y" ]; then
+            echo -e "\nRunning Redis in background on port $port...\n" >&2
+            redis-server "$node_dir/redis.conf" --daemonize yes
+        else
+            echo -e "\nRunning Redis in foreground on port $port...\n" >&2
             redis-server "$node_dir/redis.conf" &
-        done
-        wait
-    fi
+        fi
+
+        if [ "$cluster_mode" = "m" ]; then
+            sleep 1
+        fi
+    done
 }
 
 # Function to initialize Redis cluster
 initialize_redis_cluster() {
     if [ "$redis_mode" = "c" ]; then
         if [ "$cluster_mode" = "m" ]; then
-            # Wait for Redis to start
-            sleep 1
-            local cmd="redis-cli --cluster create"
+            # Wait for Redis instances to start
+            echo "Waiting for Redis instances to start..."
+            sleep 5
+
+            # Check if all nodes are ready
             for port in "${ports[@]}"; do
-                cmd+=" 127.0.0.1:$port"
+                if ! redis-cli -p "$port" ping &>/dev/null; then
+                    echo "Node 127.0.0.1:$port is not running or not responding. Aborting cluster creation."
+                    exit 1
+                fi
             done
-            cmd+=" --cluster-replicas 1 --cluster-yes"
-            eval "$cmd"
+
+            # Collect IP addresses and ports of all Redis instances
+            local redis_nodes=()
+            for port in "${ports[@]}"; do
+                redis_nodes+=("127.0.0.1:$port")
+            done
+
+            # Create the Redis cluster
+            redis-cli --cluster create "${redis_nodes[@]}" --cluster-replicas 1 --cluster-yes
         fi
     fi
 }
 
 # Main script
+config_dir="${REDIS_CONFIG_DIR:-$HOME/redis}"
+run_in_background=${REDIS_RUN_IN_BACKGROUND:-'y'}
+redis_mode=${REDIS_MODE:-'c'}
+cluster_mode=${REDIS_CLUSTER_MODE:-'m'}
+port=${REDIS_PORT:-6379}
+instance_count=${REDIS_INSTANCE_COUNT:-6}
 
-echo "Do you want to use tmux for session management? (y/n)"
-read use_tmux
+echo -e "\nRedis env variable values:" >&2
+echo -e "\nREDIS_CONFIG_DIR: ${REDIS_CONFIG_DIR}" >&2
+echo -e "\nREDIS_RUN_IN_BACKGROUND: ${REDIS_RUN_IN_BACKGROUND}" >&2
+echo -e "\nREDIS_MODE: ${REDIS_MODE}" >&2
+echo -e "\nREDIS_CLUSTER_MODE: ${REDIS_CLUSTER_MODE}" >&2
+echo -e "\nREDIS_PORT: ${REDIS_PORT}" >&2
+echo -e "\n" >&2
 
-echo "Do you want to run standalone Redis or in cluster mode? (s/c)"
-read redis_mode
+# Ask for user input if environment variables are not set
+if [ -z "$REDIS_CONFIG_DIR" ]; then
+    read -rp "Enter the configuration directory [$config_dir]: " input_config_dir
+    config_dir="${input_config_dir:-$config_dir}"
+fi
+
+if [ -z "$REDIS_RUN_IN_BACKGROUND" ]; then
+    read -rp "Do you want to run Redis instances in the background? (y/n): [$run_in_background]" input_run_in_background
+    run_in_background="${input_run_in_background:=$run_in_background}"
+fi
+
+if [ -z "$REDIS_MODE" ]; then
+    read -rp "Do you want to run standalone Redis or in cluster mode? (s/c): [$redis_mode]" input_redis_mode
+    redis_mode="${input_redis_mode:=$redis_mode}"
+fi
 
 if [ -z "$REDIS_PORT" ]; then
-    default_port=6379
-else
-    default_port="$REDIS_PORT"
+    read -rp "Enter the port number [$port]: " input_port
+    port="${input_port:-$port}"
 fi
 
-if [ "$redis_mode" = "s" ]; then
-    read -rp "Enter the port number [$default_port]: " port
-    ports=("${port:-$default_port}")
-elif [ "$redis_mode" = "c" ]; then
-    echo "Do you want to run single port Redis or multiple? (s/m)"
-    read -r cluster_mode
-    if [ "$cluster_mode" = "s" ]; then
-        read -rp "Enter the port number [$default_port]: " port
-        ports=("${port:-$default_port}")
-    elif [ "$cluster_mode" = "m" ]; then
-        default_start_port="$default_port"
-        read -rp "Enter the number of Redis instances: " instance_count
-        if (( instance_count < 5 )); then
-            echo "Minimum number of instances for a cluster is 5. Setting it to 5."
-            instance_count=5
-        fi
-        default_end_port=$((default_start_port + instance_count - 1))
-        read -rp "Enter the start port [$default_start_port]: " start
-        read -rp "Enter the end port [$default_end_port]: " end
-        ports=($(seq "${start:-$default_start_port}" 1 "${end:-$default_end_port}"))
-    else
-        echo "Invalid input. Please enter s or m."
-        exit 1
-    fi
-else
-    echo "Invalid input. Please enter s or c."
-    exit 1
+if [ "$redis_mode" = "c" ] && [ -z "$REDIS_CLUSTER_MODE" ]; then
+    read -rp "Do you want to run single port Redis or multiple? (s/m): [$cluster_mode]" input_cluster_mode
+    cluster_mode="${input_cluster_mode:-$cluster_mode}"
 fi
 
-session_name="redis"
-base_dir="$HOME/$session_name"
+ports=("${port}")
+if [ "$redis_mode" = "c" ] && [ "$cluster_mode" = "m" ]; then
+  if [ -z "$REDIS_INSTANCE_COUNT" ]; then
+      read -rp "Enter the number of Redis instances: [$instance_count]" input_instance_count
+      instance_count="${input_instance_count:-$instance_count}"
+  fi
 
-# Set up Redis instances
-setup_redis_instances "$base_dir" "${ports[@]}"
+  if (( instance_count < 6 )); then
+      echo -e "Minimum number of instances for a cluster is 6. Setting it to 6." >&2
+      instance_count=6
+  fi
+
+  echo -e "\nGenerating the port sequence..." >&2
+  end_port=$((${port} + instance_count - 1))
+  ports=($(seq "${port}" 1 "${end_port}"))
+fi
+
+echo -e "\nParameters used:" >&2
+echo -e "\nconfig_dir: ${config_dir}" >&2
+echo -e "\nrun_in_background: ${run_in_background}" >&2
+echo -e "\nredis_mode: ${redis_mode}" >&2
+echo -e "\ncluster_mode: ${cluster_mode}" >&2
+echo -e "\nport: ${port}" >&2
+echo -e "\ninstance_count: ${instance_count}" >&2
+echo -e "\nports: ${ports}" >&2
+echo -e "\n" >&2
+
+# Set up Redis instances if config_dir doesn't exist
+setup_redis_instances "$config_dir" "${ports[@]}"
 
 # Start Redis instances
-start_redis_instances "$base_dir" "${ports[@]}"
+start_redis_instances "$config_dir" "${ports[@]}"
 
 # Initialize Redis cluster
 initialize_redis_cluster
-
-# Optionally, attach tmux session
-if [ "$use_tmux" = "y" ]; then
-    tmux -2 attach-session -d -t "$session_name"
-fi
