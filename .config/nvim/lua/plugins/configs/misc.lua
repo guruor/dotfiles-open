@@ -15,16 +15,17 @@ M.tagbar = function()
   vim.g.tagbar_iconchars = { "↠", "↡" }
 end
 
-M.lf = {
-  default_action = "tabedit",
-  winblend = 5,
-  escape_quit = false,
-  border = vim.g.border_style,
-  highlights = {
-    Normal = { guibg = nil },
-    NormalFloat = { guibg = nil },
-    FloatBorder = { guibg = nil, guifg = nil },
-  },
+M.tfm = {
+  -- Possible choices: "ranger" | "nnn" | "lf" | "vifm" | "yazi" (default)
+  file_manager = "yazi",
+  replace_netrw = true,
+  ui = {
+    border = vim.g.border_style,
+    height = 0.95,
+    width = 0.95,
+    x = 0.5,
+    y = 0.5,
+  }
 }
 
 M.whitespace = function()

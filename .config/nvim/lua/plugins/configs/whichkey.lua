@@ -21,8 +21,8 @@ keys = {
     name = 'Leader mappings',
     ["_"] = { "<C-W>s", "Split below" },
     ["|"] = { "<C-W>v", "Split right" },
-    ["o"] = { ":Lf<CR>", "Open LF file explorer" },
-    ["O"] = { ":lua require('lf').start(vim.fn.getcwd())<CR>", "Open LF file explorer" },
+    ["o"] = { ":lua require('tfm').open()<CR>", "Open TFM in current directory" },
+    ["O"] = { ":lua require('tfm').open(vim.fn.getcwd())<CR>", "Open TFM in project root" },
     ["qq"] = { "<cmd>qa<cr>", "Quit all" },
 }
 wk.register(keys, { prefix = leader })

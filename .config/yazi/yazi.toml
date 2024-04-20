@@ -1,0 +1,10 @@
+# A TOML linter such as https://taplo.tamasfe.dev/ can use this schema to validate your config.
+# If you encounter any issues, please make an issue at https://github.com/yazi-rs/schemas.
+# Default config: https://github.com/sxyazi/yazi/blob/latest/yazi-config/preset/yazi.toml
+"$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
+
+[manager]
+ratio = [1, 3, 4]
+show_hidden = true
+sort_by = "modified"
+sort_reverse = true
