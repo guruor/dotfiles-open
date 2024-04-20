@@ -44,23 +44,45 @@ start_postgres_server() {
 
 # Function to read PostgreSQL database details from user input or environment variables
 read_postgres_details() {
-  local default_db=${PGDATABASE:-postgres}
-  local default_user=${PGUSER:-postgres}
-  local default_password=${PGPASSWORD:-postgres}
-  local default_port=${PGPORT:-5432}
+  local db_name=${PGDATABASE:-postgres}
+  local db_user=${PGUSER:-postgres}
+  local db_password=${PGPASSWORD:-postgres}
+  local db_port=${PGPORT:-5432}
 
-  read -rp "Enter PostgreSQL database name [$default_db]: " db_name
-  db_name="${db_name:-$default_db}"
+  echo -e "\nPostgres env variable values:" >&2
+  echo -e "\nPGDATABASE: ${PGDATABASE}" >&2
+  echo -e "\nPGUSER: ${PGUSER}" >&2
+  echo -e "\nPGPASSWORD: ${PGPASSWORD}" >&2
+  echo -e "\nPGPORT: ${PGPORT}" >&2
+  echo -e "\n" >&2
 
-  read -rp "Enter PostgreSQL username [$default_user]: " db_user
-  db_user="${db_user:-$default_user}"
+  if [ -z "$PGDATABASE" ]; then
+    read -rp "Enter PostgreSQL database name [$db_name]: " input_db_name
+    db_name="${input_db_name:-$db_name}"
+  fi
 
-  read -rsp "Enter PostgreSQL password [$default_password]: " db_password
-  db_password="${db_password:-$default_password}"
-  echo >&2 # for newline after password input
+  if [ -z "$PGUSER" ]; then
+    read -rp "Enter PostgreSQL username [$db_user]: " input_db_user
+    db_user="${input_db_user:-$db_user}"
+  fi
 
-  read -rp "Enter PostgreSQL port [$default_port]: " db_port
-  db_port="${db_port:-$default_port}"
+  if [ -z "$PGPASSWORD" ]; then
+    read -rsp "Enter PostgreSQL password [$db_password]: " input_db_password
+    db_password="${input_db_password:-$db_password}"
+    echo >&2 # for newline after password input
+  fi
+
+  if [ -z "$PGPORT" ]; then
+    read -rp "Enter PostgreSQL port [$db_port]: " input_db_port
+    db_port="${input_db_port:-$db_port}"
+  fi
+
+  echo -e "\nParameters used:" >&2
+  echo -e "\ndb_name: ${db_name}" >&2
+  echo -e "\ndb_user: ${db_user}" >&2
+  echo -e "\ndb_password: ${db_password}" >&2
+  echo -e "\ndb_port: ${db_port}" >&2
+  echo -e "\n" >&2
 
   # Return the database details
   echo "$db_name $db_user $db_password $db_port"
