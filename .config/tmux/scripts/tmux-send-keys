@@ -6,8 +6,16 @@ source "$HOME/.local/bin/tmux/tmux-common-functions"
 check_and_interrupt_pane() {
     local pane_index="$1"
     # Send Ctrl+C to interrupt the process
-    tmux send-keys -t "$pane_index" "C-c"
+    tmux send-keys -t "$pane_index" "C-c";
     sleep 0.2
+}
+
+# Function to sanitize the command and remove the trailing semicolon if present
+sanitize_command() {
+    local cmd="$1"
+    # Trim trailing semicolon if present
+    cmd="${cmd%;}"
+    echo "$cmd"
 }
 
 # tmux session name
@@ -36,7 +44,8 @@ fi
 # Check if window exists in the session
 if ! tmux list-windows -t "${session_icon}" | grep -q "${window_name}" 2>/dev/null; then
     # Create window if it doesn't exist
-    tmux new-window -t "${session_icon}" -n "${window_name}" "zsh"
+    tmux new-window -n  "${window_name}" -t "${session_icon}";
+    sleep 1
 fi
 
 # -F Formats list-pages command output to specific format
@@ -51,6 +60,6 @@ IFS=',' read pane_index pane_tty <<< "${tmux_panes}"
 check_and_interrupt_pane "$pane_index" "$pane_tty"
 
 for cmd in "${cmd_list[@]}"; do
-    tmux send-keys -t "${pane_index}" "$cmd" ENTER;
+    tmux send-keys -t "${pane_index}" "$(sanitize_command "$cmd")" ENTER;
     sleep 0.2
 done
