@@ -11,6 +11,20 @@ function kill_port() {
                         echo -e "\nKilling process $pid running at port ${PORT_NUMBER}..."
                         if [[ "$pid" ]]; then
                                 kill "$pid"
+                                sleep 0.2
+                                if ps -p $pid > /dev/null
+                                then
+                                   echo -e "\nProcess $pid is still running"
+                                   read -p "Do you want to force kill it? (y/n): " choice
+                                    case "$choice" in
+                                        y|Y)
+                                            kill -9 "$pid"
+                                            ;;
+                                        *)
+                                            echo -e "\nSkipping" >&2
+                                            ;;
+                                    esac
+                                fi
                         else
                                 echo -e "\nStopped."
                         fi
