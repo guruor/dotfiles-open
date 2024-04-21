@@ -13,12 +13,13 @@
 #/'   devfilemanager [options] [command] [arguments]
 #/'
 #/' Commands:
-#/'   create-dir          Create the local dev files directory for the current repo
-#/'   open                Open the local dev files directory in nvim
-#/'   openf               Provides option to switch to dev files of local project with fzf
-#/'   link <file_to_link> Link local dev files and folders to the code repo
+#/'   create-dir                  Create the local dev files directory for the current repo
+#/'   open                        Open the local dev files directory in nvim
+#/'   openf                       Provides option to switch to dev files of local project with fzf
+#/'   link <file_to_link>         Link local dev files and folders to the code repo
+#/'   unlink                      Unlink local dev files and folders from the code repo
 #/'   save-diff [patch_file_name] Save the current changes as a patch in local dev files patches directory
-#/'   remove_dir          Delete the local dev files directory
+#/'   remove_dir                  Delete the local dev files directory
 #/'
 #/' Options:
 #/'   -h, --help          Show this help message and exit
@@ -115,6 +116,64 @@ open() {
         cd "${dev_files_path}" || return
         nvim -u "${MYVIMRCLSP}" --listen "$HOME/.cache/nvim/sockets/nvim-$RANDOM.sock"
 }
+
+remove_symlinks() {
+    validate
+
+    # this method should be called from the repo directory
+    repo_path="$PWD"
+    repo_local_files_path=$(create_dir)
+    repo_local_files_path=$(readlink -f "$repo_local_files_path")
+
+    # Get the list of symlinked files in the project directory
+    symlinked_files=()
+    while IFS= read -r symlink_name; do
+        symlink_path=$(readlink -f "$symlink_name")
+        symlink_dir=$(dirname "$symlink_path")
+        # echo -e "symlink_dir: $symlink_dir\nrepo_local_files_path: $repo_local_files_path" >&2
+        if [[ "$symlink_dir" == "$repo_local_files_path" ]]; then
+            symlinked_files+=("$symlink_name")
+        fi
+    done < <(find "$repo_path" -maxdepth 1 -type l -exec sh -c 'echo "$(basename "$0")"' {} \;)
+
+    # Check if there are any symlinked files
+    if [ ${#symlinked_files[@]} -eq 0 ]; then
+        echo -e "\nNo symlinked files found in the project directory." >&2
+        return 0
+    fi
+
+    # List symlinked files and ask for confirmation before deletion
+    echo -e "\nThe following symlinked files will be removed:" >&2
+    printf '%s\n' "${symlinked_files[@]}"
+    read -p "Do you want to proceed? (y/n): " choice
+
+    case "$choice" in
+        y|Y)
+            # Remove symlinked files
+            for file in "${symlinked_files[@]}"; do
+                read -p "Do you want to remove $file? (y/n): " remove_choice
+                case "$remove_choice" in
+                    y|Y)
+                        rm "$repo_path/$file"
+                        ;;
+                    n|N)
+                        echo -e "\nSkipping $file." >&2
+                        ;;
+                    *)
+                        echo -e "\nInvalid choice. Skipping $file." >&2
+                        ;;
+                esac
+            done
+            ;;
+        n|N)
+            echo -e "\nOperation cancelled." >&2
+            ;;
+        *)
+            echo -e "\nInvalid choice. Operation cancelled." >&2
+            ;;
+    esac
+}
+
 
 # Function to link local dev files and folders to the code repo
 link() {
@@ -220,6 +279,10 @@ main() {
                 link)
                         shift
                         link "$1"
+                        ;;
+                unlink)
+                        shift
+                        remove_symlinks
                         ;;
                 save-diff)
                         shift
