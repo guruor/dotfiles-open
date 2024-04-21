@@ -187,7 +187,3 @@ export VALE_CONFIG_PATH="${HOME}/.config/vale/vale.ini"
 # Initialising golang version manager
 # Initializing gvm, reset GOBIN, GOROOT, and GOPATH
 # [ -f "$HOME/.gvm/scripts/gvm" ] && source "$HOME/.gvm/scripts/gvm"
-
-# Loads support for direnv to load .envrc defined in specific directory
-command -v direnv > /dev/null && eval "$(direnv hook zsh)"
-
