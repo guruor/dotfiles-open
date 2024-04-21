@@ -1,9 +1,13 @@
 unsetopt PROMPT_SP
 
+(( ${+commands[direnv]} )) && emulate zsh -c "$(direnv export zsh)"
+
 # Install antidote zsh plugin manager if not present
 if [[ ! -d "${ZDOTDIR:-$HOME}/.antidote" ]]; then
   git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-$HOME}/.antidote
 fi
+
+(( ${+commands[direnv]} )) && emulate zsh -c "$(direnv hook zsh)"
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
