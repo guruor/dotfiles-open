@@ -102,6 +102,17 @@ local lsp_plugins = {
       require("persistent-breakpoints").setup(opts)
     end,
   },
+  {
+    "andrewferrier/debugprint.nvim",
+    dependencies = {
+        "nvim-treesitter/nvim-treesitter" -- Needed to enable treesitter for NeoVim 0.8
+    },
+    -- Remove the following line to use development versions,
+    -- not just the formal releases
+    version = "*",
+    config = true,
+    keys = { "g?" },
+  }
 }
 
 local default_plugins = {
