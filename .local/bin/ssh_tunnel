@@ -1,0 +1,180 @@
+#!/bin/bash
+
+# Global variable to track the last used monitoring port
+last_used_monitoring_port=20000
+# Define SSH tunnel parameters
+SSH_LOGFILE="/tmp/ssh_tunnel.log"
+
+# Function to list hosts with prefix "tunnel-"
+list_tunnel_hosts() {
+    # Generate temporary SSH configuration file including the main and included files
+    temp_config=$(mktemp)
+    cat "$HOME/.ssh/config" > "$temp_config"
+    include_files=$(grep -E '^Include' "$HOME/.ssh/config" | awk '{print $2}')
+    for file in $include_files; do
+        cat "$HOME/.ssh/$file" >> "$temp_config"
+    done
+
+    # Filter out hosts starting with "tunnel-*" and include hosts starting with "tunnel-"
+    grep -E '^Host tunnel-' "$temp_config" | grep -Ev '^Host tunnel-\*' | awk '{print $2}'
+}
+
+# Function to find the next available monitoring port
+get_next_monitoring_port() {
+    local port="$1"
+    while ps aux | grep "[a]utossh.*-M $port" > /dev/null; do
+        echo -e "Port $port is already occupied" >&2
+        ((port++))
+    done
+    echo "$port"
+}
+
+establish_tunnel() {
+    local host="$1"
+
+    # Check if a tunnel for the specified host is already running
+    if pgrep -f "autossh.*$host" >/dev/null || pgrep -f "ssh.*$host" >/dev/null; then
+        echo -e "\nTunnel for $host is already running. Skipping...\n" >&2
+        return
+    fi
+
+    local monitoring_port
+    monitoring_port=$(get_next_monitoring_port "$last_used_monitoring_port")
+
+    echo -e "\nConnecting to $host with autossh on port $monitoring_port..." >&2
+    autossh -M "$monitoring_port" -f -N -T -E ${SSH_LOGFILE} "$host"
+    echo -e "Connected to $host" >&2
+
+    last_used_monitoring_port=$((monitoring_port + 1))
+}
+
+disconnect_tunnel() {
+    local host="$1"
+    echo -e "\nDisconnecting from $host..." >&2
+
+    # Find all ssh processes for the specified host
+    local ssh_pids=$(pgrep -f "^ssh.*$host")
+    local autossh_pids=$(pgrep -f "^autossh.*$host")
+
+    if [[ -z "$ssh_pids" ]] && [[ -z "$autossh_pids" ]]; then
+        echo -e "No SSH process found for $host." >&2
+        return
+    fi
+
+    # Kill all autossh processes
+    for autossh_pid in $autossh_pids; do
+        echo -e "Killing autossh process with PID $autossh_pid" >&2
+        kill "$autossh_pid"
+        echo -e "Autossh process with PID $autossh_pid killed." >&2
+    done
+
+    # Kill all ssh processes
+    for ssh_pid in $ssh_pids; do
+        echo -e "Killing SSH process with PID $ssh_pid" >&2
+        kill "$ssh_pid"
+        echo -e "SSH process with PID $ssh_pid killed." >&2
+    done
+}
+
+# Define function to verify tunnel connection for a port
+verify_port() {
+    local port="$1"
+    if wait4x tcp 127.0.0.1:"${port}" -t3s; then
+      echo -e "Connection established on port ${port}" >&2
+    else
+      echo -e "Error: Connection not established on port ${port}" >&2
+    fi
+}
+
+verify_tunnel() {
+    local host="$1"
+    # Use ssh command to query the remote server for forwarded ports
+    local forwarded_ports=$(ssh -G "$host" | awk '/^localforward / {print $2}')
+    # Verify connection for each forwarded port
+    for port in $forwarded_ports; do
+        verify_port "$port"
+    done
+}
+
+show_help() {
+    cat <<EOF
+Usage: $(basename "$0") [OPTIONS]
+
+Options:
+  -c, --connect [host]      Connect to the specified host. If no host is provided, connect to all hosts.
+  -d, --disconnect [host]   Disconnect from the specified host. If no host is provided, disconnect from all hosts.
+  -v, --validate [host]     Verify connection to the specified host. If no host is provided, verify all connections.
+  -l, --list                List all tunnel hosts
+  -h, --help                Show this help menu
+EOF
+}
+
+# Main function to connect/disconnect to SSH hosts, verify tunnels, or list hosts
+main() {
+    local action="$1"
+    shift
+    local tunnel_hosts=("$@")
+
+    case "$action" in
+        "-c"|"--connect")
+            if [ ${#tunnel_hosts[@]} -eq 0 ]; then
+                tunnel_hosts=($(list_tunnel_hosts))
+            fi
+            for ssh_host in "${tunnel_hosts[@]}"; do
+                establish_tunnel "$ssh_host"
+                verify_tunnel "$ssh_host"
+            done
+            ;;
+        "-d"|"--disconnect")
+            if [ ${#tunnel_hosts[@]} -eq 0 ]; then
+                tunnel_hosts=($(list_tunnel_hosts))
+            fi
+            for ssh_host in "${tunnel_hosts[@]}"; do
+                disconnect_tunnel "$ssh_host"
+            done
+            ;;
+        "-v"|"--validate")
+            if [ ${#tunnel_hosts[@]} -eq 0 ]; then
+                tunnel_hosts=($(list_tunnel_hosts))
+            fi
+            for ssh_host in "${tunnel_hosts[@]}"; do
+                verify_tunnel "$ssh_host"
+            done
+            ;;
+        "-l"|"--list")
+            list_tunnel_hosts
+            ;;
+        "-h"|"--help")
+            show_help
+            ;;
+        *)
+            echo "Invalid option: $action" >&2
+            show_help >&2
+            exit 1
+            ;;
+    esac
+}
+
+# Parse command-line options
+if [ $# -eq 0 ]; then
+    show_help
+    exit 0
+fi
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -c|--connect|-d|--disconnect|-v|--validate)
+            main "$1" "${@:2}"
+            exit 0
+            ;;
+        -l|--list|-h|--help)
+            main "$1"
+            exit 0
+            ;;
+        *)
+            echo "Invalid option: $1" >&2
+            show_help >&2
+            exit 1
+            ;;
+    esac
+done
