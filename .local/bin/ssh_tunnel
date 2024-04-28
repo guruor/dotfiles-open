@@ -24,7 +24,7 @@ get_next_monitoring_port() {
     local port="$1"
     while ps aux | grep "[a]utossh.*-M $port" > /dev/null; do
         echo -e "Port $port is already occupied" >&2
-        ((port++))
+        ((port+=2))
     done
     echo "$port"
 }
