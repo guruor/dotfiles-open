@@ -47,7 +47,7 @@ establish_tunnel() {
     sleep 2
     echo -e "Connected to $host" >&2
 
-    last_used_monitoring_port=$((monitoring_port + 1))
+    last_used_monitoring_port=$((monitoring_port + 2))
 }
 
 disconnect_tunnel() {
