@@ -33,7 +33,7 @@ establish_tunnel() {
     local host="$1"
 
     # Check if a tunnel for the specified host is already running
-    if pgrep -f "autossh.*$host" >/dev/null || pgrep -f "ssh.*$host" >/dev/null; then
+    if pgrep -f "^autossh.*$host" >/dev/null || pgrep -f "^(ssh|/usr/bin/ssh).*$host" >/dev/null; then
         echo -e "\nTunnel for $host is already running. Skipping...\n" >&2
         return
     fi
@@ -42,8 +42,11 @@ establish_tunnel() {
     monitoring_port=$(get_next_monitoring_port "$last_used_monitoring_port")
 
     echo -e "\nConnecting to $host with autossh on port $monitoring_port..." >&2
+    log_file="${SSH_LOGFILE}-${host}"
+    rm -f "${log_file}"
     # AUTOSSH_GATETIME=0 prevents autossh from exiting when connection fails
-    AUTOSSH_GATETIME=0 autossh -M "$monitoring_port" -f -N -T -E ${SSH_LOGFILE} "$host"
+    AUTOSSH_GATETIME=0 autossh -M "$monitoring_port" -f -N -T -E "${log_file}" "$host"
+    # ssh -vvv -f -N -T -E "${log_file}" "$host"
     sleep 2
     echo -e "Connected to $host" >&2
 
@@ -55,7 +58,7 @@ disconnect_tunnel() {
     echo -e "\nDisconnecting from $host..." >&2
 
     # Find all ssh processes for the specified host
-    local ssh_pids=$(pgrep -f "^/usr/bin/ssh .*$host")
+    local ssh_pids=$(pgrep -f "^(ssh|/usr/bin/ssh) .*$host")
     local autossh_pids=$(pgrep -f "^autossh.*$host")
 
     if [[ -z "$ssh_pids" ]] && [[ -z "$autossh_pids" ]]; then
