@@ -55,7 +55,7 @@ disconnect_tunnel() {
     echo -e "\nDisconnecting from $host..." >&2
 
     # Find all ssh processes for the specified host
-    local ssh_pids=$(pgrep -f "^ssh.*$host")
+    local ssh_pids=$(pgrep -f "^/usr/bin/ssh .*$host")
     local autossh_pids=$(pgrep -f "^autossh.*$host")
 
     if [[ -z "$ssh_pids" ]] && [[ -z "$autossh_pids" ]]; then
