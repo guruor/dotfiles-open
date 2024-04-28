@@ -3,7 +3,7 @@
 # Global variable to track the last used monitoring port
 last_used_monitoring_port=20000
 # Define SSH tunnel parameters
-SSH_LOGFILE="/tmp/ssh_tunnel.log"
+SSH_LOGFILE="${HOME}/.cache/ssh.log"
 
 # Function to list hosts with prefix "tunnel-"
 list_tunnel_hosts() {
@@ -42,7 +42,9 @@ establish_tunnel() {
     monitoring_port=$(get_next_monitoring_port "$last_used_monitoring_port")
 
     echo -e "\nConnecting to $host with autossh on port $monitoring_port..." >&2
-    autossh -M "$monitoring_port" -f -N -T -E ${SSH_LOGFILE} "$host"
+    # AUTOSSH_GATETIME=0 prevents autossh from exiting when connection fails
+    AUTOSSH_GATETIME=0 autossh -M "$monitoring_port" -f -N -T -E ${SSH_LOGFILE} "$host"
+    sleep 2
     echo -e "Connected to $host" >&2
 
     last_used_monitoring_port=$((monitoring_port + 1))
