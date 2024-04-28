@@ -81,7 +81,8 @@ disconnect_tunnel() {
 # Define function to verify tunnel connection for a port
 verify_port() {
     local port="$1"
-    if wait4x tcp 127.0.0.1:"${port}" -t3s; then
+    local retry=1
+    if wait4x tcp 127.0.0.1:"${port}" -t${retry}s; then
       echo -e "Connection established on port ${port}" >&2
     else
       echo -e "Error: Connection not established on port ${port}" >&2
