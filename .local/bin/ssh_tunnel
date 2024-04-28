@@ -90,12 +90,24 @@ verify_port() {
 
 verify_tunnel() {
     local host="$1"
+    local verify_all="${2:-false}"  # Default to false if flag not provided
+
     # Use ssh command to query the remote server for forwarded ports
     local forwarded_ports=$(ssh -G "$host" | awk '/^localforward / {print $2}')
-    # Verify connection for each forwarded port
-    for port in $forwarded_ports; do
-        verify_port "$port"
-    done
+
+    if [ "$verify_all" = true ]; then
+        # Verify connection for all forwarded ports
+        for port in $forwarded_ports; do
+            verify_port "$port"
+        done
+    else
+        # Verify connection for only the first forwarded port
+        if [ -n "$forwarded_ports" ]; then
+            verify_port "$(echo "$forwarded_ports" | head -n 1)"
+        else
+            echo "No forwarded ports found for $host." >&2
+        fi
+    fi
 }
 
 show_help() {
@@ -119,12 +131,13 @@ main() {
 
     case "$action" in
         "-c"|"--connect")
+            local verify_all=false
             if [ ${#tunnel_hosts[@]} -eq 0 ]; then
                 tunnel_hosts=($(list_tunnel_hosts))
             fi
             for ssh_host in "${tunnel_hosts[@]}"; do
                 establish_tunnel "$ssh_host"
-                verify_tunnel "$ssh_host"
+                verify_tunnel "$ssh_host" "$verify_all"
             done
             ;;
         "-d"|"--disconnect")
@@ -136,6 +149,7 @@ main() {
             done
             ;;
         "-v"|"--validate")
+            local verify_all=true
             if [ ${#tunnel_hosts[@]} -eq 0 ]; then
                 tunnel_hosts=($(list_tunnel_hosts))
             fi
