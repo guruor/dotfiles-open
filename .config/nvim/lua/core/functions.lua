@@ -42,18 +42,25 @@ end
 
 function GetDBUIConnectionName()
   -- dadbod-ui selected environment name
-  local env_name
-  local db_url = vim.b.db
+  local env_name = vim.b.dbui_db_key_name
+  local reversed_env_name = env_name:reverse()
+  local underscore_pos = string.find(reversed_env_name, "_")
+  if underscore_pos then
+    env_name = string.sub(env_name, 1, string.len(env_name) - underscore_pos)
+  end
 
-  if db_url then
-    local db_connections = vim.g.dbs
-    local decoded_db_url = vim.call("db#url#decode", db_url)
+  if not env_name then
+    local db_url = vim.b.db
+    if db_url then
+      local db_connections = GetDBUIConnectiondMap()
+      local decoded_db_url = vim.call("db#url#decode", db_url)
 
-    for _, conn in ipairs(db_connections) do
-      local decoded_conn_url = vim.call("db#url#decode", conn.url)
-      if decoded_conn_url == decoded_db_url then
-        env_name = conn.name
-        break
+      for _, conn in ipairs(db_connections) do
+        local decoded_conn_url = vim.call("db#url#decode", conn.url)
+        if decoded_conn_url == decoded_db_url then
+          env_name = conn.name
+          break
+        end
       end
     end
   end
@@ -111,6 +118,15 @@ function Scandir(directory)
     pfile:close()
   end
   return t
+end
+
+function SelectEnvironmentForFiletype()
+  local filetype_env_selector_functions = {
+    sql = ChooseDBUIConnection,
+    http = SelectRestNvimEnvironment,
+  }
+
+  return filetype_env_selector_functions[vim.bo.filetype]
 end
 
 function SelectRestNvimEnvironment()
@@ -174,7 +190,7 @@ function GetDBUIConnectiondMap()
   local connections_list = vim.call "db_ui#connections_list"
   local connection_map = {}
   for _, conn in pairs(connections_list) do
-    connection_map[conn.name] = conn
+    connection_map[string.lower(conn.name)] = conn
   end
 
   return connection_map
@@ -182,7 +198,7 @@ end
 
 function RefreshDBUIConnection(connectionName)
   local connection_map = GetDBUIConnectiondMap()
-  local conn = connection_map[connectionName]
+  local conn = connection_map[string.lower(connectionName)]
   if conn ~= nil then
     print("Preparing to connect with: " .. conn.name)
     vim.b.dbui_db_key_name = conn.name .. "_" .. conn.source
