@@ -1,0 +1,229 @@
+#!/bin/bash
+
+# Path to connections.yaml file
+connections_file_path="${DB_CONNECTIONS_FILEPATH:-$HOME}"
+connections_file_name="connections.yaml"
+
+# Create a temporary directory for decrypted files
+tmp_dir=$(mktemp -d)
+
+# Function to cleanup temporary files and directory
+cleanup() {
+        rm -rf "$tmp_dir"
+}
+trap cleanup EXIT
+
+# Function to print the connection string with asterisks for password
+print_connection_string() {
+        local connection_name="$1"
+        local connection_string="$2"
+        echo "$connection_name : ${connection_string//:*@/:****@}" >&2
+}
+
+urlencode() {
+        # Usage: urlencode "string"
+        local string="$1"
+        local strlen=${#string}
+        local encoded=""
+        local pos c o
+
+        for ((pos = 0; pos < strlen; pos++)); do
+                c=${string:$pos:1}
+                case "$c" in
+                [-_.~a-zA-Z0-9]) o="${c}" ;;
+                *) printf -v o '%%%02x' "'$c" ;;
+                esac
+                encoded+="${o}"
+        done
+
+        echo "${encoded}"
+}
+
+# Function to generate connection string for PostgreSQL
+generate_pg_connection_string() {
+        local host="$1"
+        local port="$2"
+        local dbname="$3"
+        local user="$4"
+        local password="$5"
+        echo "postgresql://$user:$password@$host:$port/$dbname"
+}
+
+# Function to generate connection string for Redis
+generate_redis_connection_string() {
+        local host="$1"
+        local port="$2"
+        local dbname="$3"
+        local is_cluster="$4"
+        if [[ "$is_cluster" == "true" ]]; then
+                echo "redis://$host:$port/0?c"
+        else
+                echo "redis://$host:$port/0"
+        fi
+}
+
+# Function to generate connection name
+generate_connection_name() {
+        local database_type="$1"
+        local env="$2"
+        local project="$3"
+
+        db_name="${database_type}"
+        [[ "${database_type}" == "postgres" ]] && db_name="pg"
+
+        local connection_name="$db_name${env}${project}"
+        echo "$connection_name"
+}
+
+choose_connection() {
+        # Prompt user to select a connection name
+        selected_connection=$(printf "%s\n" "${connection_names[@]}" | fzf --prompt="Select a connection: ")
+
+        # Find the index of selected connection name
+        selected_index=-1
+        for ((i = 0; i < ${#connection_names[@]}; i++)); do
+                if [[ "${connection_names[$i]}" == "$selected_connection" ]]; then
+                        selected_index=$i
+                        break
+                fi
+        done
+
+        if [[ $selected_index == -1 ]]; then
+                echo "No connection selected."
+                exit 1
+        fi
+
+        echo "${connection_names[$selected_index]}" "${connection_strings[$selected_index]}"
+}
+
+# Function to export environment variables for dadbod-ui, psql, pgcli, redis-cli
+export_connection_string() {
+        selected_connection_info=$(choose_connection)
+        read -r connection_name connection_url <<<"$selected_connection_info"
+        export DB_CONNECTION_NAME="${connection_name}"
+        export DB_CONNECTION_URL="${connection_url}"
+
+        echo -e "\nExporting: " >&2
+        echo -e $(print_connection_string "${DB_CONNECTION_NAME}" "${DB_CONNECTION_URL}")
+}
+
+open_dadbod_ui() {
+        db_path="${DADBOD_DB_QUERIES_PATH}/${DB_CONNECTION_NAME}"
+        if [[ ! -d "$db_path" ]]; then
+                echo -e "Creating directory: $db_path"
+                mkdir -p "$db_path"
+                ln -s "$DB_QUERIES_PATH/Common" "$db_path"
+                touch "$db_path/index.sql"
+        fi
+        cd "$db_path"
+        ssh_tunnel -c
+        nvim
+}
+
+open_psql() {
+        ssh_tunnel -c
+        # psql -Atx "${DB_CONNECTION_URL}"
+        psql "${DB_CONNECTION_URL}"
+}
+
+open_pgcli() {
+        ssh_tunnel -c
+        pgcli "${DB_CONNECTION_URL}"
+}
+
+# Function to check if the file is encrypted using SOPS
+is_encrypted() {
+        local file="$1"
+        sops --input-type yaml --decrypt "$file" &>/dev/null
+}
+
+get_connection_file() {
+        # Check if the connections file exists and is encrypted
+        if [[ -f "$connections_file_path/$connections_file_name" && $(is_encrypted "$connections_file_path/$connections_file_name" && echo "encrypted" || echo "not encrypted") == "encrypted" ]]; then
+                # File is encrypted
+                connections_file="$tmp_dir/decrypted_connections.yaml"
+                # Decrypt the connections.yaml file using sops
+                sops -d "${connections_file_path}/${connections_file_name}" >"${connections_file}"
+        else
+                connections_file="${connections_file_path}/${connections_file_name}"
+        fi
+
+        echo -e "${connections_file}"
+        echo -e "Reading connection details from ${connections_file}" >&2
+}
+
+prepare_connection_strings() {
+        connections_file="${1}"
+        # Extract database types from the YAML file
+        database_types=$(yq eval '.connections | keys | .[]' "$connections_file")
+
+        # Iterate over database types
+        for database_type in $database_types; do
+                # Extract projects for the current database type
+                projects=$(yq eval ".connections.$database_type | keys | .[]" "$connections_file")
+
+                # Iterate over projects
+                for project in $projects; do
+                        # Extract environments for the current project
+                        envs=$(yq eval ".connections.$database_type.$project | keys | .[]" "$connections_file")
+
+                        # Iterate over environments
+                        for env in $envs; do
+                                # Generate connection name
+                                connection_name=$(generate_connection_name "$database_type" "$env" "$project")
+                                connection_names+=("$connection_name")
+
+                                host=$(yq eval ".connections.$database_type.$project.$env.host" "$connections_file")
+                                port=$(yq eval ".connections.$database_type.$project.$env.port" "$connections_file")
+                                # Generate connection string
+                                if [[ "$database_type" == "redis" ]]; then
+                                        is_cluster=$(yq eval ".connections.$database_type.$project.$env.is_cluster" "$connections_file")
+                                        connection_strings+=("$(generate_redis_connection_string "$host" "$port" "$env" "$is_cluster")")
+                                else
+                                        dbname=$(yq eval ".connections.$database_type.$project.$env.dbname" "$connections_file")
+                                        user=$(yq eval ".connections.$database_type.$project.$env.user" "$connections_file")
+                                        password=$(yq eval ".connections.$database_type.$project.$env.password" "$connections_file")
+                                        password=$(urlencode "$password")
+                                        connection_strings+=("$(generate_pg_connection_string "$host" "$port" "$dbname" "$user" "$password")")
+                                fi
+                        done
+                done
+        done
+}
+
+# Initialize arrays to store connection names and connection strings
+connection_names=()
+connection_strings=()
+
+main() {
+        connections_file=$(get_connection_file)
+        prepare_connection_strings "${connections_file}"
+
+        for ((i = 0; i < ${#connection_names[@]}; i++)); do
+                print_connection_string "${connection_names[$i]}" "${connection_strings[$i]}"
+        done
+
+        # Exporting required parameters for the DB
+        export_connection_string
+
+        # Choosing the application client to handle the db operations
+        case "$1" in
+        --dbui)
+                open_dadbod_ui
+                ;;
+        --psql)
+                open_psql
+                ;;
+        # --pgcli)
+        #     open_pgcli
+        #     ;;
+        # --redis-cli)
+        #     open_redis_cli
+        #     ;;
+        *)
+                open_dadbod_ui
+                ;;
+        esac
+}
+
+main "$@"
