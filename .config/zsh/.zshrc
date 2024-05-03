@@ -46,8 +46,6 @@ autoload -Uz vcs_info
 # autoload -Uz async && async
 setopt prompt_subst
 
-export PYENV_VIRTUALENV_DISABLE_PROMPT=1
-
 setopt autocd		# Automatically cd into typed directory.
 stty stop undef <$TTY >$TTY     # Disable ctrl-s to freeze terminal.
 setopt interactive_comments
@@ -76,16 +74,6 @@ setopt HIST_IGNORE_ALL_DUPS
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc"
-
-# Loading iterm profile
-export DARK_MODE_FLAG="$HOME/.cache/dark-mode.off"
-if [[ -f $DARK_MODE_FLAG ]]; then
-    iterm_profile="gruvbox-light"
-else
-    iterm_profile="gruvbox-dark"
-fi
-switch_iterm2_profile $iterm_profile
-export ITERM_PROFILE=$iterm_profile
 
 
 # Basic auto/tab complete:
@@ -212,17 +200,6 @@ bindkey -Mvicmd "\e" escape-clear
 # We are using evalcache to cache eval operations
 # Make sure to trigger `_evalcache_clear` if cache needs to be cleared
 
-unameOut="$(uname -s)"
-case "${unameOut}" in
-    Linux*)     machine=Linux;;
-    Darwin*)    machine=Mac;;
-    CYGWIN*)    machine=Cygwin;;
-    MINGW*)     machine=MinGw;;
-    *)          machine="UNKNOWN:${unameOut}"
-esac
-
-export MACHINE=$machine
-
 # if [[ ${machine} == "Linux" ]]; then
 # 	if $(pacman -Qs libxft-bgra >/dev/null 2>&1); then
 # 		# Start graphical server on user's current tty if not already running.
@@ -255,23 +232,13 @@ if [[ $MACHINE == "Mac" ]]; then
     export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:${PATH}"
     export MANPATH="$(brew --prefix)/opt/coreutils/libexec/gnuman:${MANPATH}"
 
-    export PATH="$(brew --prefix)/opt/postgresql@12/bin:$PATH"
-
-    # Rust Cargo stuff
-    export CARGO_HOME="$HOME/.cargo"
+    # Appending brew binaries path at end to prioritize other binaries like asdf binaries
+    export PATH="$PATH:$(brew --prefix)/bin"
 fi
 
-export PATH="$PATH:${CARGO_HOME}/bin"
 [ -f "${CARGO_HOME}/env" ] && source "${CARGO_HOME}/env"
 
-# Adds Rancher Desktop to path, setting it after brew setup to avoid overriding docker binary path by brew
-export PATH="$HOME/.rd/bin:$PATH"
-
-# Initializing pyev, used by zsh-pyenv-lazy
-export ZSH_PYENV_LAZY_VIRTUALENV=true
-
 _evalcache zoxide init zsh
-# _evalcache pyenv init -
 # _evalcache starship init zsh
 
 # Trigger asl logs cleaning, since it slows down shell on macos
