@@ -571,11 +571,7 @@ local default_plugins = {
       },
       { "kristijanhusak/vim-dadbod-completion", ft = "sql" },
     },
-    config = function()
-      if utils.file_exists(vim.fn.expand "$HOME" .. "/.config/nvim/lua/Private/plugins/configs/dadbod.lua") then
-        require("Private/plugins/configs/dadbod").setup()
-      end
-    end,
+    config = require("plugins.configs.dadbod").setup()
   },
 
   -- File navigator, uses terminal file manager to navigate and change working directory
