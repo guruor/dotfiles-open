@@ -143,13 +143,13 @@ autocmd({ "BufRead", "BufNewFile" }, {
 
 --------------- Dadbod sql -----------------
 -- Auto detect dadbod connection for the file
-autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = vim.fn.expand "$DB_QUERIES_PATH" .. "/**/*.sql",
-  callback = function()
-    ChooseDBUIConnectionOptional()
-  end,
-  group = augroup("Dadbod sql", { clear = true }),
-})
+-- autocmd({ "BufRead", "BufNewFile" }, {
+--   pattern = vim.fn.expand "$DB_QUERIES_PATH" .. "/**/*.sql",
+--   callback = function()
+--     ChooseDBUIConnectionOptional()
+--   end,
+--   group = augroup("Dadbod sql", { clear = true }),
+-- })
 
 
 --------------- Rest nvim -----------------
