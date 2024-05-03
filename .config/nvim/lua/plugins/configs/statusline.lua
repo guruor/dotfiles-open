@@ -26,13 +26,9 @@ require('lualine').setup {
                 on_click=function() vim.diagnostic.setqflist() end
             },
             {
-                GetDBUIConnectionName,
+                GetEnvironmentName,
                 icon = 'Σ',
-            },
-            {
-                GetRestNvimEnvName,
-                icon = 'Σ',
-                on_click=SelectRestNvimEnvironment
+                on_click=SelectEnvironmentForFiletype
             }
         },
     lualine_c = {},
