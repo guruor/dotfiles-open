@@ -1,0 +1,7 @@
+[global]
+hide_env_diff = true
+load_dotenv = false
+
+[whitelist]
+prefix = [ "~/Dropbox/DBQueries" ]
+
