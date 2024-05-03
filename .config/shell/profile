@@ -170,7 +170,7 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 # AUTOSSH variables
 export AUTOSSH_DEBUG=7
 export AUTOSSH_LOGLEVEL=7
-export AUTOSSH_POLL=120
+export AUTOSSH_POLL=30
 export AUTOSSH_LOGFILE="${HOME}/.cache/autossh.log"
 export AUTOSSH_GATETIME=0
 
