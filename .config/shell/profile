@@ -11,11 +11,6 @@ export XDG_CACHE_HOME="$HOME/.cache"
 #export XINITRC="${XDG_CONFIG_HOME:-$HOME/.config}/x11/xinitrc"
 #export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority" # This line will break some DMs.
 
-# Adds `~/.local/bin` to $PATH
-export PATH="$PATH:$(du "$HOME/.local/bin" | cut -f2 | paste -sd ':' -)"
-# Adds `NPM_CONFIG_PREFIX` to $PATH
-export PATH="$PATH:${XDG_DATA_HOME}/npm/bin"
-
 # ASDF related path
 export ASDF_CONFIG_FILE=${XDG_CONFIG_HOME}/asdf/asdfrc
 export ASDF_DATA_DIR=${XDG_DATA_HOME}/asdf
@@ -24,18 +19,15 @@ export ASDF_PYTHON_DEFAULT_PACKAGES_FILE=${XDG_CONFIG_HOME}/pip/default-python-p
 export ASDF_NPM_DEFAULT_PACKAGES_FILE=${XDG_CONFIG_HOME}/npm/default-npm-packages
 export ASDF_GEM_DEFAULT_PACKAGES_FILE=${XDG_CONFIG_HOME}/gem/default-gems
 
-# Adds asdf installed binaries to $PATH
-export PATH="$ASDF_DATA_DIR/bin:$ASDF_DATA_DIR/shims:$PATH"
-
 # Golang environment variables, default GOPATH is ~/go
 export GOPATH="${XDG_DATA_HOME:-$HOME/.local/share}/go"
 export GOBIN="$GOPATH/bin"
 export GOTESTS_TEMPLATE="testify"
-# Adds `GOBIN` to $PATH
-export PATH="$PATH:$GOBIN"
 
 export PYENV_ROOT="$HOME/.pyenv"
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+# Initializing pyev, used by zsh-pyenv-lazy
+export ZSH_PYENV_LAZY_VIRTUALENV=true
 
 # Default programs:
 export EDITOR="nvim"
@@ -162,11 +154,6 @@ export AWT_TOOLKIT="MToolkit wmname LG3D"	#May have to install wmname
 export _JAVA_AWT_WM_NONREPARENTING=1	# Fix for Java applications in dwm
 
 
-# Adds android command line tools binaries to path
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-
 # AUTOSSH variables
 export AUTOSSH_DEBUG=7
 export AUTOSSH_LOGLEVEL=7
@@ -187,3 +174,48 @@ export VALE_CONFIG_PATH="${HOME}/.config/vale/vale.ini"
 # Initialising golang version manager
 # Initializing gvm, reset GOBIN, GOROOT, and GOPATH
 # [ -f "$HOME/.gvm/scripts/gvm" ] && source "$HOME/.gvm/scripts/gvm"
+
+unameOut="$(uname -s)"
+case "${unameOut}" in
+    Linux*)     machine=Linux;;
+    Darwin*)    machine=Mac;;
+    CYGWIN*)    machine=Cygwin;;
+    MINGW*)     machine=MinGw;;
+    *)          machine="UNKNOWN:${unameOut}"
+esac
+
+export MACHINE=$machine
+
+# Loading iterm profile
+export DARK_MODE_FLAG="$HOME/.cache/dark-mode.off"
+
+###################
+# Setting up path variable, most of the binaries will be linked here
+# Few interactive shell dependent program binaries will be linked in .zshrc
+###################
+
+# Adds `~/.local/bin` to $PATH
+export PATH="$PATH:$(du "$HOME/.local/bin" | cut -f2 | paste -sd ':' -)"
+
+# Adds android command line tools binaries to path
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+
+# Adds Rancher Desktop to path, setting it after brew setup to avoid overriding docker binary path by brew
+export PATH="$HOME/.rd/bin:$PATH"
+
+
+# Adds `GOBIN` to $PATH
+export PATH="$PATH:$GOBIN"
+
+# Adds `NPM_CONFIG_PREFIX` to $PATH
+export PATH="$PATH:${XDG_DATA_HOME}/npm/bin"
+
+export PATH="$PATH:${CARGO_HOME}/bin"
+
+# Adds asdf installed binaries to $PATH
+export PATH="$ASDF_DATA_DIR/bin:$ASDF_DATA_DIR/shims:$PATH"
+
