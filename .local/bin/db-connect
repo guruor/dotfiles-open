@@ -131,6 +131,11 @@ open_pgcli() {
         pgcli "${DB_CONNECTION_URL}"
 }
 
+open_redis_cli() {
+        ssh_tunnel -c
+        redis-cli -u "${DB_CONNECTION_URL}"
+}
+
 # Function to check if the file is encrypted using SOPS
 is_encrypted() {
         local file="$1"
@@ -214,12 +219,12 @@ main() {
         --psql)
                 open_psql
                 ;;
-        # --pgcli)
-        #     open_pgcli
-        #     ;;
-        # --redis-cli)
-        #     open_redis_cli
-        #     ;;
+        --pgcli)
+                open_pgcli
+                ;;
+        --redis-cli)
+                open_redis_cli
+                ;;
         *)
                 open_dadbod_ui
                 ;;
