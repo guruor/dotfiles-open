@@ -7,6 +7,15 @@ start_postgres_server() {
   local db_password="$3"
   local db_port="$4"  # Added argument for server port
 
+  export PGDATA="$HOME/local/pgsql/data"
+  if [[ ! -d "$PGDATA" ]]; then
+    mkdir -p "${PGDATA}"
+    initdb -E utf8 --locale=en_US.UTF-8
+  fi
+
+  echo -e "\nCreating user $db_user id doesn't exist" >&2
+  createuser -s "$db_user"
+
   if ! pg_ctl status | grep "no server running"; then
     echo -e "\nPostgres server is already running. Stopping the server." >&2
     pg_ctl stop
@@ -17,20 +26,13 @@ start_postgres_server() {
   echo -e "\nStarting the server\n" >&2
   pg_ctl start
 
-  # Create user only if it doesn't exist
-  if ! psql -t -U postgres -h localhost -c "SELECT rolname FROM pg_catalog.pg_roles WHERE rolname = '$db_user'" | grep -q "$db_user"; then
-    echo -e "\nCreating user '$db_user'..." >&2
-    psql -U postgres -h localhost -c "CREATE USER $db_user; ALTER USER $db_user WITH SUPERUSER;"
-  else
-    echo -e "\nUser '$db_user' already exists." >&2
-  fi
-
   # Set PostgreSQL environment variables
   export PGUSER="$db_user"
   export PGPASSWORD="$db_password"
   export PGDATABASE="$db_name"
 
   # Create database
+  echo -e "\nCreating DB $db_name id doesn't exist" >&2
   createdb "$db_name"
 
   # Test connection
