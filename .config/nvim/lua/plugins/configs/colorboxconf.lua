@@ -56,6 +56,7 @@ require("colorbox").setup {
       vim = "tokyonight-storm",
       sh = shell_colorscheme,
       bash = shell_colorscheme,
+      zsh = shell_colorscheme,
     },
     empty = "gruvbox-material",
     -- fallback = "gruvbox-material", -- "github_dark"
