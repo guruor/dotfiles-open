@@ -58,13 +58,14 @@ initialize_redis_cluster() {
     if [ "$redis_mode" = "c" ]; then
         if [ "$cluster_mode" = "m" ]; then
             # Wait for Redis instances to start
-            echo "Waiting for Redis instances to start..."
+            echo "Waiting for Redis instances to start..." >&2
             sleep 5
 
             # Check if all nodes are ready
             for port in "${ports[@]}"; do
+                echo -e "Checking health of node: $port" >&2
                 if ! redis-cli -p "$port" ping &>/dev/null; then
-                    echo "Node 127.0.0.1:$port is not running or not responding. Aborting cluster creation."
+                    echo "Node 127.0.0.1:$port is not running or not responding. Aborting cluster creation." >&2
                     exit 1
                 fi
             done
@@ -76,7 +77,16 @@ initialize_redis_cluster() {
             done
 
             # Create the Redis cluster
-            redis-cli --cluster create "${redis_nodes[@]}" --cluster-replicas 1 --cluster-yes
+            if ! redis-cli --cluster create "${redis_nodes[@]}" --cluster-replicas 1 --cluster-yes; then
+                # Handling existing value error
+                # [ERR] Node 127.0.0.1:6379 is not empty. Either the node already knows other nodes (check with CLUSTER NODES) or contains some key in database 0.
+                for port in "${ports[@]}"; do
+                    echo -e "Flushing values at port $port" >&2
+                    redis-cli -h "localhost" -p ${port} FLUSHALL
+                done
+                redis-cli --cluster create "${redis_nodes[@]}" --cluster-replicas 1 --cluster-yes
+            fi
+            echo -e "Node creation successful" >&2
         fi
     fi
 }
