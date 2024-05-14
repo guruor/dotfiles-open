@@ -34,7 +34,7 @@ start_redis_instances() {
 
     # Stop any existing Redis instances
     pkill redis-server
-    sleep 3
+    sleep 1
 
     for port in "${ports[@]}"; do
         local node_dir="$config_dir/$port"
@@ -47,9 +47,9 @@ start_redis_instances() {
             redis-server "$node_dir/redis.conf" &
         fi
 
-        if [ "$cluster_mode" = "m" ]; then
-            sleep 1
-        fi
+        # if [ "$cluster_mode" = "m" ]; then
+        #     sleep 1
+        # fi
     done
 }
 
@@ -59,7 +59,7 @@ initialize_redis_cluster() {
         if [ "$cluster_mode" = "m" ]; then
             # Wait for Redis instances to start
             echo "Waiting for Redis instances to start..." >&2
-            sleep 5
+            sleep 2
 
             # Check if all nodes are ready
             for port in "${ports[@]}"; do
@@ -80,6 +80,7 @@ initialize_redis_cluster() {
             if ! redis-cli --cluster create "${redis_nodes[@]}" --cluster-replicas 1 --cluster-yes; then
                 # Handling existing value error
                 # [ERR] Node 127.0.0.1:6379 is not empty. Either the node already knows other nodes (check with CLUSTER NODES) or contains some key in database 0.
+                # [ERR] Not all 16384 slots are covered by nodes.
                 for port in "${ports[@]}"; do
                     echo -e "Flushing values at port $port" >&2
                     redis-cli -h "localhost" -p ${port} FLUSHALL
