@@ -48,6 +48,7 @@ require("colorbox").setup {
       typescript = "gruvbox-baby",
       go = go_colorscheme,
       gomod = go_colorscheme,
+      rust = "github_dark",
       dashboard = "github_dark",
       yaml = "everforest",
       toml = "everforest",
