@@ -129,6 +129,8 @@ export DADBOD_DB_QUERIES_PATH="$DB_QUERIES_PATH/db_ui_queries"
 
 # Rest-nvim http files
 export REST_NVIM_COLLECTION_PATH="$HOME/Dropbox/rest_nvim_collection/collections"
+export ATAC_MAIN_DIR="$HOME/Dropbox/ATAC/collections"
+export ATAC_KEY_BINDINGS="$HOME/.config/ATAC/key_bindings_templates/vim_key_bindings.toml"
 
 
 # Other program settings:
