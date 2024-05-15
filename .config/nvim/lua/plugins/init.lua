@@ -557,6 +557,17 @@ local default_plugins = {
     ft = "http",
     config = load_config('configs.rest'),
   },
+  {
+		"NachoNievaG/atac.nvim",
+		dependencies = { "akinsho/toggleterm.nvim" },
+		config = function()
+      local atacMainDir=os.getenv("ATAC_MAIN_DIR")
+			require("atac").setup({
+				dir = atacMainDir,
+			})
+		end,
+    cmd = { "Atac" }
+	},
 
   -- DB query executer
   {
