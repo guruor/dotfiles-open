@@ -4,9 +4,10 @@
 # https://www.youtube.com/watch?v=LkHjJlSgKZY
 #
 # git clone https://github.com/LazyVim/starter ~/.config/LazyVim
+# git clone https://github.com/2KAbhishek/nvim2k ~/.config/nvim2k
 
 function nvims() {
-  items=("default" "kickstart" "LazyVim" "NvChad" "AstroNvim")
+  items=("default" "kickstart" "LazyVim" "NvChad" "AstroNvim" "nvim2k")
   config=$(printf "%s\n" "${items[@]}" | fzf --prompt=" Neovim Config  " --height=~50% --layout=reverse --border --exit-0)
   if [[ -z $config ]]; then
     echo "Nothing selected"
