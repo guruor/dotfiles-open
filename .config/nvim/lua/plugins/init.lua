@@ -805,12 +805,12 @@ local default_plugins = {
     config = load_config('configs.spider'),
     event = { 'BufReadPre', 'BufNewFile' },
   },
-  {
-    'zbirenbaum/copilot.lua',
-    dependencies = { 'zbirenbaum/copilot-cmp' },
-    config = load_config('configs.copilot'),
-    event = 'InsertEnter',
-  },
+  -- {
+  --   'zbirenbaum/copilot.lua',
+  --   dependencies = { 'zbirenbaum/copilot-cmp' },
+  --   config = load_config('configs.copilot'),
+  --   event = 'InsertEnter',
+  -- },
   {
     "lambdalisue/suda.vim",
     cmd = { "SudaRead","SudaWrite" },
