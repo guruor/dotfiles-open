@@ -233,7 +233,7 @@ local default_plugins = {
   },
   {
     "akinsho/bufferline.nvim",
-    version = "*",
+    -- version = "*",
     dependencies = "nvim-tree/nvim-web-devicons",
     config = load_config('configs.bufferline'),
     event = { 'BufReadPre', 'BufNewFile' },
