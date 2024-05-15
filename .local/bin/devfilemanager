@@ -207,7 +207,7 @@ link() {
 
                 if [[ -f "${repo_local_files_path}/dockerfile_local_sym" ]]; then
                         rm -rf "${repo_path}/dockerfile_local" || true
-                        cp "${repo_local_files_path}/dockerfile_local_sym" "${repo_path}/dockerfile_local"
+                        cp "${repo_local_files_path}/dockerfile_local_sym" "${repo_path}/Dockerfile_local"
                 fi
         fi
 }
