@@ -37,8 +37,7 @@ M.default_on_attach_func = function(_)
   utils.map("n", "gr", "<Cmd>Lspsaga finder<CR>", { buffer = true })
 
   if not vim.g.should_enable_efm then
-    -- print("Enabling null-ls")
-    require "lsp.null-ls"
+    require "lsp.none-ls"
   end
 end
 
