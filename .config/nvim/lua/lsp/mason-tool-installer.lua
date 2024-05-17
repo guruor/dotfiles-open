@@ -33,7 +33,7 @@ local linters_and_formatters = {
     "ruff",
     "goimports", "staticcheck",  "json-to-struct", "gotests", "gomodifytags", "golines", "gofumpt", "impl", "revive",
     "jq", "fixjson",
-    "prettierd", "markdownlint", "cbfmt",
+    "biome", "dprint", "prettierd", "markdownlint", "cbfmt",
     "vale",
     "stylua", "luaformatter", "luacheck",
     "vint",
