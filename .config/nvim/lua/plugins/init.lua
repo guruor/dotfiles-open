@@ -59,9 +59,12 @@ local lsp_plugins = {
         cmd = { "MasonToolsInstall", "MasonToolsUpdate" },
       },
       "williamboman/mason-lspconfig.nvim",
-      { "jose-elias-alvarez/null-ls.nvim" },
+      {
+        "nvimtools/none-ls.nvim",
+        dependencies = { "nvimtools/none-ls-extras.nvim", },
+      },
       "b0o/schemastore.nvim",
-      -- { dir = "~/Workspace/vim-plugins/null-ls.nvim" },
+      -- { dir = "~/Workspace/vim-plugins/none-ls.nvim" },
     },
     config = function()
       require("lsp")

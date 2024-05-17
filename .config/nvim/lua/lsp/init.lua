@@ -16,9 +16,9 @@ lsp_utils.DiagnosticSignSetup()
 -- https://github.com/nvim-lua/kickstart.nvim/blob/master/init.lua
 require "lsp.mason-tool-installer"
 
--- Single flag to toggle efm-langserver and null-ls
+-- Single flag to toggle efm-langserver and none-ls
 -- Both serves the same purpose of providing support for external linters and formatters
--- As of now using null-ls as first priority because it provides support for range-formatting as well
+-- As of now using none-ls as first priority because it provides support for range-formatting as well
 vim.g.should_enable_efm = false
 
 -- Enable the following language servers
