@@ -2,7 +2,7 @@
 -- python = { "isort", "black" },
 
 -- Use a sub-list to run only the first available formatter
--- javascript = { { "prettierd", "prettier" } },
+-- javascript = { { "dprint", "prettierd", "prettier" } },
 
 -- TODO: Add support for cbfmt for neorg
 -- https://github.com/lukas-reineke/cbfmt/issues/37
@@ -17,20 +17,22 @@ return {
         return { "isort", "black" }
       end
     end,
-    json = { { "prettierd", "prettier" } },
-    markdown = { "prettierd", "cbfmt" },
-    vimwiki = { "prettierd", "cbfmt" },
-    javascript = { "prettierd" },
-    typescript = { "prettierd" },
+    -- As of now biome supports only js, ts and json
+    -- https://biomejs.dev/internals/language-support/
+    json = { { "biome", "dprint", "prettierd" } },
+    markdown = { "dprint", "prettierd", "cbfmt" },
+    vimwiki = { "dprint", "prettierd", "cbfmt" },
+    javascript = { "biome", "dprint", "prettierd" },
+    typescript = { "biome", "dprint", "prettierd" },
     rust = { "rustfmt" },
     sh = { "shfmt" },
     cmake = { "cmake_format" },
-    css = { "prettierd" },
-    html = { "prettierd" },
+    css = { "dprint", "prettierd" },
+    html = { "dprint", "prettierd" },
     sql = { "sql_formatter" },
     toml = { "taplo" },
     terraform = { "terraform_fmt" },
-    yaml = { "prettierd" },
+    yaml = { "dprint", "prettierd" },
     nix = { "alejandra", "nixpkgs-fmt", "nixfmt" },
     -- Run formatter on all filetypes
     ["*"] = { "trim_whitespace" },
