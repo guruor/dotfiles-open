@@ -165,6 +165,7 @@ wk.register(keys, { prefix = leader, mode = 'v' })
 keys = {
     L = {
         name = 'LSP',
+        ["l"] = { "<Cmd>lua require('lint').try_lint()<CR>", "Trigger linter" },
         ["gd"] = { "<Cmd>lua vim.lsp.buf.definition()<CR>", "Definition" },
         ["gD"] = { "<Cmd>lua vim.lsp.buf.declaration()<CR>", "Declaration" },
         ["gr"] = { "<cmd>lua vim.lsp.buf.references()<CR>", "References" },
@@ -195,6 +196,7 @@ keys = {
     l = {
         name = 'LSP',
         ["\\"] = { ":Lspsaga outline<CR>", "Toggle outline" },
+        ["l"] = { "<Cmd>lua require('lint').try_lint()<CR>", "Trigger linter" },
         ["gd"] = { "<Cmd>Lspsaga goto_definition()<CR>", "Definition" },
         ["gD"] = { "<Cmd>Lspsaga peek_definition()<CR>", "Peek definition" },
         ["gr"] = { "<Cmd>Lspsaga finder<CR>", "References" },
