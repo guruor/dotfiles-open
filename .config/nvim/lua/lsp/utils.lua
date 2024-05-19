@@ -37,7 +37,10 @@ M.default_on_attach_func = function(_)
   utils.map("n", "gr", "<Cmd>Lspsaga finder<CR>", { buffer = true })
 
   if not vim.g.should_enable_efm then
-    require "lsp.none-ls"
+    local lazy_plugins = require("lazy.core.config").plugins
+    if lazy_plugins["none-ls.nvim"] then
+      require "lsp.none-ls"
+    end
   end
 end
 

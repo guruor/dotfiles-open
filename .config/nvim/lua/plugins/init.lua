@@ -62,6 +62,7 @@ local lsp_plugins = {
       {
         "nvimtools/none-ls.nvim",
         dependencies = { "nvimtools/none-ls-extras.nvim", },
+        enabled = false
       },
       "b0o/schemastore.nvim",
       -- { dir = "~/Workspace/vim-plugins/none-ls.nvim" },
