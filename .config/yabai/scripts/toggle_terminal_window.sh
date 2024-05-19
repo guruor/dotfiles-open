@@ -4,7 +4,7 @@
 window_name="${1:=Pad}"
 command_str="${2}"
 TERMINAL="${TERMINAL:-kitty}"
-function toggle_window() {
+function toggle_window_before_scratchpad_feature() {
     # Checking if window is already open
     term_window=$(yabai -m query --windows | jq "map(select((.app | startswith(\"$TERMINAL\")) and .title == \"$window_name\"))[0] // empty");
     if [[ -z "$term_window" ]]; then
@@ -35,6 +35,11 @@ function toggle_window() {
             fi
         fi
     fi
+}
+
+function toggle_window() {
+  # yabai -m window --toggle "$window_name" || openterm --title "$window_name" --shell "$SHELL" --cmd-str "${command_str}; $SHELL";
+  toggle_window_before_scratchpad_feature
 }
 
 toggle_window
