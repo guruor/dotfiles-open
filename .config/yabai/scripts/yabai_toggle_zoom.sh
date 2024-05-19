@@ -38,6 +38,7 @@ save_zoom_level() {
 
 window_id=$(yabai -m query --windows --window | jq '."id"')
 is_floating=$(yabai -m query --windows --window | jq '."is-floating"')
+scratchpad=$(yabai -m query --windows --window | jq '."scratchpad"')
 
 # Set the maximum zoom level
 max_zoom_level=3
@@ -55,7 +56,7 @@ zoom_level_file="/tmp/yabai-${window_id}_zoom_level"
 # Load the current zoom level
 load_zoom_level
 
-if [[ "$is_floating" == "true" ]]; then
+if [ "$is_floating" == "true" ] || [ -z "$scratchpad" ]; then
     toggle_zoom
     echo -e "Toggling zoom for floating window to level $((current_zoom_level + 1))" >&2
     yabai -m window --grid "$final_grid"
