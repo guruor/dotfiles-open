@@ -69,11 +69,18 @@ yabai -m config mouse_action2               resize
 # off|fade|slide|dropdown
 yabai -m window_scratchpad_transition       off
 
-# ===== Rules ==================================
-# Floating window required SIP to be disabled
-# https://github.com/koekeishiya/yabai/issues/527
+# List of all supported terminals
+supported_terminals="^(kitty|WezTerm|wezterm-gui|alacritty|Alacritty)$"
 # grid=<rows>:<cols>:<start-x>:<start-y>:<width>:<height>
-yabai -m rule --add title="^(Notes|Pad|Bottom|Ncmpcpp)$" app="^(kitty|WezTerm|wezterm-gui|alacritty|Alacritty)$" manage=off sub-layer=above sticky=on grid="10:16:8:5:16:10"
+default_grid_size="10:16:8:5:16:10"
+# ===== Rules ==================================
+# Floating terminal windows
+cli_app_titles=("Notes" "Pad" "Bottom" "Ncmpcpp")
+# yabai -m rule --add title="^(Notes|Pad|Bottom|Ncmpcpp)$" app="${supported_terminals}" manage=off sub-layer=above sticky=on grid="${default_grid_size}"
+for app_title in "${cli_app_titles[@]}"; do
+  yabai -m rule --add app="${supported_terminals}" title="${app_title}" scratchpad="${app_title}" manage=off sub-layer=above sticky=on grid="${default_grid_size}"
+done
+
 yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
 yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
 yabai -m rule --add label="macfeh" app="^macfeh$" manage=off
@@ -96,9 +103,9 @@ yabai -m rule --add app="^Notification Centre$" manage=off
 yabai -m rule --add app="^VLC$" title!="^(|Fullscreen Controls)$" manage=off
 
 # Moves the apps to specific space
-yabai -m rule --add title="^(Code)$" app="^(kitty|WezTerm|wezterm-gui|alacritty|Alacritty)$" space=1
-yabai -m rule --add title="^(Servers)$" app="^(kitty|WezTerm|wezterm-gui|alacritty|Alacritty)$" space=2
-yabai -m rule --add title="^(Postman|Databases)$" app="^(kitty|WezTerm|wezterm-gui|alacritty|Alacritty)$" space=3
+yabai -m rule --add title="^(Code)$" app="${supported_terminals}" space=1
+yabai -m rule --add title="^(Servers)$" app="${supported_terminals}" space=2
+yabai -m rule --add title="^(Postman|Databases)$" app="${supported_terminals}" space=3
 yabai -m rule --add app="^(Brave Browser|Google Chrome|Firefox|Microsoft Edge|Safari)$" space=4
 yabai -m rule --add app="^(Slack|WhatsApp|Microsoft Teams|Telegram)$" space=5
 yabai -m rule --add app="^(Twitch Studio)$" space=8
