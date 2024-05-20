@@ -11,14 +11,39 @@ if [[ -z "${tmux_sessions}" ]]; then
     echo -e "No running tmux session found" >&2
     # Saving the session with tmux-resurrect
     if [[ -d "$XDG_CONFIG_HOME/tmux/plugins/tmux-resurrect" ]]; then
-        echo -e "Restoring the session with tmux-ressurect..." >&2
+        echo -e "Restoring the session with tmux-resurrect..." >&2
         tmux start-server
         tmux new-session -d;
-        echo -e "Waiting for session to load..." >&2
-        # Instead of waiting for random time we can utilise the `post-restore-all` hook from tmux-resurrect here
-        # https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/hooks.md
-        # sh "$XDG_CONFIG_HOME/tmux/plugins/tmux-resurrect/scripts/restore.sh"
-        sleep 10;
+        if [[ -f "$XDG_CONFIG_HOME/tmux/hooks/resurrect-hook-post-restore-all" ]]; then
+          # Path to the restore timestamp file
+          timestamp_file="${XDG_CACHE_HOME:-$HOME/.cache}/tmux/restore-timestamp"
+
+          # Initial timestamp before restoring
+          initial_timestamp=$(date +%s)
+
+          # Run the tmux-resurrect restore script if not configured to auto restore
+          # bash "$XDG_CONFIG_HOME/tmux/plugins/tmux-resurrect/scripts/restore.sh"
+
+          # Wait up to 10 seconds for the restore to complete
+          for i in {1..10}; do
+              if [[ -f "${timestamp_file}" ]]; then
+                  restore_timestamp=$(cat "${timestamp_file}")
+                  if (( restore_timestamp > initial_timestamp )); then
+                      echo "Session loaded successfully."
+                      break
+                  fi
+              fi
+              sleep 1
+          done
+
+          # Check if the session was not restored within the time limit
+          if (( i == 10 )); then
+              echo "Session did not load within 10 seconds."
+          fi
+        else
+          echo -e "Waiting for session to load..." >&2
+          sleep 10
+        fi
     fi
 fi
 

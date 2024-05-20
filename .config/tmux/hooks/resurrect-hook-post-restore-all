@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+timestamp_dir="$XDG_CACHE_HOME/tmux"
+mkdir -p "${timestamp_dir}"
+timestamp_file="$timestamp_dir/restore-timestamp"
+
+# Save current timestamp in the timestamp_file
+date +%s > "${timestamp_file}"
+
+echo "Tmux session restored at $(date)" >&2
