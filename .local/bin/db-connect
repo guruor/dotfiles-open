@@ -136,6 +136,10 @@ open_redis_cli() {
         redis-cli -u "${DB_CONNECTION_URL}"
 }
 
+yank_connection_string() {
+        echo "${DB_CONNECTION_URL}" | cb
+}
+
 # Function to check if the file is encrypted using SOPS
 is_encrypted() {
         local file="$1"
@@ -232,6 +236,9 @@ main() {
                 ;;
         --redis-cli)
                 open_redis_cli
+                ;;
+        --yank)
+                yank_connection_string
                 ;;
         *)
                 open_dadbod_ui
