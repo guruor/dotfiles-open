@@ -139,7 +139,14 @@ open_redis_cli() {
 # Function to check if the file is encrypted using SOPS
 is_encrypted() {
         local file="$1"
-        sops --input-type yaml --decrypt "$file" &>/dev/null
+        local error_msg
+        error_msg=$(sops --input-type yaml --decrypt "$file" 2>&1 >/dev/null)
+        if [[ -n "${error_msg}" ]]; then
+                echo -e "Error: The file '$file' is not encrypted or cannot be decrypted by sops." >&2
+                echo -e "\nDetails: \n\n$error_msg" >&2
+                return 1
+        fi
+        return 0
 }
 
 get_connection_file() {
@@ -148,6 +155,7 @@ get_connection_file() {
                 # File is encrypted
                 connections_file="$tmp_dir/decrypted_connections.yaml"
                 # Decrypt the connections.yaml file using sops
+                echo -e "Decrypting connection details from ${connections_file_name} to ${connections_file}" >&2
                 sops -d "${connections_file_path}/${connections_file_name}" >"${connections_file}"
         else
                 connections_file="${connections_file_path}/${connections_file_name}"
