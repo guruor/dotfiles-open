@@ -3,12 +3,22 @@ local utils = require "utils"
 local M = {}
 
 M.DiagnosticSignSetup = function()
-  local signs = { "Error", "Warn", "Hint", "Info" }
-  for i in pairs(signs) do
-    local hl = "DiagnosticSign" .. signs[i]
-    -- vim.fn.sign_define(hl, { text = "•", texthl = hl, linehl='', numhl = '' })
-    vim.fn.sign_define(hl, { text = "", texthl = "", linehl = "", numhl = hl })
-  end
+  vim.diagnostic.config {
+    signs = {
+      text = {
+        [vim.diagnostic.severity.ERROR] = "",
+        [vim.diagnostic.severity.WARN] = "",
+        [vim.diagnostic.severity.INFO] = "",
+        [vim.diagnostic.severity.HINT] = "",
+      },
+      numhl = {
+        [vim.diagnostic.severity.ERROR] = "ErrorMsg",
+        [vim.diagnostic.severity.WARN] = "WarningMsg",
+        [vim.diagnostic.severity.INFO] = "InfoMsg",
+        [vim.diagnostic.severity.HINT] = "HintMsg",
+      },
+    },
+  }
 end
 
 M.get_default_capabilities = function()
