@@ -814,7 +814,7 @@ local default_plugins = {
     "m4xshen/hardtime.nvim",
     dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" },
     cmd = { "Hardtime" },
-    opts = { max_count = 5 },
+    opts = { max_count = 5, disable_mouse = false },
     event = { 'BufReadPre', 'BufNewFile' },
   },
   {
