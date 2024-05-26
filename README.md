@@ -8,12 +8,12 @@ Inspired by [Luke Smith](https://lukesmith.xyz)'s dotfiles
 
 | App type             | Mac                                                                               | Linux                                               |
 | -------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------- |
-| Window Manager       | [Yabai](.config/yabai/)                                                           | [dwm](https://github.com/G0V1NDS/dmenu)             |
+| Window Manager       | [Yabai](.config/yabai/)                                                           | [dwm](https://github.com/guruor/dmenu)              |
 | KeyMapper            | [kanata](https://github.com/jtroo/kanata)/[Karabiner Elements](.config/karabiner) | [kanata](https://github.com/jtroo/kanata)/setxkbmap |
 | General key binder   | [skhd](.config/skhd)                                                              | sxhkd                                               |
-| Application launcher | [Raycast](https://www.raycast.com/)                                               | [dmenu](https://github.com/G0V1NDS/dmenu)           |
-| Primary terminal     | [kitty](.config/kitty)                                                            | [st](https://github.com/G0V1NDS/st)                 |
-| Statusbar            | -                                                                                 | [dwmblocks](https://github.com/G0V1NDS/dwmblocks)   |
+| Application launcher | [Raycast](https://www.raycast.com/)                                               | [dmenu](https://github.com/guruor/dmenu)            |
+| Primary terminal     | [kitty](.config/kitty)                                                            | [st](https://github.com/guruor/st)                  |
+| Statusbar            | -                                                                                 | [dwmblocks](https://github.com/guruor/dwmblocks)    |
 | Clipboard manager    | [Maccy](https://github.com/p0deje/Maccy)                                          | [clipmenu](https://github.com/cdown/clipmenu)       |
 | Notification daemon  | -                                                                                 | [dunst](.config/dunst)                              |
 
