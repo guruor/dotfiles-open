@@ -3,4 +3,4 @@
     url = https://github.com/wis/mpvSockets.git
 [submodule "Private Dotfiles"]
 	path = Private
-	url = https://github.com/G0V1NDS/dotfiles.git
+	url = https://github.com/guruor/dotfiles.git

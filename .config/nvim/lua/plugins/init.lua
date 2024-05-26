@@ -569,7 +569,7 @@ local default_plugins = {
   -- Rest client
   {
     -- "rest-nvim/rest.nvim",
-    "G0V1NDS/rest.nvim",
+    "guruor/rest.nvim",
     -- branch = "response_body_stored_updated",
     branch = "response_body_stored",
     ft = "http",
@@ -594,7 +594,7 @@ local default_plugins = {
     dependencies = {
       {
         -- "tpope/vim-dadbod",
-        "G0V1NDS/vim-dadbod",
+        "guruor/vim-dadbod",
         -- dir = "~/Workspace/vim-plugins/vim-dadbod",
         ft = "sql",
       },
