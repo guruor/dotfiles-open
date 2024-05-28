@@ -83,6 +83,7 @@ function prompt_user_consent() {
 
 # Function to grant sudo access to kanata if not already granted
 function grant_access_to_kanata() {
+        echo -e "\nChecking if sudo permission is granted for $package_name ..." >&2
         # Check if sudoers files already exist
         if [[ -e /etc/sudoers.d/kanata && -e /etc/sudoers.d/kanata-tray ]]; then
                 echo "Sudo access for kanata and tray is already granted."
@@ -95,12 +96,17 @@ function grant_access_to_kanata() {
         # Set sudoers configuration
         echo "$(whoami) ALL=(ALL) NOPASSWD: $(which kanata)" | sudo tee /etc/sudoers.d/kanata
         echo "$(whoami) ALL=(ALL) NOPASSWD: $(which kanata-tray)" | sudo tee /etc/sudoers.d/kanata-tray
+
+        # Activate the Karabiner VirtualHiDDevice Driver.
+        # https://github.com/pqrs-org/Karabiner-DriverKit-VirtualHIDDevice/blob/main/dist/Karabiner-DriverKit-VirtualHIDDevice-3.1.0.pkghttps://github.com/pqrs-org/Karabiner-DriverKit-VirtualHIDDevice/blob/main/dist/Karabiner-DriverKit-VirtualHIDDevice-3.1.0.pkghttps://github.com/pqrs-org/Karabiner-DriverKit-VirtualHIDDevice/blob/main/dist/Karabiner-DriverKit-VirtualHIDDevice-3.1.0.pkghttps://github.com/pqrs-org/Karabiner-DriverKit-VirtualHIDDevice/blob/main/dist/Karabiner-DriverKit-VirtualHIDDevice-3.1.0.pkg
+        /Applications/.Karabiner-VirtualHIDDevice-Manager.app/Contents/MacOS/Karabiner-VirtualHIDDevice-Manager activate
 }
 
 # Function to start the service
 function start_service() {
         local package_name="$1"
 
+        echo -e "\nStarting $package_name ..." >&2
         # Check if the service is already loaded or running
         if launchctl list | grep -q "$package_name"; then
                 echo "Service $package_name is already loaded or running." >&2
@@ -117,6 +123,7 @@ function start_service() {
 function stop_service() {
         local package_name="$1"
 
+        echo "Stopping $package_name ..." >&2
         # Check if the service is loaded or running
         if ! launchctl list | grep -q "$package_name"; then
                 echo "Service $package_name is not loaded or running." >&2
@@ -128,12 +135,29 @@ function stop_service() {
         launchctl unload -w "$plist_file"
 }
 
+function cleanup_service_trace() {
+        local package_name="$1"
+        echo -e "Stopping the service" >&2
+        stop_service "$package_name"
+
+        # Unload the service
+        plist_file=$(get_plist_file_path "${package_name}")
+        echo -e "Removing the plist file ${package_name}" >&2
+        rm -rf "$plist_file"
+
+        # Revoking sudoer access
+        echo -e "Revoking the sudo access for ${package_name}" >&2
+        sudo rm -rf /etc/sudoers.d/kanata
+        sudo rm -rf /etc/sudoers.d/kanata-tray
+}
+
 # Function to display usage help
 function usage() {
         echo "Usage: $0 [--start | --stop]"
         echo "Options:"
         echo "  --start    Start the service"
         echo "  --stop     Stop the service"
+        echo "  --cleanup  Cleans the traces of service"
         exit 1
 }
 
@@ -151,6 +175,9 @@ function main() {
                 ;;
         --stop)
                 stop_service "$package_name"
+                ;;
+        --cleanup)
+                cleanup_service_trace "$package_name"
                 ;;
         *)
                 usage
