@@ -25,5 +25,5 @@ ln -sf $HOME/.config/kanata-tray/kanata-tray.toml $HOME/Library/Application\ Sup
 ### Starting the service
 
 ```sh
-./mac-service --start
+./kanata-service-mac --start
 ```
