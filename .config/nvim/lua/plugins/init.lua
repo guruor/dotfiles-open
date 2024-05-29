@@ -654,7 +654,10 @@ local default_plugins = {
   {
     "windwp/nvim-ts-autotag",
     dependencies = "nvim-treesitter/nvim-treesitter",
-    ft = require("plugins.configs.treesitter").options.autotag.filetypes,
+    ft = {
+      "html", "javascript", "typescript", "javascriptreact", "typescriptreact", "svelte", "vue",
+      "tsx", "jsx", "rescript", "css", "lua", "xml", "php", "markdown",
+    },
     config = function ()
       require('nvim-ts-autotag').setup()
     end,
