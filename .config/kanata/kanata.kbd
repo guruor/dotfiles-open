@@ -46,6 +46,7 @@
 
       ;; tap for esc, hold for meh (lctl + lsft + lalt)
       caps (tap-hold-release $tap-time $hold-time esc @meh)
+      tab (tap-hold-release $tap-time $hold-time tab @hyper)
 
 )
 
@@ -58,7 +59,7 @@
 (deflayer qwerty
   _       brdn    brup    🎛    apps    bldn    blup    prev     pp      next    mute    vold    volu
   @grl       _       _     _      _       _       _       _       _       _       _       _       _      _
-  _          _       _     _      _       _       _       _       _       _       _       _       _      _
+  @tab       _       _     _      _       _       _       _       _       _       _       _       _      _
   @caps      _       _     _      _       _       _       _       _       _       _       _       _
   _          _       _     _      _       _       _       _       _       _       _       _
   _          _       _                    _                      @fn      _       _
