@@ -376,6 +376,7 @@ local default_plugins = {
     "echasnovski/mini.pairs",
     event = "VeryLazy",
     opts = {},
+    enabled = false,
     keys = {
       {
         "<leader>Tp",
@@ -391,6 +392,12 @@ local default_plugins = {
         desc = "Toggle auto pairs",
       },
     },
+  },
+  {
+    "altermo/ultimate-autopair.nvim",
+    event = { "InsertEnter", "CmdlineEnter" },
+    branch = "v0.6",
+    config = true,
   },
   {
     "L3MON4D3/LuaSnip",
