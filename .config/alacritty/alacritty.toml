@@ -14,17 +14,17 @@ option_as_alt = "Both"
 size = 14
 
 [font.normal]
-family = "Fisa Code"
+family = "JetBrainsMono Nerd Font"
 style = "Regular"
 
 [font.bold]
-family = "Fisa Code"
+family = "Maple Mono"
 style = "Bold"
 
 [font.italic]
-family = "Fisa Code"
+family = "Maple Mono"
 style = "Italic"
 
 [font.bold_italic]
-family = "Fisa Code"
+family = "Maple Mono"
 style = "Bold Italic"
