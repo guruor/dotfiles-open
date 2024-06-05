@@ -30,7 +30,6 @@ local language_servers = {
 }
 
 local linters_and_formatters = {
-    "ruff",
     "goimports", "staticcheck",  "json-to-struct", "gotests", "gomodifytags", "golines", "gofumpt", "impl", "revive",
     "jq", "fixjson",
     "oxlint", "biome", "dprint", "prettierd", "markdownlint", "cbfmt",
