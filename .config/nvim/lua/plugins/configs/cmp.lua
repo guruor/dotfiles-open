@@ -103,6 +103,8 @@ cmp.setup {
     { name = "luasnip", keyword_length = 2 },
     { name = "nvim_lua", keyword_length = 2 },
     { name = "neorg", keyword_length = 2 },
+    -- set group index to 0 to skip loading LuaLS completions
+    { name = "lazydev", group_index = 0 },
   }, {
     { name = "buffer" },
   }),
