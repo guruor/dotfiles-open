@@ -3,7 +3,25 @@ local utils = require "utils"
 local M = {}
 
 M.DiagnosticSignSetup = function()
+  local signs = { ERROR = "", WARN = "", HINT = "", INFO = "" }
+  -- local signs = { ERROR = "", WARN = "", HINT = "󰌵", INFO = "" }
   vim.diagnostic.config {
+    underline = true,
+    -- virtual_text = false,
+    virtual_text = {
+      prefix = function(diagnostic)
+        return signs[vim.diagnostic.severity[diagnostic.severity]]
+      end,
+    },
+    virtual_improved = {
+      current_line = "only",
+    },
+    float = {
+      show_header = true,
+      source = "always",
+      border = vim.g.border_style,
+      focusable = false,
+    },
     signs = {
       text = {
         [vim.diagnostic.severity.ERROR] = "",
