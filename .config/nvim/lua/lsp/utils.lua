@@ -6,9 +6,13 @@ M.DiagnosticSignSetup = function()
   local signs = { ERROR = "", WARN = "", HINT = "", INFO = "" }
   -- local signs = { ERROR = "", WARN = "", HINT = "󰌵", INFO = "" }
   vim.diagnostic.config {
-    underline = true,
+    underline = {
+      severity = { max = vim.diagnostic.severity.INFO },
+    },
     -- virtual_text = false,
     virtual_text = {
+      -- source = "always",
+      severity = { min = vim.diagnostic.severity.WARN },
       prefix = function(diagnostic)
         return signs[vim.diagnostic.severity[diagnostic.severity]]
       end,
