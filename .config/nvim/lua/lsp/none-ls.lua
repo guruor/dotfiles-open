@@ -40,12 +40,6 @@ null_ls.setup {
     --   extra_filetypes = { "vimwiki" },
     -- },
 
-    -- As of now it is not working with lspsaga hover_doc,
-    -- use the <leader><L><k> mapping for lsp hover
-    hover.dictionary.with {
-      extra_filetypes = { "vimwiki" },
-    },
-
     -- Git hunk actions to stage unstage changes
     -- code_actions.gitsigns,
 
