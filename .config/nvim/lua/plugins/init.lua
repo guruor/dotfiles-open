@@ -387,28 +387,6 @@ local default_plugins = {
     dependencies = "nvim-treesitter/nvim-treesitter",
   },
   {
-    -- autopairing of (){}[] etc
-    "echasnovski/mini.pairs",
-    event = "VeryLazy",
-    opts = {},
-    enabled = false,
-    keys = {
-      {
-        "<leader>Tp",
-        function()
-          local Util = require("lazy.core.util")
-          vim.g.minipairs_disable = not vim.g.minipairs_disable
-          if vim.g.minipairs_disable then
-            Util.warn("Disabled auto pairs", { title = "Option" })
-          else
-            Util.info("Enabled auto pairs", { title = "Option" })
-          end
-        end,
-        desc = "Toggle auto pairs",
-      },
-    },
-  },
-  {
     "altermo/ultimate-autopair.nvim",
     event = { "InsertEnter", "CmdlineEnter" },
     branch = "v0.6",
