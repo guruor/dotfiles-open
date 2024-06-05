@@ -18,9 +18,24 @@ end
 
 local lsp_plugins = {
   {
-    "glepnir/lspsaga.nvim",
-    event = "LspAttach",
-    config = true,
+    -- IDE-like breadcrumbs
+    "Bekaboo/dropbar.nvim",
+    event = "BufRead",
+  },
+  {
+    -- Using it just for LSP renaming feature
+    "ray-x/navigator.lua",
+    keys = { "<leader>lr", "<leader>l\\" },
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      "ray-x/guihua.lua",
+    },
+    config = function()
+      require("navigator").setup({
+        mason = true,
+        default_mapping = false,
+      })
+    end,
   },
   {
     "ray-x/go.nvim",
@@ -180,13 +195,6 @@ local default_plugins = {
     end,
     event = { 'BufReadPre', 'BufNewFile' },
   },
-  -- Won't be required with lspsaga, saga already shows breadcrumbs for same purpose
-  -- {
-  --   "nvim-treesitter/nvim-treesitter-context",
-  --   event = "BufRead",
-  --   dependencies = { "nvim-treesitter/nvim-treesitter" },
-  --   opts = require("plugins.configs.misc").treesitter_context,
-  -- },
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
     event = "BufRead",

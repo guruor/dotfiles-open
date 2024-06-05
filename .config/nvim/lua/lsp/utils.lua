@@ -41,10 +41,11 @@ M.get_default_capabilities = function()
 end
 
 M.default_on_attach_func = function(_)
-  utils.map("n", "gd", "<Cmd>Lspsaga goto_definition<CR>", { buffer = true })
-  utils.map("n", "gD", "<Cmd>Lspsaga goto_type_definition<CR>", { buffer = true })
-  utils.map("n", "K", "<Cmd>Lspsaga hover_doc<CR>", { buffer = true })
-  utils.map("n", "gr", "<Cmd>Lspsaga finder<CR>", { buffer = true })
+  utils.map("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", { buffer = true })
+  utils.map("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", { buffer = true })
+  utils.map("n", "K", ":lua vim.lsp.buf.hover()<CR>", { buffer = true })
+  utils.map("n", "gr", "<Cmd>FzfLua lsp_references<CR>", { buffer = true })
+  utils.map("n", "gi", "<Cmd>FzfLua lsp_implementations<CR>", { buffer = true })
 
   if not vim.g.should_enable_efm then
     local lazy_plugins = require("lazy.core.config").plugins

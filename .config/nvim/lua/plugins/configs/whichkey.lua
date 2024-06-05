@@ -163,57 +163,21 @@ wk.register(keys, { prefix = leader })
 wk.register(keys, { prefix = leader, mode = 'v' })
 
 keys = {
-    L = {
-        name = 'LSP',
-        ["l"] = { "<Cmd>lua require('lint').try_lint()<CR>", "Trigger linter" },
-        ["gd"] = { "<Cmd>lua vim.lsp.buf.definition()<CR>", "Definition" },
-        ["gD"] = { "<Cmd>lua vim.lsp.buf.declaration()<CR>", "Declaration" },
-        ["gr"] = { "<cmd>lua vim.lsp.buf.references()<CR>", "References" },
-        ["gs"] = { "<Cmd>lua vim.lsp.buf.signature_help()<CR>", "Signature" },
-        ["gi"] = { "<cmd>lua vim.lsp.buf.implementation()<CR>", "Implementation" },
-        ["gt"] = { "<cmd>lua vim.lsp.buf.type_definition()<CR>", "Type definition" },
-        ["gw"] = { "<cmd>lua vim.lsp.buf.document_symbol()<CR>", "Document symbol" },
-        ["gW"] = { "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>", "Workspace symbol" },
-        ["i"] = { "<cmd>lua vim.lsp.buf.incoming_calls()<CR>", "Incoming calls" },
-        ["o"] = { "<cmd>lua vim.lsp.buf.outgoing_calls()<CR>", "Outgoing calls" },
-        ["a"] = { ":lua vim.lsp.buf.code_action()<CR>", "Action" },
-        ["k"] = { ":lua vim.lsp.buf.hover()<CR>", "Hover" },
-        ["="] = { "<cmd>update | lua require('conform').format({ async = true, lsp_fallback = true })<CR>", "Format" },
-        ["dd"] = { ":lua vim.diagnostic.setloclist()<CR>", "Diagnostic" },
-        ["d]"] = { ":lua vim.diagnostic.goto_next()<CR>", "Next diagnostic" },
-        ["d["] = { ":lua vim.diagnostic.goto_prev()<CR>", "Prev diagnostic" },
-        ["dl"] = { ":lua vim.diagnostic.open_float(0, { scope = 'line', border = 'single' })<CR>", "Line Diagnostic" },
-        ["da"] = { ":lua vim.diagnostic.get()<CR>", "All diagnostic" },
-        ["dq"] = { "<cmd>lua vim.diagnostic.setqflist()<CR>", "QuickFix" },
-        ["r"] = { ":lua require'lsp.rename'.rename()<CR>", "Rename" },
-        ["R"] = { "<cmd>lua vim.lsp.buf.references()<CR>", "References" },
-    }
-}
-wk.register(keys, { prefix = leader })
-wk.register(keys, { prefix = leader, mode = 'v' })
-
-keys = {
     l = {
         name = 'LSP',
-        ["\\"] = { ":Lspsaga outline<CR>", "Toggle outline" },
-        ["l"] = { "<Cmd>lua require('lint').try_lint()<CR>", "Trigger linter" },
-        ["gd"] = { "<Cmd>Lspsaga goto_definition()<CR>", "Definition" },
-        ["gD"] = { "<Cmd>Lspsaga peek_definition()<CR>", "Peek definition" },
-        ["gr"] = { "<Cmd>Lspsaga finder<CR>", "References" },
-        ["gi"] = { "<Cmd>Lspsaga finder<CR>", "Implementation" },
-        ["gt"] = { "<Cmd>Lspsaga peek_type_definition<CR>", "Type definition" },
-        ["i"] = { "<Cmd>Lspsaga incoming_calls<CR>", "Incoming calls" },
-        ["o"] = { "<Cmd>Lspsaga outgoing_calls<CR>", "Outgoing calls" },
-        ["a"] = { "<Cmd>Lspsaga code_action<CR>", "Action" },
-        ["k"] = { "<Cmd>Lspsaga hover_doc<CR>", "Hover" },
         ["="] = { "<cmd>update | lua require('conform').format({ async = true, lsp_fallback = true })<CR>", "Format" },
-        ["dd"] = { "<Cmd>Lspsaga show_buf_diagnostics<CR>", "Diagnostic" },
-        ["d]"] = { "<Cmd>Lspsaga diagnostic_jump_next<CR>", "Next diagnostic" },
-        ["d["] = { "<Cmd>Lspsaga diagnostic_jump_prev<CR>", "Prev diagnostic" },
-        ["dl"] = { "<Cmd>Lspsaga show_line_diagnostics<CR>", "Line Diagnostic" },
-        ["da"] = { "<Cmd>Lspsaga show_buf_diagnostics<CR>", "All diagnostic" },
-        ["r"] = { "<Cmd>Lspsaga rename ++project<CR>", "Rename" },
-        ["R"] = { "<Cmd>Lspsaga finder<CR>", "References" },
+        ["\\"] = { "<Cmd>lua require'navigator.symbols'.side_panel()<CR>", "Toggle outline" },
+        ["a"] = { "<Cmd>FzfLua lsp_code_actions<CR>", "Action" },
+        ["da"] = { "<Cmd>FzfLua lsp_document_diagnostics<CR>", "All diagnostic" },
+        ["dl"] = { "<Cmd>lua vim.diagnostic.open_float(0, { scope = 'line', border = 'single' })<CR>", "Line Diagnostic" },
+        ["i"] = { "<cmd>lua vim.lsp.buf.incoming_calls()<CR>", "Incoming calls" },
+        ["l"] = { "<Cmd>lua require('lint').try_lint()<CR>", "Trigger linter" },
+        ["o"] = { "<cmd>lua vim.lsp.buf.outgoing_calls()<CR>", "Outgoing calls" },
+        -- ["r"] = { ":lua require'lsp.rename'.rename()<CR>", "Rename" },
+        -- https://github.com/ray-x/navigator.lua/blob/3be5241bf902b8492ce3923cb62d9b44c4831b59/lua/navigator/lspclient/mapping.lua#L51
+        ["r"] = { "<Cmd>lua require('navigator.rename').rename()<CR>", "Rename inplace" },
+        ["sd"] = { "<cmd>lua vim.lsp.buf.document_symbol()<CR>", "Symbols Document" },
+        ["sw"] = { "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>", "Symbols Workspace" },
     }
 }
 wk.register(keys, { prefix = leader })

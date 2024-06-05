@@ -100,7 +100,7 @@ M.SetVimOptions = function()
     local winid = require("ufo").peekFoldedLinesUnderCursor()
     if not winid then
       -- vim.lsp.buf.hover()
-      vim.cmd [[ Lspsaga hover_doc ]]
+      vim.cmd [[ vim.lsp.buf.hover() ]]
     end
   end)
 end
