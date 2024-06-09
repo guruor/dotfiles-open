@@ -19,7 +19,7 @@
 #/'   link <file_to_link>         Link local dev files and folders to the code repo
 #/'   unlink                      Unlink local dev files and folders from the code repo
 #/'   save-diff [patch_file_name] Save the current changes as a patch in local dev files patches directory
-#/'   remove_dir                  Delete the local dev files directory
+#/'   remove-dir                  Delete the local dev files directory
 #/'
 #/' Options:
 #/'   -h, --help          Show this help message and exit
@@ -88,14 +88,44 @@ get_dev_files_path() {
         echo "${repo_local_files_path}"
 }
 
+detect_project_language() {
+        repo_path="$PWD"
+        echo -e "\nDetecting project language for path: ${repo_path}" >&2
+        if [[ -f "${repo_path}/requirements.txt" ]]; then
+                echo "py"
+        elif [[ -f "${repo_path}/go.mod" ]]; then
+                echo "go"
+        else
+                echo "default"
+        fi
+}
+
 # Function to create the local dev files directory for the current repo
 create_dir() {
         repo_local_files_path=$(get_dev_files_path)
-        # Creating dev files directory for the repo if doesn't exist
+        project_language=$(detect_project_language)
+
+        echo -e "\nProject language: ${project_language}" >&2
+        default_source_dir="${WORKSPACE_DEVFILEMANAGER_DEFAULT_FILES}"
+        language_source_dir="${WORKSPACE_DEVFILEMANAGER_PATH}/${project_language}-default"
+
+        # Creating dev files directory for the repo if it doesn't exist
         if [[ ! -d "${repo_local_files_path}" ]]; then
-                echo -e "\nCreating local dev directory: ${repo_local_files_path}" >&2
-                echo -e "\nCopying default local dev files from ${WORKSPACE_DEVFILEMANAGER_DEFAULT_FILES}" >&2
-                cp -r "${WORKSPACE_DEVFILEMANAGER_DEFAULT_FILES}" "${repo_local_files_path}"
+                echo -e "\nCopying default local dev files from ${default_source_dir}" >&2
+                exclude_files=('.post-envrc' '.pre-envrc' '.core-envrc')
+                exclude_params=()
+                for file in "${exclude_files[@]}"; do
+                        exclude_params+=(--exclude="$file")
+                done
+                rsync -av "${exclude_params[@]}" "${default_source_dir}/" "${repo_local_files_path}/" >&2
+                wait
+
+                # If language-specific directory exists, copy from it
+                if [[ -d "${language_source_dir}" ]]; then
+                        echo -e "\nCopying language-specific dev files from ${language_source_dir}" >&2
+                        rsync -av "${exclude_params[@]}" "${language_source_dir}/" "${repo_local_files_path}/" >&2
+                        wait
+                fi
         else
                 echo -e "\nLocal dev files path already exists: ${repo_local_files_path}" >&2
         fi
@@ -118,62 +148,61 @@ open() {
 }
 
 remove_symlinks() {
-    validate
+        validate
 
-    # this method should be called from the repo directory
-    repo_path="$PWD"
-    repo_local_files_path=$(create_dir)
-    repo_local_files_path=$(readlink -f "$repo_local_files_path")
+        # this method should be called from the repo directory
+        repo_path="$PWD"
+        repo_local_files_path=$(create_dir)
+        repo_local_files_path=$(readlink -f "$repo_local_files_path")
 
-    # Get the list of symlinked files in the project directory
-    symlinked_files=()
-    while IFS= read -r symlink_name; do
-        symlink_path=$(readlink -f "$symlink_name")
-        symlink_dir=$(dirname "$symlink_path")
-        # echo -e "symlink_dir: $symlink_dir\nrepo_local_files_path: $repo_local_files_path" >&2
-        if [[ "$symlink_dir" == "$repo_local_files_path" ]]; then
-            symlinked_files+=("$symlink_name")
+        # Get the list of symlinked files in the project directory
+        symlinked_files=()
+        while IFS= read -r symlink_name; do
+                symlink_path=$(readlink -f "$symlink_name")
+                symlink_dir=$(dirname "$symlink_path")
+                # echo -e "symlink_dir: $symlink_dir\nrepo_local_files_path: $repo_local_files_path" >&2
+                if [[ "$symlink_dir" == "$repo_local_files_path" ]]; then
+                        symlinked_files+=("$symlink_name")
+                fi
+        done < <(find "$repo_path" -maxdepth 1 -type l -exec sh -c 'echo "$(basename "$0")"' {} \;)
+
+        # Check if there are any symlinked files
+        if [ ${#symlinked_files[@]} -eq 0 ]; then
+                echo -e "\nNo symlinked files found in the project directory." >&2
+                return 0
         fi
-    done < <(find "$repo_path" -maxdepth 1 -type l -exec sh -c 'echo "$(basename "$0")"' {} \;)
 
-    # Check if there are any symlinked files
-    if [ ${#symlinked_files[@]} -eq 0 ]; then
-        echo -e "\nNo symlinked files found in the project directory." >&2
-        return 0
-    fi
+        # List symlinked files and ask for confirmation before deletion
+        echo -e "\nThe following symlinked files will be removed:" >&2
+        printf '%s\n' "${symlinked_files[@]}"
+        read -p "Do you want to proceed? (y/n): " choice
 
-    # List symlinked files and ask for confirmation before deletion
-    echo -e "\nThe following symlinked files will be removed:" >&2
-    printf '%s\n' "${symlinked_files[@]}"
-    read -p "Do you want to proceed? (y/n): " choice
-
-    case "$choice" in
-        y|Y)
-            # Remove symlinked files
-            for file in "${symlinked_files[@]}"; do
-                read -p "Do you want to remove $file? (y/n): " remove_choice
-                case "$remove_choice" in
-                    y|Y)
-                        rm "$repo_path/$file"
-                        ;;
-                    n|N)
-                        echo -e "\nSkipping $file." >&2
-                        ;;
-                    *)
-                        echo -e "\nInvalid choice. Skipping $file." >&2
-                        ;;
-                esac
-            done
-            ;;
-        n|N)
-            echo -e "\nOperation cancelled." >&2
-            ;;
+        case "$choice" in
+        y | Y)
+                # Remove symlinked files
+                for file in "${symlinked_files[@]}"; do
+                        read -p "Do you want to remove $file? (y/n): " remove_choice
+                        case "$remove_choice" in
+                        y | Y)
+                                rm "$repo_path/$file"
+                                ;;
+                        n | N)
+                                echo -e "\nSkipping $file." >&2
+                                ;;
+                        *)
+                                echo -e "\nInvalid choice. Skipping $file." >&2
+                                ;;
+                        esac
+                done
+                ;;
+        n | N)
+                echo -e "\nOperation cancelled." >&2
+                ;;
         *)
-            echo -e "\nInvalid choice. Operation cancelled." >&2
-            ;;
-    esac
+                echo -e "\nInvalid choice. Operation cancelled." >&2
+                ;;
+        esac
 }
-
 
 # Function to link local dev files and folders to the code repo
 link() {
@@ -193,14 +222,23 @@ link() {
                         echo -e "\nno file/directory found named ${file_to_link}" >&2
                 fi
         else
-                # files_or_dirs_to_symlink=(".vscode" ".patches" ".gitignore" ".fdignore")
-
                 # Populate dirs_to_symlink variable with files and directories at root level
-                mapfile -t files_or_dirs_to_symlink < <(find "${repo_local_files_path}" -maxdepth 1 -mindepth 1 -exec basename {} \;)
+                echo -e "\nLets link dev files from: ${repo_local_files_path}" >&2
+                exclude_symlink_files=('.gitignore' '.fdignore')
+                files_or_dirs_to_symlink=()
+                while IFS= read -r line; do
+                        files_or_dirs_to_symlink+=("$line")
+                done < <(find "${repo_local_files_path}" -maxdepth 1 -mindepth 1 -exec basename {} \;)
                 # Symlink the specified directories if they exist
+                echo -e "\nLinking dev files: ${files_or_dirs_to_symlink[*]}" >&2
                 for name in "${files_or_dirs_to_symlink[@]}"; do
-                        echo -e "\nLinking ${name}" >&2
-                        ln -sf "${repo_local_files_path}/${name}" "${repo_path}/"
+                        # Check if the current file is in the exclude_symlink_files list
+                        if [[ ! "${exclude_symlink_files[*]}" =~ ${name} ]]; then
+                                echo -e "Linking ${name}" >&2
+                                ln -sf "${repo_local_files_path}/${name}" "${repo_path}/"
+                        else
+                                echo -e "Skipping ${name} as it is in the excluded list" >&2
+                        fi
                 done
 
                 # copying dockerfile_local_sym to project repo instead of symlinking it, due issue with docker build and compose command
