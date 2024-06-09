@@ -152,7 +152,7 @@ M.dressing = {
 }
 
 M.go = {
-  goimport = "gopls", -- if set to 'gopls' will use golsp format
+  goimports = "gopls", -- if set to 'gopls' will use golsp format
   gofmt = "gopls", -- if set to gopls will use golsp format
   max_line_len = 120,
   tag_transform = false,
@@ -162,6 +162,9 @@ M.go = {
   lsp_gofumpt = true, -- true: set default gofmt in gopls format to gofumpt
   lsp_on_attach = false, -- use on_attach from go.nvim
   dap_debug = true,
+  lsp_inlay_hints = {
+    enable = false,
+  }
 }
 
 M.noice = {
