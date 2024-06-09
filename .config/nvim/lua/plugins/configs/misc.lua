@@ -25,7 +25,7 @@ M.tfm = {
     width = 0.95,
     x = 0.5,
     y = 0.5,
-  }
+  },
 }
 
 M.whitespace = function()
@@ -62,7 +62,7 @@ M.blankline = {
       "norg",
       "",
     },
-  }
+  },
 }
 
 M.chatgpt = {
@@ -210,8 +210,13 @@ M.diffview = {
   view = {
     merge_tool = {
       layout = "diff3_mixed",
-    }
-  }
+    },
+  },
+  keymaps = {
+    file_panel = {
+      { "n", "<leader>cF", DiffWithDifftastic, { desc = "Diff with difftastic" } },
+    },
+  },
 }
 
 M.treesitter_context = {
