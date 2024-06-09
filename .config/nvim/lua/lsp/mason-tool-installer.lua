@@ -9,6 +9,7 @@ if not mason_tool_installer_status_ok then
 end
 
 mason.setup {
+  PATH = "append",
   ui = {
     border = vim.g.border_style,
   },
