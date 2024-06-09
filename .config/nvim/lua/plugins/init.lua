@@ -440,7 +440,10 @@ local default_plugins = {
     "stevearc/overseer.nvim",
     keys = { { "<leader>t" } },
     cmd = { "OverseerRun", "OverseerToggle", "OverseerQuickAction" },
-    config = load_config('configs.overseer'),
+    opts = require("plugins.configs.overseer"),
+    config = function(_, opts)
+      require('overseer').setup(opts)
+    end
   },
 
   {
