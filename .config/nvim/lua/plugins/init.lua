@@ -23,19 +23,15 @@ local lsp_plugins = {
     event = "BufRead",
   },
   {
-    -- Using it just for LSP renaming feature
-    "ray-x/navigator.lua",
-    keys = { "<leader>lr", "<leader>l\\" },
+    -- For code outline window
+    'stevearc/aerial.nvim',
+    -- Optional dependencies
     dependencies = {
-      "neovim/nvim-lspconfig",
-      "ray-x/guihua.lua",
+       "nvim-treesitter/nvim-treesitter",
+       "nvim-tree/nvim-web-devicons"
     },
-    config = function()
-      require("navigator").setup({
-        mason = true,
-        default_mapping = false,
-      })
-    end,
+    config = true,
+    cmd = { "AerialToggle" }
   },
   {
     -- Alternative: https://github.com/olexsmir/gopher.nvim

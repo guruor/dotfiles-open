@@ -166,7 +166,7 @@ keys = {
     l = {
         name = 'LSP',
         ["="] = { "<cmd>update | lua require('conform').format({ async = true, lsp_fallback = true })<CR>", "Format" },
-        ["\\"] = { "<Cmd>lua require'navigator.symbols'.side_panel()<CR>", "Toggle outline" },
+        ["\\"] = { "<Cmd>AerialToggle<CR>", "Toggle outline" },
         ["da"] = { "<Cmd>FzfLua lsp_document_diagnostics<CR>", "All diagnostic" },
         ["dl"] = { "<Cmd>lua vim.diagnostic.open_float(0, { scope = 'line', border = 'single' })<CR>", "Line Diagnostic" },
         ["i"] = { "<cmd>lua vim.lsp.buf.incoming_calls()<CR>", "Incoming calls" },
