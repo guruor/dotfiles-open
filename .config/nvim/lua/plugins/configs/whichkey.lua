@@ -167,15 +167,11 @@ keys = {
         name = 'LSP',
         ["="] = { "<cmd>update | lua require('conform').format({ async = true, lsp_fallback = true })<CR>", "Format" },
         ["\\"] = { "<Cmd>lua require'navigator.symbols'.side_panel()<CR>", "Toggle outline" },
-        ["a"] = { "<Cmd>FzfLua lsp_code_actions<CR>", "Action" },
         ["da"] = { "<Cmd>FzfLua lsp_document_diagnostics<CR>", "All diagnostic" },
         ["dl"] = { "<Cmd>lua vim.diagnostic.open_float(0, { scope = 'line', border = 'single' })<CR>", "Line Diagnostic" },
         ["i"] = { "<cmd>lua vim.lsp.buf.incoming_calls()<CR>", "Incoming calls" },
         ["l"] = { "<Cmd>lua require('lint').try_lint()<CR>", "Trigger linter" },
         ["o"] = { "<cmd>lua vim.lsp.buf.outgoing_calls()<CR>", "Outgoing calls" },
-        -- ["r"] = { ":lua require'lsp.rename'.rename()<CR>", "Rename" },
-        -- https://github.com/ray-x/navigator.lua/blob/3be5241bf902b8492ce3923cb62d9b44c4831b59/lua/navigator/lspclient/mapping.lua#L51
-        ["r"] = { "<Cmd>lua require('navigator.rename').rename()<CR>", "Rename inplace" },
         ["sd"] = { "<cmd>lua vim.lsp.buf.document_symbol()<CR>", "Symbols Document" },
         ["sw"] = { "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>", "Symbols Workspace" },
     }

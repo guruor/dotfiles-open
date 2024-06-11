@@ -65,8 +65,10 @@ end
 M.default_on_attach_func = function(_)
   utils.map("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", { buffer = true })
   utils.map("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", { buffer = true })
-  utils.map("n", "K", ":lua vim.lsp.buf.hover()<CR>", { buffer = true })
-  utils.map("n", "gr", "<Cmd>FzfLua lsp_references<CR>", { buffer = true })
+  utils.map("n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", { buffer = true })
+  utils.map("n", "grn", "<Cmd>lua vim.lsp.buf.rename()<CR>", { buffer = true })
+  utils.map("n", "grr", "<Cmd>FzfLua lsp_references<CR>", { buffer = true })
+  utils.map("n", "gra", "<Cmd>FzfLua lsp_code_actions<CR>", { buffer = true })
   utils.map("n", "gi", "<Cmd>FzfLua lsp_implementations<CR>", { buffer = true })
 
   if not vim.g.should_enable_efm then
