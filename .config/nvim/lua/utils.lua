@@ -1,5 +1,21 @@
 local M = {}
 
+M.load_config = function(package)
+  return function()
+    require("plugins." .. package)
+  end
+end
+
+-- Utility function to merge tables
+M.merge_tables = function(...)
+  local result = {}
+  for _, t in ipairs { ... } do
+    vim.list_extend(result, t)
+  end
+  return result
+end
+
+
 M.merge = function(t1, t2)
     for k, v in pairs(t2) do t1[k] = v end
     return t1
