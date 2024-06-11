@@ -113,20 +113,9 @@ return {
     },
   },
   {
-    "JoosepAlviste/nvim-ts-context-commentstring",
-    opts = require("plugins.configs.misc").ts_context_commentstring,
-    config = function(_, opts)
-      require("ts_context_commentstring").setup(opts)
-    end,
-  },
-  {
-    "numToStr/Comment.nvim",
-    keys = { { "gc", mode = { "n", "v" } } },
-    config = function()
-      require("Comment").setup {
-        pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
-      }
-    end,
+    "folke/ts-comments.nvim",
+    event = "VeryLazy",
+    opts = {},
   },
   -- easily search for, substitute, and abbreviate multiple variants of a word, replaces vim-abolish
   {
