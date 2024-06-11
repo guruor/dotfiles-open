@@ -38,19 +38,13 @@ local lsp_plugins = {
     end,
   },
   {
-    "ray-x/go.nvim",
-    dependencies = {
-      "neovim/nvim-lspconfig",
-      "nvim-treesitter/nvim-treesitter",
-      "ray-x/guihua.lua",
-    },
-    opts = require("plugins.configs.misc").go,
+    -- Alternative: https://github.com/olexsmir/gopher.nvim
+    "crispgm/nvim-go",
+    ft = { "go", "gomod" },
+    opts = require("plugins.configs.misc").nvimGo,
     config = function(_, opts)
       require("go").setup(opts)
     end,
-    -- event = { "CmdlineEnter" },
-    ft = { "go", "gomod" },
-    build = function() require("go.install").update_all() end,
   },
   -- Managing and installing LSP servers
   {
