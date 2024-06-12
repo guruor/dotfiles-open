@@ -17,13 +17,27 @@ return {
       require("nvim-treesitter.configs").setup(ts.options)
       ts.additional_setup()
     end,
-    event = { "BufReadPre", "BufNewFile" },
+    event = { "VeryLazy" },
+    lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
+    init = function(plugin)
+      -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
+      -- This is needed because a bunch of plugins no longer `require("nvim-treesitter")`, which
+      -- no longer trigger the **nvim-treesitter** module to be loaded in time.
+      -- Luckily, the only things that those plugins need are the custom queries, which we make available
+      -- during startup.
+      require("lazy.core.loader").add_to_rtp(plugin)
+      require "nvim-treesitter.query_predicates"
+    end,
   },
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
-    event = "BufRead",
+    event = "VeryLazy",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     config = function()
+      if package.loaded["nvim-treesitter"] then
+        local ts = require "plugins.configs.treesitter"
+        require("nvim-treesitter.configs").setup { textobjects = ts.options.textobjects }
+      end
       -- When in diff mode, we want to use the default
       -- vim text objects c & C instead of the treesitter ones.
       local move = require "nvim-treesitter.textobjects.move" ---@type table<string,fun(...)>
