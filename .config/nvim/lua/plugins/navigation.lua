@@ -74,6 +74,10 @@ return {
     "echasnovski/mini.bracketed",
     version = false,
     event = "VeryLazy",
+    opts = {
+      file = { suffix = "" },
+      yank = { suffix = "" },
+    },
     config = function(_, opts)
       require("mini.bracketed").setup(opts)
     end,
