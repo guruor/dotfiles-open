@@ -1,9 +1,6 @@
 -- Set bufferline's options
--- :h bufferline.nvim
-local bufferline = require "bufferline"
-bufferline.setup {
+return {
   options = {
-    style_preset = bufferline.style_preset.default, -- or bufferline.style_preset.minimal,
     custom_filter = function(buf_number, buf_numbers)
       -- filter out filetypes you don't want to see
       if vim.bo[buf_number].filetype ~= "dbout" then
@@ -18,7 +15,7 @@ bufferline.setup {
         return string.format("%s", opts.ordinal)
       end
     end,
-    separator_style = "slope", -- | "slant" | "slope" | "thick" | "thin" | { '<focused>', '<unfocused>' },
+    -- separator_style = "slope", -- | "slant" | "slope" | "thick" | "thin" | { '<focused>', '<unfocused>' },
     show_buffer_close_icons = true,
     show_close_icon = true,
   },
