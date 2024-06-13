@@ -100,14 +100,6 @@ return {
     priority = 998,
   },
   {
-    "ntpeters/vim-better-whitespace",
-    init = function()
-      require("plugins.configs.misc").whitespace()
-    end,
-    event = { "BufReadPost" },
-    cmd = { "ToggleWhitespace", "DisableWhitespace" },
-  },
-  {
     "m4xshen/smartcolumn.nvim",
     event = "VeryLazy",
     opts = require("plugins.configs.misc").smartcolumn,

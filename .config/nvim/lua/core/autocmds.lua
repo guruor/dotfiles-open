@@ -121,17 +121,6 @@ autocmd({ "BufWinEnter", "WinEnter" }, {
   group = generalSettingsGroup,
 })
 
-autocmd({ "TermOpen" }, {
-  pattern = "*",
-  callback = function()
-    vim.opt.number = false
-    vim.opt.relativenumber = false
-    vim.cmd ":DisableWhitespace"
-    AddTerminalNavigation()
-  end,
-  group = generalSettingsGroup,
-})
-
 --------------- Neomutt -----------------
 autocmd({ "BufRead", "BufNewFile" }, {
   pattern = "/tmp/neomutt*",
