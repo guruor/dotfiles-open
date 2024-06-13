@@ -47,10 +47,13 @@ return {
   },
   {
     "nvim-lualine/lualine.nvim",
-    config = utils.load_config "configs.statusline",
+    opts = require("plugins.configs.statusline"),
     -- event = { 'BufReadPre', 'BufNewFile' },
     lazy = false,
     priority = 999,
+    config = function(_, opts)
+      require("lualine").setup(opts)
+    end
   },
   {
     "folke/noice.nvim",
