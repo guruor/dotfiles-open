@@ -28,15 +28,6 @@ M.tfm = {
   },
 }
 
-M.whitespace = function()
-  vim.g.better_whitespace_enabled = 1
-  vim.g.strip_whitespace_on_save = 1
-  vim.g.strip_only_modified_lines = 1
-  vim.g.strip_whitespace_confirm = 0
-  -- vim.g.better_whitespace_ctermcolor='grey'
-  vim.g.better_whitespace_guicolor = "#3c3836"
-end
-
 M.smartcolumn = {
   colorcolumn = "120",
   disabled_filetypes = { "help", "text", "markdown", "norg", "dashboard" },
