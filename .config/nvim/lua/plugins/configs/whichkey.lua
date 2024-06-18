@@ -290,6 +290,7 @@ keys = {
         ["t"] = { "", "GTD actions" },
         ["I"] = { ":Neorg index<CR>", "Index" },
         ["j"] = { ":Neorg journal<CR>", "Journal" },
+        ["L"] = { ":Neorg templates fload<CR>", "Load Templates" },
         ["e"] = { "<Cmd>exec 'Neorg export to-file /tmp/temp.md' | sleep 500m | tabe /tmp/temp.md<Cr>", "Export" },
         -- Requires clipboard https://github.com/Slackadays/Clipboard
         ["y"] = { "<Cmd>exec 'Neorg export to-file /tmp/temp.md' | sleep 500m | !cat /tmp/temp.md | cb copy<Cr>", "Copy as markdown" },
