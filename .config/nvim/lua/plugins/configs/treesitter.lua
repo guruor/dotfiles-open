@@ -88,5 +88,14 @@ M.additional_setup = function()
   --   },
   --   filetype = 'http',
   -- }
+
+  -- parser_config.plantuml = {
+  --   install_info = {
+  --     url = 'https://github.com/Decodetalkers/tree_sitter_plantuml',
+  --     revision = 'gh-pages',
+  --     files = { 'src/parser.c'},
+  --   },
+  --   filetype = 'plantuml',
+  -- }
 end
 return M
