@@ -82,9 +82,9 @@ else
     alias recent="ls -rt"
 fi
 
-alias lsa="ls -a"
-
-alias lsl="ls -l"
+alias la="ls -a"
+alias ll="ls -l"
+alias lla="ls -la"
 
 
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc-private" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc-private"
