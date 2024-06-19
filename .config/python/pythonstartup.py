@@ -1,21 +1,45 @@
-# Store interactive Python shell history in ~/.cache/python_history
+#!/usr/bin/env python3
+# This entire thing is unnecessary post v3.13.0a3
+# https://github.com/python/cpython/issues/73965
+
+# Store interactive Python shell history in $HOME/.local/state/python_history
 # instead of ~/.python_history.
-#
-# Create the following .config/python/pythonstartup.py file
-# and export its path using PYTHONSTARTUP environment variable:
 #
 # export PYTHONSTARTUP="${XDG_CONFIG_HOME:-$HOME/.config/python}/pythonstartup.py"
 
-import atexit
-import os
-import readline
+    def is_vanilla() -> bool:
+        """ :return: whether running "vanilla" Python """
+        import sys
+        return not hasattr(__builtins__, '__IPYTHON__') and 'bpython' not in sys.argv[0]
 
-histfile = os.path.join(os.getenv("XDG_CACHE_HOME", os.path.expanduser("~/.cache")), "python_history")
-try:
-    readline.read_history_file(histfile)
-    # default history len is -1 (infinite), which may grow unruly
-    readline.set_history_length(1000)
-except FileNotFoundError:
-    pass
 
-atexit.register(readline.write_history_file, histfile)
+    def setup_history():
+        """ read and write history from state file """
+        import os
+        import atexit
+        import readline
+        from pathlib import Path
+
+        # https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables
+        if state_home := os.environ.get('XDG_STATE_HOME'):
+                state_home = Path(state_home)
+        else:
+            state_home = Path.home() / '.local' / 'state'
+        if not state_home.is_dir():
+            print("Error: XDG_SATE_HOME does not exist at", state_home)
+
+        history: Path = state_home / 'python_history'
+
+        # https://github.com/python/cpython/issues/105694
+        if not history.is_file():
+            with open(history,"w") as f:
+                f.write("_HiStOrY_V2_" + "\
+    \
+    ") # breaks on macos + python3 without this.
+
+        readline.read_history_file(history)
+        atexit.register(readline.write_history_file, history)
+
+
+    if is_vanilla():
+        setup_history()
