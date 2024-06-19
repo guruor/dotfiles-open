@@ -241,6 +241,9 @@ fi
 _evalcache zoxide init zsh
 # _evalcache starship init zsh
 
+[ -x "$(command -v thefuck)" ] && _evalcache thefuck --alias oops
+# [ -x "$(command -v ohcrab)" ] && _evalcache ohcrab --shell zsh --alias oops
+
 # Trigger asl logs cleaning, since it slows down shell on macos
 # clean-asl-logs
 
