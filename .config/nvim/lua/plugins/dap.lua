@@ -11,7 +11,7 @@ return {
       "Weissle/persistent-breakpoints.nvim",
       "jay-babu/mason-nvim-dap.nvim",
       "theHamsta/nvim-dap-virtual-text",
-      "rcarriga/nvim-dap-ui",
+      { "rcarriga/nvim-dap-ui", dependencies = { "nvim-neotest/nvim-nio" } },
       "jbyuki/one-small-step-for-vimkind",
       "mfussenegger/nvim-dap-python",
     },
