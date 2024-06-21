@@ -61,4 +61,14 @@ return {
     end,
     cmd = "PlantUML",
   },
+  {
+    "mistricky/codesnap.nvim",
+    build = "make",
+    cmd = { "CodeSnap", "CodeSnapSave" },
+    opts = {
+      save_path = "~/Pictures/Pictures",
+      has_breadcrumbs = true,
+      watermark = "",
+    },
+  },
 }
