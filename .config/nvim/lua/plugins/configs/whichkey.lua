@@ -245,10 +245,11 @@ keys_visual["ms"][","] = { ":lua UnquoteAndSplit()<CR>", "Split lines at commas 
 
 -- Substitute commands which are common for both normal and visual mode
 local commonSubstituteCommands = {
-    ["\""] = { command = "/'/\"/g", description = "Replace ' with \"" },
-    ["'"] = { command = "/\"/'/g", description = "Replace \" with '" },
-    c = { command = "/\\(-[Hkd]\\|--data-raw\\) / \\\\\\r\\1 /g", description = "Break curl to multi-line" },
-    l = { command = "/\\( AND\\| OR\\)/ \\r\\1/g", description = "Break lucene query" },
+  ["\""] = { command = [[/'/"/g]], description = "Replace ' with \"" },
+  ["'"] = { command = [[/"/'/g]], description = "Replace \" with '" },
+  c = { command = [[/\(-[Hkd]\|--data-raw\) / \r\1 /g]], description = "Break curl to multi-line" },
+  l = { command = [[/\( AND\| OR\)/ \r\1/g]], description = "Break lucene query" },
+  q = { command = [[/\([^, ]\+\)/'\1'/g]], description = "Quote surround strings" },
 }
 
 keys, keys_visual = AddSubstituteMappings(commonSubstituteCommands, keys, keys_visual, "ms")
