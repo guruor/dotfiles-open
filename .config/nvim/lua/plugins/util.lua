@@ -22,6 +22,24 @@ return {
     lazy = false,
   },
   {
+    "chrisgrieser/nvim-recorder",
+    opts = {
+      slots = { "a", "b" },
+
+      mapping = {
+        -- Mapping <Leader>r is used to run certain saved macro
+        -- Mapping <Leader>s is used to run certain Substitute commands
+        startStopRecording = "q",
+        playMacro = "Q",
+        editMacro = "<Leader>mi",
+        yankMacro = "<Leader>my",
+        deleteAllMacros = "<Leader>mD",
+        switchSlot = "<Leader>mT",
+      },
+    },
+    event = "VeryLazy",
+  },
+  {
     "akinsho/toggleterm.nvim",
     version = "*",
     config = true,
