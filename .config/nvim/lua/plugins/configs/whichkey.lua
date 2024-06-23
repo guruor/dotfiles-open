@@ -218,7 +218,7 @@ keys = {
         name = 'Macro',
         ["fj"] = { ":!jq .<CR>", "Format selection as json" },
         ["fq"] = { ":%s!sqlformat --reindent --keywords upper --identifiers lower -<CR>", "Format SQL query" },
-        ["e"] = { ":!date -d @<C-R><C-W><CR>", "Epoch to System time" }
+        ["re"] = { ":!date -d @<C-R><C-W><CR>", "Epoch to System time" }
     }
 }
 
