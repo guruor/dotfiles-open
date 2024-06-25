@@ -43,7 +43,7 @@ dashboard.setup {
       {
         desc = "  Explore",
         group = "Label",
-        action = "Lf",
+        action = "lua require('tfm').open()",
         key = "o",
       },
       {
