@@ -54,7 +54,7 @@ return {
     -- Vim subword movement with w, e, b
     "chrisgrieser/nvim-spider",
     config = utils.load_config "configs.spider",
-    event = { "BufReadPre", "BufNewFile" },
+    keys = { "w", "e", "b" }
   },
   {
     -- Doesn't work with lazy loading
