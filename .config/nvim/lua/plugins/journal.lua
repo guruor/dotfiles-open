@@ -16,15 +16,12 @@ return {
     "nvim-neorg/neorg",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      {
-        "vhyrro/luarocks.nvim",
-        priority = 1000,
-        lazy = false,
-        config = true,
-      },
       "folke/zen-mode.nvim",
       "max397574/neorg-contexts",
-      { "pysan3/neorg-templates", dependencies = { "L3MON4D3/LuaSnip" } },
+      {
+        "pysan3/neorg-templates",
+        dependencies = { "L3MON4D3/LuaSnip" },
+      },
     },
     -- build = ":Neorg sync-parsers",
     cmd = { "Neorg" },
