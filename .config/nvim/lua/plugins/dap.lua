@@ -34,6 +34,11 @@ return {
     end,
   },
   {
+    "rcarriga/cmp-dap",
+    keys = { "<leader>d" },
+    ft = { "dap-repl", "dapui_watches", "dapui_hover" },
+  },
+  {
     "andrewferrier/debugprint.nvim",
     dependencies = {
       "nvim-treesitter/nvim-treesitter", -- Needed to enable treesitter for NeoVim 0.8
