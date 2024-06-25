@@ -107,10 +107,6 @@ return {
         "hrsh7th/cmp-cmdline",
         "hrsh7th/cmp-nvim-lsp-signature-help",
         "onsails/lspkind.nvim",
-        {
-          "rcarriga/cmp-dap",
-          ft = { "dap-repl", "dapui_watches", "dapui_hover" },
-        },
         { "f3fora/cmp-spell" },
       },
     },
