@@ -18,10 +18,6 @@ return {
       "nvim-lua/plenary.nvim",
       "folke/zen-mode.nvim",
       "max397574/neorg-contexts",
-      {
-        "pysan3/neorg-templates",
-        dependencies = { "L3MON4D3/LuaSnip" },
-      },
     },
     -- build = ":Neorg sync-parsers",
     cmd = { "Neorg" },
