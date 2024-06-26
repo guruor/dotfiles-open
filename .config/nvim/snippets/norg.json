@@ -1,0 +1,24 @@
+{
+	"neorg_journal_template": {
+		"prefix": "journal",
+		"body": [
+			"@document.meta",
+			"title: ${CURRENT_DATE}",
+			"description:",
+			"authors: Govind",
+			"categories:",
+			"created: ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}",
+			"updated: ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}T${CURRENT_HOUR}:${CURRENT_MINUTE}:${CURRENT_SECOND}${CURRENT_TIMEZONE_OFFSET}",
+			"version: 1.1.1",
+			"@end",
+			"",
+			"* ${CURRENT_DATE}",
+			"** TODOs",
+			"   - ( ) ${0:}",
+			"",
+			"** Callouts",
+			"   -"
+		],
+		"description": "Neorg Journal Template With Metadata"
+	}
+}
