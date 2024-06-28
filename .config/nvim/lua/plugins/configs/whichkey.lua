@@ -88,6 +88,7 @@ keys = {
     f = {
         name = 'Find stuff with fzf',
         [" "] = { ":FzfLua<CR>", "Fzf" },
+        ["r"] = { ":GrugFar<CR>", "Find and Replace" },
         ["h"] = { ":FzfLua help_tags<CR>", "Help tags" },
         ["f"] = { ":FzfGrepProjectWithSelection<CR>", "Find text" },
         ["F"] = { ":FzfSearchInSpecificDirectory<CR>", "Find in directory" },
