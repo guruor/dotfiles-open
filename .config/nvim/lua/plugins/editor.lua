@@ -135,4 +135,27 @@ return {
     },
     opts = { use_default_keymaps = false, max_join_length = 150 },
   },
+  {
+    "MagicDuck/grug-far.nvim",
+    cmd = { "GrugFar" },
+    config = function()
+      local keymapPrefix = "<localleader>r"
+      local opts = {
+        keymaps = {
+          replace = { n = keymapPrefix .. "r" },
+          qflist = { n = keymapPrefix .. "q" },
+          syncLocations = { n = keymapPrefix .. "s" },
+          syncLine = { n = keymapPrefix .. "l" },
+          close = { n = keymapPrefix .. "c" },
+          historyOpen = { n = keymapPrefix .. "t" },
+          historyAdd = { n = keymapPrefix .. "a" },
+          refresh = { n = keymapPrefix .. "f" },
+          abort = { n = keymapPrefix .. "b" },
+          gotoLocation = { n = "<enter>" },
+          pickHistoryEntry = { n = "<enter>" },
+        },
+      }
+      require("grug-far").setup(opts)
+    end,
+  },
 }
