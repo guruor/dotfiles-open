@@ -12,6 +12,7 @@ keys = {
     ["P"] = { ":!opout %<CR>", "Preview files" },
     ["c"] = { ':exec ":w! | :vs | :te compiler % ".input("Enter args: ")<CR>', "Compile" },
     ["U"] = { ":UndotreeToggle<CR>", "Undo Tree" },
+    ["q"] = { "<cmd>close!<CR>", "Close" },
 }
 
 wk.register(keys, { prefix = localleader })

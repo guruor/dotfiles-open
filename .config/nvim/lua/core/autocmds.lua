@@ -328,13 +328,6 @@ autocmd("FileType", {
   group = easyCloseGroup,
 })
 
-vim.api.nvim_create_autocmd('WinEnter', {
-    callback = function(_)
-        if vim.tbl_contains(easyCloseBufTypes, vim.bo.buftype) then
-          vim.keymap.set("n", "q", "<cmd>close!<CR>")
-        end
-    end,
-    group = easyCloseGroup,
 })
 
 --------------- Disabling focus.nvim -------------------
