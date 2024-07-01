@@ -194,11 +194,6 @@ M.diffview = {
       layout = "diff3_mixed",
     },
   },
-  keymaps = {
-    file_panel = {
-      { "n", "<leader>cF", DiffWithDifftastic, { desc = "Diff with difftastic" } },
-    },
-  },
 }
 
 M.treesitter_context = {
