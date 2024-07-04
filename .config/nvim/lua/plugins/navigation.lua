@@ -45,10 +45,11 @@ return {
   {
     -- Only load whichkey after all the gui
     "folke/which-key.nvim",
-    keys = { "<leader>", ",", "<c-r>", "<c-w>", '"', "'", "`", "c", "v", "g" },
-    event = "VeryLazy",
+    keys = { "<leader>", "<localleader>", ",", "<c-r>", "<c-w>", '"', "'", "`", "c", "v", "g" },
     cmd = "WhichKey",
-    init = utils.load_config "configs.whichkey", -- Can't lazy load, else dynamic mappings don't load
+    config = function()
+      require("plugins.configs.whichkey").load()
+    end
   },
   {
     -- Vim subword movement with w, e, b
