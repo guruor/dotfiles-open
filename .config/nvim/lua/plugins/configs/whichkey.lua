@@ -154,6 +154,8 @@ local leader_mappings = {
     ["sw"] = { "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>", "Symbols Workspace" },
   },
 
+  L = { "<cmd>Lazy<CR>", "Lazy plugin manager" },
+
   t = {
     name = "taskrunner",
     ["r"] = { ":OverseerRun<CR>", "Run a task" },
