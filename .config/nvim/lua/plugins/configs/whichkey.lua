@@ -1,4 +1,3 @@
-local utils = require "utils"
 local wk = require("which-key")
 
 local leader = "<Space>"
@@ -8,23 +7,13 @@ local keys
 local keys_visual
 
 keys = {
-    name = 'Localleader mappings',
-    ["P"] = { ":!opout %<CR>", "Preview files" },
-    ["c"] = { ':exec ":w! | :vs | :te compiler % ".input("Enter args: ")<CR>', "Compile" },
-    ["U"] = { ":UndotreeToggle<CR>", "Undo Tree" },
-    ["q"] = { "<cmd>close!<CR>", "Close" },
-}
-
-wk.register(keys, { prefix = localleader })
-wk.register(keys, { prefix = localleader, mode = 'v' })
-
-keys = {
     name = 'Leader mappings',
     ["_"] = { "<C-W>s", "Split below" },
     ["|"] = { "<C-W>v", "Split right" },
     ["o"] = { ":lua require('tfm').open()<CR>", "Open TFM in current directory" },
     ["O"] = { ":lua require('tfm').open(vim.fn.getcwd())<CR>", "Open TFM in project root" },
-    ["qq"] = { "<cmd>qa<cr>", "Quit all" },
+    ["q"] = { "<cmd>close!<CR>", "Close" },
+    ["Q"] = { "<cmd>qa<cr>", "Quit all" },
 }
 wk.register(keys, { prefix = leader })
 wk.register(keys, { prefix = leader, mode = 'v' })
@@ -302,6 +291,15 @@ keys = {
 wk.register(keys, { prefix = leader })
 wk.register(keys, { prefix = leader, mode = 'v' })
 
+-- Buffer or filetype specific mappings should go with localleader
+keys = {
+    name = 'Localleader mappings',
+    ["P"] = { ":!opout %<CR>", "Preview files" },
+    ["c"] = { ':exec ":w! | :vs | :te compiler % ".input("Enter args: ")<CR>', "Compile" },
+}
+
+wk.register(keys, { prefix = localleader })
+wk.register(keys, { prefix = localleader, mode = 'v' })
 
 -- Adding file or buffer specific mapping with autocmds
 -- Reference https://github.com/folke/which-key.nvim/issues/276#issuecomment-1117432067
@@ -316,8 +314,8 @@ local function attach_rest_nvim_keys(bufnr)
             ["f"] = { '<Cmd>lua RestNvimRunCurrentFile()<Cr>', "Run current file" },
         }
     }
-    wk.register(keys, { prefix = leader })
-    wk.register(keys, { prefix = leader, mode = 'v' })
+    wk.register(keys, { prefix = localleader })
+    wk.register(keys, { prefix = localleader, mode = 'v' })
 end
 
 vim.api.nvim_create_autocmd(
@@ -340,8 +338,8 @@ local function attach_dadbod_ui_keys(bufnr)
             -- ["Rf"] = {"<Plug>(DBUI_Redraw)", "Redraw connections"}
         }
     }
-    wk.register(keys, { prefix = leader })
-    wk.register(keys, { prefix = leader, mode = 'v' })
+    wk.register(keys, { prefix = localleader })
+    wk.register(keys, { prefix = localleader, mode = 'v' })
 end
 
 vim.api.nvim_create_autocmd(
@@ -360,8 +358,8 @@ local function attach_markdown_keys(bufnr)
             ["x"] = { "<Cmd>MarkdownPreviewStop<Cr>", "Markdown Preview Stop" },
         }
     }
-    wk.register(keys, { prefix = leader })
-    wk.register(keys, { prefix = leader, mode = 'v' })
+    wk.register(keys, { prefix = localleader })
+    wk.register(keys, { prefix = localleader, mode = 'v' })
 end
 
 vim.api.nvim_create_autocmd(
