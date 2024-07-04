@@ -20,7 +20,6 @@ return {
   {
     "neovim/nvim-lspconfig",
     dependencies = {
-      { "simrat39/rust-tools.nvim", ft = "rs" },
       "jose-elias-alvarez/typescript.nvim",
       {
         "williamboman/mason.nvim",
@@ -79,6 +78,11 @@ return {
     config = function(_, opts)
       require("go").setup(opts)
     end,
+  },
+  {
+    'mrcjkb/rustaceanvim',
+    version = '^4',
+    lazy = false,
   },
   -- Managing and installing LSP servers
   {
