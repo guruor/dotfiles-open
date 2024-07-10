@@ -1,7 +1,12 @@
 local wezterm = require("wezterm")
 local config = wezterm.config_builder()
+if wezterm.target_triple == "x86_64-pc-windows-msvc" then
+    -- PoserShell for windows
+    config.default_prog = { "pwsh.exe", "-NoLogo" }
+else
+    config.default_prog = { "/bin/zsh", "--login" }
+end
 -- color_scheme = "Gruvbox dark, soft (base16)",
-config.default_prog = { "/bin/zsh", "--login" }
 config.color_scheme = "GitHub Dark"
 
 config.font_size = 14
