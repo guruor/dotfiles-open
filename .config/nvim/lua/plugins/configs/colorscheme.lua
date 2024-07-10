@@ -7,7 +7,7 @@ if vim.fn.has('termguicolors') then
 end
 
 -- Setting background as per dark mode flag
-local home_dir=os.getenv("HOME")
+local home_dir=os.getenv("HOME") or os.getenv("USERPROFILE")
 local dark_mode_flag_file=home_dir .. '/.cache/dark-mode.off'
 local f=io.open(dark_mode_flag_file,"r")
 if f~=nil then
