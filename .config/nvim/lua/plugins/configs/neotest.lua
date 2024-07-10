@@ -19,7 +19,7 @@ require("neotest").setup {
     require "neotest-vim-test" {
       ignore_file_types = { "python", "vim", "lua" },
     },
-    require "neotest-rust",
+    require('rustaceanvim.neotest'),
     require "neotest-go",
   },
   consumers = {

@@ -67,12 +67,6 @@ local otherModuleConfig = {
 local externalModuleConfig = {
   -- treesitter-context with concealing support
   ["external.context"] = {},
-  -- Extension to use template with dynamic values and lua snippets support
-  ["external.templates"] = {
-    config = {
-      templates_dir = { neorgDir .. "/templates" },
-    },
-  },
 }
 
 local finalConfig = {}

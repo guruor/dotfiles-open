@@ -11,7 +11,7 @@ return {
       "Weissle/persistent-breakpoints.nvim",
       "jay-babu/mason-nvim-dap.nvim",
       "theHamsta/nvim-dap-virtual-text",
-      "rcarriga/nvim-dap-ui",
+      { "rcarriga/nvim-dap-ui", dependencies = { "nvim-neotest/nvim-nio" } },
       "jbyuki/one-small-step-for-vimkind",
       "mfussenegger/nvim-dap-python",
     },
@@ -32,6 +32,11 @@ return {
     config = function(_, opts)
       require("persistent-breakpoints").setup(opts)
     end,
+  },
+  {
+    "rcarriga/cmp-dap",
+    keys = { "<leader>d" },
+    ft = { "dap-repl", "dapui_watches", "dapui_hover" },
   },
   {
     "andrewferrier/debugprint.nvim",

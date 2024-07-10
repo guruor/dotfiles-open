@@ -78,55 +78,43 @@ return {
     dependencies = {
       -- cmp sources plugins
       {
-        "saadparwaiz1/cmp_luasnip",
+        {
+          "garymjr/nvim-snippets",
+          opts = {
+            friendly_snippets = true,
+            extended_filetypes = {
+              typescript = { "javascript", "tsdoc" },
+              javascript = { "jsdoc" },
+              html = { "css", "javascript" },
+              lua = { "luadoc" },
+              python = { "python-docstring" },
+              sh = { "shelldoc" },
+              php = { "phpdoc" },
+              vimwiki = { "markdown" },
+            },
+          },
+          config = function(_, opts)
+            require("snippets").setup(opts)
+          end,
+          dependencies = { "rafamadriz/friendly-snippets" },
+          event = "InsertEnter",
+        },
         "hrsh7th/cmp-nvim-lua",
-        "hrsh7th/cmp-nvim-lsp",
-        "hrsh7th/cmp-buffer",
-        "hrsh7th/cmp-path",
+        { "hrsh7th/cmp-nvim-lsp" },
+        { "hrsh7th/cmp-buffer" },
+        { "hrsh7th/cmp-path" },
+        { "hrsh7th/cmp-calc" },
         "hrsh7th/cmp-cmdline",
         "hrsh7th/cmp-nvim-lsp-signature-help",
         "onsails/lspkind.nvim",
-        "f3fora/cmp-spell",
-        "rcarriga/cmp-dap",
-        "hrsh7th/cmp-calc",
+        { "f3fora/cmp-spell" },
       },
     },
   },
   {
-    "L3MON4D3/LuaSnip",
-    build = (not jit.os:find "Windows")
-        and "echo 'NOTE: jsregexp is optional, so not a big deal if it fails to build'; make install_jsregexp"
-      or nil,
-    dependencies = { "rafamadriz/friendly-snippets" },
-    config = utils.load_config "configs.snippets",
-    -- stylua: ignore
-    keys = {
-      {
-        "<tab>",
-        function()
-          return require("luasnip").jumpable(1) and "<Plug>luasnip-jump-next" or "<tab>"
-        end,
-        expr = true, silent = true, mode = "i",
-      },
-      { "<tab>", function() require("luasnip").jump(1) end, mode = "s" },
-      { "<s-tab>", function() require("luasnip").jump(-1) end, mode = { "i", "s" } },
-    },
-  },
-  {
-    "JoosepAlviste/nvim-ts-context-commentstring",
-    opts = require("plugins.configs.misc").ts_context_commentstring,
-    config = function(_, opts)
-      require("ts_context_commentstring").setup(opts)
-    end,
-  },
-  {
-    "numToStr/Comment.nvim",
-    keys = { { "gc", mode = { "n", "v" } } },
-    config = function()
-      require("Comment").setup {
-        pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
-      }
-    end,
+    "folke/ts-comments.nvim",
+    event = "VeryLazy",
+    opts = {},
   },
   -- easily search for, substitute, and abbreviate multiple variants of a word, replaces vim-abolish
   {
@@ -139,5 +127,35 @@ return {
     "danymat/neogen",
     config = true,
     event = "VeryLazy",
+  },
+  {
+    "Wansmer/treesj",
+    keys = {
+      { "<leader>J", "<cmd>TSJToggle<cr>", desc = "Join Toggle" },
+    },
+    opts = { use_default_keymaps = false, max_join_length = 150 },
+  },
+  {
+    "MagicDuck/grug-far.nvim",
+    cmd = { "GrugFar" },
+    config = function()
+      local keymapPrefix = "<localleader>r"
+      local opts = {
+        keymaps = {
+          replace = { n = keymapPrefix .. "r" },
+          qflist = { n = keymapPrefix .. "q" },
+          syncLocations = { n = keymapPrefix .. "s" },
+          syncLine = { n = keymapPrefix .. "l" },
+          close = { n = keymapPrefix .. "c" },
+          historyOpen = { n = keymapPrefix .. "t" },
+          historyAdd = { n = keymapPrefix .. "a" },
+          refresh = { n = keymapPrefix .. "f" },
+          abort = { n = keymapPrefix .. "b" },
+          gotoLocation = { n = "<enter>" },
+          pickHistoryEntry = { n = "<enter>" },
+        },
+      }
+      require("grug-far").setup(opts)
+    end,
   },
 }

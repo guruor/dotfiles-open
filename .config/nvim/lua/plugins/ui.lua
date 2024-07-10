@@ -31,15 +31,29 @@ return {
     "akinsho/bufferline.nvim",
     -- version = "*",
     dependencies = "nvim-tree/nvim-web-devicons",
-    config = utils.load_config "configs.bufferline",
-    event = { "BufReadPre", "BufNewFile" },
+    opts = require("plugins.configs.bufferline"),
+    config = function(_, opts)
+      require("bufferline").setup(opts)
+      -- Fix bufferline when restoring a session
+      vim.api.nvim_create_autocmd({ "BufAdd", "BufDelete" }, {
+        callback = function()
+          vim.schedule(function()
+            pcall(nvim_bufferline)
+          end)
+        end,
+      })
+    end,
+    event = "VeryLazy",
   },
   {
     "nvim-lualine/lualine.nvim",
-    config = utils.load_config "configs.statusline",
+    opts = require("plugins.configs.statusline"),
     -- event = { 'BufReadPre', 'BufNewFile' },
     lazy = false,
     priority = 999,
+    config = function(_, opts)
+      require("lualine").setup(opts)
+    end
   },
   {
     "folke/noice.nvim",
@@ -98,14 +112,6 @@ return {
     -- event = { 'BufReadPre', 'BufNewFile' }, -- Can't lazy load, if lazy loaded duplicate statusline appears
     lazy = false,
     priority = 998,
-  },
-  {
-    "ntpeters/vim-better-whitespace",
-    init = function()
-      require("plugins.configs.misc").whitespace()
-    end,
-    event = { "BufReadPost" },
-    cmd = { "ToggleWhitespace", "DisableWhitespace" },
   },
   {
     "m4xshen/smartcolumn.nvim",

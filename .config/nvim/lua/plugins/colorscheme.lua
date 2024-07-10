@@ -15,4 +15,8 @@ return {
       vim.g.tpipeline_clearstl = 1
     end,
   },
+  {
+    "aklt/plantuml-syntax",
+    ft = "plantuml",
+  },
 }
