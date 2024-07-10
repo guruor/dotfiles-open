@@ -22,6 +22,24 @@ return {
     lazy = false,
   },
   {
+    "chrisgrieser/nvim-recorder",
+    opts = {
+      slots = { "a", "b" },
+
+      mapping = {
+        -- Mapping <Leader>r is used to run certain saved macro
+        -- Mapping <Leader>s is used to run certain Substitute commands
+        startStopRecording = "q",
+        playMacro = "Q",
+        editMacro = "<Leader>mi",
+        yankMacro = "<Leader>my",
+        deleteAllMacros = "<Leader>mD",
+        switchSlot = "<Leader>mT",
+      },
+    },
+    event = "VeryLazy",
+  },
+  {
     "akinsho/toggleterm.nvim",
     version = "*",
     config = true,
@@ -52,5 +70,23 @@ return {
   {
     "mbbill/undotree",
     cmd = "UndotreeToggle",
+  },
+  {
+    "https://gitlab.com/itaranto/plantuml.nvim",
+    version = "*",
+    config = function()
+      require("plantuml").setup()
+    end,
+    cmd = "PlantUML",
+  },
+  {
+    "mistricky/codesnap.nvim",
+    build = "make",
+    cmd = { "CodeSnap", "CodeSnapSave" },
+    opts = {
+      save_path = "~/Pictures/Pictures",
+      has_breadcrumbs = true,
+      watermark = "",
+    },
   },
 }

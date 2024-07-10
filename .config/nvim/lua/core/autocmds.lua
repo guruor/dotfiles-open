@@ -121,17 +121,6 @@ autocmd({ "BufWinEnter", "WinEnter" }, {
   group = generalSettingsGroup,
 })
 
-autocmd({ "TermOpen" }, {
-  pattern = "*",
-  callback = function()
-    vim.opt.number = false
-    vim.opt.relativenumber = false
-    vim.cmd ":DisableWhitespace"
-    AddTerminalNavigation()
-  end,
-  group = generalSettingsGroup,
-})
-
 --------------- Neomutt -----------------
 autocmd({ "BufRead", "BufNewFile" }, {
   pattern = "/tmp/neomutt*",
@@ -313,23 +302,6 @@ autocmd("BufNewFile", {
   group = generalSettingsGroup,
 })
 
--- Neorg load default journal template
-autocmd({ "BufNew", "BufNewFile" }, {
-  callback = function(args)
-    local toc = "index.norg"
-    vim.schedule(function()
-      if vim.fn.fnamemodify(args.file, ":t") == toc then
-        return
-      end
-      if args.event == "BufNewFile" or (args.event == "BufNew" and FileExistsAndIsEmpty(args.file)) then
-        vim.api.nvim_cmd({ cmd = "Neorg", args = { "templates", "fload", "journal" } }, {})
-      end
-    end)
-  end,
-  desc = "Load new workspace entries with a Neorg template",
-  pattern = { vim.fn.expand "$NEORG_DIR" .. "/**/journal/*.norg" },
-})
-
 
 --------------- Auto resize `dbout` buffer and sql buffer for dadbod-ui -----------------
 -- autocmd("WinEnter", {
@@ -356,13 +328,6 @@ autocmd("FileType", {
   group = easyCloseGroup,
 })
 
-vim.api.nvim_create_autocmd('WinEnter', {
-    callback = function(_)
-        if vim.tbl_contains(easyCloseBufTypes, vim.bo.buftype) then
-          vim.keymap.set("n", "q", "<cmd>close!<CR>")
-        end
-    end,
-    group = easyCloseGroup,
 })
 
 --------------- Disabling focus.nvim -------------------

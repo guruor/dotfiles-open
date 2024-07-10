@@ -1,5 +1,4 @@
 local utils = require "utils"
-local actions = require "fzf-lua.actions"
 
 require("fzf-lua").setup {
   winopts = {
@@ -9,8 +8,25 @@ require("fzf-lua").setup {
       layout = "vertical", -- horizontal|vertical|flex
     },
   },
+  defaults = { formatter = "path.filename_first" }, -- this replaces the Special_fzf_lua function
+  path_shorten = true,
   fzf_opts = {
     ["--history"] = vim.fn.stdpath "data" .. "/fzf-lua-history",
+  },
+  -- RIPGREP_CONFIG_PATH is not respected anymore, so better update the rg_opts as needed
+  grep = {
+    formatter = "",
+    rg_opts = [[--hidden --follow --column --line-number --no-heading]]
+      .. [[ --color=always --smart-case -g "!.git" -e]],
+    rg_glob = true,
+    fzf_opts = {
+      ["--ansi"] = "",
+      ["--delimiter"] = ":",
+      ["--with-nth"] = "2..",
+    },
+  },
+  files = {
+    rg_opts = [[--color=never --files --hidden --follow -g "!.git"]],
   },
 }
 

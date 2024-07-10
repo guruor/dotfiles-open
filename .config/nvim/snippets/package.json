@@ -1,6 +1,6 @@
 {
   "name": "nvim-snippets",
-  "author": "G0V1ND",
+  "author": "guruor",
   "engines": {
     "vscode": "^1.11.0"
   },
@@ -25,6 +25,10 @@
       {
         "language": "go",
         "path": "./go.json"
+      },
+      {
+        "language": "norg",
+        "path": "./norg.json"
       },
       {
         "language": [
