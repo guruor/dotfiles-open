@@ -328,8 +328,6 @@ autocmd("FileType", {
   group = easyCloseGroup,
 })
 
-})
-
 --------------- Disabling focus.nvim -------------------
 local focusDisableFiletypes = { 'neo-tree' }
 local focusDisableBuftypes = { 'nofile', 'prompt', 'popup' }
