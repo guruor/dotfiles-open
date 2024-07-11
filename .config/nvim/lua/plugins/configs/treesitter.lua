@@ -60,7 +60,7 @@ M.options = {
     "query",
     "dap_repl",
     "comment",
-    "regex"
+    "regex",
   },
   query_linter = {
     enable = true,
@@ -75,7 +75,7 @@ M.additional_setup = function()
   vim.treesitter.language.register("markdown", "vimwiki")
   vim.treesitter.language.register("markdown", "chatgpt")
 
-  -- local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+  local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
   -- Custom tree-sitter parser for http files, grammar includes rest-nvim format
   -- Tree sitter by default installs this syntax only for http filetype
   -- https://github.com/rest-nvim/rest.nvim/issues/30
@@ -97,5 +97,16 @@ M.additional_setup = function()
   --   },
   --   filetype = 'plantuml',
   -- }
+  --
+  parser_config.powershell = {
+    install_info = {
+      url = "https://github.com/airbus-cert/tree-sitter-powershell",
+      files = { "src/parser.c", "src/scanner.c" },
+      branch = "main",
+      generate_requires_npm = false,
+      requires_generate_from_grammar = false,
+    },
+    filetype = "ps1",
+  }
 end
 return M
