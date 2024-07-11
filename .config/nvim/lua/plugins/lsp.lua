@@ -80,8 +80,8 @@ return {
     end,
   },
   {
-    'mrcjkb/rustaceanvim',
-    version = '^4',
+    "mrcjkb/rustaceanvim",
+    version = "^4",
     lazy = false,
   },
   -- Managing and installing LSP servers
