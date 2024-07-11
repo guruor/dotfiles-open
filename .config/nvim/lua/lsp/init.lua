@@ -46,6 +46,7 @@ local servers = {
   sqlls = require "lsp.servers.common",
   marksman = require "lsp.servers.common",
   bufls = require "lsp.servers.common",
+  powershell_es = require "lsp.servers.common",
 }
 
 mason_lspconfig.setup {
