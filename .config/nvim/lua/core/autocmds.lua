@@ -250,6 +250,22 @@ autocmd("BufWritePost", {
   group = postSaveSettingsGroup,
 })
 
+autocmd("BufWritePost", {
+  pattern = vim.fn.expand "$MY_DOTFILES_DIR" .. "/.config/whkdrc",
+  callback = function()
+    vim.cmd "!taskkill /f /im whkd.exe && Start-Process whkd -WindowStyle hidden"
+  end,
+  group = postSaveSettingsGroup,
+})
+
+autocmd("BufWritePost", {
+  pattern = vim.fn.expand "$MY_DOTFILES_DIR" .. "/.config/komorebi/komorebi.json",
+  callback = function()
+    vim.cmd "!StopTiling; StartTiling"
+  end,
+  group = postSaveSettingsGroup,
+})
+
 -- Stops insert mode for terminal window
 autocmd("BufLeave", {
   pattern = "term://*",
