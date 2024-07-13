@@ -5,238 +5,257 @@ local localleader = "\\"
 
 local function merge_mappings(base_mappings, override_mappings)
   local merged_mappings = vim.deepcopy(base_mappings)
-  for k, v in pairs(override_mappings) do
-    merged_mappings[k] = v
-  end
+  table.insert(merged_mappings, override_mappings)
   return merged_mappings
 end
 
 -- General mappings
 local leader_mappings = {
-  name = "Leader mappings",
-  ["_"] = { "<C-W>s", "Split below" },
-  ["|"] = { "<C-W>v", "Split right" },
-  ["o"] = { ":lua require('tfm').open()<CR>", "Open TFM in current directory" },
-  ["O"] = { ":lua require('tfm').open(vim.fn.getcwd())<CR>", "Open TFM in project root" },
-  ["q"] = { "<cmd>close!<CR>", "Close" },
-  ["Q"] = { "<cmd>qa<cr>", "Quit all" },
+  mode = { "n", "v" },
+  { leader, group = "Leader mappings" },
+  { leader .. "_", "<C-W>s", desc = "Split below" },
+  { leader .. "|", "<C-W>v", desc = "Split right" },
+  { leader .. "o", ":lua require('tfm').open()<CR>", desc = "Open TFM in current directory" },
+  { leader .. "O", ":lua require('tfm').open(vim.fn.getcwd())<CR>", desc = "Open TFM in project root" },
+  { leader .. "q", "<cmd>close!<CR>", desc = "Close" },
+  { leader .. "Q", "<cmd>qa<cr>", desc = "Quit all" },
 
-  b = {
-    name = "Buffers",
-    ["b"] = { "<cmd>e #<cr>", "Switch to Other Buffer" },
-    ["p"] = { ":BufferLineCyclePrev<CR>", "Jump to previous tab" },
-    ["n"] = { ":BufferLineCycleNext<CR>", "Jump to next tab" },
-    ["j"] = { ":BufferLineCyclePrev<CR>", "Jump to previous tab" },
-    ["k"] = { ":BufferLineCycleNext<CR>", "Jump to next tab" },
-    ["<lt>"] = { ":BufferLineMovePrev<CR>", "Move tab left" },
-    [">"] = { ":BufferLineMoveNext<CR>", "Move tab right" },
-    ["1"] = { '<cmd>lua require("bufferline").go_to(1, true)<CR>', "which_key_ignore" },
-    ["2"] = { '<cmd>lua require("bufferline").go_to(2, true)<CR>', "which_key_ignore" },
-    ["3"] = { '<cmd>lua require("bufferline").go_to(3, true)<CR>', "which_key_ignore" },
-    ["4"] = { '<cmd>lua require("bufferline").go_to(4, true)<CR>', "which_key_ignore" },
-    ["5"] = { '<cmd>lua require("bufferline").go_to(5, true)<CR>', "which_key_ignore" },
-    ["6"] = { '<cmd>lua require("bufferline").go_to(6, true)<CR>', "which_key_ignore" },
-    ["7"] = { '<cmd>lua require("bufferline").go_to(7, true)<CR>', "which_key_ignore" },
-    ["8"] = { '<cmd>lua require("bufferline").go_to(8, true)<CR>', "which_key_ignore" },
-    ["9"] = { '<cmd>lua require("bufferline").go_to(9, true)<CR>', "which_key_ignore" },
-    ["u"] = { ":update<CR>", "Save file" },
-    -- Closing float windows before deleting the current buffer
-    ["d"] = { ":lua CloseAllFloatingWindows();vim.api.nvim_command('bdelete')<CR>", "Delete buffer" },
-    ["D"] = { ":lua CloseAllFloatingWindows(); vim.api.nvim_command('bufdo bdelete');<CR>", "Delete all buffers" },
-    -- Closing float windows before closing the current window
-    ["q"] = { ":lua CloseAllFloatingWindows();vim.api.nvim_command('quit')<CR>", "Quit" },
-    ["x"] = { ":q!<CR>", "Close without saving" },
-    ["Q"] = { ":qa!<CR>", "Quit all" },
+  { leader .. "b", group = "Buffers" },
+  { leader .. "bb", "<cmd>e #<cr>", desc = "Switch to Other Buffer" },
+  { leader .. "bp", ":BufferLineCyclePrev<CR>", desc = "Jump to previous tab" },
+  { leader .. "bn", ":BufferLineCycleNext<CR>", desc = "Jump to next tab" },
+  { leader .. "bj", ":BufferLineCyclePrev<CR>", desc = "Jump to previous tab" },
+  { leader .. "bk", ":BufferLineCycleNext<CR>", desc = "Jump to next tab" },
+  { leader .. "b<lt>", ":BufferLineMovePrev<CR>", desc = "Move tab left" },
+  { leader .. "b>", ":BufferLineMoveNext<CR>", desc = "Move tab right" },
+  { leader .. "b1", '<cmd>lua require("bufferline").go_to(1, true)<CR>', hidden = true },
+  { leader .. "b2", '<cmd>lua require("bufferline").go_to(2, true)<CR>', hidden = true },
+  { leader .. "b3", '<cmd>lua require("bufferline").go_to(3, true)<CR>', hidden = true },
+  { leader .. "b4", '<cmd>lua require("bufferline").go_to(4, true)<CR>', hidden = true },
+  { leader .. "b5", '<cmd>lua require("bufferline").go_to(5, true)<CR>', hidden = true },
+  { leader .. "b6", '<cmd>lua require("bufferline").go_to(6, true)<CR>', hidden = true },
+  { leader .. "b7", '<cmd>lua require("bufferline").go_to(7, true)<CR>', hidden = true },
+  { leader .. "b8", '<cmd>lua require("bufferline").go_to(8, true)<CR>', hidden = true },
+  { leader .. "b9", '<cmd>lua require("bufferline").go_to(9, true)<CR>', hidden = true },
+  { leader .. "bu", ":update<CR>", desc = "Save file" },
+  -- Closing float windows before deleting the current buffer
+  { leader .. "bd", ":lua CloseAllFloatingWindows();vim.api.nvim_command('bdelete')<CR>", desc = "Delete buffer" },
+  {
+    leader .. "bD",
+    ":lua CloseAllFloatingWindows(); vim.api.nvim_command('bufdo bdelete');<CR>",
+    desc = "Delete all buffers",
+  },
+  -- Closing float windows before closing the current window
+  { leader .. "bq", ":lua CloseAllFloatingWindows();vim.api.nvim_command('quit')<CR>", desc = "Quit" },
+  { leader .. "bx", ":q!<CR>", desc = "Close without saving" },
+  { leader .. "bQ", ":qa!<CR>", desc = "Quit all" },
+
+  { leader .. "F", group = "Find stuff" },
+  { leader .. "F ", ":Telescope<CR>", desc = "Telescope" },
+  { leader .. "Fh", ":Telescope help_tags<CR>", desc = "Help tags" },
+  { leader .. "Ff", ":lua TelescopeGrepStringWithSelection() <CR>", desc = "Find text" },
+  { leader .. "FF", ":lua TelescopeSearchInSpecificDirectory() <CR>", desc = "Find in directory" },
+  { leader .. "F/", ":lua TelescopeCurrentBufferFuzzyFindWithSelection() <CR>", desc = "Find in buffer" },
+  {
+    leader .. "Fz",
+    ":lua require'telescope'.extensions.zoxide.list{results_title='Z Directories', prompt_title='Z Prompt'}<CR>",
+    desc = "Find z directory",
+  },
+  { leader .. "Fp", ":Telescope fd<CR>", desc = "Find files fd" },
+  { leader .. "Fgf", ":Telescope git_files<CR>", desc = "Git files" },
+  { leader .. "Fgb", ":Telescope git_branches<CR>", desc = "Git branches" },
+  { leader .. "Fgs", ":Telescope git_status<CR>", desc = "Git status" },
+  { leader .. "Fld", ":Telescope diagnostics<CR>", desc = "LSP diagnostics" },
+  { leader .. "Flr", ":Telescope lsp_references<CR>", desc = "Find references" },
+  { leader .. "Flq", ":Telescope quickfix<CR>", desc = "Find quickfix" },
+
+  { leader .. "f", group = "Find stuff with fzf" },
+  { leader .. "f ", ":FzfLua<CR>", desc = "Fzf" },
+  { leader .. "fr", ":GrugFar<CR>", desc = "Find and Replace" },
+  { leader .. "fh", ":FzfLua help_tags<CR>", desc = "Help tags" },
+  { leader .. "ff", ":FzfGrepProjectWithSelection<CR>", desc = "Find text" },
+  { leader .. "fF", ":FzfSearchInSpecificDirectory<CR>", desc = "Find in directory" },
+  { leader .. "f/", ":FzfBlinesWithSelection<CR>", desc = "Find in buffer" },
+  { leader .. "fp", ":FzfLua files<CR>", desc = "Find files fd" },
+  { leader .. "fgf", ":FzfLua git_files<CR>", desc = "Git files" },
+  { leader .. "fgb", ":FzfLua git_branches<CR>", desc = "Git branches" },
+  { leader .. "fgs", ":FzfLua git_status<CR>", desc = "Git status" },
+  { leader .. "fld", ":FzfLua diagnostics_document<CR>", desc = "LSP diagnostics" },
+  { leader .. "flr", ":FzfLua lsp_references<CR>", desc = "Find references" },
+  { leader .. "flq", ":FzfLua quickfix<CR>", desc = "Find quickfix" },
+
+  { leader .. "g", group = "Git" },
+  { leader .. "ga", ":Git commit --amend<CR>", desc = "Ammend Commit" },
+  { leader .. "gb", ":Git blame<CR>", desc = "Blame" },
+  { leader .. "gB", ":GitLink!<CR>", desc = "Open commit in browser" },
+  { leader .. "gc", ":Git commit<CR>", desc = "Commit" },
+  { leader .. "gC", ":FzfLua git_branches<CR>", desc = "Checkout branch" },
+  { leader .. "gd", ":DiffviewToggle<CR>", desc = "DiffviewToggle" },
+  -- { leader .. "gd", ":Gvdiffsplit!<CR>", desc = "Diff vertical split" },
+  { leader .. "gD", ":Git diff<CR>", desc = "Diff" },
+  { leader .. "gm", ":Git mergetool<CR>", desc = "Git mergetool" },
+  { leader .. "gg", ":GGrep<CR>", desc = "Grep" },
+  { leader .. "gs", ":Git<CR>", desc = "Status" },
+  { leader .. "gl", ":Git log -200 <CR>", desc = "Last 200 commits log" },
+  { leader .. "gL", ":tabnew | terminal lazygit<CR>", desc = "Lazygit" },
+  { leader .. "gp", ":Git push<CR>", desc = "Push" },
+  { leader .. "gP", ":Git pull<CR>", desc = "Pull" },
+  { leader .. "g<lt>", ":diffget //3<CR>", desc = "Get changes from right" },
+  { leader .. "g>", ":diffget //2<CR>", desc = "Get changes from left" },
+
+  { leader .. "d", group = "Debug" },
+  { leader .. "db", ":PBToggleBreakpoint<CR>", desc = "Toggle Breakpoint" },
+  { leader .. "dB", ":PBClearAllBreakpoints<CR>", desc = "Clear all breakpoints" },
+  { leader .. "dj", "<cmd>lua require'dap'.down()<CR>", desc = "Down in stack trace" },
+  { leader .. "dk", "<cmd>lua require'dap'.up()<CR>", desc = "Up in stack trace" },
+  { leader .. "dc", "<cmd>lua require'dap'.continue()<CR>", desc = "Continue" },
+  { leader .. "dR", "<cmd> lua require('dap').run_to_cursor()<CR> ", desc = "Run till cursor" },
+  { leader .. "dn", "<cmd>lua require'dap'.step_over()<CR>", desc = "Step Over" },
+  { leader .. "ds", "<cmd>lua require'dap'.step_into()<CR>", desc = "Step Into" },
+  { leader .. "du", "<cmd>lua require'dap'.step_out()<CR>", desc = "Step Out" },
+  {
+    leader .. "dl",
+    "<cmd>lua require'dap'.toggle_breakpoint(nil, nil, vim.fn.input('Log point message: '), true)<CR>",
+    desc = "Log",
+  },
+  { leader .. "dr", "<cmd>lua require'dap'.repl.toggle({height=15})<CR>", desc = "Toggle REPL" },
+  { leader .. "dx", "<cmd>lua require'dap'.close()<CR>", desc = "Stop" },
+  { leader .. "de", "<cmd>lua require'dapui'.eval()<CR>", desc = "DAP evaluate expression" },
+  { leader .. "dt", "<cmd>lua require'dapui'.toggle()<CR>", desc = "DAP UI Toggle" },
+  { leader .. "dh", "<cmd>lua require'dap.ui.widgets'.hover()<CR>", desc = "Widget Hover" },
+  {
+    leader .. "dS",
+    "<cmd>lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>",
+    desc = "Widget Scopes",
+  },
+  {
+    leader .. "ddr",
+    ':exec ":vs | :te cargo build; rust-lldb ".input("Path to executable: ", getcwd() .. "/target/debug/", "file")." ".input("Enter args: ")<CR>',
+    desc = "rust-lldb",
+  },
+  {
+    leader .. "dN",
+    ":lua require'osv'.launch({ config_file = '~/.config/nvim/lua/initlsp.lua', port = 8086})<CR>",
+    desc = "Debug neovim lua",
   },
 
-  F = {
-    name = "Find stuff",
-    [" "] = { ":Telescope<CR>", "Telescope" },
-    ["h"] = { ":Telescope help_tags<CR>", "Help tags" },
-    ["f"] = { ":lua TelescopeGrepStringWithSelection() <CR>", "Find text" },
-    ["F"] = { ":lua TelescopeSearchInSpecificDirectory() <CR>", "Find in directory" },
-    ["/"] = { ":lua TelescopeCurrentBufferFuzzyFindWithSelection() <CR>", "Find in buffer" },
-    ["z"] = {
-      ":lua require'telescope'.extensions.zoxide.list{results_title='Z Directories', prompt_title='Z Prompt'}<CR>",
-      "Find z directory",
-    },
-    ["p"] = { ":Telescope fd<CR>", "Find files fd" },
-    ["gf"] = { ":Telescope git_files<CR>", "Git files" },
-    ["gb"] = { ":Telescope git_branches<CR>", "Git branches" },
-    ["gs"] = { ":Telescope git_status<CR>", "Git status" },
-    ["ld"] = { ":Telescope diagnostics<CR>", "LSP diagnostics" },
-    ["lr"] = { ":Telescope lsp_references<CR>", "Find references" },
-    ["lq"] = { ":Telescope quickfix<CR>", "Find quickfix" },
+  { leader .. "l", group = "LSP" },
+  {
+    leader .. "l=",
+    "<cmd>update | lua require('conform').format({ async = true, lsp_fallback = true })<CR>",
+    desc = "Format",
   },
-
-  f = {
-    name = "Find stuff with fzf",
-    [" "] = { ":FzfLua<CR>", "Fzf" },
-    ["r"] = { ":GrugFar<CR>", "Find and Replace" },
-    ["h"] = { ":FzfLua help_tags<CR>", "Help tags" },
-    ["f"] = { ":FzfGrepProjectWithSelection<CR>", "Find text" },
-    ["F"] = { ":FzfSearchInSpecificDirectory<CR>", "Find in directory" },
-    ["/"] = { ":FzfBlinesWithSelection<CR>", "Find in buffer" },
-    ["p"] = { ":FzfLua files<CR>", "Find files fd" },
-    ["gf"] = { ":FzfLua git_files<CR>", "Git files" },
-    ["gb"] = { ":FzfLua git_branches<CR>", "Git branches" },
-    ["gs"] = { ":FzfLua git_status<CR>", "Git status" },
-    ["ld"] = { ":FzfLua diagnostics_document<CR>", "LSP diagnostics" },
-    ["lr"] = { ":FzfLua lsp_references<CR>", "Find references" },
-    ["lq"] = { ":FzfLua quickfix<CR>", "Find quickfix" },
+  { leader .. "l\\", "<Cmd>AerialToggle<CR>", desc = "Toggle outline" },
+  { leader .. "lda", "<Cmd>FzfLua lsp_document_diagnostics<CR>", desc = "All diagnostic" },
+  {
+    leader .. "ldl",
+    "<Cmd>lua vim.diagnostic.open_float(0, { scope = 'line', border = 'single' })<CR>",
+    desc = "Line Diagnostic",
   },
+  { leader .. "li", "<cmd>lua vim.lsp.buf.incoming_calls()<CR>", desc = "Incoming calls" },
+  { leader .. "ll", "<Cmd>lua require('lint').try_lint()<CR>", desc = "Trigger linter" },
+  { leader .. "lo", "<cmd>lua vim.lsp.buf.outgoing_calls()<CR>", desc = "Outgoing calls" },
+  { leader .. "lsd", "<cmd>lua vim.lsp.buf.document_symbol()<CR>", desc = "Symbols Document" },
+  { leader .. "lsw", "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>", desc = "Symbols Workspace" },
 
-  g = {
-    name = "Git",
-    ["a"] = { ":Git commit --amend<CR>", "Ammend Commit" },
-    ["b"] = { ":Git blame<CR>", "Blame" },
-    ["B"] = { ":GitLink!<CR>", "Open commit in browser" },
-    ["c"] = { ":Git commit<CR>", "Commit" },
-    ["C"] = { ":FzfLua git_branches<CR>", "Checkout branch" },
-    ["d"] = { ":DiffviewToggle<CR>", "DiffviewToggle" },
-    -- ["d"] = { ":Gvdiffsplit!<CR>", "Diff vertical split" },
-    ["D"] = { ":Git diff<CR>", "Diff" },
-    ["m"] = { ":Git mergetool<CR>", "Git mergetool" },
-    ["g"] = { ":GGrep<CR>", "Grep" },
-    ["s"] = { ":Git<CR>", "Status" },
-    ["l"] = { ":Git log -200 <CR>", "Last 200 commits log" },
-    ["L"] = { ":tabnew | terminal lazygit<CR>", "Lazygit" },
-    ["p"] = { ":Git push<CR>", "Push" },
-    ["P"] = { ":Git pull<CR>", "Pull" },
-    ["<lt>"] = { ":diffget //3<CR>", "Get changes from right" },
-    [">"] = { ":diffget //2<CR>", "Get changes from left" },
-  },
+  { leader .. "L", "<cmd>Lazy<CR>", desc = "Lazy plugin manager" },
 
-  d = {
-    name = "Debug",
-    ["b"] = { ":PBToggleBreakpoint<CR>", "Toggle Breakpoint" },
-    ["B"] = { ":PBClearAllBreakpoints<CR>", "Clear all breakpoints" },
-    ["j"] = { "<cmd>lua require'dap'.down()<CR>", "Down in stack trace" },
-    ["k"] = { "<cmd>lua require'dap'.up()<CR>", "Up in stack trace" },
-    ["c"] = { "<cmd>lua require'dap'.continue()<CR>", "Continue" },
-    ["R"] = { "<cmd> lua require('dap').run_to_cursor()<CR> ", "Run till cursor" },
-    ["n"] = { "<cmd>lua require'dap'.step_over()<CR>", "Step Over" },
-    ["s"] = { "<cmd>lua require'dap'.step_into()<CR>", "Step Into" },
-    ["u"] = { "<cmd>lua require'dap'.step_out()<CR>", "Step Out" },
-    ["l"] = {
-      "<cmd>lua require'dap'.toggle_breakpoint(nil, nil, vim.fn.input('Log point message: '), true)<CR>",
-      "Log",
-    },
-    ["r"] = { "<cmd>lua require'dap'.repl.toggle({height=15})<CR>", "Toggle REPL" },
-    ["x"] = { "<cmd>lua require'dap'.close()<CR>", "Stop" },
-    ["e"] = { "<cmd>lua require'dapui'.eval()<CR>", "DAP evaluate expression" },
-    ["t"] = { "<cmd>lua require'dapui'.toggle()<CR>", "DAP UI Toggle" },
-    ["h"] = { "<cmd>lua require'dap.ui.widgets'.hover()<CR>", "Widget Hover" },
-    ["S"] = {
-      "<cmd>lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>",
-      "Widget Scopes",
-    },
-    ["dr"] = {
-      ':exec ":vs | :te cargo build; rust-lldb ".input("Path to executable: ", getcwd() .. "/target/debug/", "file")." ".input("Enter args: ")<CR>',
-      "rust-lldb",
-    },
-    ["N"] = {
-      ":lua require'osv'.launch({ config_file = '~/.config/nvim/lua/initlsp.lua', port = 8086})<CR>",
-      "Debug neovim lua",
-    },
-  },
+  { leader .. "t", group = "taskrunner" },
+  { leader .. "tr", ":OverseerRun<CR>", desc = "Run a task" },
+  { leader .. "tt", ":OverseerToggle<CR>", desc = "Toggle task list" },
+  { leader .. "ta", ":OverseerQuickAction<CR>", desc = "Toggle quick action" },
 
-  l = {
-    name = "LSP",
-    ["="] = { "<cmd>update | lua require('conform').format({ async = true, lsp_fallback = true })<CR>", "Format" },
-    ["\\"] = { "<Cmd>AerialToggle<CR>", "Toggle outline" },
-    ["da"] = { "<Cmd>FzfLua lsp_document_diagnostics<CR>", "All diagnostic" },
-    ["dl"] = { "<Cmd>lua vim.diagnostic.open_float(0, { scope = 'line', border = 'single' })<CR>", "Line Diagnostic" },
-    ["i"] = { "<cmd>lua vim.lsp.buf.incoming_calls()<CR>", "Incoming calls" },
-    ["l"] = { "<Cmd>lua require('lint').try_lint()<CR>", "Trigger linter" },
-    ["o"] = { "<cmd>lua vim.lsp.buf.outgoing_calls()<CR>", "Outgoing calls" },
-    ["sd"] = { "<cmd>lua vim.lsp.buf.document_symbol()<CR>", "Symbols Document" },
-    ["sw"] = { "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>", "Symbols Workspace" },
-  },
+  { leader .. "T", group = "Toggle" },
+  { leader .. "Tb", ":lua ToggleBackground()<CR>", desc = "Toggle vim background" },
+  { leader .. "TB", ":!toggle-dark-mode<CR>", desc = "Toggle background of all apps" },
+  { leader .. "Tn", ":set nonumber!<CR>", desc = "Line numbers" },
+  { leader .. "Tff", ":FocusToggle<CR>", desc = "Focus nvim" },
+  { leader .. "Tr", ":set norelativenumber!<CR>", desc = "Relative line numbers" },
+  { leader .. "Tw", ":set wrap!<CR>", desc = "Word wrap" },
+  { leader .. "Tc", ":CccHighlighterToggle<CR>", desc = "Color code highlight" },
+  { leader .. "Tl", ":Twilight<CR>", desc = "Twilight" },
+  { leader .. "Ti", ":IBLToggle<CR>", desc = "Indent lines" },
+  { leader .. "Tu", ":UndotreeToggle<CR>", desc = "Undo Tree" },
+  { leader .. "Th", ":lua ToggleHiddenAll()<CR>", desc = "Hide" },
+  { leader .. "Tz", ":ZenMode<CR>", desc = "ZenMode" },
+  { leader .. "Ts", ":lua ToggleTpipeline()<CR>", desc = "Toggle tpipeline" },
+  { leader .. "TS", ":set spell!<CR>", desc = "Spell" },
+  { leader .. "Tfc", ":lua ToggleFoldcolumn()<CR>", desc = "Toggle foldcolumn" },
 
-  L = { "<cmd>Lazy<CR>", "Lazy plugin manager" },
-
-  t = {
-    name = "taskrunner",
-    ["r"] = { ":OverseerRun<CR>", "Run a task" },
-    ["t"] = { ":OverseerToggle<CR>", "Toggle task list" },
-    ["a"] = { ":OverseerQuickAction<CR>", "Toggle quick action" },
-  },
-
-  T = {
-    name = "Toggle",
-    ["b"] = { ":lua ToggleBackground()<CR>", "Toggle vim background" },
-    ["B"] = { ":!toggle-dark-mode<CR>", "Toggle background of all apps" },
-    ["n"] = { ":set nonumber!<CR>", "Line numbers" },
-    ["ff"] = { ":FocusToggle<CR>", "Focus nvim" },
-    ["r"] = { ":set norelativenumber!<CR>", "Relative line numbers" },
-    ["w"] = { ":set wrap!<CR>", "Word wrap" },
-    ["c"] = { ":CccHighlighterToggle<CR>", "Color code highlight" },
-    ["l"] = { ":Twilight<CR>", "Twilight" },
-    ["i"] = { ":IBLToggle<CR>", "Indent lines" },
-    ["u"] = { ":UndotreeToggle<CR>", "Undo Tree" },
-    ["h"] = { ":lua ToggleHiddenAll()<CR>", "Hide" },
-    ["z"] = { ":ZenMode<CR>", "ZenMode" },
-    ["s"] = { ":lua ToggleTpipeline()<CR>", "Toggle tpipeline" },
-    ["S"] = { ":set spell!<CR>", "Spell" },
-    ["fc"] = { ":lua ToggleFoldcolumn()<CR>", "Toggle foldcolumn" },
-  },
-
-  a = {
-    name = "Authoring",
-    ["c"] = { "1z=", "Correct misspelled word" },
-    ["t"] = { ":ThesaurusQueryReplaceCurrentWord<CR>", "Replace word under cursor with synonym" },
-    ["T"] = { 'y:ThesaurusQueryReplace <C-r>"<CR>', "Replace visual selection with synonym", silent = false },
+  { leader .. "a", group = "Authoring" },
+  { leader .. "ac", "1z=", desc = "Correct misspelled word" },
+  { leader .. "at", ":ThesaurusQueryReplaceCurrentWord<CR>", desc = "Replace word under cursor with synonym" },
+  {
+    leader .. "aT",
+    'y:ThesaurusQueryReplace <C-r>"<CR>',
+    desc = "Replace visual selection with synonym",
+    silent = false,
   },
 
   -- There are some default mappings provided by vimwiki, just extending them
-  w = {
-    name = "Vimwiki overrides",
-    [" c"] = { ":CalendarH<CR>", "<Plug>CalendarH" },
-    [" p"] = { ":VimwikiDiaryPrevDay<CR>", "<Plug>VimwikiDiaryPrevDay" },
-    [" n"] = { ":VimwikiDiaryNextDay<CR>", "<Plug>VimwikiDiaryNextDay" },
-    ["s"] = { "<Cmd>lua ChooseVimWiki()<CR>", "ChooseVimWiki (Custom VimwikiUISelect)" },
-  },
+  { leader .. "w", group = "Vimwiki overrides" },
+  { leader .. "w c", ":CalendarH<CR>", desc = "<Plug>CalendarH" },
+  { leader .. "w p", ":VimwikiDiaryPrevDay<CR>", desc = "<Plug>VimwikiDiaryPrevDay" },
+  { leader .. "w n", ":VimwikiDiaryNextDay<CR>", desc = "<Plug>VimwikiDiaryNextDay" },
+  { leader .. "ws", "<Cmd>lua ChooseVimWiki()<CR>", desc = "ChooseVimWiki (Custom VimwikiUISelect)" },
 
-  n = {
-    name = "Neorg mappings",
-    ["i"] = { "", "Insert date" },
-    ["l"] = { "", "List actions" },
-    ["m"] = { "", "Navigation mode" },
-    ["n"] = { "", "Notes" },
-    ["t"] = { "", "GTD actions" },
-    ["I"] = { ":Neorg index<CR>", "Index" },
-    ["j"] = { ":Neorg journal<CR>", "Journal" },
-    ["e"] = { "<Cmd>exec 'Neorg export to-file /tmp/temp.md' | sleep 500m | tabe /tmp/temp.md<Cr>", "Export" },
-    -- Requires clipboard https://github.com/Slackadays/Clipboard
-    ["y"] = {
-      "<Cmd>exec 'Neorg export to-file /tmp/temp.md' | sleep 500m | !cat /tmp/temp.md | cb copy<Cr>",
-      "Copy as markdown",
-    },
-    ["Tc"] = { ":Neorg toggle-concealer<CR>", "Toggle concealing" },
+  { leader .. "n", group = "Neorg mappings" },
+  { leader .. "ni", "", desc = "Insert date" },
+  { leader .. "nl", "", desc = "List actions" },
+  { leader .. "nm", "", desc = "Navigation mode" },
+  { leader .. "nn", "", desc = "Notes" },
+  { leader .. "nt", "", desc = "GTD actions" },
+  { leader .. "nI", ":Neorg index<CR>", desc = "Index" },
+  { leader .. "nj", ":Neorg journal<CR>", desc = "Journal" },
+  {
+    leader .. "ne",
+    "<Cmd>exec 'Neorg export to-file /tmp/temp.md' | sleep 500m | tabe /tmp/temp.md<Cr>",
+    desc = "Export",
   },
+  -- Requires clipboard https://github.com/Slackadays/Clipboard
+  {
+    leader .. "ny",
+    "<Cmd>exec 'Neorg export to-file /tmp/temp.md' | sleep 500m | !cat /tmp/temp.md | cb copy<Cr>",
+    desc = "Copy as markdown",
+  },
+  { leader .. "nTc", ":Neorg toggle-concealer<CR>", desc = "Toggle concealing" },
 
-  m = {
-    name = "Macro",
-    ["fj"] = { ":!jq .<CR>", "Format selection as json" },
-    ["fq"] = { ":%s!sqlformat --reindent --keywords upper --identifiers lower -<CR>", "Format SQL query" },
-    ["re"] = { ":!date -d @<C-R><C-W><CR>", "Epoch to System time" },
-  },
+  { leader .. "m", group = "Macro" },
+  { leader .. "mfj", ":!jq .<CR>", desc = "Format selection as json" },
+  { leader .. "mfq", ":%s!sqlformat --reindent --keywords upper --identifiers lower -<CR>", desc = "Format SQL query" },
+  { leader .. "mre", ":!date -d @<C-R><C-W><CR>", desc = "Epoch to System time" },
 
-  ["ms"] = {
-    name = "Substitute Macro",
-    [" "] = { ":%s/<C-r><C-w>//gc<Left><Left><Left>", "Find and replace/substitute", silent = false },
-    ["{"] = { ":%s/\\%V{/{{/g | %s/\\%V}/}}/g<CR>", "Replace braces with double braces for multiline formatted string" },
-    ["n"] = { ":%s/\\n/\r/g<CR>", "Replace \n with newline charFormat sqlalchemy query from logs" },
+  { leader .. "ms", group = "Substitute Macro" },
+  { leader .. "ms ", ":%s/<C-r><C-w>//gc<Left><Left><Left>", desc = "Find and replace/substitute", silent = false },
+  {
+    leader .. "ms{",
+    ":%s/\\%V{/{{/g | %s/\\%V}/}}/g<CR>",
+    desc = "Replace braces with double braces for multiline formatted string",
   },
+  { leader .. "msn", ":%s/\\n/\r/g<CR>", desc = "Replace \n with newline charFormat sqlalchemy query from logs" },
 }
 
 local visual_leader_mappings = {
-  ["mfq"] = { ":'<,'>!sqlformat --reindent --keywords upper --identifiers lower -<CR>", "Format selected SQL query" },
-  ["mj"] = { ":lua FormatQuoteAndJoin()<CR>", "Join string with comma with single quote surround" },
-  ["mss"] = { ":s///gc<Left><Left><Left><Left>", "Find and replace/substitute inside visual selection", silent = false },
-  ["msv"] = { '"hy:%s/<C-r>h//gc<left><left><left>', "Find and replace/substitute visual selected", silent = false },
-  ["ms,"] = { ":lua UnquoteAndSplit()<CR>", "Split lines at commas and remove quotes" },
+  mode = { "v" },
+  {
+    leader .. "mfq",
+    ":'<,'>!sqlformat --reindent --keywords upper --identifiers lower -<CR>",
+    desc = "Format selected SQL query",
+  },
+  { leader .. "mj", ":lua FormatQuoteAndJoin()<CR>", desc = "Join string with comma with single quote surround" },
+  {
+    leader .. "mss",
+    ":s///gc<Left><Left><Left><Left>",
+    desc = "Find and replace/substitute inside visual selection",
+    silent = false,
+  },
+  {
+    leader .. "msv",
+    '"hy:%s/<C-r>h//gc<left><left><left>',
+    desc = "Find and replace/substitute visual selected",
+    silent = false,
+  },
+  { leader .. "ms,", ":lua UnquoteAndSplit()<CR>", desc = "Split lines at commas and remove quotes" },
 }
 
 -- Generating substitute commands mapping which are common for both normal and visual mode
@@ -249,48 +268,46 @@ local commonSubstituteCommands = {
 }
 
 leader_mappings, visual_leader_mappings =
-  AddSubstituteMappings(commonSubstituteCommands, leader_mappings, visual_leader_mappings, "ms")
+  AddSubstituteMappings(commonSubstituteCommands, leader_mappings, visual_leader_mappings, leader .. "ms")
 visual_leader_mappings = merge_mappings(leader_mappings, visual_leader_mappings)
 
 -- Filetype specific mappings should go with localleader
 local filetype_mappings = {
   http = {
-    r = {
-      name = "REST client",
-      ["r"] = { "<Plug>RestNvim", "Run the request under the cursor" },
-      ["p"] = { "<Plug>RestNvimPreview", "preview the request cURL command" },
-      ["l"] = { "<Plug>RestNvimLast", "re-run the last request" },
-      ["e"] = { "<Cmd>lua SelectRestNvimEnvironment()<Cr>", "Change environment" },
-      ["f"] = { "<Cmd>lua RestNvimRunCurrentFile()<Cr>", "Run current file" },
-    },
+    mode = { "n", "v" },
+    { localleader .. "r", group = "REST client" },
+    { localleader .. "rr", "<Plug>RestNvim", desc = "Run the request under the cursor" },
+    { localleader .. "rp", "<Plug>RestNvimPreview", desc = "preview the request cURL command" },
+    { localleader .. "rl", "<Plug>RestNvimLast", desc = "re-run the last request" },
+    { localleader .. "re", "<Cmd>lua SelectRestNvimEnvironment()<Cr>", desc = "Change environment" },
+    { localleader .. "rf", "<Cmd>lua RestNvimRunCurrentFile()<Cr>", desc = "Run current file" },
   },
   sql = {
-    r = {
-      name = "Dadbod DB client",
-      ["t"] = { "<Cmd>DBUIToggle<Cr>", "Toggle UI" },
-      ["f"] = { "<Cmd>exec 'DBUIFindBuffer' | DBUIToggle<Cr>", "Find buffer" },
-      ["R"] = { "<Cmd>DBUIRenameBuffer<Cr>", "Rename buffer" },
-      ["q"] = { "<Cmd>DBUILastQueryInfo<Cr>", "Last query info" },
-      ["r"] = { "<Plug>(DBUI_ExecuteQuery)", "Run query" },
-      ["e"] = { "<Cmd>lua ChooseDBUIConnection()<Cr>", "Change Env" },
-      ["E"] = { "<Plug>(DBUI_EditBindParameters)", "Edit bind parameters" },
-      ["oR"] = { "<Plug>(DBUI_ToggleResultLayout)", "Toggle result layout" },
-      -- ["Rf"] = {"<Plug>(DBUI_Redraw)", "Redraw connections"}
-    },
+    mode = { "n", "v" },
+    { localleader .. "r", group = "Dadbod DB client" },
+    { localleader .. "rt", "<Cmd>DBUIToggle<Cr>", desc = "Toggle UI" },
+    { localleader .. "rf", "<Cmd>exec 'DBUIFindBuffer' | DBUIToggle<Cr>", desc = "Find buffer" },
+    { localleader .. "rR", "<Cmd>DBUIRenameBuffer<Cr>", desc = "Rename buffer" },
+    { localleader .. "rq", "<Cmd>DBUILastQueryInfo<Cr>", desc = "Last query info" },
+    { localleader .. "rr", "<Plug>(DBUI_ExecuteQuery)", desc = "Run query" },
+    { localleader .. "re", "<Cmd>lua ChooseDBUIConnection()<Cr>", desc = "Change Env" },
+    { localleader .. "rE", "<Plug>(DBUI_EditBindParameters)", desc = "Edit bind parameters" },
+    { localleader .. "roR", "<Plug>(DBUI_ToggleResultLayout)", desc = "Toggle result layout" },
+    -- { localleader .. "rRf", <Plug>(DBUI_Redraw)", desc = "Redraw connections"}
   },
   markdown = {
-    r = {
-      name = "Markdown",
-      ["e"] = { "<Cmd>FeMaco<Cr>", "Code block edit" },
-      ["r"] = { "<Cmd>MarkdownPreview<Cr>", "Markdown Preview" },
-      ["t"] = { "<Cmd>MarkdownPreviewToggle<Cr>", "Markdown Preview Toggle" },
-      ["x"] = { "<Cmd>MarkdownPreviewStop<Cr>", "Markdown Preview Stop" },
-    },
+    mode = { "n", "v" },
+    { localleader .. "r", group = "Markdown" },
+    { localleader .. "re", "<Cmd>FeMaco<Cr>", desc = "Code block edit" },
+    { localleader .. "rr", "<Cmd>MarkdownPreview<Cr>", desc = "Markdown Preview" },
+    { localleader .. "rt", "<Cmd>MarkdownPreviewToggle<Cr>", desc = "Markdown Preview Toggle" },
+    { localleader .. "rx", "<Cmd>MarkdownPreviewStop<Cr>", desc = "Markdown Preview Stop" },
   },
   ["*"] = {
-    name = "Localleader mappings",
-    ["P"] = { ":!opout %<CR>", "Preview files" },
-    ["c"] = { ':exec ":w! | :vs | :te compiler % ".input("Enter args: ")<CR>', "Compile" },
+    mode = { "n", "v" },
+    { localleader .. "", group = "Localleader mappings" },
+    { localleader .. "P", ":!opout %<CR>", desc = "Preview files" },
+    { localleader .. "c", ':exec ":w! | :vs | :te compiler % ".input("Enter args: ")<CR>', desc = "Compile" },
   },
 }
 
@@ -307,8 +324,7 @@ local function register_mappings_for_filetypes(ft_list, mappings)
     vim.api.nvim_create_autocmd("FileType", {
       pattern = ft,
       callback = function()
-        wk.register(mappings, { prefix = localleader })
-        wk.register(mappings, { mode = "v", prefix = localleader })
+        wk.add(mappings)
       end,
       group = "which_key_" .. ft,
     })
@@ -329,8 +345,8 @@ local function register_filetype_mappings()
 end
 
 local function register_leader_mappings()
-  wk.register(leader_mappings, { prefix = leader })
-  wk.register(visual_leader_mappings, { prefix = leader, mode = "v" })
+  wk.add(leader_mappings)
+  wk.add(visual_leader_mappings)
 end
 
 local M = {
