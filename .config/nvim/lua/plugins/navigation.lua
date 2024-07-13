@@ -45,7 +45,15 @@ return {
   {
     -- Only load whichkey after all the gui
     "folke/which-key.nvim",
-    keys = { "<leader>", "<localleader>", ",", "<c-r>", "<c-w>", '"', "'", "`", "c", "v", "g" },
+    keys = { "<leader>", "<localleader>", ",", "<c-r>", "<c-w>", '"', "'", "`", "c", "v", "g",
+      {
+        "<leader>?",
+        function()
+          require("which-key").show({ global = false })
+        end,
+        desc = "Buffer Local Keymaps (which-key)",
+      },
+    },
     cmd = "WhichKey",
     config = function()
       require("plugins.configs.whichkey").load()
