@@ -384,7 +384,11 @@ function UnquoteAndSplit()
 end
 
 -- Creates mapping command for whichkey, to be used with normal and visual mode both
-function AddSubstituteMappings(commonCommands, normalKeys, visualKeys, subkey)
+function AddSubstituteMappings(commonCommands, normalKeys, visualKeys, keyPrefix)
+  if keyPrefix == nil then
+    keyPrefix = ""
+  end
+
   for key, cmd in pairs(commonCommands) do
     local cmdCommandEscaped = cmd.command:gsub("\\", "\\\\"):gsub("%%", "%%%%")
     cmdCommandEscaped = cmdCommandEscaped:gsub("'", "\\'"):gsub('"', '\\"')
@@ -392,23 +396,11 @@ function AddSubstituteMappings(commonCommands, normalKeys, visualKeys, subkey)
     local normalCmd = (":lua vim.cmd(':%%s%s')<CR>"):format(cmdCommandEscaped)
     local visualCmd = (":lua vim.cmd(':s%s')<CR>"):format(cmdCommandEscaped)
 
-    local normalMapping = { normalCmd, cmd.description }
-    local visualMapping = { visualCmd, cmd.description }
+    local normalMapping = { keyPrefix .. key, normalCmd, desc = cmd.description }
+    local visualMapping = { keyPrefix .. key, visualCmd, desc = cmd.description }
 
-    if subkey then
-      if not normalKeys[subkey] then
-        normalKeys[subkey] = {}
-      end
-      normalKeys[subkey][key] = normalMapping
-
-      if not visualKeys[subkey] then
-        visualKeys[subkey] = {}
-      end
-      visualKeys[subkey][key] = visualMapping
-    else
-      normalKeys[key] = normalMapping
-      visualKeys[key] = visualMapping
-    end
+    table.insert(normalKeys, normalMapping)
+    table.insert(visualKeys, visualMapping)
   end
 
   return normalKeys, visualKeys
