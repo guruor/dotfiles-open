@@ -114,6 +114,23 @@ opt.listchars:append "trail:⋅"
 opt.listchars:append "space:⋅"
 opt.listchars:append "eol:↴"
 
+local uname = vim.loop.os_uname()
+
+_G.OS = uname.sysname
+_G.IS_MAC = OS == 'Darwin'
+_G.IS_LINUX = OS == 'Linux'
+_G.IS_WINDOWS = OS:find 'Windows' and true or false
+
+-- Setting powershell for windows
+if IS_WINDOWS then
+  opt.shell = vim.fn.executable "pwsh" and "pwsh" or "powershell"
+  opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+  opt.shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait"
+  opt.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
+  opt.shellquote = ""
+  opt.shellxquote = ""
+end
+
 -------------------------------------- autocmds ------------------------------------------
 local autocmd = vim.api.nvim_create_autocmd
 
