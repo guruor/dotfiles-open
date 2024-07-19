@@ -11,7 +11,7 @@ end
 local wsl_domains = wezterm.default_wsl_domains()
 for _, dom in ipairs(wsl_domains) do
   -- Using default shell as zsh for linux
-  dom.default_prog = { "zsh" }
+  dom.default_prog = { "zsh", "--login" }
   -- Set specific linux version as default
   config.default_domain = dom.name
 end
