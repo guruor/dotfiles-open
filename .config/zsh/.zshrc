@@ -215,16 +215,25 @@ bindkey -Mvicmd "\e" escape-clear
 # 	sudo -n loadkeys ${XDG_DATA_HOME:-$HOME/.local/share}/larbs/ttymaps.kmap 2>/dev/null
 # fi
 
+# Brew Stuff
+if [[ $MACHINE == "Linux" ]]; then
+    BREW_PREFIX="/home/linuxbrew/.linuxbrew"
+fi
+
 if [[ $MACHINE == "Mac" ]]; then
-    # Brew Stuff
-    # Initializing brew
     # Brew path changes for x86 and m1 users
     # For x86 Users, uncomment below and comment m1 BREW_PREFIX if not x86 installation needs to be used
     # BREW_PREFIX="/usr/local"
     # For M1 users
     BREW_PREFIX="/opt/homebrew"
+fi
+
+# Initializing brew
+[ -f "${BREW_PREFIX}/bin/brew" ] && _evalcache "${BREW_PREFIX}/bin/brew" shellenv
+
+# Homebrew or linuxbrew specific config
+if [[ "$(command -v brew)" ]]; then
     export HOMEBREW_NO_AUTO_UPDATE=1
-    _evalcache "${BREW_PREFIX}/bin/brew" shellenv
     # Adds zsh completions from brew
     FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 
