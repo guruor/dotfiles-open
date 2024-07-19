@@ -253,7 +253,7 @@ autocmd("BufWritePost", {
 autocmd("BufWritePost", {
   pattern = vim.fn.expand "$MY_DOTFILES_DIR" .. "/.config/whkdrc",
   callback = function()
-    vim.cmd "!taskkill /f /im whkd.exe && Start-Process whkd -WindowStyle hidden"
+    vim.cmd "!Restart-WHKD"
   end,
   group = postSaveSettingsGroup,
 })
