@@ -1,11 +1,21 @@
 local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
-    -- PoserShell for windows
-    config.default_prog = { "pwsh.exe", "-NoLogo" }
+  -- PoserShell for windows
+  config.default_prog = { "pwsh.exe", "-NoLogo" }
 else
-    config.default_prog = { "/bin/zsh", "--login" }
+  config.default_prog = { "/bin/zsh", "--login" }
 end
+
+-- Use wsl if present
+local wsl_domains = wezterm.default_wsl_domains()
+for _, dom in ipairs(wsl_domains) do
+  -- Using default shell as zsh for linux
+  dom.default_prog = { "zsh" }
+  -- Set specific linux version as default
+  config.default_domain = dom.name
+end
+
 -- color_scheme = "Gruvbox dark, soft (base16)",
 config.color_scheme = "GitHub Dark"
 
