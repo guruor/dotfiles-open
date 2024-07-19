@@ -15,7 +15,7 @@ alias \
     fda='fd -IH' \
     rga='rg -uuu' \
     :q='exit' \
-    ,q='exit' \
+    q='exit' \
     lzg='lazygit' \
 
 # Docker related aliases
