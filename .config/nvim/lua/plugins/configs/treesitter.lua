@@ -108,5 +108,14 @@ M.additional_setup = function()
     },
     filetype = "ps1",
   }
+
+  parser_config.nu = {
+    install_info = {
+      url = "https://github.com/nushell/tree-sitter-nu",
+      files = { "src/parser.c" },
+      branch = "main",
+    },
+    filetype = "nu",
+  }
 end
 return M
