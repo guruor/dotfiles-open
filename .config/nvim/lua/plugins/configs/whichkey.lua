@@ -233,6 +233,7 @@ local leader_mappings = {
     desc = "Replace braces with double braces for multiline formatted string",
   },
   { leader .. "msn", ":%s/\\n/\r/g<CR>", desc = "Replace \n with newline charFormat sqlalchemy query from logs" },
+  { leader .. "ms^", ":%s/\\r$//g<CR>", desc = "Replace \n with newline charFormat sqlalchemy query from logs" },
 }
 
 local visual_leader_mappings = {
