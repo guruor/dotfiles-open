@@ -9,6 +9,18 @@ $env.config = {
     vi_insert: blink_line
     vi_normal: blink_block
   }
+  keybindings: [
+    {
+      name: open_tfm
+      modifier: CONTROL
+      keycode: Char_o
+      mode: [vi_insert vi_normal emacs]
+      event: {
+        send: executehostcommand,
+        cmd: "yazi"
+      }
+    }
+  ]
 }
 
 $env.PROMPT_INDICATOR_VI_INSERT = { "" }
