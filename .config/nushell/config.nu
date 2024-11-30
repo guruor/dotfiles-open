@@ -35,4 +35,4 @@ alias c = nvim -u $env.MYVIMRCLSP
 alias g = git
 
 use $STARSHIP_INIT_PATH
-# use $ZOXIDE_INIT_PATH
+source $ZOXIDE_INIT_PATH
