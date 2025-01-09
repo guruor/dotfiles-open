@@ -189,7 +189,14 @@ export VALE_CONFIG_PATH="${HOME}/.config/vale/vale.ini"
 
 unameOut="$(uname -s)"
 case "${unameOut}" in
-    Linux*)     machine=Linux;;
+    Linux*)
+      # Check if running on WSL
+      if grep -qEi "(microsoft|wsl)" /proc/version &>/dev/null; then
+          machine=WSL
+      else
+          machine=Linux
+      fi
+    ;;
     Darwin*)    machine=Mac;;
     CYGWIN*)    machine=Cygwin;;
     MINGW*)     machine=MinGw;;
@@ -197,6 +204,10 @@ case "${unameOut}" in
 esac
 
 export MACHINE=$machine
+
+if [[ $MACHINE == "WSL" ]]; then
+  export BROWSER=wslview
+fi
 
 # Loading iterm profile
 export DARK_MODE_FLAG="$HOME/.cache/dark-mode.off"
