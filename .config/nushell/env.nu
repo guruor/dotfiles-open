@@ -1,10 +1,10 @@
 $env.TRANSIENT_PROMPT_COMMAND = ""
 $env.YAZI_FILE_ONE = ([$env.PROGRAMFILES Git usr bin file.exe] | path join)
 $env.MYVIMRCLSP = ([$env.LOCALAPPDATA nvim lua initlsp.lua] | path join)
-$env.EDITOR = nvim
+$env.EDITOR = "nvim"
 $env.MY_DOTFILES_DIR = ([$env.HOMEPATH windots] | path join)
 # Use nushell/pwsh if not using WSL
-$env.SHELL = nu
+$env.SHELL = "nu"
 
 $env.BINPATH = ([$env.USERPROFILE .bin] | path join)
 
