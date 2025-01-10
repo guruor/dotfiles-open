@@ -216,7 +216,7 @@ bindkey -Mvicmd "\e" escape-clear
 # fi
 
 # Brew Stuff
-if [[ $MACHINE == "Linux" ]]; then
+if [[ $MACHINE == "Linux" || $MACHINE == "WSL" ]]; then
     BREW_PREFIX="/home/linuxbrew/.linuxbrew"
 fi
 
