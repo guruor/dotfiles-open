@@ -169,3 +169,5 @@
   path = ~/.config/git/config-private
   path = ~/.config/delta/themes.gitconfig
 
+[includeIf "gitdir:~/WorkSpaces/REA/"]
+  path = ~/.config/git/config-private-rea
