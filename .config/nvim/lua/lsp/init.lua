@@ -28,7 +28,7 @@ vim.g.should_enable_efm = false
 -- Look for server configurations here
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 local servers = {
-  ruff_lsp = require "lsp.servers.ruff_lsp",
+  ruff = require "lsp.servers.ruff",
   pyright = require "lsp.servers.pyright",
   gopls = require "lsp.servers.gopls",
   rust_analyzer = require "lsp.servers.rust_analyzer",
@@ -36,7 +36,7 @@ local servers = {
   jsonls = require "lsp.servers.jsonls",
   yamlls = require "lsp.servers.yamlls",
   lua_ls = require "lsp.servers.lua_ls",
-  tsserver = require "lsp.servers.tsserver",
+  ts_ls = require "lsp.servers.ts_ls",
   vimls = require "lsp.servers.common",
   cssls = require "lsp.servers.common",
   html = require "lsp.servers.common",
@@ -50,6 +50,7 @@ local servers = {
 }
 
 mason_lspconfig.setup {
+  automatic_installation = true,
   ensure_installed = vim.tbl_keys(servers),
 }
 
