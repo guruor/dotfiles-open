@@ -243,6 +243,8 @@ if [[ "$(command -v brew)" ]]; then
 
     # Appending brew binaries path at end to prioritize other binaries like asdf binaries
     export PATH="$PATH:$(brew --prefix)/bin"
+
+    [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ] && source $(brew --prefix asdf)/libexec/asdf.sh
 fi
 
 [ -f "${CARGO_HOME}/env" ] && source "${CARGO_HOME}/env"
