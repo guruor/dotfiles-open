@@ -13,6 +13,7 @@ local defaultModuleConfig = {
   -- Continue to iterator item at same nested level, default key is <M-CR> (Alt + Enter)
   -- Check: core.itero.next-iteration
   ["core.itero"] = {},
+  ["core.promo"] = {},
   ["core.journal"] = {
     config = {
       workspace = "work",
