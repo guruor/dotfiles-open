@@ -200,25 +200,8 @@ local leader_mappings = {
   { leader .. "ws", "<Cmd>lua ChooseVimWiki()<CR>", desc = "ChooseVimWiki (Custom VimwikiUISelect)" },
 
   { leader .. "n", group = "Neorg mappings" },
-  { leader .. "ni", "", desc = "Insert date" },
-  { leader .. "nl", "", desc = "List actions" },
-  { leader .. "nm", "", desc = "Navigation mode" },
-  { leader .. "nn", "", desc = "Notes" },
-  { leader .. "nt", "", desc = "GTD actions" },
   { leader .. "nI", ":Neorg index<CR>", desc = "Index" },
   { leader .. "nj", ":Neorg journal<CR>", desc = "Journal" },
-  {
-    leader .. "ne",
-    "<Cmd>exec 'Neorg export to-file /tmp/temp.md' | sleep 500m | tabe /tmp/temp.md<Cr>",
-    desc = "Export",
-  },
-  -- Requires clipboard https://github.com/Slackadays/Clipboard
-  {
-    leader .. "ny",
-    "<Cmd>exec 'Neorg export to-file /tmp/temp.md' | sleep 500m | !cat /tmp/temp.md | cb copy<Cr>",
-    desc = "Copy as markdown",
-  },
-  { leader .. "nTc", ":Neorg toggle-concealer<CR>", desc = "Toggle concealing" },
 
   { leader .. "m", group = "Macro" },
   { leader .. "mfj", ":!jq .<CR>", desc = "Format selection as json" },
@@ -323,11 +306,54 @@ local filetype_mappings = {
     { localleader .. "rt", "<Cmd>MarkdownPreviewToggle<Cr>", desc = "Markdown Preview Toggle" },
     { localleader .. "rx", "<Cmd>MarkdownPreviewStop<Cr>", desc = "Markdown Preview Stop" },
   },
+  norg = {
+    -- Neorg specific mapping
+    -- https://github.com/nvim-neorg/neorg/wiki/Default-Keybinds#localleaderid
+    mode = { "n", "v" },
+    { localleader .. "<CR>", "<Plug>(neorg.esupports.hop.hop-link)", desc = "Open link" },
+    { localleader .. "cm", "<Plug>(neorg.looking-glass.magnify-code-block)", desc = "Code Magnify" },
+
+    { localleader .. "i", "", desc = "Insert date" },
+    { localleader .. "im", "<Plug>(neorg.tempus.insert-date)", desc = "Insert Date" },
+
+    { localleader .. "l", "", desc = "List actions" },
+    { localleader .. "li", "<Plug>(neorg.pivot.list.invert)", desc = " List Invert " },
+    { localleader .. "lt", "<Plug>(neorg.pivot.list.toggle)", desc = " List Toggle " },
+
+    { localleader .. "t", "", desc = "GTD actions" },
+    { localleader .. "t ", "<Plug>(neorg.qol.todo-items.todo.task-cycle)", desc = "Task cycle" },
+    { localleader .. "ta", "<Plug>(neorg.qol.todo-items.todo.task-ambiguous)", desc = "Mark task as ambiguous" },
+    { localleader .. "tc", "<Plug>(neorg.qol.todo-items.todo.task-cancelled)", desc = "Mark task as cancelled " },
+    { localleader .. "td", "<Plug>(neorg.qol.todo-items.todo.task-done)", desc = "Mark task as done " },
+    { localleader .. "th", "<Plug>(neorg.qol.todo-items.todo.task-on-hold)", desc = "Mark task as hold " },
+    { localleader .. "ti", "<Plug>(neorg.qol.todo-items.todo.task-important)", desc = "Mark task as important" },
+    { localleader .. "tp", "<Plug>(neorg.qol.todo-items.todo.task-pending)", desc = "Mark task as pending" },
+    { localleader .. "tr", "<Plug>(neorg.qol.todo-items.todo.task-recurring)", desc = "Mark task as recurring" },
+    { localleader .. "tu", "<Plug>(neorg.qol.todo-items.todo.task-undone)", desc = "Mark task as undone" },
+
+    -- { localleader .. "m", "", desc = "Navigation mode" },
+    { localleader .. "n", "", desc = "Notes" },
+    { localleader .. "nn", "<Plug>(neorg.dirman.new-note)", desc = "New note" },
+
+    {
+      localleader .. "e",
+      "<Cmd>exec 'Neorg export to-file /tmp/temp.md' | sleep 500m | tabe /tmp/temp.md<Cr>",
+      desc = "Export",
+    },
+    -- Requires clipboard https://github.com/Slackadays/Clipboard
+    {
+      localleader .. "y",
+      "<Cmd>exec 'Neorg export to-file /tmp/temp.md' | sleep 500m | !cat /tmp/temp.md | cb copy<Cr>",
+      desc = "Copy as markdown",
+    },
+    { localleader .. "T", "", desc = "Toggle" },
+    { localleader .. "Tc", ":Neorg toggle-concealer<CR>", desc = "Toggle concealing" },
+  },
   ["*"] = {
     mode = { "n", "v" },
-    { localleader .. "", group = "Localleader mappings" },
-    { localleader .. "P", ":!opout %<CR>", desc = "Preview files" },
-    { localleader .. "c", ':exec ":w! | :vs | :te compiler % ".input("Enter args: ")<CR>', desc = "Compile" },
+    { localleader .. "/", group = "Common mappings" },
+    { localleader .. "/p", ":!opout %<CR>", desc = "Preview files" },
+    { localleader .. "/c", ':exec ":w! | :vs | :te compiler % ".input("Enter args: ")<CR>', desc = "Compile" },
   },
 }
 
