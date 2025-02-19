@@ -77,12 +77,25 @@ setopt HIST_IGNORE_ALL_DUPS
 
 
 # Basic auto/tab complete:
-autoload -U compinit
+autoload -U compinit bashcompinit
+zmodload zsh/complist
+
+# FPATH specific config, brew installed tool completion files are installed in this path
+# To reset the completion cache, use: rm $ZDOTDIR/.zcompdump*
+if [[ "$(command -v brew)" ]]; then
+  # fpath should be updated before `compinit`
+  fpath=($fpath $(brew --prefix)/share/zsh/site-functions/)
+fi
+
+compinit
+bashcompinit
+
+# Loading bash completions for rea-as tool
+source <(rea-as completion)
+
 zstyle ':completion:*' menu select # select completions with arrow keys
 zstyle ':completion:*' group-name '' # group results by category
 zstyle ':completion:::::' completer _expand _complete _ignored _approximate # enable approximate matches for completion
-zmodload zsh/complist
-compinit
 _comp_options+=(globdots)		# Include hidden files.
 
 # vi mode
@@ -235,7 +248,6 @@ fi
 if [[ "$(command -v brew)" ]]; then
     export HOMEBREW_NO_AUTO_UPDATE=1
     # Adds zsh completions from brew
-    FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 
     # Make all GNU flavor commands available, may override same-name BSD flavor commands
     export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:${PATH}"
