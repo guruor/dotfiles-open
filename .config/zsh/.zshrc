@@ -83,8 +83,11 @@ zmodload zsh/complist
 # FPATH specific config, brew installed tool completion files are installed in this path
 # To reset the completion cache, use: rm $ZDOTDIR/.zcompdump*
 if [[ "$(command -v brew)" ]]; then
+  # Add completion files to below path:
+  # Ex: ente completion zsh >> "${ZSH_COMPLETIONS_PATH}/_ente"
+  ZSH_COMPLETIONS_PATH="$(brew --prefix)/share/zsh/site-functions/"
   # fpath should be updated before `compinit`
-  fpath=($fpath $(brew --prefix)/share/zsh/site-functions/)
+  fpath=($fpath ${ZSH_COMPLETIONS_PATH})
 fi
 
 compinit
