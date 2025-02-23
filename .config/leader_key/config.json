@@ -1,0 +1,98 @@
+{
+	"actions": [
+		{
+			"key": "t",
+			"label": "",
+			"type": "group",
+			"actions": [
+				{
+					"label": "Notes",
+					"value": "source ~/.config/shell/profile; source ~/.config/zsh/.zshrc; ${HOME}/.config/yabai/scripts/toggle_terminal_window.sh Notes notetaker",
+					"key": "n",
+					"type": "command"
+				}
+			]
+		},
+		{
+			"label": "",
+			"value": "source ~/.config/shell/profile; source ~/.config/zsh/.zshrc; echo \"${SHELL} ${$-}\" >> /tmp/leader_key.out; zed /tmp/leader_key.out",
+			"key": ",",
+			"type": "command"
+		},
+		{
+			"key": " ",
+			"label": "",
+			"type": "group",
+			"actions": [
+				{
+					"key": "b",
+					"value": "/Applications/Brave Browser.app",
+					"label": "",
+					"type": "application"
+				},
+				{
+					"key": "g",
+					"value": "/Applications/Google Chrome.app",
+					"label": "",
+					"type": "application"
+				},
+				{
+					"key": "m",
+					"value": "/System/Volumes/Data/Applications/Miro.app",
+					"label": "",
+					"type": "application"
+				},
+				{
+					"key": "n",
+					"value": "/System/Volumes/Data/Applications/Notion.app",
+					"label": "",
+					"type": "application"
+				},
+				{
+					"key": "o",
+					"value": "/System/Volumes/Data/Applications/Microsoft Outlook.app",
+					"label": "",
+					"type": "application"
+				},
+				{
+					"key": "s",
+					"value": "/Applications/Slack.app",
+					"label": "",
+					"type": "application"
+				},
+				{
+					"key": "z",
+					"value": "/Applications/zoom.us.app",
+					"label": "",
+					"type": "application"
+				}
+			]
+		},
+		{
+			"type": "group",
+			"label": "",
+			"actions": [
+				{
+					"type": "url",
+					"key": "e",
+					"value": "raycast://extensions/raycast/emoji-symbols/search-emoji-symbols",
+					"label": ""
+				},
+				{
+					"label": "",
+					"key": "p",
+					"type": "url",
+					"value": "raycast://confetti"
+				},
+				{
+					"value": "raycast://extensions/raycast/system/open-camera",
+					"type": "url",
+					"key": "c",
+					"label": ""
+				}
+			],
+			"key": "r"
+		}
+	],
+	"type": "group"
+}
