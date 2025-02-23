@@ -14,6 +14,18 @@ fn + lalt - 5 : "${HOME}"/.config/yabai/scripts/show_song.sh
 meh - q : yabai -m window --close
 meh - j : yabai -m window --focus south
 meh - k : yabai -m window --focus north
+
+# Shortcuts to some common GUI apps
+# hyper - b : yabai -m window --focus "$(yabai -m query --windows | jq 'map(select(.app == "Brave Browser")) | .[0].id')"
+hyper - b : open -a "Brave Browser"
+hyper - g : open -a "Google Chrome"
+hyper - f : open -a "Firefox"
+hyper - m : open -a "Miro"
+hyper - n : open -a "Notion"
+hyper - o : open -a "Microsoft Outlook"
+hyper - s : open -a "Slack"
+hyper - z : open -a "zoom.us"
+
 # meh - h : yabai -m window --focus west
 # meh - l : yabai -m window --focus east
 
