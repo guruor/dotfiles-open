@@ -107,7 +107,8 @@ yabai -m rule --add title="^(Code)$" app="${supported_terminals}" space=1
 yabai -m rule --add title="^(Servers)$" app="${supported_terminals}" space=2
 yabai -m rule --add title="^(Postman|Databases)$" app="${supported_terminals}" space=3
 yabai -m rule --add app="^(Brave Browser|Google Chrome|Firefox|Microsoft Edge|Safari)$" space=4
-yabai -m rule --add app="^(Slack|WhatsApp|Microsoft Teams|Telegram)$" space=5
+yabai -m rule --add app="^(Slack|WhatsApp|Microsoft Teams|Telegram|Notion)$" space=5
+yabai -m rule --add app="^(Zoom)$" space=6
 yabai -m rule --add app="^(Twitch Studio)$" space=8
 yabai -m rule --add app="^(VLC)$" space=9
 
