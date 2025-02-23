@@ -260,6 +260,8 @@ if [[ "$(command -v brew)" ]]; then
     export PATH="$PATH:$(brew --prefix)/bin"
 
     [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ] && source $(brew --prefix asdf)/libexec/asdf.sh
+
+    export PATH="$(brew --prefix)/opt/openjdk@21/bin:$PATH"
 fi
 
 [ -f "${CARGO_HOME}/env" ] && source "${CARGO_HOME}/env"
