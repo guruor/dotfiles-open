@@ -286,3 +286,9 @@ autoload -Uz promptinit && promptinit && prompt powerlevel10k
 # Setting up rea-cli
 source "$HOME/.rea-cli/rea-shell-init.sh"
 
+gcloud_sdk="$HOME/google-cloud-sdk"
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f "$gcloud_sdk/path.zsh.inc" ]; then . "$gcloud_sdk/path.zsh.inc"; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f "$gcloud_sdk/completion.zsh.inc" ]; then . "$gcloud_sdk/completion.zsh.inc"; fi
