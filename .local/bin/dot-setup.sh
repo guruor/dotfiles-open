@@ -1,4 +1,7 @@
 #!/bin/bash
+# This script clones and sets up dotfiles, requiring Bitwarden and yq.
+# Run this script directly in shell using:
+# curl -s https://raw.githubusercontent.com/guruor/dotfiles-open/refs/heads/master/.local/bin/dot-setup.sh | bash
 
 # Exit on error
 set -e
@@ -8,8 +11,64 @@ DEFAULT_GIT_USER="guruor"
 DEFAULT_DOTFILES_REPO="dotfiles-open"
 DEFAULT_DOTFILES_DIR="$HOME/voidrice"
 GIT_PRIVATE_HOST="github-personal"
-BW_GITHUB_ITEM_NAME="Github Govind Personal"
+# BW_GITHUB_ITEM_NAME="Github Govind Personal"
+BW_GITHUB_ITEM_ID="95a44651-2d37-407a-a1b6-ad8900c6c680"
 BW_GITHUB_ITEM_NOTES_YAML_KEY=".tokens.personal_access_token"
+
+# Function to detect the platform (macOS or Debian-based Linux)
+detect_platform() {
+  UNAME_OUTPUT=$(uname -s)
+  case "$UNAME_OUTPUT" in
+  Linux*)
+    PLATFORM="linux"
+    ;;
+  Darwin*)
+    PLATFORM="macos"
+    ;;
+  *)
+    echo "Unsupported platform: $UNAME_OUTPUT"
+    exit 1
+    ;;
+  esac
+}
+
+# Function to install Homebrew on macOS or Linux
+install_homebrew() {
+  if ! command -v brew &>/dev/null; then
+    echo "Installing Homebrew..."
+    if [ "$PLATFORM" = "macos" ]; then
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      setup_homebrew_env_macos
+    elif [ "$PLATFORM" = "linux" ]; then
+      sudo apt-get update && sudo apt-get install -y build-essential procps curl file git
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    fi
+  else
+    # Set up the brew environment if already installed
+    echo "Homebrew is already installed."
+    if [ "$PLATFORM" = "macos" ]; then
+      setup_homebrew_env_macos
+    elif [ "$PLATFORM" = "linux" ]; then
+      eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    fi
+  fi
+}
+
+# Function to set up Homebrew environment for macOS
+setup_homebrew_env_macos() {
+  if [ -f "/opt/homebrew/bin/brew" ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)" # for macOS on ARM
+  elif [ -f "/usr/local/bin/brew" ]; then
+    eval "$(/usr/local/bin/brew shellenv)" # for macOS on Intel
+  fi
+}
+
+# Function to install necessary tools using Homebrew
+install_dependencies() {
+  echo "Installing required packages with Homebrew..."
+  brew install bitwarden-cli yq
+}
 
 # Function to prompt for Bitwarden credentials
 prompt_for_bitwarden_credentials() {
@@ -36,7 +95,7 @@ bitwarden_unlock() {
 # Function to get GitHub personal access token
 get_github_token() {
   echo "Fetching GitHub personal access token from Bitwarden..."
-  github_personal_token=$(bw get item "${BW_GITHUB_ITEM_NAME}" | yq ".notes | fromjson | ${BW_GITHUB_ITEM_NOTES_YAML_KEY}")
+  github_personal_token=$(bw get item "${BW_GITHUB_ITEM_ID}" | yq ".notes | fromjson | ${BW_GITHUB_ITEM_NOTES_YAML_KEY}")
 }
 
 # Function to configure Git
@@ -75,6 +134,13 @@ main() {
     echo "Re-run with --confirm to proceed."
     exit 1
   fi
+
+  # Detect the platform
+  detect_platform
+
+  # Install tools
+  install_homebrew
+  install_dependencies
 
   # Prompt for dynamic values or use defaults
   read -p "Git user (default: $DEFAULT_GIT_USER): " gituser
