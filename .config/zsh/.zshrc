@@ -292,3 +292,6 @@ if [ -f "$gcloud_sdk/path.zsh.inc" ]; then . "$gcloud_sdk/path.zsh.inc"; fi
 
 # The next line enables shell command completion for gcloud.
 if [ -f "$gcloud_sdk/completion.zsh.inc" ]; then . "$gcloud_sdk/completion.zsh.inc"; fi
+
+# Adds shell completion for aws cli
+[ -x "$(command -v aws_completer)" ] && complete -C '/usr/local/bin/aws_completer' aws
