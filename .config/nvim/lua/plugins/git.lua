@@ -22,7 +22,10 @@ return {
     "linrongbin16/gitlinker.nvim",
     -- dir = "~/Workspace/vim-plugins/gitlinker.nvim", -- Fork for ruifm/gitlinker.nvim
     cmd = { "GitLink" },
-    config = true,
+    opts = require("plugins.configs.misc").gitlinker,
+    config = function(_, opts)
+      require("gitlinker").setup(opts)
+    end,
   }, -- Similar functionality like fugitive GBrowse
   {
     "lewis6991/gitsigns.nvim",

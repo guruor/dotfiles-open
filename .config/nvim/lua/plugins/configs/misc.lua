@@ -201,6 +201,21 @@ M.treesitter_context = {
   max_lines = 3,
 }
 
+M.gitlinker = {
+  router = {
+    -- https://git.realestate.com.au/
+    browse = {
+      ["^git%.realestate%.com%.au"] = "https://git.realestate.com.au/"
+       .. "{_A.ORG}/"
+       .. "{_A.REPO}/blob/"
+       .. "{_A.REV}/"
+       .. "{_A.FILE}?plain=1" -- '?plain=1'
+       .. "#L{_A.LSTART}"
+       .. "{(_A.LEND > _A.LSTART and ('-L' .. _A.LEND) or '')}",
+    },
+  }
+}
+
 M.neogit = {
   -- Hides the hints at the top of the status buffer
   disable_hint = false,
