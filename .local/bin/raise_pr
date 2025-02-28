@@ -94,13 +94,17 @@ function generate_pr_url() {
                 repo_path=$(echo "$repo_push_url" | cut -d ":" -f2 | cut -d "." -f1)
         fi
 
-        echo -e "\nRepo Path: ${repo_path}\nSource branch: ${source_branch}\nDestination branch: ${dest_branch}\n\n" >&2
+        echo -e "\nRepo push URL: ${repo_push_url}\nRepo Path: ${repo_path}\nSource branch: ${source_branch}\nDestination branch: ${dest_branch}\n\n" >&2
         if [[ $repo_push_url == *bitbucket* ]]; then
                 pr_url="https://bitbucket.org/${repo_path}/pull-requests/new?source=${source_branch}&dest=${dest_branch}"
         elif [[ $repo_push_url == *gitlab* ]]; then
                 pr_url="https://gitlab.com/${repo_path}/merge_requests/new?merge_request%5Bsource_branch%5D=${source_branch}&merge_request%5Btarget_branch%5D=${dest_branch}"
         elif [[ $repo_push_url == *github* ]]; then
                 pr_url="https://github.com/${repo_path}/compare/${dest_branch}...${source_branch}"
+        elif [[ $repo_push_url == *git.realestate.com.au* ]]; then
+                pr_url="https://git.realestate.com.au/${repo_path}/compare/${dest_branch}...${source_branch}"
+        else
+                echo -e "\nUnsupported git host" >&2
         fi
 
         echo "${pr_url}"
@@ -114,10 +118,11 @@ function raise_pr() {
         validate_for_missing_commit "$source_branch" "$dest_branch"
         pr_url=$(generate_pr_url "$source_branch" "$dest_branch")
 
-        echo "$pr_url"
-
         # Raises pull request against selected destination branch from current branch
-        open "$pr_url"
+        if [[ ! -z "$pr_url" ]]; then
+          echo "$pr_url" >&2
+          open "$pr_url"
+        fi
 }
 
 function validate() {
