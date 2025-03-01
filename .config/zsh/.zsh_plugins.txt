@@ -9,6 +9,9 @@ ohmyzsh/ohmyzsh path:plugins/ripgrep kind:fpath
 ohmyzsh/ohmyzsh path:plugins/pass kind:fpath
 sharkdp/fd path:contrib/completion/_fd kind:fpath
 junegunn/fzf path:shell/completion.zsh kind:fpath
+# Game4Move78/zsh-bitwarden
+# $HOME/Workspace/Personal/zsh-bitwarden
+guruor/zsh-bitwarden
 
 # Plugins, use `kind:defer` for plugins which support async loading
 Aloxaf/fzf-tab kind:defer
