@@ -182,11 +182,13 @@ local leader_mappings = {
   { leader .. "TS", ":set spell!<CR>", desc = "Spell" },
   { leader .. "Tfc", ":lua ToggleFoldcolumn()<CR>", desc = "Toggle foldcolumn" },
 
-  { leader .. "a", group = "Authoring" },
-  { leader .. "ac", "1z=", desc = "Correct misspelled word" },
-  { leader .. "at", ":ThesaurusQueryReplaceCurrentWord<CR>", desc = "Replace word under cursor with synonym" },
+  { leader .. "a", group = "AI" },
+  -- AI bindings are defined in copilot.lua
+  { leader .. "A", group = "Authoring" },
+  { leader .. "Ac", "1z=", desc = "Correct misspelled word" },
+  { leader .. "At", ":ThesaurusQueryReplaceCurrentWord<CR>", desc = "Replace word under cursor with synonym" },
   {
-    leader .. "aT",
+    leader .. "AI",
     'y:ThesaurusQueryReplace <C-r>"<CR>',
     desc = "Replace visual selection with synonym",
     silent = false,
