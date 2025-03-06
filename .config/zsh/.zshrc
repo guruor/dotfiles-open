@@ -262,6 +262,8 @@ if [[ "$(command -v brew)" ]]; then
     [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ] && source $(brew --prefix asdf)/libexec/asdf.sh
 
     export PATH="$(brew --prefix)/opt/openjdk@21/bin:$PATH"
+
+    [ -x "$(command -v syncthing)" ] && complete -C ${BREW_PREFIX}/bin/syncthing syncthing
 fi
 
 [ -f "${CARGO_HOME}/env" ] && source "${CARGO_HOME}/env"
