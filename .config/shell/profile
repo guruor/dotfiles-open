@@ -178,7 +178,7 @@ export APP_FOLDER_ABSOLUTE_PATH="$XDG_DATA_HOME"/redisinsight-v2
 export RUFF_CACHE_DIR="$XDG_CACHE_HOME/ruff"
 
 # VALE variables
-export VALE_CONFIG_PATH="${HOME}/.config/vale/vale.ini"
+export VALE_CONFIG_PATH="${HOME}/.config/vale/.vale.ini"
 
 # Specifying the local binary path to avoid conflict with `shortctus` utility available on macos
 [ ! -f ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ] && $HOME/.local/bin/shortcuts >/dev/null 2>&1 &
