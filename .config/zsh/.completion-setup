@@ -1,0 +1,133 @@
+#!/bin/zsh
+
+function is_installed() {
+  if ! command -v "$1" &>/dev/null; then
+    echo "$1 is not installed."
+    return 1
+  fi
+  return 0
+}
+
+function install_homebrew() {
+  if ! is_installed brew; then
+    echo "Homebrew is not installed. Please install Homebrew first."
+    return 1
+  fi
+}
+
+function install_pipx() {
+  if ! is_installed pipx; then
+    echo "Installing pipx..."
+    brew install pipx
+    pipx ensurepath
+  fi
+}
+
+function install_argcomplete() {
+  if ! pipx list | grep -q 'argcomplete'; then
+    echo "Installing argcomplete..."
+    pipx install argcomplete
+  fi
+}
+
+function confirm_overwrite() {
+  local file="$1"
+  if [[ -f "$file" ]]; then
+    echo "File $file already exists. Do you want to overwrite it? (y/n)"
+    read -r response
+    if [[ "$response" != "y" ]]; then
+      echo "Skipping overwrite for $file."
+      return 1
+    fi
+  fi
+  return 0
+}
+
+function setup_tool_completion() {
+  local tool="$1"
+  local completion_file="${ZSH_COMPLETIONS_PATH}/_${tool}"
+
+  echo "\nSetting up completion for [${tool}]"
+  # Prompt before overwriting existing files
+  if ! confirm_overwrite "${completion_file}"; then
+    return
+  fi
+
+  case "${tool}" in
+  "pip3")
+    pip3 completion --zsh >"${completion_file}"
+    ;;
+  "poetry")
+    poetry completions zsh >"${completion_file}"
+    ;;
+  "fzf")
+    $(brew --prefix)/opt/fzf/install --all
+    ;;
+  *)
+    if is_installed "${tool}"; then
+      "${tool}" completion zsh >"${completion_file}"
+    fi
+    ;;
+  esac
+}
+
+function completion_install() {
+  echo "Running completion_install..."
+
+  install_homebrew || return 1
+  install_pipx
+  install_argcomplete
+
+  local tools=("fzf" "docker" "mise" "asdf" "pip3" "poetry" "npm" "ente")
+  for tool in "${tools[@]}"; do
+    if is_installed "${tool}"; then
+      setup_tool_completion "${tool}"
+    else
+      echo "${tool} is not installed. Skipping completion setup for ${tool}."
+    fi
+  done
+
+  echo "Completion setup completed. Please restart your terminal session for changes to take effect."
+}
+
+function completion_init() {
+  # Basic auto/tab complete:
+  autoload -U compinit bashcompinit
+  zmodload zsh/complist
+
+  # FPATH specific config, brew installed tool completion files are installed in this path
+  # To reset the completion cache, use: rm $ZDOTDIR/.zcompdump*
+  if [[ "$(command -v brew)" ]]; then
+    # Add completion files to below path:
+    # Ex: ente completion zsh >> "${ZSH_COMPLETIONS_PATH}/_ente"
+    # Check `completion_setup` function in ../shell/functions
+    ZSH_COMPLETIONS_PATH="$(brew --prefix)/share/zsh/site-functions"
+    # fpath should be updated before `compinit`
+    fpath=($fpath ${ZSH_COMPLETIONS_PATH})
+  fi
+
+  compinit
+  bashcompinit
+
+  zstyle ':completion:*' menu select                                          # select completions with arrow keys
+  zstyle ':completion:*' group-name ''                                        # group results by category
+  zstyle ':completion:::::' completer _expand _complete _ignored _approximate # enable approximate matches for completion
+  _comp_options+=(globdots)                                                   # Include hidden files.
+
+}
+
+function completion_load() {
+  GCLOUD_SDK_PATH="$(brew --prefix)/share/google-cloud-sdk"
+  if [ -f "$GCLOUD_SDK_PATH/completion.zsh.inc" ]; then . "$GCLOUD_SDK_PATH/completion.zsh.inc"; fi
+
+  # Adds shell completion for aws cli
+  [ -x "$(command -v aws_completer)" ] && complete -C '/usr/local/bin/aws_completer' aws
+
+  # Install pipx completion
+  [ -x "$(command -v register-python-argcomplete)" ] && eval "$(register-python-argcomplete pipx)"
+
+  # Loading bash completions for rea-as tool
+  [ -x "$(command -v rea-as)" ] && source <(rea-as completion)
+
+  [ -x "$(command -v syncthing)" ] && complete -C ${BREW_PREFIX}/bin/syncthing syncthing
+}
