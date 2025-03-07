@@ -75,31 +75,7 @@ setopt HIST_IGNORE_ALL_DUPS
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc"
 
-
-# Basic auto/tab complete:
-autoload -U compinit bashcompinit
-zmodload zsh/complist
-
-# FPATH specific config, brew installed tool completion files are installed in this path
-# To reset the completion cache, use: rm $ZDOTDIR/.zcompdump*
-if [[ "$(command -v brew)" ]]; then
-  # Add completion files to below path:
-  # Ex: ente completion zsh >> "${ZSH_COMPLETIONS_PATH}/_ente"
-  ZSH_COMPLETIONS_PATH="$(brew --prefix)/share/zsh/site-functions/"
-  # fpath should be updated before `compinit`
-  fpath=($fpath ${ZSH_COMPLETIONS_PATH})
-fi
-
-compinit
-bashcompinit
-
-# Loading bash completions for rea-as tool
-source <(rea-as completion)
-
-zstyle ':completion:*' menu select # select completions with arrow keys
-zstyle ':completion:*' group-name '' # group results by category
-zstyle ':completion:::::' completer _expand _complete _ignored _approximate # enable approximate matches for completion
-_comp_options+=(globdots)		# Include hidden files.
+[ -f "${ZDOTDIR}/.completion-setup" ] && source "${ZDOTDIR}/.completion-setup"; completion_init
 
 # vi mode
 bindkey -v
@@ -250,7 +226,6 @@ fi
 # Homebrew or linuxbrew specific config
 if [[ "$(command -v brew)" ]]; then
     export HOMEBREW_NO_AUTO_UPDATE=1
-    # Adds zsh completions from brew
 
     # Make all GNU flavor commands available, may override same-name BSD flavor commands
     export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:${PATH}"
@@ -263,7 +238,8 @@ if [[ "$(command -v brew)" ]]; then
 
     export PATH="$(brew --prefix)/opt/openjdk@21/bin:$PATH"
 
-    [ -x "$(command -v syncthing)" ] && complete -C ${BREW_PREFIX}/bin/syncthing syncthing
+    GCLOUD_SDK_PATH="$(brew --prefix)/share/google-cloud-sdk"
+    if [ -f "$GCLOUD_SDK_PATH/path.zsh.inc" ]; then . "$GCLOUD_SDK_PATH/path.zsh.inc"; fi
 fi
 
 [ -f "${CARGO_HOME}/env" ] && source "${CARGO_HOME}/env"
@@ -286,14 +262,6 @@ autoload -Uz promptinit && promptinit && prompt powerlevel10k
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
 
 # Setting up rea-cli
-source "$HOME/.rea-cli/rea-shell-init.sh"
+[[ ! -f "$HOME/.rea-cli/rea-shell-init.sh" ]] || source "$HOME/.rea-cli/rea-shell-init.sh"
 
-gcloud_sdk="$HOME/google-cloud-sdk"
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f "$gcloud_sdk/path.zsh.inc" ]; then . "$gcloud_sdk/path.zsh.inc"; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f "$gcloud_sdk/completion.zsh.inc" ]; then . "$gcloud_sdk/completion.zsh.inc"; fi
-
-# Adds shell completion for aws cli
-[ -x "$(command -v aws_completer)" ] && complete -C '/usr/local/bin/aws_completer' aws
+[ -f "${ZDOTDIR}/.completion-setup" ] && source "${ZDOTDIR}/.completion-setup"; completion_load
