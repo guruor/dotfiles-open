@@ -1,0 +1,30 @@
+[settings]
+experimental = true
+
+[tools]
+# https://mise.jdx.dev/registry.html#tools
+python = "latest"
+node = "latest"
+postgres = "latest"
+redis = "latest"
+aws-cli = "latest"
+go = "latest"
+rust = "latest"
+
+[env]
+_.file = '.env'
+
+# An external script file to be executed
+# _.source = "./script.sh"
+
+# https://mise.jdx.dev/hooks.html
+# [hooks]
+# enter = "echo 'I entered the project'"
+
+# [hooks.enter]
+# shell = "zsh"
+# script = "eval $(poetry env activate)"
+
+# [hooks.leave]
+# shell = "zsh"
+# script = "deactivate"

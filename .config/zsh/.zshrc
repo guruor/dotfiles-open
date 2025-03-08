@@ -245,6 +245,9 @@ fi
 [ -f "${CARGO_HOME}/env" ] && source "${CARGO_HOME}/env"
 
 [ -x "$(command -v zoxide)" ] && _evalcache zoxide init zsh
+
+[ -x "$(command -v mise)" ] && eval "$(mise activate zsh)"
+
 # [ -x "$(command -v starship)" ] && _evalcache starship init zsh
 
 [ -x "$(command -v thefuck)" ] && _evalcache thefuck --alias oops
