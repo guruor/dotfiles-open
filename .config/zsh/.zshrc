@@ -231,10 +231,10 @@ if [[ "$(command -v brew)" ]]; then
     export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:${PATH}"
     export MANPATH="$(brew --prefix)/opt/coreutils/libexec/gnuman:${MANPATH}"
 
-    # Appending brew binaries path at end to prioritize other binaries like asdf binaries
+    # Appending brew binaries path at end to prioritize other binaries like mise/asdf binaries
     export PATH="$PATH:$(brew --prefix)/bin"
 
-    [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ] && source $(brew --prefix asdf)/libexec/asdf.sh
+    # [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ] && source $(brew --prefix asdf)/libexec/asdf.sh
 
     export PATH="$(brew --prefix)/opt/openjdk@21/bin:$PATH"
 
