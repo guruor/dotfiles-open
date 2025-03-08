@@ -1,5 +1,6 @@
 [settings]
 experimental = true
+env_file = '.env'
 
 [tools]
 # https://mise.jdx.dev/registry.html#tools
