@@ -242,3 +242,10 @@ export PATH="$PATH:${CARGO_HOME}/bin"
 # Adds asdf installed binaries to $PATH
 export PATH="$ASDF_DATA_DIR/bin:$ASDF_DATA_DIR/shims:$PATH"
 
+export MISE_ENV_FILE=.env
+export MISE_CARGO_HOME=$CARGO_HOME
+export MISE_RUSTUP_HOME=$RUSTUP_HOME
+
+export POETRY_CONFIG_DIR=${XDG_CONFIG_HOME}/pypoetry
+export POETRY_HOME=${XDG_DATA_HOME}/pypoetry
+export POETRY_CACHE_DIR=${XDG_CACHE_HOME}/pypoetry
