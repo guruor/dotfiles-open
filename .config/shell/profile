@@ -68,6 +68,7 @@ export PYTHONSTARTUP="${XDG_CONFIG_HOME}/python/pythonstartup.py"
 export IPYTHONDIR="${XDG_CONFIG_HOME}/python/ipython"
 export PYLINTHOME="${XDG_CACHE_HOME}/pylint"
 export PYTHONHISTORY="${XDG_DATA_HOME}/python"
+export PYTHON_VENV_PATH="${XDG_DATA_HOME}/python/venv"
 export RIPGREP_CONFIG_PATH="${XDG_CONFIG_HOME}/ripgrep/ripgreprc"
 export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
 # export NPM_CONFIG_PREFIX="${XDG_DATA_HOME}/npm" # NVM doesn't support it
