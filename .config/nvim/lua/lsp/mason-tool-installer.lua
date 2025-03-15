@@ -41,6 +41,7 @@ local linters_and_formatters = {
     "yamlfmt",
     "eslint_d", "terraform-ls", "tflint", "editorconfig-checker",
     "sql-formatter",
+    "hadolint",
     "buf",
 }
 
