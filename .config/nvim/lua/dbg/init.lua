@@ -12,7 +12,7 @@ end
 -- :DIInstall jsnode_dbg
 -- :DIInstall go_delve_dbg
 mason_dap.setup {
-  ensure_installed = { "python", "delve", "codelldb", "js", "node2", "bash" },
+  ensure_installed = { "python", "delve", "codelldb", "js", "bash", "chrome", "firefox" },
   automatic_setup = true,
 }
 
