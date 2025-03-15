@@ -30,8 +30,12 @@ for _, provider in ipairs { "node", "perl", "ruby" } do
   g["loaded_" .. provider .. "_provider"] = 0
 end
 
+
+-- Adds `mise` installed shim/binaries to the path
+vim.env.PATH = vim.env.HOME .. "/.local/share/mise/shims:" .. vim.env.PATH
+
 -- We can use https://github.com/linux-cultist/venv-selector.nvim for dynamic choice
-g.python3_host_prog = home_dir .. "/.pyenv/versions/nvim/bin/python"
+g.python3_host_prog = vim.fn.expand("$PYTHON_VENV_PATH") .. "/nvim/bin/python"
 
 -- netrw
 g.netrw_banner = 0

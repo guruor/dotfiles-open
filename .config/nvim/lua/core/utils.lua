@@ -116,18 +116,19 @@ M.lazy_load = function(plugin)
 end
 
 M.FirstRunSetup = function()
-  local homeDir = vim.fn.expand "$HOME"
-  -- Setting up python virtual environment for neovim
-  local pyenvPath = homeDir .. "/.pyenv/versions"
-  if not vim.fn.isdirectory(pyenvPath .. "/nvim") then
-    print "Creating virtual environment ..."
-    -- Check if python or pip needs to be installed
-    -- silent !sudo pacman -S words --noconfirm
-    vim.cmd "silent !pyenv install 3.10.0 || true"
-    vim.cmd "silent !pyenv virtualenv 3.10.0 nvim || true"
-    vim.cmd 'silent !pyenv virtualenv 3.10.0 debugpy || true " Creating a virtualenv for debugpy for python debugging'
-    vim.cmd("silent !" .. pyenvPath .. "/nvim/bin/python -m pip install pynvim")
-    vim.cmd("silent !" .. pyenvPath .. "/debugpy/bin/python -m pip install debugpy")
+  -- Set the path to the script
+  local scriptPath = vim.fn.expand("$HOME/.config/nvim/setup_nvim_envs.sh")
+
+  if vim.fn.executable("python3") == 0 then
+    print("Python3 is not installed. Please install Python3 to continue.")
+    return
+  end
+
+  if not vim.fn.isdirectory(vim.fn.expand("$PYTHON_VENV_PATH") .. "/nvim") then
+    print("Setting up virtual environments...")
+    vim.cmd("silent !bash " .. scriptPath)
+  else
+    print("Virtual environments already set up.")
   end
 end
 
