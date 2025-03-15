@@ -5,15 +5,19 @@ env_file = '.env'
 [tools]
 # https://mise.jdx.dev/registry.html#tools
 python = "latest"
+uv = "latest"
+poetry = "latest"
 node = "latest"
 postgres = "latest"
 redis = "latest"
 aws-cli = "latest"
 go = "latest"
 rust = "latest"
+lua = "latest"
 
 [env]
 _.file = '.env'
+MY_ENV = 'test'
 
 # An external script file to be executed
 # _.source = "./script.sh"
