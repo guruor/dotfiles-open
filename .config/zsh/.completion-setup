@@ -130,4 +130,7 @@ function completion_load() {
   [ -x "$(command -v rea-as)" ] && source <(rea-as completion)
 
   [ -x "$(command -v syncthing)" ] && complete -C ${BREW_PREFIX}/bin/syncthing syncthing
+
+  [ -x "$(command -v uv)" ] && eval "$(uv generate-shell-completion zsh)"
+  [ -x "$(command -v uvx)" ] && eval "$(uvx --generate-shell-completion zsh)"
 }
