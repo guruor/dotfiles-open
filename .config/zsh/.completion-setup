@@ -63,6 +63,9 @@ function setup_tool_completion() {
   "fzf")
     $(brew --prefix)/opt/fzf/install --all
     ;;
+  "eza")
+      curl https://raw.githubusercontent.com/eza-community/eza/refs/heads/main/completions/zsh/_eza > "${completion_file}"
+    ;;
   *)
     if is_installed "${tool}"; then
       "${tool}" completion zsh >"${completion_file}"
@@ -78,7 +81,7 @@ function completion_install() {
   install_pipx
   install_argcomplete
 
-  local tools=("fzf" "docker" "mise" "asdf" "pip3" "poetry" "npm" "ente")
+  local tools=("fzf" "docker" "mise" "asdf" "pip3" "poetry" "npm" "ente" "eza")
   for tool in "${tools[@]}"; do
     if is_installed "${tool}"; then
       setup_tool_completion "${tool}"
