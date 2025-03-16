@@ -63,6 +63,9 @@ executionEnvironments = [{ root = "src" }]
 
 [tool.ruff]
 line-length = 120
+show-fixes = true
+# Extent existing select with isort
+extend-select = ["I"]
 
 [tool.ruff.pydocstyle]
 convention = "google" # Accepts: "google", "numpy", or "pep257".
