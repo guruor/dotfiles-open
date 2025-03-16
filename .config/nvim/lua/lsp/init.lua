@@ -29,7 +29,8 @@ vim.g.should_enable_efm = false
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 local servers = {
   ruff = require "lsp.servers.ruff",
-  pyright = require "lsp.servers.pyright",
+  -- pyright = require "lsp.servers.pyright",
+  basedpyright = require "lsp.servers.basedpyright",
   gopls = require "lsp.servers.gopls",
   rust_analyzer = require "lsp.servers.rust_analyzer",
   clangd = require "lsp.servers.clangd",
