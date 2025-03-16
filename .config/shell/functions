@@ -119,3 +119,42 @@ function truecolors_test(){
         printf "\n";
     }'
 }
+
+function pyright_venv_setup() {
+  # Check if Python is available
+  if ! command -v python &> /dev/null; then
+    echo "Error: Python is not available. Please ensure Python is installed and in your PATH."
+    return 1
+  fi
+
+  # Attempt to detect the virtual environment
+  venv_dir=$(python -c "import sys; print(sys.prefix)")
+
+  # Check if no virtual environment is detected
+  if [ -z "$venv_dir" ] || [ "$venv_dir" = "$(python -c 'import os; print(os.sep.join(os.__file__.split(os.sep)[:-2]))')" ]; then
+    echo "Error: No virtual environment detected. Please activate your virtual environment."
+    return 1
+  fi
+
+  # Extract the path and name of the virtual environment
+  venv_path="$(dirname "$venv_dir")"
+  venv_name="$(basename "$venv_dir")"
+
+  echo "Detected virtual environment:"
+  echo "  Path: $venv_path"
+  echo "  Name: $venv_name"
+
+  # Display current Pyright configuration if it exists
+  if [[ -f pyrightconfig.json ]]; then
+    echo "\nExisting pyrightconfig.json:"
+    cat pyrightconfig.json
+  else
+    echo "No existing pyrightconfig.json found."
+  fi
+
+  # Create a new Pyright configuration
+  printf '{\n  "venvPath": "%s",\n  "venv": "%s"\n}\n' "$venv_path" "$venv_name" > pyrightconfig.json
+
+  echo "\nUpdated pyrightconfig.json:"
+  cat pyrightconfig.json
+}
