@@ -27,7 +27,7 @@ return {
       "jvgrootveld/telescope-zoxide",
     },
     config = utils.load_config "configs.telescope",
-    enabled = false,
+    enabled = true,
   },
   {
     "folke/flash.nvim", -- leap.nvim alternative

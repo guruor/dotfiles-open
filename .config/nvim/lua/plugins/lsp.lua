@@ -44,7 +44,17 @@ return {
     end,
     event = { "BufReadPre", "BufNewFile" },
   },
-
+  {
+    'linux-cultist/venv-selector.nvim',
+    branch = "regexp",
+    dependencies = { 'neovim/nvim-lspconfig', 'nvim-telescope/telescope.nvim', 'mfussenegger/nvim-dap-python' },
+    opts = require("plugins.configs.misc").venv_selector,
+    config = function(_, opts)
+      require('venv-selector').setup(opts)
+    end,
+    lazy = false,
+    enabled = true,
+  },
   {
     -- Lightweight yet powerful formatter
     "stevearc/conform.nvim",
