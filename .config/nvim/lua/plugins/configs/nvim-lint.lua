@@ -1,13 +1,23 @@
 local linters_by_ft = {
-  -- python = { "ruff" }, -- Already covered by pyright lsp
   python = { "vulture" }, -- Vulture detects unused python code
   -- go = { "revive" }, -- revive is not needed when we have golangci_lint
   go = { "golangcilint" },
   -- markdown = { "typos" }, -- typos highlights typing mistakes
   -- env = { "dotenv_linter" }, -- diagnostics.dotenv_linter,
+  lua = { "luacheck" },
+  docker = { "hadolint" },
+  terraform = { "tflint" },
+  sql = { "sqlfluff" },
+  markdown = { "markdownlint" },
+  vim = { "vint" },
 }
 
 -- This table covers redundant linters for similar filetypes
+-- Available linters: https://github.com/mfussenegger/nvim-lint?tab=readme-ov-file#available-linters
+-- Available linters: https://mason-registry.dev/registry/list
+-- Make sure the names match in mason-registry.dev to make sure auto install work
+-- Auto install list supported by mason-nvim-lint: https://github.com/rshkarin/mason-nvim-lint/blob/main/lua/mason-nvim-lint/mapping.lua
+-- Linter which has different name then the mason can be added to ignore_install list of mason-nvim-lint
 local linters_by_ft_group = {
   { filetypes = { "sh", "bash", "zsh" }, linters = { "shellcheck" } },
   { filetypes = { "json", "javascript", "typescript" }, linters = { "oxlint", "biomejs" } },
