@@ -58,16 +58,24 @@ return {
   {
     -- Lightweight yet powerful formatter
     "stevearc/conform.nvim",
+    dependencies = { "williamboman/mason.nvim", "zapling/mason-conform.nvim" },
     event = { "BufWritePre" },
     cmd = { "ConformInfo" },
     keys = { "<leader>l" },
     opts = require "plugins.configs.conform",
+    config = function(_, opts)
+      require("conform").setup(opts)
+      require("mason-conform").setup {
+        ignore_install = {},
+      }
+    end,
     init = function()
       vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
     end,
   },
   {
     "mfussenegger/nvim-lint",
+    dependencies = { "rshkarin/mason-nvim-lint" },
     event = { "BufReadPre", "BufNewFile" },
     opts = require "plugins.configs.nvim-lint",
     config = function(_, opts)
@@ -78,6 +86,10 @@ return {
         group = lint_augroup,
         callback = opts.autocmd_callback,
       })
+
+      require("mason-nvim-lint").setup {
+        ignore_install = { "biomejs" },
+      }
     end,
   },
   {

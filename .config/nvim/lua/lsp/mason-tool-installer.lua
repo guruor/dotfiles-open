@@ -1,11 +1,11 @@
-local status_ok, mason = pcall(require, 'mason')
+local status_ok, mason = pcall(require, "mason")
 if not status_ok then
-    return
+  return
 end
 
-local mason_tool_installer_status_ok, mason_tool_installer = pcall(require, 'mason-tool-installer')
+local mason_tool_installer_status_ok, mason_tool_installer = pcall(require, "mason-tool-installer")
 if not mason_tool_installer_status_ok then
-    return
+  return
 end
 
 mason.setup {
@@ -15,13 +15,11 @@ mason.setup {
   },
 }
 
--- https://github.com/williamboman/mason.nvim/blob/main/PACKAGES.md#eslint-lsp
+-- LSP are installed using mason-lspconfig, ./init.lua
+-- only ones are not handled by that are mentioned here
+-- https://mason-registry.dev/registry/list
 local language_servers = {
-  'clangd', 'gopls', 'pyright', 'rust-analyzer', 'vim-language-server', 'json-lsp',
-  'yaml-language-server', 'css-lsp', 'html-lsp', 'dockerfile-language-server',
-  'terraform-ls', 'typescript-language-server', 'sqlls',
-  'vim-language-server', 'lua-language-server',
-  'buf-language-server',
+  "buf-language-server",
   -- 'nil_ls',
   -- 'efm',
   -- you can pin a tool to a particular version
@@ -30,19 +28,28 @@ local language_servers = {
   -- { 'bash-language-server', auto_update = true },
 }
 
-local linters_and_formatters = {
-    "goimports", "staticcheck",  "json-to-struct", "gotests", "gomodifytags", "golines", "gofumpt", "impl", "revive",
-    "jq", "fixjson",
-    "oxlint", "biome", "dprint", "prettierd", "markdownlint", "cbfmt",
-    "vale",
-    "stylua", "luaformatter", "luacheck",
-    "vint",
-    "shellcheck",
-    "yamlfmt",
-    "eslint_d", "terraform-ls", "tflint", "editorconfig-checker",
-    "sql-formatter",
-    "hadolint",
-    "buf",
+-- Formatters are mostly installed by mason-conform, ../plugins/configs/conform.lua
+local formatters = {
+  "gotests",
+  "gomodifytags",
+}
+-- Linters are mostly installed by mason-nvim-lint, ../plugins/configs/nvim-lint.lua
+-- only ones are not handled by them are mentioned here
+-- https://mason-registry.dev/registry/list
+local linters = {
+  "staticcheck",
+  "editorconfig-checker",
+  -- static analysis
+  "semgrep",
+  -- Security, vulnerabilities, misconfigurations, secret scan
+  "trivy",
+  "trufflehog", -- leaked secrets
+}
+
+local tools = {
+  "json-to-struct",
+  "impl",
+  "jq",
 }
 
 -- Debuggers or DAP are installed using mason-dap, ../dbg/init.lua
@@ -51,8 +58,10 @@ local debuggers = {
   "go-debug-adapter",
 }
 
-local final_tools = vim.list_extend(language_servers, linters_and_formatters)
+local final_tools = vim.list_extend(language_servers, linters)
+final_tools = vim.list_extend(final_tools, formatters)
 final_tools = vim.list_extend(final_tools, debuggers)
+final_tools = vim.list_extend(final_tools, tools)
 
 mason_tool_installer.setup {
   -- a list of all tools you want to ensure are installed upon
@@ -85,4 +94,3 @@ mason_tool_installer.setup {
   -- Default: nil
   debounce_hours = 5, -- at least 5 hours between attempts to install/update
 }
-

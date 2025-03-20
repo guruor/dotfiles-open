@@ -26,27 +26,47 @@ vim.g.should_enable_efm = false
 --
 --  Add any additional override configuration in the following tables.
 -- Look for server configurations here
--- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+-- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
+-- https://github.com/williamboman/mason-lspconfig.nvim?tab=readme-ov-file#available-lsp-servers
 local servers = {
+  -- snyk_ls = require "lsp.servers.common", -- vulnerabilities, open source dependencies
+  ast_grep = require "lsp.servers.common", -- polyglot tool for code structural search, lint, rewriting at large scale
+  harper_ls = require "lsp.servers.common", -- language checker for developers
+  clangd = require "lsp.servers.clangd", -- "c", "cpp", "objc", "objcpp", "cuda", "proto"
   ruff = require "lsp.servers.ruff",
   -- pyright = require "lsp.servers.pyright",
   basedpyright = require "lsp.servers.basedpyright",
   gopls = require "lsp.servers.gopls",
-  rust_analyzer = require "lsp.servers.rust_analyzer",
-  clangd = require "lsp.servers.clangd",
+  templ = require "lsp.servers.gopls", -- HTML templating language for Go
+  -- rust_analyzer = require "lsp.servers.rust_analyzer", -- Already handled by rustaceanvim
   jsonls = require "lsp.servers.jsonls",
-  yamlls = require "lsp.servers.yamlls",
-  lua_ls = require "lsp.servers.lua_ls",
   ts_ls = require "lsp.servers.ts_ls",
+  glint = require "lsp.servers.common", -- Handlebars
+  yamlls = require "lsp.servers.yamlls",
+  gitlab_ci_ls = require "lsp.servers.common",
+  lua_ls = require "lsp.servers.lua_ls",
   vimls = require "lsp.servers.common",
   cssls = require "lsp.servers.common",
+  tailwindcss = require "lsp.servers.common",
   html = require "lsp.servers.common",
+  htmx = require "lsp.servers.common",
   bashls = require "lsp.servers.common",
   dockerls = require "lsp.servers.common",
+  docker_compose_language_service = require "lsp.servers.common",
   terraformls = require "lsp.servers.common",
+  sqls = require "lsp.servers.common",
   sqlls = require "lsp.servers.common",
   marksman = require "lsp.servers.common",
   powershell_es = require "lsp.servers.common",
+  taplo = require "lsp.servers.common", -- TOML
+  texlab = require "lsp.servers.common", -- LaTeX LSP, markdown
+  vacuum = require "lsp.servers.common", -- OpenAPI 3, OpenAPI 2 / Swagger linter
+  ansiblels = require "lsp.servers.common",
+  neocmake = require "lsp.servers.common", -- For Cmake files
+  helm_ls = require "lsp.servers.common",
+  buf_ls = require "lsp.servers.common",
+  lemminx = require "lsp.servers.common", -- XML LSP
+  jinja_lsp = require "lsp.servers.common",
 }
 
 mason_lspconfig.setup {
