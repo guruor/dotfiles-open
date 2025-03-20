@@ -45,8 +45,10 @@ local linters_and_formatters = {
     "buf",
 }
 
+-- Debuggers or DAP are installed using mason-dap, ../dbg/init.lua
+-- only ones are not handled by that are mentioned here
 local debuggers = {
-    "debugpy", "delve", "go-debug-adapter",
+  "go-debug-adapter",
 }
 
 local final_tools = vim.list_extend(language_servers, linters_and_formatters)
