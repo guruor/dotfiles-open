@@ -8,9 +8,8 @@ if not mason_nvim_dap_status_ok then
     return
 end
 
--- https://alpha2phi.medium.com/neovim-dap-enhanced-ebc730ff498b
--- :DIInstall jsnode_dbg
--- :DIInstall go_delve_dbg
+-- Manually install Ex: :DapInstall python
+-- Supported sources: https://github.com/jay-babu/mason-nvim-dap.nvim/blob/main/lua/mason-nvim-dap/mappings/source.lua
 mason_dap.setup {
   ensure_installed = { "python", "delve", "codelldb", "js", "bash", "chrome", "firefox" },
   automatic_setup = true,
