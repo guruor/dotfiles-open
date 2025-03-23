@@ -245,16 +245,12 @@ M.ts_context_commentstring = {
   },
 }
 
-local function shorter_venv_name(filename)
-   return filename:gsub(os.getenv("HOME"), "~"):gsub("/bin/python", "")
-end
-
 M.venv_selector = {
   settings = {
     options = {
+      picker = "auto", -- The picker to use. Valid options are "telescope", "fzf-lua", "native", or "auto"
       debug = true,
       notify_user_on_venv_activation = true,
-      on_telescope_result_callback = shorter_venv_name
     },
     search = {
       find_venvs = { command = "fd /bin/python$ $PYTHON_VENV_PATH --full-path" },
