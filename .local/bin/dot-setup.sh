@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script clones and sets up dotfiles, requiring Bitwarden and yq.
 # Run this script directly in shell using:
-# curl -s https://raw.githubusercontent.com/guruor/dotfiles-open/refs/heads/master/.local/bin/dot-setup.sh | bash
+# curl -s https://raw.githubusercontent.com/guruor/dotfiles-open/refs/heads/master/.local/bin/dot-setup.sh | bash -s -- --confirm
 
 # Exit on error
 set -e
@@ -15,12 +15,18 @@ GIT_PRIVATE_HOST="github-personal"
 BW_GITHUB_ITEM_ID="95a44651-2d37-407a-a1b6-ad8900c6c680"
 BW_GITHUB_ITEM_NOTES_YAML_KEY=".tokens.personal_access_token"
 
-# Function to detect the platform (macOS or Debian-based Linux)
+# Function to detect the platform (macOS or Debian-based Linux) and architecture
 detect_platform() {
   UNAME_OUTPUT=$(uname -s)
+  ARCH=$(uname -m)
   case "$UNAME_OUTPUT" in
   Linux*)
     PLATFORM="linux"
+    if [[ "$ARCH" == "aarch64" || "$ARCH" == "armv7l" ]]; then
+      ARCH="arm"
+    else
+      ARCH="x86"
+    fi
     ;;
   Darwin*)
     PLATFORM="macos"
@@ -40,7 +46,7 @@ install_homebrew() {
       /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
       setup_homebrew_env_macos
     elif [ "$PLATFORM" = "linux" ]; then
-      sudo apt-get update && sudo apt-get install -y build-essential procps curl file git
+      sudo apt-get update && sudo apt-get install -y build-essential procps file git
       /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
       eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
     fi
@@ -65,9 +71,41 @@ setup_homebrew_env_macos() {
 }
 
 # Function to install necessary tools using Homebrew
-install_dependencies() {
+# Function to install necessary tools on macOS
+install_dependencies_macos() {
+  if ! command -v brew &>/dev/null; then
+    echo "Installing Homebrew on macOS..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    setup_homebrew_env_macos
+  else
+    echo "Homebrew is already installed."
+    setup_homebrew_env_macos
+  fi
   echo "Installing required packages with Homebrew..."
   brew install bitwarden-cli yq
+}
+
+install_dependencies_linux() {
+  sudo apt-get update
+  sudo apt-get install -y build-essential procps file git
+  if [[ "$ARCH" == "x86" ]]; then
+    # If the architecture is x86, attempt to install Homebrew and dependencies.
+    if ! command -v brew &>/dev/null; then
+      echo "Installing Homebrew on x86 Linux..."
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+      brew install bitwarden-cli yq
+    else
+      eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+      brew install bitwarden-cli yq
+    fi
+  elif [[ "$ARCH" == "arm" ]]; then
+    # ARM Linux doesn't support Homebrew, use apt for dependencies.
+    echo "ARM architecture detected. Installing packages using apt..."
+    sudo snap install yq
+    sudo apt-get install npm
+    sudo npm install -g @bitwarden/cli
+  fi
 }
 
 # Function to prompt for Bitwarden credentials
@@ -137,10 +175,12 @@ main() {
 
   # Detect the platform
   detect_platform
-
-  # Install tools
-  install_homebrew
-  install_dependencies
+  # Install tools based on platform and architecture
+  if [ "$PLATFORM" = "macos" ]; then
+    install_dependencies_macos
+  elif [ "$PLATFORM" = "linux" ]; then
+    install_dependencies_linux
+  fi
 
   # Prompt for dynamic values or use defaults
   read -p "Git user (default: $DEFAULT_GIT_USER): " gituser
