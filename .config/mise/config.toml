@@ -1,5 +1,7 @@
+# WARN: experimental or [env] prepends mise installed binaries path to $PATH which sometimes takes precedence than the
+# venv path, due to this virtualenv doesn't get activated in case of python
 [settings]
-experimental = true
+# experimental = true
 env_file = '.env'
 
 [tools]
@@ -15,9 +17,9 @@ go = "latest"
 rust = "latest"
 lua = "latest"
 
-[env]
-_.file = '.env'
-MY_ENV = 'test'
+# [env]
+# _.file = '.env'
+# MY_ENV = 'test'
 
 # An external script file to be executed
 # _.source = "./script.sh"
