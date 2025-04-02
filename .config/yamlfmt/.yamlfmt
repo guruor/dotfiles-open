@@ -1,0 +1,6 @@
+# https://github.com/google/yamlfmt/blob/main/docs/config-file.md
+continue_on_error: true
+formatter:
+  indent: 2
+  retain_line_breaks: true
+  include_document_start: false
