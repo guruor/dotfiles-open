@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Open new terminal window with a program and specific title
-# Kind of wrapper over terminals like kitty, alacritty, and wezterm
+# Kind of wrapper over terminals like kitty, ghostty, alacritty, and wezterm
 
 # Function to display usage information
 usage() {
@@ -83,6 +83,11 @@ case "$TERMINAL" in
 kitty)
         log_message "Starting kitty" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
         kitty --single-instance --title "$WIN_TITLE" --working-directory "$WORKING_DIR" -e "$DEFAULT_SHELL" -lc "$CMD_STR;"
+        ;;
+
+ghostty)
+        log_message "Starting ghostty" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
+        open -na ghostty --args --title="$WIN_TITLE" --working-directory="$WORKING_DIR" -e "$DEFAULT_SHELL" -lc \'"$CMD_STR;"\'
         ;;
 alacritty)
         log_message "Starting alacritty" "Terminal: $TERMINAL, Title: $WIN_TITLE, Shell: $DEFAULT_SHELL, Command: $CMD_STR"
