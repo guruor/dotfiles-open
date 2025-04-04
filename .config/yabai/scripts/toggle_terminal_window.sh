@@ -2,11 +2,18 @@
 # Reference for floating window with yabai (https://github.com/Granitosaurus/bin/blob/master/dropdown)
 
 window_name="${1:=Pad}"
+window_name_lower_case=$(echo "$window_name" | tr '[:upper:]' '[:lower:]')
 command_str="${2}"
 TERMINAL="${TERMINAL:-kitty}"
+TERMINAL_LOWER_CASE=$(echo "$TERMINAL" | tr '[:upper:]' '[:lower:]')
+DEBUG=false
+
+if [ "$DEBUG" = true ]; then
+    echo "$TERMINAL | $@" >> "/tmp/$(basename "$0").log"
+fi
 function toggle_window_before_scratchpad_feature() {
     # Checking if window is already open
-    term_window=$(yabai -m query --windows | jq "map(select((.app | startswith(\"$TERMINAL\")) and .title == \"$window_name\"))[0] // empty");
+    term_window=$(yabai -m query --windows | jq "map(select((.app | ascii_downcase | startswith(\"$TERMINAL_LOWER_CASE\")) and (.title | ascii_downcase == \"$window_name_lower_case\")))[0] // empty");
     if [[ -z "$term_window" ]]; then
         openterm --title "$window_name" --shell "$SHELL" --cmd-str "${command_str}; $SHELL";
     else
@@ -38,6 +45,7 @@ function toggle_window_before_scratchpad_feature() {
 }
 
 function toggle_window() {
+  # This would work with `scratchpad` property window only
   # yabai -m window --toggle "$window_name" || openterm --title "$window_name" --shell "$SHELL" --cmd-str "${command_str}; $SHELL";
   toggle_window_before_scratchpad_feature
 }
