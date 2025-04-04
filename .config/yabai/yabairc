@@ -70,14 +70,14 @@ yabai -m config mouse_action2               resize
 yabai -m window_scratchpad_transition       off
 
 # List of all supported terminals
-supported_terminals="^(kitty|WezTerm|wezterm-gui|alacritty|Alacritty)$"
+supported_terminals="^(kitty|Ghostty|ghostty|WezTerm|wezterm-gui|alacritty|Alacritty)$"
 # grid=<rows>:<cols>:<start-x>:<start-y>:<width>:<height>
 default_grid_size="10:16:8:5:16:10"
 # ===== Rules ==================================
 # Floating terminal windows
 cli_app_titles=("Notes" "Pad" "Bottom" "Ncmpcpp")
-# yabai -m rule --add title="^(Notes|Pad|Bottom|Ncmpcpp)$" app="${supported_terminals}" manage=off sub-layer=above sticky=on grid="${default_grid_size}"
 for app_title in "${cli_app_titles[@]}"; do
+  # scratchpad windows are manage=off automatically
   yabai -m rule --add app="${supported_terminals}" title="${app_title}" scratchpad="${app_title}" manage=off sub-layer=above sticky=on grid="${default_grid_size}"
 done
 
