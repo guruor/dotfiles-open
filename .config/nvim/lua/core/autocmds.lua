@@ -106,6 +106,7 @@ autocmd("FileType", {
     local mode = "n"
     local opts = { buffer = true, noremap = true }
     vim.keymap.set(mode, "<Enter>", "<C-W><Enter><C-W>T", opts)
+    vim.opt_local.buflisted = false
   end,
   group = generalSettingsGroup,
 })
@@ -350,7 +351,7 @@ local focusDisableBuftypes = { 'nofile', 'prompt', 'popup' }
 
 local disableFocusAugroup = augroup('FocusDisable', { clear = true })
 
-vim.api.nvim_create_autocmd('WinEnter', {
+autocmd('WinEnter', {
     group = disableFocusAugroup,
     callback = function(_)
         if vim.tbl_contains(focusDisableBuftypes, vim.bo.buftype) then
@@ -360,7 +361,7 @@ vim.api.nvim_create_autocmd('WinEnter', {
     desc = 'Disable focus autoresize for BufType',
 })
 
-vim.api.nvim_create_autocmd('FileType', {
+autocmd('FileType', {
     group = disableFocusAugroup,
     callback = function(_)
         if vim.tbl_contains(focusDisableFiletypes, vim.bo.filetype) then
