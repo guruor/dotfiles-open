@@ -147,17 +147,6 @@ if IS_WINDOWS then
     opt.shellquote = ""
 end
 
--------------------------------------- autocmds ------------------------------------------
-local autocmd = vim.api.nvim_create_autocmd
-
--- dont list quickfix buffers
-autocmd("FileType", {
-  pattern = "qf",
-  callback = function()
-    vim.opt_local.buflisted = false
-  end,
-})
-
 -------------------------------------- new-commands ------------------------------------------
 local new_cmd = vim.api.nvim_create_user_command
 
