@@ -47,6 +47,7 @@ M.settings = {
     markdown = { prettier, proselint },
     sh = { shellcheck },
     tf = { terraform },
+    terraform = { terraform },
     proto = { buf },
     sql = { sql_formatter },
   },
