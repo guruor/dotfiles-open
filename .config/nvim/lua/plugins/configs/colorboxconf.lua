@@ -51,6 +51,7 @@ require("colorbox").setup {
       rust = "github_dark",
       dashboard = "github_dark",
       yaml = "everforest",
+      terraform = "everforest",
       toml = "everforest",
       lua = "tokyonight-storm",
       nix = "tokyonight-storm",

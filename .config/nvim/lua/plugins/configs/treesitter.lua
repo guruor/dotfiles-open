@@ -61,6 +61,7 @@ M.options = {
     "dap_repl",
     "comment",
     "regex",
+    "terraform",
   },
   query_linter = {
     enable = true,
