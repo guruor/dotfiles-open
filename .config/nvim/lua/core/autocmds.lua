@@ -142,53 +142,8 @@ autocmd({ "BufRead", "BufNewFile" }, {
 -- })
 
 
---------------- Rest nvim -----------------
--- Detect file type for env files for rest-nvim
-autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = vim.fn.expand "$REST_NVIM_COLLECTION_PATH" .. "/envs/*",
-  callback = function()
-    vim.bo.filetype = "sh"
-  end,
-  group = generalSettingsGroup,
-})
-
---------------- Xdefaults or Xresources -----------------
--- Detect file type for Xdefaults or Xresources
-autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = { "xresources", "xdefaults" },
-  callback = function()
-    vim.bo.filetype = "xdefaults"
-  end,
-  group = generalSettingsGroup,
-})
-
---------------- Markdown and doc file related autocmds -----------------
-autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = { "*.md" },
-  callback = function()
-    vim.bo.filetype = "markdown"
-  end,
-  group = generalSettingsGroup,
-})
-
-autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = { "*.ms", "*.me", "*.mom", "*.man" },
-  callback = function()
-    vim.bo.filetype = "groff"
-  end,
-  group = generalSettingsGroup,
-})
-
-autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = "*.tex",
-  callback = function()
-    vim.bo.filetype = "tex"
-  end,
-  group = generalSettingsGroup,
-})
-
 --------------- Post save sattings -------------------
--- When shortcut files are updated, renew bash and ranger configs with new material:
+-- Runs a script that cleans out tex build files whenever I close out of a .tex file.
 local postSaveSettingsGroup = augroup("Post save settings", { clear = true })
 autocmd("BufWritePost", {
   pattern = { "bm-files", "bm-dirs" },
@@ -284,15 +239,6 @@ autocmd("BufLeave", {
       vim.bo.buftype = "nofile"
       vim.bo.bufhidden = "unload"
     end
-  end,
-  group = generalSettingsGroup,
-})
-
--- Runs a script that cleans out tex build files whenever I close out of a .tex file.
-autocmd("VimLeave", {
-  pattern = "*.tex",
-  callback = function()
-    vim.bo.filetype = "tex"
   end,
   group = generalSettingsGroup,
 })
