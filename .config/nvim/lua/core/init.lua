@@ -7,8 +7,8 @@ vim.opt.rtp:prepend(home_dir .. "/.config/vim")
 vim.opt.rtp:prepend(home_dir .. "/.config/nvim")
 
 -- Example for configuring Neovim to load user-installed installed Lua rocks:
-package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?/init.lua;"
-package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/share/lua/5.1/?.lua;"
+package.path = package.path .. ";" .. vim.fn.expand "$HOME" .. "/.luarocks/share/lua/5.1/?/init.lua;"
+package.path = package.path .. ";" .. vim.fn.expand "$HOME" .. "/.luarocks/share/lua/5.1/?.lua;"
 
 -------------------------------------- cmds -----------------------------------------
 cmd "syntax on"
@@ -42,19 +42,18 @@ g.maplocalleader = "\\" -- Comma as local leader key
 -- Border color can be handled with highlight group `FloatBorder`
 --https://github.com/neovim/neovim/issues/20202
 -- local border_style = "curved"
-local border_style = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' }
+local border_style = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }
 g.border_style = border_style
 -- disable some default providers
 for _, provider in ipairs { "node", "perl", "ruby" } do
   g["loaded_" .. provider .. "_provider"] = 0
 end
 
-
 -- Adds `mise` installed shim/binaries to the path
 vim.env.PATH = vim.env.HOME .. "/.local/share/mise/shims:" .. vim.env.PATH
 
 -- We can use https://github.com/linux-cultist/venv-selector.nvim for dynamic choice
-g.python3_host_prog = vim.fn.expand("$PYTHON_VENV_PATH") .. "/nvim/bin/python"
+g.python3_host_prog = vim.fn.expand "$PYTHON_VENV_PATH" .. "/nvim/bin/python"
 
 -- netrw
 g.netrw_banner = 0
@@ -115,7 +114,7 @@ opt.swapfile = false
 opt.undofile = true
 opt.scrolloff = 5
 opt.fixendofline = false -- Avoid fixing new line end of file
-opt.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 
 opt.complete:append "kspell" -- Spell check
 opt.spelllang = "en_us"
@@ -140,9 +139,9 @@ opt.listchars:append "eol:↴"
 local uname = vim.loop.os_uname()
 
 _G.OS = uname.sysname
-_G.IS_MAC = OS == 'Darwin'
-_G.IS_LINUX = OS == 'Linux'
-_G.IS_WINDOWS = OS:find 'Windows' and true or false
+_G.IS_MAC = OS == "Darwin"
+_G.IS_LINUX = OS == "Linux"
+_G.IS_WINDOWS = OS:find "Windows" and true or false
 
 -- Setting powershell for windows
 -- if IS_WINDOWS then
@@ -156,14 +155,14 @@ _G.IS_WINDOWS = OS:find 'Windows' and true or false
 
 -- Setting nushell for windows
 if IS_WINDOWS then
-    opt.shell = "nu"
-    opt.shellcmdflag = "--login --stdin --no-newline -c"
-    opt.shellredir = "out+err> %s"
-    opt.shellpipe = "| complete | update stderr { ansi strip } | tee { get stderr | save --force --raw %s } | into record"
-    opt.shelltemp = false
-    opt.shellxescape = ""
-    opt.shellxquote = ""
-    opt.shellquote = ""
+  opt.shell = "nu"
+  opt.shellcmdflag = "--login --stdin --no-newline -c"
+  opt.shellredir = "out+err> %s"
+  opt.shellpipe = "| complete | update stderr { ansi strip } | tee { get stderr | save --force --raw %s } | into record"
+  opt.shelltemp = false
+  opt.shellxescape = ""
+  opt.shellxquote = ""
+  opt.shellquote = ""
 end
 
 -------------------------------------- new-commands ------------------------------------------
@@ -173,7 +172,7 @@ new_cmd("DiffviewToggle", function(e)
   local view = require("diffview.lib").get_current_view()
 
   if view then
-    vim.cmd("DiffviewClose")
+    vim.cmd "DiffviewClose"
   else
     vim.cmd("DiffviewOpen " .. e.args)
   end
