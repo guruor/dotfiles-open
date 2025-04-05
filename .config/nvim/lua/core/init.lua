@@ -14,6 +14,25 @@ package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/shar
 cmd "syntax on"
 cmd "filetype plugin indent on"
 
+-------------------------------------- filetypes -----------------------------------------
+vim.filetype.add {
+  extension = {
+    tf = "terraform",
+    tfvars = "terraform",
+    ms = "groff",
+    me = "groff",
+    mom = "groff",
+    man = "groff",
+  },
+  filename = {
+    ["xdefaults"] = "xdefaults",
+    ["xresources"] = "xdefaults",
+  },
+  pattern = {
+    ["${REST_NVIM_COLLECTION_PATH}/envs/*"] = "sh",
+  },
+}
+
 -------------------------------------- globals -----------------------------------------
 g.mapleader = " " -- Space as leader key
 g.maplocalleader = "\\" -- Comma as local leader key
