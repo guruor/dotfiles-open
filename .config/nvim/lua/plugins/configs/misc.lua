@@ -246,17 +246,15 @@ M.ts_context_commentstring = {
 }
 
 M.venv_selector = {
-  settings = {
-    options = {
-      picker = "auto", -- The picker to use. Valid options are "telescope", "fzf-lua", "native", or "auto"
-      debug = true,
-      notify_user_on_venv_activation = true,
-    },
-    search = {
-      find_venvs = { command = "fd /bin/python$ $PYTHON_VENV_PATH --full-path" },
-      find_poetry_venvs = { command = "fd /bin/python$ $POETRY_CACHE_DIR --full-path" },
-      find_pyenv_venvs = { command = "fd /bin/python$ $PYENV_ROOT --full-path" },
-    },
+  options = {
+    picker = "auto", -- The picker to use. Valid options are "telescope", "fzf-lua", "native", or "auto"
+    debug = true,
+    notify_user_on_venv_activation = true,
+  },
+  search = {
+    find_venvs = { command = "fd /bin/python$ $PYTHON_VENV_PATH --full-path" },
+    find_poetry_venvs = { command = "fd /bin/python$ $POETRY_CACHE_DIR --full-path" },
+    find_pyenv_venvs = { command = "fd /bin/python$ $PYENV_ROOT --full-path" },
   },
 }
 
