@@ -1,13 +1,13 @@
-# EditorConfig is awesome: https://EditorConfig.org
+# EditorConfig is awesome: https://editorconfig.org
 
-# top-most EditorConfig file
+# Top-most EditorConfig file
 root = true
 
 # Unix-style newlines with a newline ending every file
 [*]
 charset = utf-8
 end_of_line = lf
-indent_size = 2
+indent_size = 4
 indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
@@ -24,6 +24,46 @@ trim_trailing_whitespace = false
 [Dockerfile]
 indent_size = 4
 
-[{Makefile,go.mod,go.sum,*.go,.gitmodules}]
+[{go.mod,go.sum,*.go,.gitmodules}]
 indent_size = 4
 indent_style = tab
+
+# Match specific file types
+
+# JavaScript and JSON files
+[*.{js,json}]
+indent_size = 2
+
+# YAML
+[*.yml]
+indent_size = 2
+
+# Python
+[*.py]
+indent_size = 4
+
+# Java
+[*.java]
+indent_size = 4
+
+# C, C++
+[*.{c,cpp,h,hpp}]
+indent_size = 4
+
+# HTML/XML
+[*.{html,xml}]
+indent_style = space
+indent_size = 2
+
+# CSS and SCSS
+[*.{css,scss}]
+indent_size = 2
+
+# Makefiles
+[Makefile]
+indent_style = tab
+
+# Configuration files
+[*.{ini,conf}]
+indent_style = space
+indent_size = 2
