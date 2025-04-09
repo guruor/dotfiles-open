@@ -20,6 +20,7 @@ return {
       end
     end,
     cmd = "Dashboard",
+    enabled = false,
   },
   {
     -- For improved vim.ui interfaces
