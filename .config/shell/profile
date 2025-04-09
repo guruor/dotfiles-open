@@ -182,7 +182,13 @@ export RUFF_CACHE_DIR="$XDG_CACHE_HOME/ruff"
 export VALE_CONFIG_PATH="${HOME}/.config/vale/.vale.ini"
 
 # Specifying the local binary path to avoid conflict with `shortctus` utility available on macos
-[ ! -f ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc ] && $HOME/.local/bin/shortcuts >/dev/null 2>&1 &
+if [ ! -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc" ]; then
+    $HOME/.local/bin/shortcuts >/dev/null 2>&1 &
+    # Check if the last background command created a job and disown only if it did.
+    if jobs %% &>/dev/null; then
+        disown %%
+    fi
+fi
 
 # Initialising golang version manager
 # Initializing gvm, reset GOBIN, GOROOT, and GOPATH
