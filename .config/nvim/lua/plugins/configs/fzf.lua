@@ -15,10 +15,8 @@ require("fzf-lua").setup {
   },
   -- RIPGREP_CONFIG_PATH is not respected anymore, so better update the rg_opts as needed
   grep = {
-    formatter = "",
-    rg_opts = [[--hidden --follow --column --line-number --no-heading]]
-      .. [[ --color=always --smart-case -g "!.git" -e]],
-    rg_glob = true,
+    hidden = true, -- enable hidden files
+    follow = true, -- follow symlinks
     fzf_opts = {
       ["--ansi"] = "",
       ["--delimiter"] = ":",
@@ -26,7 +24,7 @@ require("fzf-lua").setup {
     },
   },
   files = {
-    rg_opts = [[--color=never --files --hidden --follow -g "!.git"]],
+    follow = true, -- follow symlinks
   },
 }
 
