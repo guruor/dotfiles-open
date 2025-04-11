@@ -48,7 +48,6 @@ alias \
 	xq="xbps-query" \
     tt="taskwarrior-tui" \
     lf="lfimg" \
-    ya="yazi" \
 	# z="zathura" \
 
 alias \
