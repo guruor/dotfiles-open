@@ -1,0 +1,11 @@
+"$schema" = "https://yazi-rs.github.io/schemas/keymap.json"
+
+[manager]
+
+prepend_keymap = [
+  # Goto
+  { on = ["g", "d"], run = "cd ~/voidrice/.config" },
+  { on = ["g", "D"], run = "cd ~/Downloads/" },
+
+  # Shell
+  { on = "$", run = 'shell --block $SHELL' },

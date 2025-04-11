@@ -9,6 +9,14 @@ show_hidden = true
 sort_by = "mtime"
 sort_reverse = true
 
+[preview]
+wrap = "yes"
+max_width = 1500
+max_height = 1500
+
+[input]
+cursor_blink = true
+
 [opener]
 sc-im = [
   { run = 'sc-im "$1"', desc = "sc-im", block = true, for = "unix" }
