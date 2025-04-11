@@ -18,9 +18,7 @@ max_height = 1500
 cursor_blink = true
 
 [opener]
-sc-im = [
-  { run = 'sc-im "$1"', desc = "sc-im", block = true, for = "unix" }
-]
+sc-im = [{ run = 'sc-im "$1"', desc = "sc-im", block = true, for = "unix" }]
 
 [open]
 prepend_rules = [
@@ -31,3 +29,14 @@ prepend_rules = [
   { name = "*.csv", use = ["edit", "sc-im", "open", "reveal"] },
   { name = "*.xlsx", use = ["sc-im", "open", "reveal"] },
 ]
+
+# Git plugin
+[[plugin.prepend_fetchers]]
+id = "git"
+name = "*"
+run = "git"
+
+[[plugin.prepend_fetchers]]
+id = "git"
+name = "*/"
+run = "git"

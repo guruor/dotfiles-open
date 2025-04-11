@@ -9,3 +9,12 @@ prepend_keymap = [
 
   # Shell
   { on = "$", run = 'shell --block $SHELL' },
+
+  # Plugins
+  #########
+  { on = "M", run = "plugin mount" },
+  { on = ["c", "m"], run = "plugin chmod", desc = "Chmod on selected files" },
+  # Toggle
+  { on = ["T", "p"], run = 'plugin toggle-pane min-preview' },
+  { on = ["T", "P"], run = 'plugin toggle-pane max-preview' },
+]
