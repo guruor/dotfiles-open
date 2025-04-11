@@ -60,8 +60,8 @@ require("colorbox").setup {
       bash = shell_colorscheme,
       zsh = shell_colorscheme,
     },
-    empty = "gruvbox-material",
-    -- fallback = "gruvbox-material", -- "github_dark"
+    empty = "github_dark",
+    fallback = "github_dark",
   },
   timing = "filetype",
   setup = {
