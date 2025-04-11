@@ -4,7 +4,7 @@
 
 prepend_keymap = [
   # Goto
-  { on = ["g", "d"], run = "cd ~/voidrice/.config" },
+  { on = ["g", "d"], run = "cd ${MY_DOTFILES_DIR}/.config" },
   { on = ["g", "D"], run = "cd ~/Downloads/" },
 
   # Shell
