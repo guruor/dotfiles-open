@@ -256,6 +256,9 @@ export POETRY_CONFIG_DIR=${XDG_CONFIG_HOME}/pypoetry
 export POETRY_HOME=${XDG_DATA_HOME}/pypoetry
 export POETRY_CACHE_DIR=${XDG_CACHE_HOME}/pypoetry
 
+# Adds binaries from mason.nvim
+export PATH="$PATH:${XDG_DATA_HOME}/nvim/mason/bin"
+
 # Few config options and aliases common to sh, bash and zsh
 set -o vi
 alias q="exit"
