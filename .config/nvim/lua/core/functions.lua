@@ -416,3 +416,48 @@ function FileExistsAndIsEmpty(filepath)
     return false
   end
 end
+
+function CopyDiagnostics()
+  local buf = vim.api.nvim_get_current_buf()
+  local lnum = vim.api.nvim_win_get_cursor(0)[1]
+  local diagnostics = vim.diagnostic.get(buf, {
+    lnum = lnum - 1, -- need 0-based index
+    severity = { min = vim.diagnostic.severity.WARN },
+  })
+
+  if vim.tbl_isempty(diagnostics) then
+    vim.notify(string.format("Line %d has no diagnostics.", lnum))
+    return
+  end
+
+  table.sort(diagnostics, function(a, b)
+    return a.severity < b.severity
+  end)
+
+  if #diagnostics == 1 then
+    -- Directly copy the single diagnostic without showing UI
+    local diag = diagnostics[1]
+    local result = vim.trim(diag.message)
+    if result then
+      vim.fn.setreg(vim.v.register, result)
+      vim.notify(string.format("Yanked: %s", result))
+    end
+  else
+    -- Show selection UI if there are multiple diagnostics
+    vim.ui.select(diagnostics, {
+      prompt = "Select diagnostic:",
+      format_item = function(diag)
+        local severity = diag.severity == vim.diagnostic.severity.ERROR and "ERROR" or "WARNING"
+        return string.format("%s: [%s] %s (%s)", severity, diag.code, vim.trim(diag.message), diag.source)
+      end,
+    }, function(choice)
+      if choice then
+        local result = vim.trim(choice.message)
+        if result then
+          vim.fn.setreg(vim.v.register, result)
+          vim.notify(string.format("Yanked: %s", result))
+        end
+      end
+    end)
+  end
+end
