@@ -16,8 +16,10 @@ return {
     -- As of now biome supports only js, ts and json
     -- https://biomejs.dev/internals/language-support/
     json = { "biome", "dprint", "prettierd", "yq", stop_after_first = true },
-    javascript = { "biome", "dprint", "prettierd", stop_after_first = true },
-    typescript = { "biome", "dprint", "prettierd", stop_after_first = true },
+    javascript = { "biome", "biome-organize-imports" },
+    typescript = { "biome", "biome-organize-imports" },
+    typescriptreact = { "biome", "biome-organize-imports" },
+    javascriptreact = { "biome", "biome-organize-imports" },
     rust = { "rustfmt" },
     sh = { "shfmt" },
     bash = { "shfmt" },
@@ -29,7 +31,7 @@ return {
     toml = { "taplo" },
     terraform = { "terraform_fmt" },
     yaml = { "yamlfmt", "dprint", "prettierd", "yq", stop_after_first = true },
-    nix = { "alejandra", "nixpkgs-fmt", "nixfmt" },
+    nix = { "nixpkgs-fmt", "nixfmt" },
     markdown = { "dprint", "prettierd", "cbfmt" },
     vimwiki = { "dprint", "prettierd", "cbfmt" },
     -- Run formatter on all filetypes
