@@ -296,6 +296,11 @@ save_diff() {
 
 # Main function
 main() {
+        if [[ $# -eq 0 ]]; then
+            echo "Invalid command: $1" >&2
+            usage
+        fi
+
         # Parse options
         while [[ $# -gt 0 ]]; do
                 case "$1" in
