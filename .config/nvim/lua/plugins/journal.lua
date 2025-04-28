@@ -27,6 +27,24 @@ return {
       require("neorg").setup(opts)
     end,
   },
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown", "vimwiki" },
+    build = function(plugin)
+      if vim.fn.executable "npx" then
+        vim.cmd("!cd " .. plugin.dir .. " && cd app && npx --yes yarn install")
+      else
+        vim.cmd [[Lazy load markdown-preview.nvim]]
+        vim.fn["mkdp#util#install"]()
+      end
+    end,
+    init = function()
+      if vim.fn.executable "npx" then
+        vim.g.mkdp_filetypes = { "markdown" }
+      end
+    end,
+  },
   -- VimWiki for note management
   {
     "vimwiki/vimwiki",
@@ -36,12 +54,6 @@ return {
     dependencies = {
       { "mattn/calendar-vim", cmd = { "CalendarH", "CalendarH" } },
       { "AckslD/nvim-FeMaco.lua", cmd = "FeMaco", config = 'require("femaco").setup()' }, -- For inline code-block edit
-      {
-        "iamcco/markdown-preview.nvim",
-        ft = { "markdown", "vimwiki" },
-        -- lazy = false,
-        build = 'function() vim.fn["mkdp#util#install"]() end',
-      },
       -- {
       --   -- vim-polyglot is needed for `plantuml` syntax
       --   "sheerun/vim-polyglot",
