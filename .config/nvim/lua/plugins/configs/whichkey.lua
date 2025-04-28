@@ -167,6 +167,11 @@ local leader_mappings = {
     "<Cmd>lua vim.diagnostic.show()<CR>",
     desc = "Show Diagnostic",
   },
+  {
+    leader .. "ldt",
+    "<Cmd>lua vim.diagnostic.enable(not vim.diagnostic.is_enabled())<CR>",
+    desc = "Toggle Diagnostic",
+  },
   { leader .. "li", "<cmd>lua vim.lsp.buf.incoming_calls()<CR>", desc = "Incoming calls" },
   { leader .. "ll", "<Cmd>lua require('lint').try_lint()<CR>", desc = "Trigger linter" },
   { leader .. "lo", "<cmd>lua vim.lsp.buf.outgoing_calls()<CR>", desc = "Outgoing calls" },
