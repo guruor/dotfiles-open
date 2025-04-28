@@ -157,6 +157,16 @@ local leader_mappings = {
     "<Cmd>lua CopyDiagnostics()<CR>",
     desc = "Yank Line Diagnostic",
   },
+  {
+    leader .. "ldh",
+    "<Cmd>lua vim.diagnostic.hide()<CR>",
+    desc = "Hide Diagnostic",
+  },
+  {
+    leader .. "lds",
+    "<Cmd>lua vim.diagnostic.show()<CR>",
+    desc = "Show Diagnostic",
+  },
   { leader .. "li", "<cmd>lua vim.lsp.buf.incoming_calls()<CR>", desc = "Incoming calls" },
   { leader .. "ll", "<Cmd>lua require('lint').try_lint()<CR>", desc = "Trigger linter" },
   { leader .. "lo", "<cmd>lua vim.lsp.buf.outgoing_calls()<CR>", desc = "Outgoing calls" },
