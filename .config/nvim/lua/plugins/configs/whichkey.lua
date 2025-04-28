@@ -299,17 +299,17 @@ local filetype_mappings = {
     {
       localleader .. "rcd",
       "<Cmd>lua vim.fn.system('cd ' .. vim.fn.getenv('DB_CONNECTIONS_FILEPATH') .. ' && sops --decrypt --in-place connections.yaml')<Cr>",
-      desc = "Decrypt DB config"
+      desc = "Decrypt DB config",
     },
     {
       localleader .. "rce",
       "<Cmd>lua vim.fn.system('cd ' .. vim.fn.getenv('DB_CONNECTIONS_FILEPATH') .. ' && sops --encrypt --in-place connections.yaml')<Cr>",
-      desc = "Encrypt DB config"
+      desc = "Encrypt DB config",
     },
     {
       localleader .. "rca",
-      "<Cmd>edit " .. vim.fn.getenv('DB_CONNECTIONS_FILEPATH') .. "/connections.yaml<Cr>",
-      desc = "Edit DB config"
+      "<Cmd>edit " .. vim.fn.getenv "DB_CONNECTIONS_FILEPATH" .. "/connections.yaml<Cr>",
+      desc = "Edit DB config",
     },
     -- { localleader .. "rce", "<Cmd>cd $DB_CONNECTIONS_FILEPATH; sops --encrypt --in-place connections.yaml<Cr>", desc = "Encrypt DB config" },
     -- { localleader .. "rca", "<Cmd>edit $DB_CONNECTIONS_FILEPATH/connections.yaml;<Cr>", desc = "Edit DB config" },
