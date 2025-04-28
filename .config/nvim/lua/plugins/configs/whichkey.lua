@@ -158,16 +158,6 @@ local leader_mappings = {
     desc = "Yank Line Diagnostic",
   },
   {
-    leader .. "ldh",
-    "<Cmd>lua vim.diagnostic.hide()<CR>",
-    desc = "Hide Diagnostic",
-  },
-  {
-    leader .. "lds",
-    "<Cmd>lua vim.diagnostic.show()<CR>",
-    desc = "Show Diagnostic",
-  },
-  {
     leader .. "ldt",
     "<Cmd>lua vim.diagnostic.enable(not vim.diagnostic.is_enabled())<CR>",
     desc = "Toggle Diagnostic",
