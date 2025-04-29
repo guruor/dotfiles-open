@@ -77,15 +77,12 @@ return {
     "mfussenegger/nvim-lint",
     dependencies = { "rshkarin/mason-nvim-lint" },
     event = { "BufReadPre", "BufNewFile" },
-    opts = require "plugins.configs.nvim-lint",
+    opts = require("plugins.configs.nvim-lint").config,
     config = function(_, opts)
+      local lint_config_helper = require "plugins.configs.nvim-lint"
       require("lint").linters_by_ft = opts.linters_by_ft
 
-      local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
-      vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
-        group = lint_augroup,
-        callback = opts.autocmd_callback,
-      })
+      lint_config_helper.setup_cmds()
 
       require("mason-nvim-lint").setup {
         ignore_install = { "biomejs" },
