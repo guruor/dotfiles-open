@@ -16,6 +16,7 @@ local colorschemes_set = ListToSet(fav_colorschemes)
 local sql_colorscheme = "onedark" -- "PaperColor", "onedark", "palenight"
 local go_colorscheme = "github_dark"
 local shell_colorscheme = "github_dark"
+local js_colorscheme = "github_dark"
 
 require("colorbox").setup {
   filter = {
@@ -43,9 +44,11 @@ require("colorbox").setup {
       sql = sql_colorscheme,
       psql = sql_colorscheme,
       python = "github_dark",
-      json = "gruvbox",
-      javascript = "gruvbox-baby",
-      typescript = "gruvbox-baby",
+      json = js_colorscheme,
+      javascript = js_colorscheme,
+      typescript = js_colorscheme,
+      javascriptreact = js_colorscheme,
+      typescriptreact = js_colorscheme,
       go = go_colorscheme,
       gomod = go_colorscheme,
       rust = "github_dark",
