@@ -322,6 +322,8 @@ local filetype_mappings = {
     -- Neorg specific mapping
     -- https://github.com/nvim-neorg/neorg/wiki/Default-Keybinds#localleaderid
     mode = { "n", "v" },
+    { localleader .. "<", "<Plug>(neorg.promo.demote)", desc = "Demote indent" },
+    { localleader .. ">", "<Plug>(neorg.promo.promote)", desc = "Promote indent" },
     { localleader .. "<CR>", "<Plug>(neorg.esupports.hop.hop-link)", desc = "Open link" },
     { localleader .. "cm", "<Plug>(neorg.looking-glass.magnify-code-block)", desc = "Code Magnify" },
 
