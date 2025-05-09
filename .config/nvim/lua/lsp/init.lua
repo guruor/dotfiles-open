@@ -27,7 +27,6 @@ vim.g.should_enable_efm = false
 --  Add any additional override configuration in the following tables.
 -- Look for server configurations here
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
--- https://github.com/williamboman/mason-lspconfig.nvim?tab=readme-ov-file#available-lsp-servers
 local servers = {
   -- snyk_ls = require "lsp.servers.common", -- vulnerabilities, open source dependencies
   ast_grep = require "lsp.servers.common", -- polyglot tool for code structural search, lint, rewriting at large scale
@@ -72,14 +71,12 @@ local servers = {
 mason_lspconfig.setup {
   automatic_installation = true,
   ensure_installed = vim.tbl_keys(servers),
+  automatic_enable = false,
 }
 
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    local server_config = servers[server_name] or {}
-    lspconfig[server_name].setup(server_config)
-  end,
-}
+for server_name, server_config in pairs(servers) do
+  lspconfig[server_name].setup(server_config)
+end
 
 -- Mason lspconfig doesn't support `nixd` yet
 -- To install use: nix-env -iA nixpkgs.nixd
