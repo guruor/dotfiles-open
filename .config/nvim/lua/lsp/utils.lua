@@ -5,17 +5,9 @@ local M = {}
 M.DiagnosticSignSetup = function()
   local signs = { ERROR = "", WARN = "", HINT = "", INFO = "" }
   -- local signs = { ERROR = "", WARN = "", HINT = "󰌵", INFO = "" }
-  vim.diagnostic.config {
+  local config = {
     underline = {
       severity = { max = vim.diagnostic.severity.INFO },
-    },
-    -- virtual_text = false,
-    virtual_text = {
-      -- source = "always",
-      severity = { min = vim.diagnostic.severity.WARN },
-      prefix = function(diagnostic)
-        return signs[vim.diagnostic.severity[diagnostic.severity]]
-      end,
     },
     virtual_improved = {
       current_line = "only",
@@ -41,6 +33,31 @@ M.DiagnosticSignSetup = function()
       },
     },
   }
+
+  if M.diagnostic_virtual_text_enabled then
+    config.virtual_text = {
+      -- Your specific virtual text configuration when enabled
+      -- source = "always",
+      severity = { min = vim.diagnostic.severity.WARN },
+      prefix = function(diagnostic)
+        return signs[vim.diagnostic.severity[diagnostic.severity]]
+      end,
+    }
+  else
+    config.virtual_text = false
+  end
+
+  vim.diagnostic.config(config)
+end
+
+-- Initialize the virtual text state
+M.diagnostic_virtual_text_enabled = false
+
+-- Function to toggle virtual text
+M.toggle_diagnostic_virtual_text = function()
+  M.diagnostic_virtual_text_enabled = not M.diagnostic_virtual_text_enabled
+  M.DiagnosticSignSetup() -- Re-apply the diagnostic config
+  vim.notify("Diagnostic virtual text " .. (M.diagnostic_virtual_text_enabled and "enabled" or "disabled"))
 end
 
 M.get_default_capabilities = function()

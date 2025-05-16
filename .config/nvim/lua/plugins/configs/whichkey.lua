@@ -148,6 +148,11 @@ local leader_mappings = {
   { leader .. "l\\", "<Cmd>AerialToggle<CR>", desc = "Toggle outline" },
   { leader .. "lda", "<Cmd>FzfLua lsp_document_diagnostics<CR>", desc = "All diagnostic" },
   {
+    leader .. "ldv",
+    "<Cmd>lua require 'lsp.utils'.toggle_diagnostic_virtual_text()<CR>",
+    desc = "Toggle Virtual Text",
+  },
+  {
     leader .. "ldl",
     "<Cmd>lua vim.diagnostic.open_float(0, { scope = 'line', border = 'single' })<CR>",
     desc = "Line Diagnostic",
