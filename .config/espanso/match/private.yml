@@ -1,0 +1,8 @@
+imports:
+  - "./Private/misc.yml"
+  - "./Private/about.yml"
+  - "./Private/addresses.yml"
+  - "./Private/banks.yml"
+  - "./Private/links.yml"
+  - "./Private/emails.yml"
+  - "./Private/user_ids.yml"
