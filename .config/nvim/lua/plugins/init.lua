@@ -28,11 +28,12 @@ local journal_plugins = require "plugins.journal"
 local db_plugins = require "plugins.db"
 local rest_plugins = require "plugins.rest"
 local ai_plugins = require "plugins.ai"
+local csv_plugins = require "plugins.csv"
 
 -- Merge all plugin tables into one
 local plugins = utils.merge_tables(default_plugins, colorscheme_plugins, treesitter_plugins, ui_plugins)
 plugins = utils.merge_tables(plugins, navigation_plugins, editor_plugins)
-plugins = utils.merge_tables(plugins, git_plugins, util_plugins, journal_plugins)
+plugins = utils.merge_tables(plugins, git_plugins, util_plugins, journal_plugins, csv_plugins)
 plugins = utils.merge_tables(plugins, db_plugins, rest_plugins)
 plugins = utils.merge_tables(plugins, ai_plugins)
 
