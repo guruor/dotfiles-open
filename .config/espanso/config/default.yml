@@ -37,6 +37,9 @@ auto_restart: true
 #
 
 # --- Search bar threshold
-search_shortcut: ALT+SHIFT+SPACE
+search_shortcut: ALT+SPACE
+
+# --- Shown after typing a trigger
+search_trigger: "espanso"
 
 # For a list of all the available options, visit the official docs at: https://espanso.org/docs/
