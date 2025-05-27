@@ -30,7 +30,7 @@ M.tfm = {
 
 M.smartcolumn = {
   colorcolumn = "120",
-  disabled_filetypes = { "help", "text", "markdown", "norg", "dashboard" },
+  disabled_filetypes = { "help", "text", "markdown", "norg", "dashboard", "csv" },
   -- Or define max_line_length in .editorconfig
   custom_colorcolumn = { python = "100" },
   scope = "file",
