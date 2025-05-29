@@ -3,7 +3,7 @@ local utils = require "utils"
 return {
   {
     "lukas-reineke/headlines.nvim",
-    ft = { "markdown", "vimwiki", "norg" },
+    ft = { "vimwiki", "norg" },
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     config = function(_, opts)
       require("plugins.configs.headlines").SetHighlights()
@@ -44,6 +44,14 @@ return {
         vim.g.mkdp_filetypes = { "markdown" }
       end
     end,
+  },
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" }, -- if you prefer nvim-web-devicons
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {},
+    ft = { "markdown" },
   },
   -- VimWiki for note management
   {
