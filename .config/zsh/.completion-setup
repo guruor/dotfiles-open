@@ -126,8 +126,8 @@ function completion_load() {
   # Adds shell completion for aws cli
   [ -x "$(command -v aws_completer)" ] && complete -C '/usr/local/bin/aws_completer' aws
 
-  # Install pipx completion
-  [ -x "$(command -v register-python-argcomplete)" ] && eval "$(register-python-argcomplete pipx)"
+  # Activate argcomplete for all python apps using argcomplete package
+  [ -x "$(command -v register-python-argcomplete)" ] && activate-global-python-argcomplete --yes &> /dev/null
 
   # Loading bash completions for rea-as tool
   [ -x "$(command -v rea-as)" ] && source <(rea-as completion)
