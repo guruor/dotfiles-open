@@ -1,0 +1,387 @@
+#!/usr/bin/env python3
+
+import argparse
+import json
+import os
+import shutil
+import subprocess
+import sys
+import time
+
+import argcomplete
+
+
+class TmuxManager:
+    ICON_TO_SESSION_NAME_MAP = {
+        "": "Code",
+        "": "Servers",
+        "": "Postman",
+        "": "Databases",
+        "": "Notes",
+        "": "Pad",
+        "📂": "Projects",
+    }
+    DEFAULT_SESSION_ICON = "󰎦"
+    WINDOW_CREATION_TIMEOUT = 0.1
+    CMD_COMPLETION_TIMEOUT = 0.01
+    PRE_SAVE_TIMEOUT = 2
+    SESSION_CREATION_MAX_WAIT = 15
+
+    def __init__(self, tmux_default_session_file: str, dry_run: bool = False):
+        self.tmux_default_session_file = tmux_default_session_file
+        self.dry_run = dry_run
+        self._load_default_config()
+
+    def _load_default_config(self) -> dict:
+        config = {"sessions": {}}
+        if os.path.exists(self.tmux_default_session_file):
+            try:
+                with open(self.tmux_default_session_file, encoding="utf-8") as f:
+                    config = json.load(f)
+            except (json.JSONDecodeError, Exception) as e:
+                print(f"Error loading JSON: {e}", file=sys.stderr)
+                sys.exit(1)
+        elif not self.dry_run:
+            print("WARNING: TMUX_DEFAULT_SESSION_FILE not found.", file=sys.stderr)
+        self._default_config = (
+            config if isinstance(config, dict) and "sessions" in config else {"sessions": {}}
+        )
+
+    def _run_tmux_command(self, command_parts: list, check: bool = True) -> str:
+        full_command = ["tmux"] + command_parts
+        if self.dry_run:
+            print(f"DRY RUN: {' '.join(full_command)}", file=sys.stderr)
+            return ""
+
+        env = {
+            **os.environ,
+            "LC_ALL": "en_US.UTF-8",
+            "LANG": "en_US.UTF-8",
+            "LANGUAGE": "en_US.UTF-8",
+        }
+
+        try:
+            result = subprocess.run(
+                full_command,
+                capture_output=True,
+                text=True,
+                check=check,
+                env=env,
+                timeout=10,
+            )
+            if result.returncode != 0 and result.stderr:
+                print(f"WARNING: {result.stderr.strip()}", file=sys.stderr)
+            return result.stdout.strip()
+        except subprocess.CalledProcessError as e:
+            print(f"ERROR: tmux command failed: {e.stdout.strip()}", file=sys.stderr)
+            print(f"Stderr: {e.stderr.strip()}", file=sys.stderr)
+            sys.exit(e.returncode)
+        except subprocess.TimeoutExpired:
+            print("ERROR: tmux command timed out.", file=sys.stderr)
+        except FileNotFoundError:
+            print("ERROR: 'tmux' command not found. Ensure tmux is installed.", file=sys.stderr)
+            sys.exit(1)
+        except Exception as e:
+            print(f"Unexpected error: {e}", file=sys.stderr)
+            sys.exit(1)
+
+    def _get_human_readable_session_name(self, tmux_session_icon_name: str) -> str:
+        return self.ICON_TO_SESSION_NAME_MAP.get(
+            tmux_session_icon_name.strip(),
+            tmux_session_icon_name.strip(),
+        )
+
+    def _get_current_tmux_state_as_json(self) -> dict:
+        sessions_data = {"sessions": {}}
+        tmux_session_icon_names = self._run_tmux_command(
+            ["list-sessions", "-F", "#{session_name}"],
+        ).splitlines()
+
+        for tmux_session_icon_name_raw in tmux_session_icon_names:
+            tmux_session_icon_name = tmux_session_icon_name_raw.strip()
+            if not tmux_session_icon_name:
+                continue
+
+            human_readable_session_name = self._get_human_readable_session_name(
+                tmux_session_icon_name,
+            )
+            session_icon_for_json = self.ICON_TO_SESSION_NAME_MAP.get(
+                tmux_session_icon_name,
+                self.DEFAULT_SESSION_ICON,
+            )
+
+            sessions_data["sessions"][human_readable_session_name] = {
+                "windows": {},
+                "icon": session_icon_for_json,
+            }
+
+            windows_output = self._run_tmux_command(
+                [
+                    "list-windows",
+                    "-t",
+                    tmux_session_icon_name,
+                    "-F",
+                    "#{window_name}:#{pane_id}:#{pane_current_command}",
+                ],
+            ).splitlines()
+
+            for window_line in windows_output:
+                parts = window_line.split(":", 2)
+                window_name = parts[0].strip()
+                command = parts[2].strip() if len(parts) > 2 else ""
+
+                if window_name:
+                    sessions_data["sessions"][human_readable_session_name]["windows"][
+                        window_name
+                    ] = command
+
+        return sessions_data
+
+    def _merge_session_configs(self, default_config: dict, current_tmux_config: dict) -> dict:
+        merged_sessions = {}
+        default_sessions = default_config.get("sessions", {})
+        current_sessions = current_tmux_config.get("sessions", {})
+        processed_current_sessions = set()
+
+        for session_name, default_session_props in default_sessions.items():
+            if session_name in current_sessions:
+                current_session_props = current_sessions[session_name]
+                processed_current_sessions.add(session_name)
+                merged_icon = default_session_props.get("icon", current_session_props.get("icon"))
+                merged_windows = {
+                    **current_session_props.get("windows", {}),
+                    **default_session_props.get("windows", {}),
+                }
+                merged_sessions[session_name] = {"windows": merged_windows, "icon": merged_icon}
+            else:
+                merged_sessions[session_name] = default_session_props.copy()
+
+        for session_name, current_session_props in current_sessions.items():
+            if session_name not in processed_current_sessions:
+                merged_sessions[session_name] = current_session_props.copy()
+
+        return {"sessions": merged_sessions}
+
+    def merge_mode(self):
+        print(f"Merging into: {self.tmux_default_session_file}", file=sys.stderr)
+
+        current_tmux_config = self._get_current_tmux_state_as_json()
+        print("Merging configurations...", file=sys.stderr)
+        merged_final_config = self._merge_session_configs(self._default_config, current_tmux_config)
+
+        def sorted_dict(obj):
+            if isinstance(obj, dict):
+                return {k: sorted_dict(v) for k, v in sorted(obj.items())}
+            if isinstance(obj, list):
+                return [sorted_dict(elem) for elem in obj]
+            return obj
+
+        try:
+            canonical_default_config = sorted_dict(self._default_config)
+            canonical_merged_config = sorted_dict(merged_final_config)
+
+            default_json_str_canonical = json.dumps(
+                canonical_default_config,
+                indent=2,
+                ensure_ascii=False,
+            )
+            merged_json_str_canonical = json.dumps(
+                canonical_merged_config,
+                indent=2,
+                ensure_ascii=False,
+            )
+
+        except Exception as e:
+            print(f"Error during canonicalization for comparison: {e}", file=sys.stderr)
+            default_json_str_canonical = json.dumps(
+                self._default_config,
+                indent=2,
+                ensure_ascii=False,
+            )
+            merged_json_str_canonical = json.dumps(
+                merged_final_config,
+                indent=2,
+                ensure_ascii=False,
+            )
+
+        if merged_json_str_canonical != default_json_str_canonical:
+            print("\n--- Merged Configuration Preview ---", file=sys.stderr)
+            preview_json_for_display = json.dumps(merged_final_config, indent=2, ensure_ascii=False)
+            print(preview_json_for_display, file=sys.stderr)
+            print("\n------------------------------------", file=sys.stderr)
+
+            try:
+                response = input("Do you want to save these changes? (y/N): ").strip().lower()
+                if response == "y":
+                    parent_dir = os.path.dirname(self.tmux_default_session_file)
+                    if parent_dir and not os.path.exists(parent_dir):
+                        os.makedirs(parent_dir)
+
+                    with open(self.tmux_default_session_file, "w", encoding="utf-8") as f:
+                        json.dump(merged_final_config, f, indent=2, ensure_ascii=False)
+                    print(f"Changes saved to {self.tmux_default_session_file}", file=sys.stderr)
+                else:
+                    print("Changes discarded.", file=sys.stderr)
+            except Exception as e:
+                print(f"An error occurred during saving: {e}", file=sys.stderr)
+                sys.exit(1)
+        else:
+            print("No functional changes detected.", file=sys.stderr)
+
+    def _check_tmux_session_exists(self, session_name: str) -> bool:
+        full_command = ["tmux", "has-session", "-t", session_name]
+        if self.dry_run:
+            print(f"DRY RUN CHECK: {' '.join(full_command)}", file=sys.stderr)
+            return True
+
+        result = subprocess.run(
+            full_command,
+            capture_output=True,
+            text=True,
+            check=False,
+            env=os.environ,
+            timeout=10,
+        )
+        return result.returncode == 0
+
+    def create_mode(self, clean_existing: bool = False):
+        if clean_existing:
+            print("Removing existing sessions...", file=sys.stderr)
+            if not self.dry_run:
+                self._run_tmux_command(["kill-server"], check=False)
+            xdg_data_home = os.environ.get(
+                "XDG_DATA_HOME",
+                os.path.join(os.path.expanduser("~"), ".local", "share"),
+            )
+            resurrect_path = os.path.join(xdg_data_home, "tmux", "resurrect")
+            if os.path.exists(resurrect_path):
+                shutil.rmtree(resurrect_path)
+
+        existing_sessions = self._run_tmux_command(
+            ["list-sessions", "-F", "#{session_name}"],
+        ).splitlines()
+        session_data = self._default_config.get("sessions", {})
+
+        for session_name_human, session_props in session_data.items():
+            session_icon = session_props.get("icon", self.DEFAULT_SESSION_ICON)
+            windows_data = session_props.get("windows", {})
+            window_names = list(windows_data.keys())
+
+            tmux_session_name = session_icon
+
+            if tmux_session_name in existing_sessions:
+                continue
+
+            if window_names:
+                first_window_name, first_window_command = (
+                    window_names[0],
+                    windows_data.get(window_names[0], ""),
+                )
+
+                self._run_tmux_command(
+                    ["new-session", "-d", "-s", tmux_session_name, "-n", first_window_name],
+                )
+                time.sleep(self.WINDOW_CREATION_TIMEOUT)
+                if first_window_command:
+                    self._run_tmux_command(
+                        [
+                            "send-keys",
+                            "-t",
+                            f"{tmux_session_name}:{first_window_name}",
+                            first_window_command,
+                            "ENTER",
+                        ],
+                    )
+                    time.sleep(self.CMD_COMPLETION_TIMEOUT)
+
+            existing_windows = self._run_tmux_command(
+                ["list-windows", "-t", tmux_session_name, "-F", "#{window_name}"],
+            ).splitlines()
+
+            for window_name in window_names[1:]:
+                if window_name not in existing_windows:
+                    command = windows_data.get(window_name, "")
+                    self._run_tmux_command(
+                        ["new-window", "-n", window_name, "-t", tmux_session_name],
+                    )
+                    if command:
+                        self._run_tmux_command(
+                            [
+                                "send-keys",
+                                "-t",
+                                f"{tmux_session_name}:{window_name}",
+                                command,
+                                "ENTER",
+                            ],
+                        )
+                        time.sleep(self.CMD_COMPLETION_TIMEOUT)
+
+        xdg_config_home = os.environ.get(
+            "XDG_CONFIG_HOME",
+            os.path.join(os.path.expanduser("~"), ".config"),
+        )
+        resurrect_save_script = os.path.join(
+            xdg_config_home,
+            "tmux",
+            "plugins",
+            "tmux-resurrect",
+            "scripts",
+            "save.sh",
+        )
+
+        if os.path.exists(resurrect_save_script) and os.access(resurrect_save_script, os.X_OK):
+            if not self.dry_run:
+                time.sleep(self.PRE_SAVE_TIMEOUT)
+                subprocess.run(
+                    [resurrect_save_script],
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                    timeout=30,
+                )
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Manage tmux sessions: merge current state into default config or create sessions from config.",
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
+    parser.add_argument(
+        "mode",
+        choices=["merge", "create"],
+        nargs="?",
+        default="merge",
+        help="""Operation mode:
+  'merge': Read current tmux sessions, merge them into the config, prompt to save.
+  'create': Setup sessions from config, optionally cleaning existing sessions.""",
+    )
+    parser.add_argument(
+        "--clean",
+        action="store_true",
+        help="In 'create' mode, remove existing sessions.",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print commands instead of executing them.",
+    )
+
+    argcomplete.autocomplete(parser)
+
+    args = parser.parse_args()
+    tmux_default_session_file = os.getenv("TMUX_DEFAULT_SESSION_FILE")
+
+    if not tmux_default_session_file:
+        print("Error: TMUX_DEFAULT_SESSION_FILE not set.", file=sys.stderr)
+        sys.exit(1)
+
+    manager = TmuxManager(tmux_default_session_file, dry_run=args.dry_run)
+
+    if args.mode == "merge":
+        manager.merge_mode()
+    elif args.mode == "create":
+        manager.create_mode(clean_existing=args.clean)
+
+
+if __name__ == "__main__":
+    main()
