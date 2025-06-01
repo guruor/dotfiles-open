@@ -89,4 +89,9 @@ return {
       watermark = "",
     },
   },
+  {
+    "lucidph3nx/nvim-sops",
+    ft = { "sh", "json", "yaml" },
+    opts = true,
+  },
 }
