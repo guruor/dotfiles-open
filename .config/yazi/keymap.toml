@@ -6,6 +6,8 @@ prepend_keymap = [
   # Goto
   { on = ["g", "d"], run = "cd ${MY_DOTFILES_DIR}/.config" },
   { on = ["g", "D"], run = "cd ~/Downloads/" },
+  { on = ["g", "P"], run = "cd ~/Pictures" },
+  { on = ["g", "S"], run = "cd ~/Pictures/Screenshots" },
 
   # Shell
   { on = "$", run = 'shell --block $SHELL' },
