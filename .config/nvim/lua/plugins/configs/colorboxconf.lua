@@ -38,8 +38,8 @@ require("colorbox").setup {
     mapping = {
       org = "github_dark",
       norg = "github_dark",
-      markdown = "onedark", -- "nord", "onedark", "github_dark"
-      vimwiki = "onedark",
+      markdown = "github_dark", -- "nord", "onedark", "github_dark"
+      vimwiki = "github_dark",
       http = "edge", -- "edge", "gruvbox-baby", "nord", "onedark_vivid", "solarized8_flat"
       sql = sql_colorscheme,
       psql = sql_colorscheme,
