@@ -86,7 +86,9 @@ local leader_mappings = {
 
   { leader .. "g", group = "Git" },
   { leader .. "ga", ":Git commit --amend<CR>", desc = "Ammend Commit" },
-  { leader .. "gb", ":Git blame<CR>", desc = "Blame" },
+  { leader .. "gbF", ":Git blame<CR>", desc = "Blame File with Fugitive" },
+  { leader .. "gbf", ":Gitsigns blame<CR>", desc = "Blame File with Gitsigns" },
+  { leader .. "gbl", ":Gitsigns toggle_current_line_blame<CR>", desc = "Toggle Blame line with gitsigns" },
   { leader .. "gB", ":GitLink!<CR>", desc = "Open commit in browser" },
   { leader .. "gc", ":Git commit<CR>", desc = "Commit" },
   { leader .. "gC", ":FzfLua git_branches<CR>", desc = "Checkout branch" },
