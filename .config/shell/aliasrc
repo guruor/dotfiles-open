@@ -40,8 +40,8 @@ alias \
 	f='$FILE' \
 	e='$EDITOR' \
 	v='$EDITOR' \
-  c='$EDITOR -u ${MYVIMRCLSP} --listen ~/.cache/nvim/sockets/nvim-$RANDOM.sock' \
-  code='$EDITOR -u ${MYVIMRCLSP} --listen ~/.cache/nvim/sockets/nvim-$RANDOM.sock' \
+  c='$EDITOR -u ${MYVIMRCLSP} --listen $NVIM_SOCKET_DIR/nvim-$RANDOM.sock' \
+  code='$EDITOR -u ${MYVIMRCLSP} --listen $NVIM_SOCKET_DIR/nvim-$RANDOM.sock' \
 	p="sudo pacman" \
 	xi="sudo xbps-install" \
 	xr="sudo xbps-remove -R" \
