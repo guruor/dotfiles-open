@@ -63,7 +63,7 @@ local formatters_by_ft = {
   bash = { "shfmt" },
   zsh = { "shfmt" },
   cmake = { "cmake_format" },
-  -- html = { "dprint", "prettierd" },
+  html = { "prettierd", "dprint", stop_after_first = true },
   toml = { "taplo" },
   terraform = { "terraform_fmt" },
   yaml = { "yamlfmt", "dprint", "prettierd", "yq", stop_after_first = true },
