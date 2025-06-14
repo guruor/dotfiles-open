@@ -1,5 +1,5 @@
 os:
-  editCommand: 'nvim -u ${MYVIMRCLSP} --listen ~/.cache/nvim/sockets/nvim-$RANDOM.sock'
+  editCommand: 'nvim -u ${MYVIMRCLSP} --listen $NVIM_SOCKET_DIR/nvim-$RANDOM.sock'
 git:
   paging:
     colorArg: always

@@ -78,7 +78,7 @@ change_tmux_theme() {
 change_vim_background() {
     echo "Requested vim background mode is: $1"
     for sock in $(ls "$HOME/.cache/nvim/sockets/"); do
-        nvim --server ~/.cache/nvim/sockets/$sock --remote-send "<C-\><C-n>:lua ToggleBackground(\"${1}\")<CR>"
+        nvim --server $NVIM_SOCKET_DIR/$sock --remote-send "<C-\><C-n>:lua ToggleBackground(\"${1}\")<CR>"
     done
 }
 
