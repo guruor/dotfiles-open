@@ -1,3 +1,7 @@
+[tool.basedpyright]
+typeCheckingMode = "standard"            # Possible values ["off", "basic", "standard", "strict"]
+reportArgumentType = false
+
 [tool.pyright]
 include = ["src"]
 exclude = [
@@ -17,7 +21,8 @@ venv = ".venv"
 # Default values for these rules: https://github.com/microsoft/pyright/blob/main/docs/configuration.md#diagnostic-rule-defaults
 # Enable below carefully, the more rules we enable the more CPU utilization will happen for pyright node service,
 # Neovim will also consume the CPU when rendering those messages
-typeCheckingMode = "basic"             # Possible values "off", "basic", "strict"
+typeCheckingMode = "standard"            # Possible values ["off", "basic", "standard", "strict"]
+reportArgumentType = false
 reportGeneralTypeIssues = "warning"
 reportPropertyTypeMismatch = "warning"
 # reportUnknownVariableType = "information"
@@ -64,6 +69,15 @@ executionEnvironments = [{ root = "src" }]
 [tool.ruff]
 line-length = 120
 show-fixes = true
+fix = true
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+# select = ["E4", "E7", "E9", "F", "B", "Q"] # Default
+# Available rules: https://docs.astral.sh/ruff/rules/
+select = ["ALL"]
 # Extent existing select with isort
 extend-select = ["I"]
 
