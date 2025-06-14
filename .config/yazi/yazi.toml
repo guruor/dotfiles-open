@@ -3,7 +3,7 @@
 # Default config: https://github.com/sxyazi/yazi/blob/latest/yazi-config/preset/yazi.toml
 "$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
 
-[manager]
+[mgr]
 ratio = [1, 3, 4]
 show_hidden = true
 sort_by = "mtime"
