@@ -56,7 +56,7 @@ return {
         width = "full",
       },
     },
-    ft = { "markdown" },
+    ft = { "markdown", "codecompanion" },
   },
   -- VimWiki for note management
   {
