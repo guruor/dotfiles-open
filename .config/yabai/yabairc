@@ -72,12 +72,18 @@ yabai -m window_scratchpad_transition       off
 # List of all supported terminals
 supported_terminals="^(kitty|Ghostty|ghostty|WezTerm|wezterm-gui|alacritty|Alacritty)$"
 # grid=<rows>:<cols>:<start-x>:<start-y>:<width>:<height>
-default_grid_size="10:16:8:5:16:10"
+default_grid_size="10:16:8:5:8:5"
+bottom_left_grid_size="10:16:0:5:8:5"
 # ===== Rules ==================================
 # Floating terminal windows
-cli_app_titles=("Notes" "Bottom" "Ncmpcpp" "Pad1" "Pad2" "Pad3" )
-for app_title in "${cli_app_titles[@]}"; do
-  # scratchpad windows are manage=off automatically
+# Define which windows go bottom-left
+bottom_left_titles=("Bottom" "Ncmpcpp")
+bottom_right_titles=("Notes" "Pad1" "Pad2" "Pad3")
+for app_title in "${bottom_left_titles[@]}"; do
+  yabai -m rule --add app="${supported_terminals}" title="${app_title}" scratchpad="${app_title}" manage=off sub-layer=above sticky=on grid="${bottom_left_grid_size}"
+done
+
+for app_title in "${bottom_right_titles[@]}"; do
   yabai -m rule --add app="${supported_terminals}" title="${app_title}" scratchpad="${app_title}" manage=off sub-layer=above sticky=on grid="${default_grid_size}"
 done
 
