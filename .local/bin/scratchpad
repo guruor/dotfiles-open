@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Opens tmux session named `Pad`
+# Opens given tmux session, by default opens session `Pad`
 # or
 # Opens an empty terminal in home directory
 
 # Open tmux session if exist
-session_name="Pad"
+session_name="${1:=Pad}"
 source "$HOME/.local/bin/tmux/tmux-common-functions"
 session_icon=$(does_session_exist_by_name "${session_name}")
 
