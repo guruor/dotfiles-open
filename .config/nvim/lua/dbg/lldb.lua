@@ -34,7 +34,9 @@ function M.setup(dap)
   dap.adapters.lldb = {
     type = "executable",
     attach = { pidProperty = "pid", pidSelect = "ask" },
-    command = "lldb-vscode",
+    -- lldb-vscode is renamed to lldb-dap
+    -- https://github.com/llvm/vscode-lldb?tab=readme-ov-file#procuring-the-lldb-dap-binary
+    command = "lldb-dap",
     name = "lldb",
     env = { LLDB_LAUNCH_FLAG_LAUNCH_IN_TTY = "YES" },
   }
