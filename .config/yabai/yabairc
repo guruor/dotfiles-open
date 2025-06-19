@@ -75,7 +75,7 @@ supported_terminals="^(kitty|Ghostty|ghostty|WezTerm|wezterm-gui|alacritty|Alacr
 default_grid_size="10:16:8:5:16:10"
 # ===== Rules ==================================
 # Floating terminal windows
-cli_app_titles=("Notes" "Pad" "Bottom" "Ncmpcpp")
+cli_app_titles=("Notes" "Bottom" "Ncmpcpp" "Pad1" "Pad2" "Pad3" )
 for app_title in "${cli_app_titles[@]}"; do
   # scratchpad windows are manage=off automatically
   yabai -m rule --add app="${supported_terminals}" title="${app_title}" scratchpad="${app_title}" manage=off sub-layer=above sticky=on grid="${default_grid_size}"
