@@ -50,9 +50,9 @@ meh - l : yabai -m query --spaces --space \
 # meh - return : "${HOME}"/.config/yabai/scripts/open_iterm2.sh
 meh - return : openterm --title "New window"
 meh - space : yabai -m window --warp east; yabai -m window --focus west # Move window to left and focus
-meh - 0x29 : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Pad" "scratchpad" # Mapping semicolon(;) to open floating terminal
-meh - 0x27 : open -a "Google Chrome" # Mapping colon(:)
-meh - 0x2C : open -a "zoom.us" # Mapping question mark button (?)
+meh - 0x2B : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Pad1" "scratchpad Pad" # Mapping comma(,) to open floating terminal
+meh - 0x2F : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Pad2" "scratchpad Projects" # Mapping comma(.) to open floating terminal
+meh - 0x2C : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Pad3" "scratchpad Code" # Mapping question mark button (?)
 meh - o : openterm --title "File Manager" --shell "$SHELL" --cmd-str "yazi; $SHELL"
 meh - n : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Notes" "notetaker"
 meh - r : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Bottom" "btm -b" # Opens process monitoring tool
