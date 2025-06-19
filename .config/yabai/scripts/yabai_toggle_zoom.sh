@@ -1,68 +1,61 @@
 #!/usr/bin/env bash
 
-# Function to generate grid configurations for a specific zoom level
-generate_grid_zoom_levels() {
-  # Set the common grid parameters
-  grid_rows=10
-  grid_cols=16
-  start_x=8
-  start_y=5
+window_info=$(yabai -m query --windows --window)
+window_id=$(jq -r '."id"' <<<"$window_info")
+is_floating=$(jq -r '."is-floating"' <<<"$window_info")
+window_title=$(jq -r '."title"' <<<"$window_info")
 
-  # Ensure the last value goes full screen at x=0 and y=0
-  local end_x=$((zoom_level == max_zoom_level ? 0 : start_x - (zoom_level * (start_x / max_zoom_level))))
-  local end_y=$((zoom_level == max_zoom_level ? 0 : start_y - (zoom_level * (start_y / max_zoom_level))))
+initial_grid=$(yabai -m rule --list | jq -r \
+    --arg title "$window_title" \
+    '.[] | select(.title == $title) | .grid' | head -n1)
 
-  echo "${grid_rows}:${grid_cols}:${end_x}:${end_y}:${grid_cols}:${grid_rows}"
-}
+# Set the number of zoom levels (steps)
+max_zoom_levels=4
 
+if [[ -z "$initial_grid" || "$initial_grid" == "null" ]]; then
+    initial_grid="10:16:0:5:8:5"
+fi
 
-# Function to toggle zoom levels
-toggle_zoom() {
-    current_zoom_level=$(( (current_zoom_level + 1) % (max_zoom_level + 1) ))
-    final_grid=${grid_zoom_levels[$current_zoom_level]}
-}
+IFS=':' read -r rows cols start_x start_y width height <<<"$initial_grid"
 
-# Function to load the current zoom level from a file
-load_zoom_level() {
-    if [[ -f "$zoom_level_file" ]]; then
-        current_zoom_level=$(<"$zoom_level_file")
-    else
-        current_zoom_level=0
-    fi
-}
-
-# Function to save the current zoom level to a file
-save_zoom_level() {
-    echo "$current_zoom_level" > "$zoom_level_file"
-}
-
-window_id=$(yabai -m query --windows --window | jq '."id"')
-is_floating=$(yabai -m query --windows --window | jq '."is-floating"')
-scratchpad=$(yabai -m query --windows --window | jq '."scratchpad"')
-
-# Set the maximum zoom level
-max_zoom_level=3
-
-# Initialize the grid_zoom_levels array
-grid_zoom_levels=()
-
-# Set the grid configurations for different zoom levels
-for zoom_level in $(seq 0 $((max_zoom_level))); do
-    grid_zoom_levels+=( "$(generate_grid_zoom_levels)" )
-done
-
-zoom_level_file="/tmp/yabai-${window_id}_zoom_level"
-
-# Load the current zoom level
-load_zoom_level
-
-if [ "$is_floating" == "true" ] || [ -z "$scratchpad" ]; then
-    toggle_zoom
-    echo -e "Toggling zoom for floating window to level $((current_zoom_level + 1))" >&2
-    yabai -m window --grid "$final_grid"
-    # Save the updated zoom level
-    save_zoom_level
+if [[ "$start_x" -eq 0 ]]; then
+    anchor="left"
 else
-    echo -e "Toggling zoom for non-floating window" >&2
+    anchor="right"
+fi
+
+generate_zoom_levels() {
+    local rows=$1 cols=$2 start_x=$3 start_y=$4 width=$5 height=$6 anchor=$7 max_zoom_levels=$8
+    zoom_levels=()
+    for ((i = 0; i < max_zoom_levels; i++)); do
+        w=$((width + ((cols - width) * i / (max_zoom_levels - 1))))
+        h=$((height + ((rows - height) * i / (max_zoom_levels - 1))))
+        y=$((rows - h))
+        if [[ "$anchor" == "left" ]]; then
+            x=0
+        else
+            x=$((cols - w))
+        fi
+        zoom_levels+=("$rows:$cols:$x:$y:$w:$h")
+    done
+}
+
+generate_zoom_levels "$rows" "$cols" "$start_x" "$start_y" "$width" "$height" "$anchor" "$max_zoom_levels"
+
+max_zoom_level=$((${#zoom_levels[@]} - 1))
+zoom_level_file="/tmp/yabai-${window_id}_zoom_level"
+if [[ -f "$zoom_level_file" ]]; then
+    current_zoom_level=$(<"$zoom_level_file")
+else
+    current_zoom_level=0
+fi
+
+current_zoom_level=$(((current_zoom_level + 1) % (${#zoom_levels[@]})))
+final_grid=${zoom_levels[$current_zoom_level]}
+
+if [ "$is_floating" == "true" ]; then
+    yabai -m window --grid "$final_grid"
+    echo "$current_zoom_level" >"$zoom_level_file"
+else
     yabai -m window --toggle zoom-fullscreen
 fi
