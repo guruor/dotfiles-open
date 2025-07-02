@@ -12,7 +12,7 @@ return {
     -- Install the `vectorcode` first: uv tool install vectorcode
     "Davidyz/VectorCode",
     version = "*", -- optional, depending on whether you're on nightly or release
-    build = "uv upgrade vectorcode", -- optional but recommended. This keeps your CLI up-to-date.
+    build = "uv tool upgrade vectorcode", -- optional but recommended. This keeps your CLI up-to-date.
     dependencies = { "nvim-lua/plenary.nvim" },
     config = true,
     cmd = { "VectorCode" },
@@ -42,6 +42,18 @@ return {
           auto_scroll = false,
         },
       },
+      adapters = {
+        copilot = function()
+          return require("codecompanion.adapters").extend("copilot", {
+            schema = {
+              model = {
+                -- default = "gpt-4.1",
+                default = "claude-3.7-sonnet",
+              },
+            },
+          })
+        end,
+      },
       extensions = {
         mcphub = {
           callback = "mcphub.extensions.codecompanion",
@@ -67,6 +79,7 @@ return {
       },
     },
     config = function(_, opts)
+      require("plugins.configs.companion-notification").init()
       require("codecompanion").setup(opts)
     end,
     keys = { "<leader>a" },
