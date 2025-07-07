@@ -77,8 +77,8 @@ bottom_left_grid_size="10:16:0:5:8:5"
 # ===== Rules ==================================
 # Floating terminal windows
 # Define which windows go bottom-left
-bottom_left_titles=("Bottom" "Ncmpcpp")
-bottom_right_titles=("Notes" "Pad1" "Pad2" "Pad3")
+bottom_left_titles=("Bottom" "Ncmpcpp" "Pad1")
+bottom_right_titles=("Notes" "Pad2" "Pad3")
 for app_title in "${bottom_left_titles[@]}"; do
   yabai -m rule --add app="${supported_terminals}" title="${app_title}" scratchpad="${app_title}" manage=off sub-layer=above sticky=on grid="${bottom_left_grid_size}"
 done
