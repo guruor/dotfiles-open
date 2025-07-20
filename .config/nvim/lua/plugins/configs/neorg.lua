@@ -57,12 +57,12 @@ local otherModuleConfig = {
       },
     },
   },
-  ["core.completion"] = { config = { engine = "nvim-cmp", name = "[Norg]" } },
   ["core.presenter"] = { config = { zen_mode = "zen-mode" } },
   ["core.summary"] = {},
   ["core.export"] = {},
   ["core.export.markdown"] = {},
   ["core.ui.calendar"] = {},
+  ["external.interim-ls"] = {},
 }
 
 local externalModuleConfig = {
