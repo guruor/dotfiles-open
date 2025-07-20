@@ -20,6 +20,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     dependencies = {
+      "saghen/blink.cmp",
       "jose-elias-alvarez/typescript.nvim",
       {
         "williamboman/mason.nvim",

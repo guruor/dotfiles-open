@@ -72,33 +72,55 @@ return {
     },
   },
   {
+    "garymjr/nvim-snippets",
+    opts = {
+      friendly_snippets = true,
+      create_cmp_source = false, -- Enable only when using nvim-cmp
+      extended_filetypes = {
+        typescript = { "javascript", "tsdoc" },
+        javascript = { "jsdoc" },
+        html = { "css", "javascript" },
+        lua = { "luadoc" },
+        python = { "python-docstring" },
+        sh = { "shelldoc" },
+        php = { "phpdoc" },
+        vimwiki = { "markdown" },
+      },
+    },
+    config = function(_, opts)
+      require("snippets").setup(opts)
+    end,
+    dependencies = { "rafamadriz/friendly-snippets" },
+    event = "InsertEnter",
+  },
+  {
+    "saghen/blink.compat",
+    version = "2.*",
+    opts = {},
+  },
+  {
+    "saghen/blink.cmp",
+    event = { "InsertEnter" },
+    opts = require "plugins.configs.blink",
+    -- build = "cargo build --release",
+    version = "1.*",
+    dependencies = {
+      "fang2hou/blink-copilot",
+      "Kaiser-Yang/blink-cmp-dictionary",
+      "Kaiser-Yang/blink-cmp-git",
+      "rcarriga/cmp-dap",
+      "garymjr/nvim-snippets",
+    },
+  },
+  {
     "hrsh7th/nvim-cmp",
+    enabled = false,
     event = { "InsertEnter" },
     config = utils.load_config "configs.cmp",
     dependencies = {
       -- cmp sources plugins
       {
-        {
-          "garymjr/nvim-snippets",
-          opts = {
-            friendly_snippets = true,
-            extended_filetypes = {
-              typescript = { "javascript", "tsdoc" },
-              javascript = { "jsdoc" },
-              html = { "css", "javascript" },
-              lua = { "luadoc" },
-              python = { "python-docstring" },
-              sh = { "shelldoc" },
-              php = { "phpdoc" },
-              vimwiki = { "markdown" },
-            },
-          },
-          config = function(_, opts)
-            require("snippets").setup(opts)
-          end,
-          dependencies = { "rafamadriz/friendly-snippets" },
-          event = "InsertEnter",
-        },
+        "garymjr/nvim-snippets",
         "hrsh7th/cmp-nvim-lua",
         { "hrsh7th/cmp-nvim-lsp" },
         { "hrsh7th/cmp-buffer" },
