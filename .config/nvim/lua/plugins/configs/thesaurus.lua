@@ -1,11 +1,15 @@
 if not vim.fn.isdirectory(vim.fn.system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/thesaurus"')) then
     print "Downloading dictionary ..."
     vim.cmd("silent !sudo pacman -S words --noconfirm")
+    print "Downloading dictionary ..."
+    vim.cmd("silent !mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/dictionary/")
+    vim.cmd("silent !curl 'https://raw.githubusercontent.com/dwyl/english-words/refs/heads/master/words.txt' > ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/dictionary/words.txt")
+
     print "Downloading thesaurus ..."
     vim.cmd("silent !mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/thesaurus/")
     vim.cmd("silent !curl 'https://www.gutenberg.org/files/3202/files/mthesaur.txt' > ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/thesaurus/mthesaur.txt")
 
-    -- Other alternatives
+    -- Other thesaurus alternatives
     -- vim.cmd("silent !curl 'https://raw.githubusercontent.com/words/moby/master/words.txt' > ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/thesaurus/words.txt")
     -- vim.cmd("silent !curl 'https://raw.githubusercontent.com/moshahmed/vim/master/thesaurus/thesaurii.txt' > ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/thesaurus/thesaurii.txt")
 end
