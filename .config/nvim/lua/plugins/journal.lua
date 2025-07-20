@@ -18,6 +18,7 @@ return {
       "nvim-lua/plenary.nvim",
       "folke/zen-mode.nvim",
       "max397574/neorg-contexts",
+      "benlubas/neorg-interim-ls",
     },
     -- build = ":Neorg sync-parsers",
     cmd = { "Neorg" },
