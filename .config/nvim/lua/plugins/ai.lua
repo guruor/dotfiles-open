@@ -37,6 +37,13 @@ return {
     -- Default config: https://github.com/olimorris/codecompanion.nvim/blob/main/lua/codecompanion/config.lua
     opts = {
       default_adapter = "copilot",
+      strategies = {
+        chat = {
+          opts = {
+            completion_provider = "blink", -- blink|cmp|coc|default
+          },
+        },
+      },
       display = {
         chat = {
           auto_scroll = false,
@@ -98,7 +105,6 @@ return {
   {
     "zbirenbaum/copilot.lua",
     build = ":Copilot auth",
-    dependencies = { "zbirenbaum/copilot-cmp" },
     config = utils.load_config "configs.copilot",
     event = "InsertEnter",
     cmd = "Copilot",
