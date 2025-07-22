@@ -21,6 +21,8 @@ return {
   cmdline = {
     keymap = {
       preset = "inherit",
+      ["<Tab>"] = { "show_and_insert", "select_and_accept" },
+      ["<S-Tab>"] = { "show_and_insert", "select_prev" },
     },
     completion = { menu = { auto_show = true } },
   },
