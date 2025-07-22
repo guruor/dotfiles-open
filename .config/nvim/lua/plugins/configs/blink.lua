@@ -65,7 +65,6 @@ return {
         module = "blink.cmp.sources.lsp",
         score_offset = 100, -- the higher the number, the higher the priority
         enabled = true,
-        kind = "LSP",
         min_keyword_length = 2,
       },
       path = {
