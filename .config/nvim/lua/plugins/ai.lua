@@ -102,17 +102,6 @@ return {
     keys = { "<leader>a" },
   },
   {
-    "jackMort/ChatGPT.nvim",
-    cmd = { "ChatGPT", "ChatGPTActAs", "ChatGPTEditWithInstructions" },
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-    },
-    opts = require("plugins.configs.misc").chatgpt,
-    config = function(_, opts)
-      require("chatgpt").setup(opts)
-    end,
-  },
-  {
     "zbirenbaum/copilot.lua",
     build = ":Copilot auth",
     config = utils.load_config "configs.copilot",
