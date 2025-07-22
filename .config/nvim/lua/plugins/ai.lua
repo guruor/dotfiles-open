@@ -2,6 +2,16 @@ local utils = require "utils"
 
 return {
   {
+    "robitx/gp.nvim",
+    dir = utils.local_plugins_dir() .. "/gp.nvim",
+    dev = vim.fn.isdirectory(utils.local_plugins_dir() .. "/gp.nvim") == 1,
+    config = function()
+      local conf = require "plugins.configs.gp"
+      require("gp").setup(conf)
+    end,
+    cmd = { "GpWhisper", "GpNextAgent" },
+  },
+  {
     "ravitemer/mcphub.nvim",
     build = "npm install -g mcp-hub@latest",
     config = function()

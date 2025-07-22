@@ -6,6 +6,10 @@ M.load_config = function(package)
   end
 end
 
+M.local_plugins_dir = function(package)
+  return vim.fn.expand "$WORKSPACE_PATH" .. "/Personal"
+end
+
 -- Utility function to merge tables
 M.merge_tables = function(...)
   local result = {}
