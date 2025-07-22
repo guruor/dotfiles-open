@@ -203,6 +203,9 @@ local leader_mappings = {
   { leader .. "aa", "<cmd>CodeCompanionChat Toggle<cr>", desc = "CodeCompanion chat" },
   { leader .. "aA", "<cmd>CodeCompanionActions<cr>", desc = "CodeCompanion actions" },
   { leader .. "av", "<cmd>CodeCompanionChat Add<cr>", desc = "CodeCompanion add to chat" },
+
+  { leader .. "agn", "<cmd>GpNextAgent<cr>", desc = "Next Agent" },
+  { leader .. "aw", "<cmd>GpWhisper<cr>", desc = "Whisper" },
   -- AI bindings are defined in copilot.lua
   { leader .. "A", group = "Authoring" },
   { leader .. "Ac", "1z=", desc = "Correct misspelled word" },
