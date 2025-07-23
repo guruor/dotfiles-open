@@ -203,6 +203,8 @@ local leader_mappings = {
   { leader .. "aa", "<cmd>CodeCompanionChat Toggle<cr>", desc = "CodeCompanion chat" },
   { leader .. "aA", "<cmd>CodeCompanionActions<cr>", desc = "CodeCompanion actions" },
   { leader .. "av", "<cmd>CodeCompanionChat Add<cr>", desc = "CodeCompanion add to chat" },
+  { leader .. "ai", ":CodeCompanion /buffer ", desc = "CodeCompanion inline" },
+  { leader .. "ac", ":CodeCompanion /commit_with_jira_id <CR>", desc = "CodeCompanion Commit" },
 
   { leader .. "agn", "<cmd>GpNextAgent<cr>", desc = "Next Agent" },
   { leader .. "aw", "<cmd>GpWhisper<cr>", desc = "Whisper" },
