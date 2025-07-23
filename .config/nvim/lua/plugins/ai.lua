@@ -47,7 +47,7 @@ return {
     -- Default config: https://github.com/olimorris/codecompanion.nvim/blob/main/lua/codecompanion/config.lua
     opts = require "plugins.configs.codecompanion",
     config = function(_, opts)
-      require("plugins.configs.companion-notification").init()
+      require("plugins.configs.codecompanion-notification").init()
       require("codecompanion").setup(opts)
     end,
     keys = { "<leader>a" },
