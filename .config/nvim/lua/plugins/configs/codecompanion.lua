@@ -103,6 +103,10 @@ return {
         keymap = "gh",
         save_chat_keymap = "sc",
         auto_save = true,
+        -- Filters project specific chats only
+        chat_filter = function(chat_data)
+          return chat_data.cwd == vim.fn.getcwd()
+        end,
       },
     },
     vectorcode = {
