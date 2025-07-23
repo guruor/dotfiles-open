@@ -8,7 +8,14 @@ require("fzf-lua").setup {
       layout = "vertical", -- horizontal|vertical|flex
     },
   },
-  defaults = { formatter = "path.filename_first" }, -- this replaces the Special_fzf_lua function
+  defaults = {
+    formatter = "path.filename_first", -- this replaces the Special_fzf_lua function
+    keymap = {
+      builtin = {
+        ["<C-_>"] = "toggle-help", -- Maps Ctrl + ? for help
+      },
+    },
+  },
   path_shorten = true,
   fzf_opts = {
     ["--history"] = vim.fn.stdpath "data" .. "/fzf-lua-history",
