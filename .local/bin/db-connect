@@ -62,6 +62,12 @@ generate_redis_connection_string() {
         fi
 }
 
+# Function to generate connection string for BigQuery
+generate_bigquery_connection_string() {
+        local project_id="$1"
+        echo "bigquery:$project_id"
+}
+
 # Function to generate connection name
 generate_connection_name() {
         local database_type="$1"
@@ -136,6 +142,11 @@ open_redis_cli() {
         redis-cli -u "${DB_CONNECTION_URL}"
 }
 
+open_bq_client() {
+        ssh_tunnel -c
+        bq query --use_lagacy_sql=false 'Select 1' -u "${DB_CONNECTION_URL}"
+}
+
 yank_connection_string() {
         echo "${DB_CONNECTION_URL}" | cb
 }
@@ -196,6 +207,9 @@ prepare_connection_strings() {
                                 if [[ "$database_type" == "redis" ]]; then
                                         is_cluster=$(yq eval ".connections.$database_type.$project.$env.is_cluster" "$connections_file")
                                         connection_strings+=("$(generate_redis_connection_string "$host" "$port" "$env" "$is_cluster")")
+                                elif [[ "$database_type" == "bigquery" ]]; then
+                                        project_id=$(yq eval ".connections.$database_type.$project.$env.project_id" "$connections_file")
+                                        connection_strings+=("$(generate_bigquery_connection_string "$project_id")")
                                 else
                                         dbname=$(yq eval ".connections.$database_type.$project.$env.dbname" "$connections_file")
                                         user=$(yq eval ".connections.$database_type.$project.$env.user" "$connections_file")
@@ -236,6 +250,9 @@ main() {
                 ;;
         --redis-cli)
                 open_redis_cli
+                ;;
+        --bq)
+                open_bq_client
                 ;;
         --yank)
                 yank_connection_string
