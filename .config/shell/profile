@@ -83,6 +83,9 @@ export MYVIMRCLSP="${XDG_CONFIG_HOME:-$HOME/.config}/nvim/lua/initlsp.lua"
 export MBSYNCRC="${XDG_CONFIG_HOME:-$HOME/.config}/isync/mbsyncrc"
 export SVDIR="/run/runit/service"
 
+## Google
+export BIGQUERYRC="${XDG_CONFIG_HOME}/bigquery/.bigqueryrc"
+
 # Clipmenu
 export CM_DEBUG=1
 export CM_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/clipmenu"
