@@ -3,6 +3,7 @@ local M = {}
 M.options = {
   -- backend = "ueberzug", -- ueberzug has support for kitty protocol as well
   backend = "kitty",
+  processor = "magick_cli",
   integrations = {
     markdown = {
       enabled = true,
