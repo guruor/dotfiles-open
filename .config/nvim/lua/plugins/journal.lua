@@ -92,14 +92,13 @@ return {
   { "folke/twilight.nvim", cmd = "Twilight", config = 'require("twilight").setup()' },
   { "folke/zen-mode.nvim", cmd = "ZenMode", config = 'require("zen-mode").setup()' },
   {
-    -- https://github.com/3rd/image.nvim/issues/91, works only with luarocks 5.1
     "3rd/image.nvim",
+    build = false, -- Should be disabled when using magic_cli processor
     ft = { "markdown", "vimwiki", "norg" },
-    dependencies = "nvim-treesitter/nvim-treesitter",
     opts = require("plugins.configs.image").options,
     config = function(_, opts)
       require("image").setup(opts)
     end,
-    enabled = false,
+    enabled = true,
   },
 }
