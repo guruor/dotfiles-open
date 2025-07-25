@@ -332,6 +332,23 @@ local filetype_mappings = {
     { localleader .. "rr", "<Cmd>MarkdownPreview<Cr>", desc = "Markdown Preview" },
     { localleader .. "rt", "<Cmd>MarkdownPreviewToggle<Cr>", desc = "Markdown Preview Toggle" },
     { localleader .. "rx", "<Cmd>MarkdownPreviewStop<Cr>", desc = "Markdown Preview Stop" },
+    { localleader .. "p", desc = "Presentation" },
+    {
+      localleader .. "pp",
+      "<Cmd>lua vim.cmd('!openterm --title \"Pad1\" --shell \"$SHELL\" --cmd-str \"presenterm --present \\\"' .. vim.fn.expand('%:p'):gsub('\"', '\\\\\"') .. '\\\"; $SHELL\"')<CR>",
+      desc = "Open Presentation",
+    },
+    { localleader .. "pe", desc = "Presentation Export" },
+    {
+      localleader .. "pep",
+      "<Cmd>lua vim.cmd('tabnew | terminal presenterm --export-pdf \"' .. vim.fn.expand('%:p') .. '\"')<CR>",
+      desc = "Export PDF",
+    },
+    {
+      localleader .. "peh",
+      "<Cmd>lua vim.cmd('tabnew | terminal presenterm --export-html \"' .. vim.fn.expand('%:p') .. '\"')<CR>",
+      desc = "Export HTML",
+    },
   },
   norg = {
     -- Neorg specific mapping
