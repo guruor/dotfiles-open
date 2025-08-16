@@ -33,7 +33,14 @@ return {
       return require("codecompanion.adapters").extend("openai", {
         env = {
           -- api_key = "cmd:bw get password OAI_API_KEY",
-          api_key = "cmd:bw get password AI_API_KEY",
+          api_key = "cmd:bw get password OAI_API_KEY",
+        },
+      })
+    end,
+    gemini = function()
+      return require("codecompanion.adapters").extend("gemini", {
+        env = {
+          api_key = "cmd:bw get password GEMINI_API_KEY",
         },
       })
     end,
