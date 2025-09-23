@@ -32,8 +32,14 @@ return {
     openai = function()
       return require("codecompanion.adapters").extend("openai", {
         env = {
-          -- api_key = "cmd:bw get password OAI_API_KEY",
           api_key = "cmd:bw get password OAI_API_KEY",
+        },
+      })
+    end,
+    omnia = function()
+      return require("codecompanion.adapters").extend("openai", {
+        env = {
+          api_key = "cmd:bw get password OMNIA_OAI_API_KEY",
         },
       })
     end,
