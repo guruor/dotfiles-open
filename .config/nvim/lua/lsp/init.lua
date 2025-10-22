@@ -67,7 +67,6 @@ local servers = {
   buf_ls = require "lsp.servers.common",
   lemminx = require "lsp.servers.common", -- XML LSP
   jinja_lsp = require "lsp.servers.common",
-  nixd = require "lsp.servers.common",
 }
 
 mason_lspconfig.setup {
