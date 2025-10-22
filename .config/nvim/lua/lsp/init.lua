@@ -67,6 +67,7 @@ local servers = {
   buf_ls = require "lsp.servers.common",
   lemminx = require "lsp.servers.common", -- XML LSP
   jinja_lsp = require "lsp.servers.common",
+  nixd = require "lsp.servers.common",
 }
 
 mason_lspconfig.setup {
@@ -76,16 +77,19 @@ mason_lspconfig.setup {
 }
 
 for server_name, server_config in pairs(servers) do
-  lspconfig[server_name].setup(server_config)
+  vim.lsp.config(server_name, server_config)
+  vim.lsp.enable { server_name }
 end
 
--- Mason lspconfig doesn't support `nixd` yet
+-- Mason lspconfig doesn't support `nixd` yet https://github.com/mason-org/mason-lspconfig.nvim/issues/390
 -- To install use: nix-env -iA nixpkgs.nixd
-lspconfig.nixd.setup {}
+vim.lsp.config("nixd", {})
+vim.lsp.enable { "nixd" }
 
 if vim.g.should_enable_efm then
   -- print("Enabling efm-langserver")
-  lspconfig.efm.setup(require "lsp.servers.efm")
+  vim.lsp.config("efm", require "lsp.servers.efm")
+  vim.lsp.enable { "efm" }
 end
 
 lspconfig_ui.default_options.border = vim.g.border_style
