@@ -19,37 +19,39 @@ return {
     },
   },
   adapters = {
-    copilot = function()
-      return require("codecompanion.adapters").extend("copilot", {
-        schema = {
-          model = {
-            -- default = "gpt-4.1",
-            default = "claude-3.7-sonnet",
+    http = {
+      copilot = function()
+        return require("codecompanion.adapters").extend("copilot", {
+          schema = {
+            model = {
+              -- default = "gpt-4.1",
+              default = "claude-3.7-sonnet",
+            },
           },
-        },
-      })
-    end,
-    openai = function()
-      return require("codecompanion.adapters").extend("openai", {
-        env = {
-          api_key = "cmd:bw get password OAI_API_KEY",
-        },
-      })
-    end,
-    omnia = function()
-      return require("codecompanion.adapters").extend("openai", {
-        env = {
-          api_key = "cmd:bw get password OMNIA_OAI_API_KEY",
-        },
-      })
-    end,
-    gemini = function()
-      return require("codecompanion.adapters").extend("gemini", {
-        env = {
-          api_key = "cmd:bw get password GEMINI_API_KEY",
-        },
-      })
-    end,
+        })
+      end,
+      openai = function()
+        return require("codecompanion.adapters").extend("openai", {
+          env = {
+            api_key = "cmd:bw get password OAI_API_KEY",
+          },
+        })
+      end,
+      omnia = function()
+        return require("codecompanion.adapters").extend("openai", {
+          env = {
+            api_key = "cmd:bw get password OMNIA_OAI_API_KEY",
+          },
+        })
+      end,
+      gemini = function()
+        return require("codecompanion.adapters").extend("gemini", {
+          env = {
+            api_key = "cmd:bw get password GEMINI_API_KEY",
+          },
+        })
+      end,
+    },
   },
   prompt_library = {
     ["Commit Message with Jira ID"] = {
@@ -96,6 +98,8 @@ return {
               .. "\n```\n\n"
               .. "Provide ONLY the commit message in a code block with no additional text. "
               .. "Use the present tense, be specific about the changes, and explain the 'why' when useful."
+              .. "Keep the commit message short, max one or two points"
+              .. "Add ticket ID only when available in branch name, else skip it."
           end,
         },
       },
