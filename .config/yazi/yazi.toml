@@ -8,6 +8,7 @@ ratio = [1, 3, 4]
 show_hidden = true
 sort_by = "mtime"
 sort_reverse = true
+linemode = "size"
 
 [preview]
 wrap = "yes"
