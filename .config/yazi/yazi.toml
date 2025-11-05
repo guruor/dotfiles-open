@@ -41,3 +41,6 @@ run = "git"
 id = "git"
 name = "*/"
 run = "git"
+
+[tasks]
+image_bound = [ 65535, 65535 ]
