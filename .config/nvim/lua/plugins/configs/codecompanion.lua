@@ -25,7 +25,7 @@ return {
           schema = {
             model = {
               -- default = "gpt-4.1",
-              default = "claude-3.7-sonnet",
+              default = "claude-sonnet-4.5",
             },
           },
         })
