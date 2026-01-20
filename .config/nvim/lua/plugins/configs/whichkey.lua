@@ -242,8 +242,9 @@ local leader_mappings = {
     ":%s/\\%V{/{{/g | %s/\\%V}/}}/g<CR>",
     desc = "Replace braces with double braces for multiline formatted string",
   },
-  { leader .. "msn", ":%s/\\n/\r/g<CR>", desc = "Replace \n with newline charFormat sqlalchemy query from logs" },
-  { leader .. "ms^", ":%s/\\r$//g<CR>", desc = "Replace \n with newline charFormat sqlalchemy query from logs" },
+  { leader .. "msn", ":%s/\\\\n/\\r/g<CR>", desc = "Replace \\n with newline char" },
+  { leader .. "ms^", ":%s/\\r$//g<CR>", desc = "Remove carriage returns at end of lines" },
+  { leader .. "mst", ":%s/\\t/  /g<CR>", desc = "Replace tabs with 2 spaces" },
 }
 
 local visual_leader_mappings = {
@@ -267,6 +268,9 @@ local visual_leader_mappings = {
     silent = false,
   },
   { leader .. "ms,", ":lua UnquoteAndSplit()<CR>", desc = "Split lines at commas and remove quotes" },
+  { leader .. "msn", ":s/\\\\n/\\r/g<CR>", desc = "Replace \\n with newline char" },
+  { leader .. "ms^", ":s/\\r$//g<CR>", desc = "Remove carriage returns at end of lines" },
+  { leader .. "mst", ":s/\\t/  /g<CR>", desc = "Replace tabs with 2 spaces" },
 }
 
 -- Generating substitute commands mapping which are common for both normal and visual mode
