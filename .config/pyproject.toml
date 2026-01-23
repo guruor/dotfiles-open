@@ -78,7 +78,7 @@ docstring-code-format = true
 # select = ["E4", "E7", "E9", "F", "B", "Q"] # Default
 # Available rules: https://docs.astral.sh/ruff/rules/
 select = ["ALL"]
-# Extent existing select with isort
+# Extend existing select with isort
 extend-select = ["I"]
 
 [tool.ruff.lint.isort]
