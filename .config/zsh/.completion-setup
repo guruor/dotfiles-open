@@ -81,7 +81,7 @@ function completion_install() {
   install_pipx
   install_argcomplete
 
-  local tools=("fzf" "docker" "mise" "asdf" "pip3" "poetry" "npm" "ente" "eza")
+  local tools=("fzf" "docker" "mise" "asdf" "pip3" "poetry" "npm" "ente" "eza" "kubectl")
   for tool in "${tools[@]}"; do
     if is_installed "${tool}"; then
       setup_tool_completion "${tool}"
