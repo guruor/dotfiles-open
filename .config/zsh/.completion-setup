@@ -1,141 +1,602 @@
 #!/bin/zsh
+#
+# Zsh Completion Management System
+# =================================
+#
+# A robust, two-stage completion setup for managing shell completions across various CLI tools.
+#
+# ARCHITECTURE:
+#   Stage 1 (completion_init):  Initialize completion infrastructure early in shell startup
+#   Stage 2 (completion_load):  Load tool-specific completions after all tools are in PATH
+#
+# USAGE:
+#
+#   1. INITIAL SETUP (One-time installation):
+#
+#      $ source ~/.config/zsh/.completion-setup
+#      $ completion_install
+#
+#      This will:
+#      - Install Homebrew if needed
+#      - Install pipx and argcomplete
+#      - Generate completion files for all supported tools
+#      - Save completions to: $(brew --prefix)/share/zsh/site-functions
+#
+#   2. SHELL INTEGRATION (Add to .zshrc):
+#
+#      # EARLY in .zshrc (after basic setup, before tool initialization)
+#      if [[ -f "${ZDOTDIR}/.completion-setup" ]]; then
+#        source "${ZDOTDIR}/.completion-setup"
+#        [[ -o interactive ]] && completion_init
+#      fi
+#
+#      # ... your tool initialization (brew, mise, zoxide, etc.) ...
+#
+#      # LATE in .zshrc (after all tools are initialized and in PATH)
+#      [[ -o interactive ]] && completion_load
+#
+#   3. UPDATING COMPLETIONS:
+#
+#      When you install a new tool:
+#      $ completion_install
+#
+#      To force regenerate all completions:
+#      $ rm $(brew --prefix)/share/zsh/site-functions/_* && completion_install
+#
+#   4. TROUBLESHOOTING:
+#
+#      Completions not working:
+#      $ rm ~/.zcompdump* && exec zsh
+#
+#      Check if completion file exists:
+#      $ ls -la $(brew --prefix)/share/zsh/site-functions/_<tool>
+#
+#      Test if tool is detected:
+#      $ is_installed <tool> && echo "Found" || echo "Not found"
+#
+#      Debug completion loading:
+#      $ zsh -xv 2>&1 | grep completion
+#
+# DIRECTORY STRUCTURE:
+#   Completion files:    $(brew --prefix)/share/zsh/site-functions/_<tool>
+#   Cache files:         $ZDOTDIR/.zcompdump*
+#   This script:         $ZDOTDIR/.completion-setup
+#
+# ADDING NEW TOOLS:
+#   1. Add tool name to the 'tools' array in completion_install()
+#   2. If standard `tool completion zsh` doesn't work, add special case to setup_tool_completion()
+#   3. Run: completion_install
+#   4. Restart shell or: rm ~/.zcompdump* && exec zsh
+#
+# DEPENDENCIES:
+#   Required:  Homebrew
+#   Optional:  pipx (for Python tools), curl (for remote completions)
+#
+# PERFORMANCE:
+#   - Uses smart cache checking (rebuilds once per day)
+#   - Lazy-loads tool completions only if tools are installed
+#   - Guards against multiple sourcing
+#   - Validates tools before generating completions
+
+# ============================================================================
+# Initialization Guard
+# ============================================================================
+
+# Prevent multiple sourcing but allow function re-definition
+if [[ -n "$__COMPLETION_SETUP_SOURCED" ]]; then
+  # Already sourced, only expose functions
+  return 0
+fi
+__COMPLETION_SETUP_SOURCED=1
+
+# ============================================================================
+# Helper Functions
+# ============================================================================
 
 function is_installed() {
-  if ! command -v "$1" &>/dev/null; then
-    echo "$1 is not installed."
-    return 1
-  fi
-  return 0
+  command -v "$1" &>/dev/null
 }
+
+function _completion_debug() {
+  # Uncomment for debugging: export COMPLETION_DEBUG=1
+  [[ -n "$COMPLETION_DEBUG" ]] && echo "[completion-setup] $*" >&2
+}
+
+function _completion_error() {
+  echo "[completion-setup] ERROR: $*" >&2
+}
+
+function _completion_warn() {
+  echo "[completion-setup] WARNING: $*" >&2
+}
+
+function _completion_success() {
+  echo "[completion-setup] ✓ $*"
+}
+
+function _completion_skip() {
+  echo "[completion-setup] ⊘ $*"
+}
+
+# ============================================================================
+# Installation Helper Functions
+# ============================================================================
 
 function install_homebrew() {
   if ! is_installed brew; then
-    echo "Homebrew is not installed. Please install Homebrew first."
+    _completion_error "Homebrew is not installed"
+    echo "Please install from: https://brew.sh" >&2
+    echo "After installation, restart your shell and run: completion_install" >&2
     return 1
   fi
+  _completion_debug "Homebrew found at: $(command -v brew)"
+  return 0
 }
 
 function install_pipx() {
   if ! is_installed pipx; then
     echo "Installing pipx..."
-    brew install pipx
-    pipx ensurepath
+    if brew install pipx; then
+      pipx ensurepath
+      _completion_success "pipx installed"
+    else
+      _completion_error "Failed to install pipx"
+      return 1
+    fi
+  else
+    _completion_debug "pipx already installed"
   fi
 }
 
 function install_argcomplete() {
-  if ! pipx list | grep -q 'argcomplete'; then
+  if ! pipx list 2>/dev/null | grep -q 'argcomplete'; then
     echo "Installing argcomplete..."
-    pipx install argcomplete
+    if pipx install argcomplete; then
+      _completion_success "argcomplete installed"
+    else
+      _completion_warn "Failed to install argcomplete (optional)"
+    fi
+  else
+    _completion_debug "argcomplete already installed"
   fi
 }
 
 function confirm_overwrite() {
   local file="$1"
   if [[ -f "$file" ]]; then
-    echo "File $file already exists. Do you want to overwrite it? (y/n)"
+    echo -n "File ${file:t} exists. Overwrite? [y/N] "
     read -r response
-    if [[ "$response" != "y" ]]; then
-      echo "Skipping overwrite for $file."
+    if [[ "$response" != "y" && "$response" != "Y" ]]; then
+      _completion_skip "Kept existing: ${file:t}"
       return 1
     fi
   fi
   return 0
 }
 
+# ============================================================================
+# Tool-Specific Completion Setup
+# ============================================================================
+
 function setup_tool_completion() {
   local tool="$1"
   local completion_file="${ZSH_COMPLETIONS_PATH}/_${tool}"
 
-  echo "\nSetting up completion for [${tool}]"
-  # Prompt before overwriting existing files
-  if ! confirm_overwrite "${completion_file}"; then
-    return
+  _completion_debug "Processing: $tool"
+
+  # Skip if tool not installed
+  if ! is_installed "${tool}"; then
+    _completion_skip "${tool} (not installed)"
+    return 0
   fi
 
+  # Check for existing file
+  if ! confirm_overwrite "${completion_file}"; then
+    return 0
+  fi
+
+  echo "→ Generating completion for: ${tool}"
+
+  # Tool-specific completion generation
   case "${tool}" in
-  "pip3")
-    pip3 completion --zsh >"${completion_file}"
-    ;;
-  "poetry")
-    poetry completions zsh >"${completion_file}"
-    ;;
-  "fzf")
-    $(brew --prefix)/opt/fzf/install --all
-    ;;
-  "eza")
-      curl https://raw.githubusercontent.com/eza-community/eza/refs/heads/main/completions/zsh/_eza > "${completion_file}"
-    ;;
-  *)
-    if is_installed "${tool}"; then
-      "${tool}" completion zsh >"${completion_file}"
-    fi
-    ;;
+    "pip3")
+      if pip3 completion --zsh >"${completion_file}" 2>/dev/null; then
+        _completion_success "pip3"
+      else
+        _completion_error "Failed to generate pip3 completion"
+        rm -f "${completion_file}"
+      fi
+      ;;
+
+    "poetry")
+      if poetry completions zsh >"${completion_file}" 2>/dev/null; then
+        _completion_success "poetry"
+      else
+        _completion_error "Failed to generate poetry completion"
+        rm -f "${completion_file}"
+      fi
+      ;;
+
+    "fzf")
+      # fzf uses its own installer
+      local fzf_path="$(brew --prefix)/opt/fzf/install"
+      if [[ -x "$fzf_path" ]]; then
+        "$fzf_path" --completion --no-key-bindings --no-update-rc &>/dev/null
+        _completion_success "fzf (via installer)"
+      else
+        _completion_warn "fzf installer not found"
+      fi
+      ;;
+
+    "eza")
+      # Remote completion file
+      local url="https://raw.githubusercontent.com/eza-community/eza/refs/heads/main/completions/zsh/_eza"
+      if curl -fsSL "$url" > "${completion_file}" 2>/dev/null; then
+        _completion_success "eza"
+      else
+        _completion_error "Failed to download eza completion"
+        rm -f "${completion_file}"
+      fi
+      ;;
+
+    "npm")
+      if npm completion >"${completion_file}" 2>/dev/null; then
+        _completion_success "npm"
+      else
+        _completion_error "Failed to generate npm completion"
+        rm -f "${completion_file}"
+      fi
+      ;;
+
+    "kubectl")
+      if kubectl completion zsh >"${completion_file}" 2>/dev/null; then
+        _completion_success "kubectl"
+      else
+        _completion_error "Failed to generate kubectl completion"
+        rm -f "${completion_file}"
+      fi
+      ;;
+
+    *)
+      # Try standard `tool completion zsh` pattern
+      if "${tool}" completion zsh >"${completion_file}" 2>/dev/null; then
+        _completion_success "${tool}"
+      else
+        _completion_warn "Could not generate completion for ${tool} (may not support standard format)"
+        rm -f "${completion_file}"
+      fi
+      ;;
   esac
 }
 
-function completion_install() {
-  echo "Running completion_install..."
+# ============================================================================
+# Main Installation Function
+# ============================================================================
 
+function completion_install() {
+  echo "╔════════════════════════════════════════════════════════════╗"
+  echo "║        Zsh Completion Installation & Update                ║"
+  echo "╚════════════════════════════════════════════════════════════╝"
+  echo
+
+  # Validate prerequisites
   install_homebrew || return 1
+
+  # Set completions path
+  ZSH_COMPLETIONS_PATH="$(brew --prefix)/share/zsh/site-functions"
+
+  # Ensure directory exists
+  if ! mkdir -p "${ZSH_COMPLETIONS_PATH}" 2>/dev/null; then
+    _completion_error "Cannot create completions directory: ${ZSH_COMPLETIONS_PATH}"
+    return 1
+  fi
+
+  echo "Completions directory: ${ZSH_COMPLETIONS_PATH}"
+  echo
+
+  # Install optional dependencies
   install_pipx
   install_argcomplete
+  echo
 
-  local tools=("fzf" "docker" "mise" "asdf" "pip3" "poetry" "npm" "ente" "eza" "kubectl")
+  # List of tools to install completions for
+  # Add new tools here
+  local tools=(
+    "fzf"
+    "docker"
+    "mise"
+    "asdf"
+    "pip3"
+    "poetry"
+    "npm"
+    "ente"
+    "eza"
+    "kubectl"
+    "gh"
+    "terraform"
+    "ansible"
+    "helm"
+  )
+
+  echo "Checking ${#tools[@]} tools for completion installation..."
+  echo
+
+  local installed_count=0
+  local skipped_count=0
+
   for tool in "${tools[@]}"; do
-    if is_installed "${tool}"; then
-      setup_tool_completion "${tool}"
+    if setup_tool_completion "${tool}"; then
+      ((installed_count++))
     else
-      echo "${tool} is not installed. Skipping completion setup for ${tool}."
+      ((skipped_count++))
     fi
   done
 
-  echo "Completion setup completed. Please restart your terminal session for changes to take effect."
+  echo
+  echo "╔════════════════════════════════════════════════════════════╗"
+  echo "║                Installation Complete                       ║"
+  echo "╚════════════════════════════════════════════════════════════╝"
+  echo
+  echo "Summary:"
+  echo "  - Processed: ${#tools[@]} tools"
+  echo "  - Installed: ${installed_count} completions"
+  echo "  - Skipped:   ${skipped_count} tools"
+  echo
+  echo "Next steps:"
+  echo "  1. Clear completion cache: rm ~/.zcompdump* ~/.config/zsh/.zcompdump*"
+  echo "  2. Restart shell:          exec zsh"
+  echo "  3. Test completion:        <tool> <TAB>"
+  echo
 }
+
+# ============================================================================
+# Stage 1: Initialize Completion System (Early)
+# ============================================================================
 
 function completion_init() {
-  # Basic auto/tab complete:
-  autoload -U compinit bashcompinit
-  zmodload zsh/complist
+  _completion_debug "Stage 1: Initializing completion system"
 
-  # FPATH specific config, brew installed tool completion files are installed in this path
-  # To reset the completion cache, use: rm $ZDOTDIR/.zcompdump*
-  if [[ "$(command -v brew)" ]]; then
-    # Add completion files to below path:
-    # Ex: ente completion zsh >> "${ZSH_COMPLETIONS_PATH}/_ente"
-    # Check `completion_setup` function in ../shell/functions
-    ZSH_COMPLETIONS_PATH="$(brew --prefix)/share/zsh/site-functions"
-    # fpath should be updated before `compinit`
-    fpath=($fpath ${ZSH_COMPLETIONS_PATH})
+  # Validate we're in an interactive shell
+  if [[ ! -o interactive ]]; then
+    _completion_debug "Not an interactive shell, skipping init"
+    return 0
   fi
 
-  compinit
+  # Load completion modules
+  autoload -Uz compinit bashcompinit
+  zmodload -F zsh/complist
+
+  # Set up completions path for Homebrew-installed tools
+  if is_installed brew; then
+    ZSH_COMPLETIONS_PATH="$(brew --prefix)/share/zsh/site-functions"
+
+    # Only add to fpath if directory exists and not already in fpath
+    if [[ -d "$ZSH_COMPLETIONS_PATH" ]] && (( ! ${fpath[(I)$ZSH_COMPLETIONS_PATH]} )); then
+      fpath=($ZSH_COMPLETIONS_PATH $fpath)
+      _completion_debug "Added to fpath: $ZSH_COMPLETIONS_PATH"
+    fi
+  else
+    _completion_warn "Homebrew not found, using default completion paths"
+  fi
+
+  # Smart cache initialization for performance
+  # Rebuild cache only once per day or if .zshrc is newer
+  local zcompdump="${ZDOTDIR:-$HOME}/.zcompdump"
+  local zshrc="${ZDOTDIR:-$HOME}/.zshrc"
+
+  if [[ -f "$zcompdump" ]]; then
+    # Check if cache is older than 24 hours or .zshrc is newer
+    if [[ -n ${zcompdump}(#qN.mh+24) ]] || [[ "$zshrc" -nt "$zcompdump" ]]; then
+      _completion_debug "Rebuilding completion cache (stale or outdated)"
+      compinit -i -d "$zcompdump"
+    else
+      _completion_debug "Using cached completions (fresh)"
+      compinit -C -i -d "$zcompdump"
+    fi
+  else
+    _completion_debug "Building initial completion cache"
+    compinit -i -d "$zcompdump"
+  fi
+
   bashcompinit
 
-  zstyle ':completion:*' menu select                                          # select completions with arrow keys
-  zstyle ':completion:*' group-name ''                                        # group results by category
-  zstyle ':completion:::::' completer _expand _complete _ignored _approximate # enable approximate matches for completion
-  _comp_options+=(globdots)                                                   # Include hidden files.
+  # Completion styling and behavior
+  zstyle ':completion:*' menu select
+  zstyle ':completion:*' group-name ''
+  zstyle ':completion:*:descriptions' format '%F{yellow}-- %d --%f'
+  zstyle ':completion:*:warnings' format '%F{red}-- no matches found --%f'
+  zstyle ':completion:*:messages' format '%F{blue}-- %d --%f'
+  zstyle ':completion:*' completer _expand _complete _ignored _approximate
+  zstyle ':completion:*:matches' group 'yes'
+  zstyle ':completion:*:options' description 'yes'
+  zstyle ':completion:*:options' auto-description '%d'
+  zstyle ':completion:*' verbose yes
 
+  # Case-insensitive completion
+  zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+
+  # Include hidden files
+  _comp_options+=(globdots)
+
+  _completion_debug "Stage 1: Completion system initialized"
 }
+
+# ============================================================================
+# Stage 2: Load Tool-Specific Completions (Late)
+# ============================================================================
 
 function completion_load() {
-  GCLOUD_SDK_PATH="$(brew --prefix)/share/google-cloud-sdk"
-  if [ -f "$GCLOUD_SDK_PATH/completion.zsh.inc" ]; then . "$GCLOUD_SDK_PATH/completion.zsh.inc"; fi
+  _completion_debug "Stage 2: Loading tool-specific completions"
 
-  # Adds shell completion for aws cli
-  [ -x "$(command -v aws_completer)" ] && complete -C '/usr/local/bin/aws_completer' aws
+  # Validate we're in an interactive shell
+  if [[ ! -o interactive ]]; then
+    _completion_debug "Not an interactive shell, skipping load"
+    return 0
+  fi
 
-  [ -x "$(command -v register-python-argcomplete)" ] && eval "$(register-python-argcomplete pipx)"
-  [ -x "$(command -v register-python-argcomplete)" ] && eval "$(register-python-argcomplete tmux-session)"
-  # Activate argcomplete for all python apps using argcomplete package
-  [ -x "$(command -v register-python-argcomplete)" ] && activate-global-python-argcomplete --yes &> /dev/null
+  # Validate prerequisites
+  if ! is_installed brew; then
+    _completion_warn "Homebrew not found, skipping brew-dependent completions"
+    # Continue anyway, some completions might still work
+  fi
 
-  # Loading bash completions for rea-as tool
-  [ -x "$(command -v rea-as)" ] && source <(rea-as completion)
+  # Google Cloud SDK completions
+  if is_installed brew; then
+    local gcloud_sdk_path="$(brew --prefix)/share/google-cloud-sdk"
+    if [[ -f "$gcloud_sdk_path/completion.zsh.inc" ]]; then
+      source "$gcloud_sdk_path/completion.zsh.inc"
+      _completion_debug "Loaded: gcloud completions"
+    fi
+  fi
 
-  [ -x "$(command -v syncthing)" ] && complete -C ${BREW_PREFIX}/bin/syncthing syncthing
+  # AWS CLI completions
+  if is_installed aws_completer; then
+    complete -C "$(command -v aws_completer)" aws
+    _completion_debug "Loaded: aws completions"
+  fi
 
-  [ -x "$(command -v uv)" ] && eval "$(uv generate-shell-completion zsh)"
-  [ -x "$(command -v uvx)" ] && eval "$(uvx --generate-shell-completion zsh)"
+  # Python argcomplete-based tools
+  if is_installed register-python-argcomplete; then
+    # pipx completions
+    if is_installed pipx; then
+      eval "$(register-python-argcomplete pipx 2>/dev/null)"
+      _completion_debug "Loaded: pipx completions"
+    fi
+
+    # tmux-session completions (if installed)
+    if is_installed tmux-session; then
+      eval "$(register-python-argcomplete tmux-session 2>/dev/null)"
+      _completion_debug "Loaded: tmux-session completions"
+    fi
+
+    # Global argcomplete activation for all Python apps
+    if activate-global-python-argcomplete --yes &>/dev/null; then
+      _completion_debug "Loaded: global Python argcomplete"
+    fi
+  fi
+
+  # rea-as tool completions
+  if is_installed rea-as; then
+    source <(rea-as completion 2>/dev/null)
+    _completion_debug "Loaded: rea-as completions"
+  fi
+
+  # Syncthing completions
+  if is_installed syncthing && is_installed brew; then
+    complete -C "$(brew --prefix)/bin/syncthing" syncthing
+    _completion_debug "Loaded: syncthing completions"
+  fi
+
+  # uv tool completions
+  if is_installed uv; then
+    eval "$(uv generate-shell-completion zsh 2>/dev/null)"
+    _completion_debug "Loaded: uv completions"
+  fi
+
+  if is_installed uvx; then
+    eval "$(uvx --generate-shell-completion zsh 2>/dev/null)"
+    _completion_debug "Loaded: uvx completions"
+  fi
+
+  # GitHub CLI completions
+  if is_installed gh; then
+    eval "$(gh completion -s zsh 2>/dev/null)"
+    _completion_debug "Loaded: gh completions"
+  fi
+
+  # Terraform completions
+  if is_installed terraform; then
+    complete -C "$(command -v terraform)" terraform
+    _completion_debug "Loaded: terraform completions"
+  fi
+
+  _completion_debug "Stage 2: Tool-specific completions loaded"
 }
+
+# ============================================================================
+# Utility Functions
+# ============================================================================
+
+function completion_status() {
+  echo "╔════════════════════════════════════════════════════════════╗"
+  echo "║              Completion System Status                      ║"
+  echo "╚════════════════════════════════════════════════════════════╝"
+  echo
+
+  # Check if completion system is initialized
+  if typeset -f compinit >/dev/null; then
+    echo "✓ Completion system: Initialized"
+  else
+    echo "✗ Completion system: Not initialized"
+  fi
+
+  # Check fpath
+  echo
+  echo "Completion search paths (fpath):"
+  for dir in $fpath; do
+    if [[ -d "$dir" ]]; then
+      local count=$(ls -1 "$dir"/_* 2>/dev/null | wc -l)
+      echo "  ✓ $dir (${count} completions)"
+    fi
+  done
+
+  # Check cache
+  echo
+  local zcompdump="${ZDOTDIR:-$HOME}/.zcompdump"
+  if [[ -f "$zcompdump" ]]; then
+    echo "✓ Completion cache: $zcompdump"
+    echo "  Last updated: $(date -r "$zcompdump" '+%Y-%m-%d %H:%M:%S')"
+  else
+    echo "✗ Completion cache: Not found"
+  fi
+
+  # Check installed completions
+  if is_installed brew; then
+    local comp_dir="$(brew --prefix)/share/zsh/site-functions"
+    if [[ -d "$comp_dir" ]]; then
+      echo
+      echo "Installed completions in $comp_dir:"
+      ls -1 "$comp_dir"/_* 2>/dev/null | while read file; do
+        echo "  ✓ ${file:t:r:s/_/}"
+      done
+    fi
+  fi
+
+  echo
+}
+
+function completion_clean() {
+  echo "Cleaning completion cache..."
+
+  local cleaned=0
+
+  # Remove zcompdump files
+  for file in "${ZDOTDIR:-$HOME}"/.zcompdump*; do
+    if [[ -f "$file" ]]; then
+      rm -f "$file"
+      echo "✓ Removed: ${file:t}"
+      ((cleaned++))
+    fi
+  done
+
+  if ((cleaned > 0)); then
+    echo
+    echo "Cleaned ${cleaned} cache file(s)"
+    echo "Run 'exec zsh' to rebuild cache"
+  else
+    echo "No cache files found"
+  fi
+}
+
+# ============================================================================
+# Script initialization message
+# ============================================================================
+
+if [[ -o interactive ]] && [[ -n "$COMPLETION_DEBUG" ]]; then
+  echo "[completion-setup] Script loaded. Available functions:"
+  echo "  - completion_init     # Initialize completion system"
+  echo "  - completion_load     # Load tool completions"
+  echo "  - completion_install  # Install/update completions"
+  echo "  - completion_status   # Show system status"
+  echo "  - completion_clean    # Clean cache files"
+fi
