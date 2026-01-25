@@ -186,6 +186,9 @@ export RUFF_CACHE_DIR="$XDG_CACHE_HOME/ruff"
 # VALE variables
 export VALE_CONFIG_PATH="${HOME}/.config/vale/.vale.ini"
 
+# kubectl config
+export KUBECONFIG="${XDG_CONFIG_HOME}/kube/paas.yaml:${XDG_CONFIG_HOME}/kube/config"
+
 # Specifying the local binary path to avoid conflict with `shortctus` utility available on macos
 if [ ! -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shortcutrc" ]; then
     $HOME/.local/bin/shortcuts >/dev/null 2>&1 &
@@ -266,6 +269,9 @@ export PATH=$PATH:/Library/Developer/CommandLineTools/usr/bin
 
 # Adds binaries from mason.nvim
 export PATH="$PATH:${XDG_DATA_HOME}/nvim/mason/bin"
+
+# Krew plugin manager for the kubectl
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 # Few config options and aliases common to sh, bash and zsh
 set -o vi
