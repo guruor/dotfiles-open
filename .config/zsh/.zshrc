@@ -75,7 +75,21 @@ setopt HIST_IGNORE_ALL_DUPS
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshnameddirrc"
 
-[ -f "${ZDOTDIR}/.completion-setup" ] && source "${ZDOTDIR}/.completion-setup"; completion_init
+# Must run AFTER basic setup, BEFORE tool initialization
+if [[ -f "${ZDOTDIR}/.completion-setup" ]]; then
+  source "${ZDOTDIR}/.completion-setup"
+
+  # Initialize completion system in interactive shells
+  if [[ -o interactive ]]; then
+    if typeset -f completion_init >/dev/null; then
+      completion_init
+    else
+      # Fallback: basic completion without enhancements
+      autoload -Uz compinit && compinit -i
+      echo "Warning: completion_init not found, using basic completions" >&2
+    fi
+  fi
+fi
 
 # vi mode
 bindkey -v
@@ -267,4 +281,11 @@ autoload -Uz promptinit && promptinit && prompt powerlevel10k
 # Setting up rea-cli
 [[ ! -f "$HOME/.rea-cli/rea-shell-init.sh" ]] || source "$HOME/.rea-cli/rea-shell-init.sh"
 
-[ -f "${ZDOTDIR}/.completion-setup" ] && source "${ZDOTDIR}/.completion-setup"; completion_load
+# Must run AFTER all tools are initialized and in PATH
+if [[ -o interactive ]]; then
+  if typeset -f completion_load >/dev/null; then
+    completion_load
+  else
+    echo "Warning: completion_load not found" >&2
+  fi
+fi
