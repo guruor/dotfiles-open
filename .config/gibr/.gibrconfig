@@ -1,0 +1,12 @@
+[DEFAULT]
+branch_name_format = {issue}-{title}
+push = False
+
+[issue-tracker]
+name = jira
+
+[jira]
+url = ${JIRA_BASE_URL}
+user = ${JIRA_EMAIL}
+token = ${JIRA_TOKEN}
+project_key = ${JIRA_PROJECT_KEY}

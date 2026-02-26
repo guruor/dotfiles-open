@@ -9,6 +9,23 @@
     bccib = "!zsh -c \"source $HOME/.config/zsh/.zshrc; create_git_branches $1 stage uat master pre-prod;\""
     c = commit -m
     ca = commit -am
+	create = !gibr git create
+    createf = "!f() { \
+        : \"${JIRA_USERNAME:?JIRA_USERNAME not set}\"; \
+        issue=$(gibr issues --json | \
+            jq -r --arg me \"$JIRA_USERNAME\" '.[] | \"\\(if .assignee == $me then 0 else 1 end)\\t\\(.assignee == $me)\\t\\(.id) \\(.title)\"' | \
+            sort -n | \
+            cut -f2- | \
+            awk -F'\t' '{ \
+                if ($1 == \"true\") \
+                    printf \"\\033[1;32m%s\\033[0m\\n\", $2; \
+                else \
+                    print $2 \
+            }' | \
+            fzf --ansi --prompt=\"🔎 Select issue: \" | \
+            awk '{print $1}'); \
+        [ -n \"$issue\" ] && gibr git create \"$issue\"; \
+    }; f"
     co = checkout
     # git checkout fzf
     cof = !git branch --color=always --sort=-committerdate | grep -v '/HEAD\\s'  | fzf --ansi | sed 's/^..//' | awk '{print $1}' | sed "s#^remotes/[^/]*/##" | xargs git checkout
@@ -33,6 +50,7 @@
 
     fc = "!f() { git log --pretty='%C(yellow)%h%Creset -%Cred%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' --grep=$1; }; f"
     fs = "!f() { git log --pretty='%C(yellow)%h%Creset -%Cred%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' -S$1; }; f"
+	issues = !gibr git issues
     lg = log --graph --pretty='%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset'
     l1 = log --all --date=short --color=always --format='%C(green)%ad %C(auto)%h %C(blue)%<(15,trunc)%an %C(auto)%<(65,trunc)%s%d%C(reset)'
     # Pick commits from log with fzf
