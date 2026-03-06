@@ -336,6 +336,7 @@ local filetype_mappings = {
     { localleader .. "rr", "<Cmd>MarkdownPreview<Cr>", desc = "Markdown Preview" },
     { localleader .. "rt", "<Cmd>MarkdownPreviewToggle<Cr>", desc = "Markdown Preview Toggle" },
     { localleader .. "rx", "<Cmd>MarkdownPreviewStop<Cr>", desc = "Markdown Preview Stop" },
+    { localleader .. "rc", "<Cmd>!doctoc --title '**Table of Contents**' %<Cr>", desc = "Markdown TOC" },
     { localleader .. "p", desc = "Presentation" },
     {
       localleader .. "pp",
