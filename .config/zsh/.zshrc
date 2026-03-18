@@ -258,17 +258,29 @@ fi
 
 [ -f "${CARGO_HOME}/env" ] && source "${CARGO_HOME}/env"
 
-[ -x "$(command -v zoxide)" ] && _evalcache zoxide init zsh
-
+# Critical tools - load immediately
 [ -x "$(command -v mise)" ] && eval "$(mise activate zsh)"
 
-# [ -x "$(command -v starship)" ] && _evalcache starship init zsh
+# Defer non-critical tools to after prompt
+autoload -Uz add-zsh-hook
+_load_deferred() {
+  # Zoxide
+  [ -x "$(command -v zoxide)" ] && _evalcache zoxide init zsh
 
-[ -x "$(command -v thefuck)" ] && _evalcache thefuck --alias oops
-# [ -x "$(command -v ohcrab)" ] && _evalcache ohcrab --shell zsh --alias oops
+  # REA CLI
+  [[ -f "$HOME/.rea-cli/rea-shell-init.sh" ]] && source "$HOME/.rea-cli/rea-shell-init.sh"
 
-# Trigger asl logs cleaning, since it slows down shell on macos
-# clean-asl-logs
+  # [ -x "$(command -v starship)" ] && _evalcache starship init zsh
+
+  # Must run AFTER all tools are initialized and in PATH
+  # Completion loading
+  if typeset -f completion_load >/dev/null; then
+    completion_load
+  fi
+
+  add-zsh-hook -d precmd _load_deferred
+}
+add-zsh-hook precmd _load_deferred
 
 # export DOCKER_DEFAULT_PLATFORM=linux/arm64 # Same as linux/aarch64
 # export DOCKER_DEFAULT_PLATFORM=linux/amd64 # Installing pandas with pip was taking forever with amd64
@@ -277,15 +289,3 @@ fi
 autoload -Uz promptinit && promptinit && prompt powerlevel10k
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
-
-# Setting up rea-cli
-[[ ! -f "$HOME/.rea-cli/rea-shell-init.sh" ]] || source "$HOME/.rea-cli/rea-shell-init.sh"
-
-# Must run AFTER all tools are initialized and in PATH
-if [[ -o interactive ]]; then
-  if typeset -f completion_load >/dev/null; then
-    completion_load
-  else
-    echo "Warning: completion_load not found" >&2
-  fi
-fi
