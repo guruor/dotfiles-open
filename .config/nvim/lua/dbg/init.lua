@@ -32,6 +32,4 @@ require "dbg.ui"
 -- Enable virutal text, requires mfussenegger/nvim-dap-python, overide it with .vscode/launch.json
 require("dap-python").setup(vim.fn.expand("$PYTHON_VENV_PATH") .. "/debugpy/bin/python")
 
--- Loads configurations from vscode Launch.json, adding it at end so it extends the existing configuration
 require("dap.ext.vscode").json_decode = require("overseer.json").decode
-require("dap.ext.vscode").load_launchjs()
