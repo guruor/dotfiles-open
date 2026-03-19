@@ -84,18 +84,6 @@ M.auto_session = {
   },
 }
 
-M.dressing = {
-  select = {
-    backend = { "fzf_lua", "telescope", "fzf", "builtin", "nui" },
-    fzf_lua = {
-      winopts = {
-        height = 0.5,
-        width = 0.5,
-      },
-    },
-  },
-}
-
 M.nvimGo = {
   notify = true,
   auto_format = false,
