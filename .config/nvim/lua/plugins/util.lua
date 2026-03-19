@@ -8,6 +8,7 @@ return {
     "stevearc/overseer.nvim",
     keys = { { "<leader>t" } },
     cmd = { "OverseerRun", "OverseerToggle", "OverseerQuickAction" },
+    dependencies = { "ibhagwan/fzf-lua" },
     opts = require "plugins.configs.overseer",
     config = function(_, opts)
       require("overseer").setup(opts)
