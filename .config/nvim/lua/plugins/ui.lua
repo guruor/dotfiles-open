@@ -23,12 +23,6 @@ return {
     enabled = false,
   },
   {
-    -- For improved vim.ui interfaces
-    "stevearc/dressing.nvim",
-    event = { "BufReadPre", "BufNewFile" },
-    opts = require("plugins.configs.misc").dressing,
-  },
-  {
     "akinsho/bufferline.nvim",
     -- version = "*",
     dependencies = "nvim-tree/nvim-web-devicons",

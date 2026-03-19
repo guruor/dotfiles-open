@@ -35,6 +35,9 @@ require("fzf-lua").setup {
   },
 }
 
+-- use `fzf-lua` for replace vim.ui.select
+require("fzf-lua").register_ui_select()
+
 local function customGrepProject(text, cwd)
   -- As per this issue grep_project and grep should work same except for `search` parameter
   -- But this is not the case, not able to find string `>>>>>` to check for git conflicts
