@@ -1,11 +1,17 @@
 return {
-  default_adapter = "copilot",
-  strategies = {
+  interactions = {
     chat = {
+      adapter = "copilot",
       opts = {
         completion_provider = "blink", -- blink|cmp|coc|default
       },
     },
+    inline = {
+      adapter = "copilot",
+    },
+    cmd = {
+      adapter = "copilot",
+    }
   },
   display = {
     chat = {
@@ -13,8 +19,9 @@ return {
     },
     action_palette = {
       opts = {
-        show_default_actions = true,
-        show_default_prompt_library = false,
+        show_preset_actions = true, -- Show the preset actions in the action palette?
+        show_preset_prompts = true, -- Show the preset prompts in the action palette?
+        title = "CodeCompanion actions", -- The title of the action palette
       },
     },
   },
@@ -110,7 +117,8 @@ return {
       callback = "mcphub.extensions.codecompanion",
       opts = {
         show_result_in_chat = true, -- Show mcp tool results in chat
-        make_vars = true, -- Convert resources to #variables
+        -- Keeping it false until this is fixed: https://github.com/ravitemer/mcphub.nvim/issues/278
+        make_vars = false, -- Convert resources to #variables
         make_slash_commands = true, -- Add prompts as /slash commands
       },
     },
