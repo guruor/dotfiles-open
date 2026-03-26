@@ -289,3 +289,4 @@ add-zsh-hook precmd _load_deferred
 autoload -Uz promptinit && promptinit && prompt powerlevel10k
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
+[[ ! -f ~/.config/zsh/.p10k.mise.zsh ]] || source ~/.config/zsh/.p10k.mise.zsh
