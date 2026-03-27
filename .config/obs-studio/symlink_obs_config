@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Define the target directory
+TARGET_DIR="$HOME/Library/Application Support/obs-studio"
+
+# Define the files and directories to be symlinked
+FILES=("basic") # Space separated file or directory names
+
+# Loop through the files and create symbolic links
+for FILE in "${FILES[@]}"
+do
+  # Check if the source file or directory exists
+  if [ -e "$FILE" ]; then
+    # Making the symbolic link
+    ln -sf "$(pwd)/$FILE" "$TARGET_DIR/"
+
+    # Check if the symbolic link was created successfully
+    if [ -L "$TARGET_DIR/$FILE" ]; then
+      echo "Symbolic link for $FILE created successfully!"
+    else
+      echo "Failed to create symbolic link for $FILE."
+    fi
+  else
+    echo "$FILE does not exist in the current directory. Skipping..."
+  fi
+done
+
