@@ -1,5 +1,7 @@
 local M = {}
 
+local obsidianDir = vim.fn.expand("$OBSIDIAN_DIR")
+
 M.gruvbox_material = function()
   vim.g.gruvbox_material_foreground = "material" -- Available values:   `'material'`, `'mix'`, `'original'`
   vim.g.gruvbox_material_background = "medium" -- Available values: 'hard', 'medium'(default), 'soft'
@@ -196,6 +198,51 @@ M.venv_selector = {
     find_venvs = { command = "fd /bin/python$ $PYTHON_VENV_PATH --full-path" },
     find_poetry_venvs = { command = "fd /bin/python$ $POETRY_CACHE_DIR --full-path" },
     find_pyenv_venvs = { command = "fd /bin/python$ $PYENV_ROOT --full-path" },
+  },
+}
+
+M.obsidian = {
+  legacy_commands = false,
+  -- 1:1 Workspace Mapping
+  -- All the path below will be relative to the workspace path
+  workspaces = {
+    {
+      name = "work",
+      path = obsidianDir .. "/Work",
+    },
+    {
+      name = "personal",
+      path = obsidianDir .. "/Personal",
+    },
+  },
+  default_workspace = "work",
+
+  -- 1:1 Nested Journal Mapping (journal/YYYY/MM/DD.md)
+  daily_notes = {
+    folder = "journal",
+    date_format = "%Y/%m/%d",
+    default_tags = { "journal", "daily" },
+    template = "daily.md",
+  },
+
+  -- Blink.cmp integration
+  completion = {
+    nvim_cmp = false, -- Turn off standard cmp
+    blink = true,     -- Native blink source hook
+    min_chars = 2,
+  },
+
+  -- UI settings (similar to concealer)
+  ui = {
+    enable = false,
+  },
+
+  -- Templates
+  -- https://github.com/obsidian-nvim/obsidian.nvim/wiki/Template
+  templates = {
+    folder = "Templates",
+    date_format = "%Y-%m-%d-%a",
+    time_format = "%H:%M",
   },
 }
 

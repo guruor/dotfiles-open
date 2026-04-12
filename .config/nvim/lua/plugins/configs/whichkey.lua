@@ -230,6 +230,11 @@ local leader_mappings = {
   { leader .. "nI", ":Neorg index<CR>", desc = "Index" },
   { leader .. "nj", ":Neorg journal<CR>", desc = "Journal" },
 
+  -- NEW OBSIDIAN GLOBAL MAPS (Safe from Neorg's <leader>n)
+  { leader .. "N", group = "Obsidian mappings" },
+  { leader .. "NI", "<cmd>Obsidian workspace<cr>", desc = "Index / Workspaces" },
+  { leader .. "Nj", "<cmd>Obsidian today<cr>", desc = "Journal (Today's Note)" },
+
   { leader .. "m", group = "Macro" },
   { leader .. "mfj", ":!jq .<CR>", desc = "Format selection as json" },
   { leader .. "mfq", ":%s!sqlformat --reindent --keywords upper --identifiers lower -<CR>", desc = "Format SQL query" },
@@ -337,13 +342,13 @@ local filetype_mappings = {
     { localleader .. "rt", "<Cmd>MarkdownPreviewToggle<Cr>", desc = "Markdown Preview Toggle" },
     { localleader .. "rx", "<Cmd>MarkdownPreviewStop<Cr>", desc = "Markdown Preview Stop" },
     { localleader .. "rc", "<Cmd>!doctoc --title '**Table of Contents**' %<Cr>", desc = "Markdown TOC" },
-    { localleader .. "p", desc = "Presentation" },
+    { localleader .. "p", group = "Presentation" },
     {
       localleader .. "pp",
       "<Cmd>lua vim.cmd('!openterm --title \"Pad1\" --shell \"$SHELL\" --cmd-str \"presenterm --present \\\"' .. vim.fn.expand('%:p'):gsub('\"', '\\\\\"') .. '\\\"; $SHELL\"')<CR>",
       desc = "Open Presentation",
     },
-    { localleader .. "pe", desc = "Presentation Export" },
+    { localleader .. "pe", group = "Presentation Export" },
     {
       localleader .. "pep",
       "<Cmd>lua vim.cmd('tabnew | terminal presenterm --export-pdf \"' .. vim.fn.expand('%:p') .. '\"')<CR>",
@@ -354,6 +359,40 @@ local filetype_mappings = {
       "<Cmd>lua vim.cmd('tabnew | terminal presenterm --export-html \"' .. vim.fn.expand('%:p') .. '\"')<CR>",
       desc = "Export HTML",
     },
+
+    -- Heading Promotions (Moved from < and > to h< and h> due to Presenterm)
+    { localleader .. "h", group = "Headings" },
+    { localleader .. "h<", "<cmd>MkdnDecreaseHeading<cr>", desc = "Demote heading" },
+    { localleader .. "h>", "<cmd>MkdnIncreaseHeading<cr>", desc = "Promote heading" },
+
+    -- Links & Navigation
+    { localleader .. "<CR>", "<cmd>Obsidian follow_link<cr>", desc = "Open link" },
+
+    -- Templates & Inserts
+    { localleader .. "i", group = "Insert" },
+    { localleader .. "im", "<cmd>Obsidian template<cr>", desc = "Insert Template / Date" },
+
+    -- List Actions (Handled by Mkdnflow)
+    { localleader .. "l", group = "List actions" },
+    { localleader .. "li", "<cmd>MkdnToggleTodoList<cr>", desc = "List Invert/Make Todo" },
+
+    -- GTD Actions (Task Cycling handled by mkdnflow)
+    { localleader .. "t", group = "GTD actions" },
+    { localleader .. "t ", "<cmd>MkdnToggleTodoList<cr>", desc = "Task cycle" },
+    { localleader .. "td", "<cmd>MkdnToggleTodoList<cr>", desc = "Mark task as done" },
+
+    -- New Notes
+    { localleader .. "n", group = "Notes" },
+    { localleader .. "nn", "<cmd>Obsidian new<cr>", desc = "New note" },
+
+    -- Quick Export / Clipboard (Moved from 'e' to 'E' to prevent clash with 're')
+    { localleader .. "E", group = "Export raw" },
+    { localleader .. "Ee", "<cmd>w /tmp/temp.md | tabe /tmp/temp.md<cr>", desc = "Save and open temp" },
+    { localleader .. "Ey", "<cmd>!cat % | cb copy<cr>", desc = "Copy as raw markdown" },
+
+    -- Toggle UI
+    { localleader .. "T", group = "Toggle" },
+    { localleader .. "Tc", "<cmd>Obsidian toggle_checkbox<cr>", desc = "Toggle checkbox" },
   },
   norg = {
     -- Neorg specific mapping

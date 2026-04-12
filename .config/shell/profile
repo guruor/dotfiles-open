@@ -110,6 +110,9 @@ export VIMWIKI_DIR_ACTIVE_TASKS="${VIMWIKI_DIR}/ActiveTasks/wiki/"
 
 export MOST_USED_VIMWIKI_DIR="${VIMWIKI_DIR_WORK}"
 
+# Obsidian
+export OBSIDIAN_DIR="$HOME/Dropbox/Obsidian"
+
 # Neorg
 export NEORG_DIR="$HOME/Dropbox/Neorg"
 export NEORG_DIR_PERSONAL="${NEORG_DIR}/Personal"

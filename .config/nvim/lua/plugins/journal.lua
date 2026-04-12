@@ -29,6 +29,29 @@ return {
     end,
   },
   {
+    "obsidian-nvim/obsidian.nvim",
+    version = "*", -- Highly recommended to stick to semantic releases
+    ft = "markdown",
+    cmd = { "Obsidian" },
+    keys = { { "<leader>N", mode = { "n", "v" } } },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "folke/zen-mode.nvim",
+    },
+    -- Pulling extracted options from your misc file
+    opts = require("plugins.configs.misc").obsidian,
+  },
+  {
+    "jakewvincent/mkdnflow.nvim",
+    ft = "markdown",
+    opts = {
+      modules = {
+        lists = true,
+        tables = true,
+      },
+    },
+  },
+  {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     ft = { "markdown", "vimwiki" },
