@@ -1,7 +1,7 @@
 # A TOML linter such as https://taplo.tamasfe.dev/ can use this schema to validate your config.
 # If you encounter any issues, please make an issue at https://github.com/yazi-rs/schemas.
 # Default config: https://github.com/sxyazi/yazi/blob/latest/yazi-config/preset/yazi.toml
-"$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
+#:schema https://yazi-rs.github.io/schemas/yazi.json
 
 [mgr]
 ratio = [1, 3, 4]
@@ -27,19 +27,19 @@ prepend_rules = [
   # { mime = "application/pdf", use = "pdf" },
 
   # File extensions
-  { name = "*.csv", use = ["edit", "sc-im", "open", "reveal"] },
-  { name = "*.xlsx", use = ["sc-im", "open", "reveal"] },
+  { url = "*.csv", use = ["edit", "sc-im", "open", "reveal"] },
+  { url = "*.xlsx", use = ["sc-im", "open", "reveal"] },
 ]
 
 # Git plugin
 [[plugin.prepend_fetchers]]
-id = "git"
-name = "*"
+group = "git"
+url = "*"
 run = "git"
 
 [[plugin.prepend_fetchers]]
-id = "git"
-name = "*/"
+group = "git"
+url = "*/"
 run = "git"
 
 [tasks]
