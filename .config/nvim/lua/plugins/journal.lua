@@ -4,7 +4,7 @@ return {
   {
     "lukas-reineke/headlines.nvim",
     ft = { "vimwiki", "norg" },
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    dependencies = { "romus204/tree-sitter-manager.nvim" },
     config = function(_, opts)
       require("plugins.configs.headlines").SetHighlights()
       -- Loading it here, as it requires the treesitter queries to be available
@@ -71,7 +71,7 @@ return {
   },
   {
     "MeanderingProgrammer/render-markdown.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" }, -- if you prefer nvim-web-devicons
+    dependencies = { "romus204/tree-sitter-manager.nvim", "nvim-tree/nvim-web-devicons" }, -- if you prefer nvim-web-devicons
     ---@module 'render-markdown'
     ---@type render.md.UserConfig
     opts = {

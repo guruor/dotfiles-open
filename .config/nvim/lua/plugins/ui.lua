@@ -127,7 +127,6 @@ return {
     -- event = "VeryLazy",
     lazy = false,
     dependencies = {
-      "nvim-treesitter/nvim-treesitter",
       "kevinhwang91/promise-async",
     },
     init = function()

@@ -31,7 +31,7 @@ return {
     "olimorris/codecompanion.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
+      "romus204/tree-sitter-manager.nvim",
       "ibhagwan/fzf-lua",
       "ravitemer/mcphub.nvim",
       "Davidyz/VectorCode",

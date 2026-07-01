@@ -76,7 +76,6 @@ return {
       vim.g.matchup_matchparen_deferred = 1
     end,
     config = true,
-    dependencies = "nvim-treesitter/nvim-treesitter",
   },
   {
     -- Go forward/backward with square brackets
@@ -110,7 +109,7 @@ return {
     "stevearc/aerial.nvim",
     -- Optional dependencies
     dependencies = {
-      "nvim-treesitter/nvim-treesitter",
+      "romus204/tree-sitter-manager.nvim",
       "nvim-tree/nvim-web-devicons",
     },
     config = true,

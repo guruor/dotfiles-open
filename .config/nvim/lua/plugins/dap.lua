@@ -40,9 +40,6 @@ return {
   },
   {
     "andrewferrier/debugprint.nvim",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter", -- Needed to enable treesitter for NeoVim 0.8
-    },
     -- Remove the following line to use development versions,
     -- not just the formal releases
     version = "*",
