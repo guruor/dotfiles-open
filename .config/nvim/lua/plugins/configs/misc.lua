@@ -225,13 +225,6 @@ M.obsidian = {
     template = "daily.md",
   },
 
-  -- Blink.cmp integration
-  completion = {
-    nvim_cmp = false, -- Turn off standard cmp
-    blink = true,     -- Native blink source hook
-    min_chars = 2,
-  },
-
   -- UI settings (similar to concealer)
   ui = {
     enable = false,
