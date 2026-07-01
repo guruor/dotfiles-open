@@ -1,6 +1,6 @@
 return {
   {
-    "LunarVim/bigfile.nvim",
+    'pteroctopus/faster.nvim',
     lazy = false,
   },
   {
