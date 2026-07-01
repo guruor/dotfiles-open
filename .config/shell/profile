@@ -100,8 +100,11 @@ export WORKSPACE_PATH="$HOME/Workspace"
 export WORKSPACE_DEVFILEMANAGER_PATH="$WORKSPACE_PATH/local_dev_files"
 export WORKSPACE_DEVFILEMANAGER_DEFAULT_FILES="$WORKSPACE_PATH/local_dev_files/default"
 
+# Notes
+export NOTES_DIR="$HOME/Dropbox/Notes"
+
 # VimWiki
-export VIMWIKI_DIR="$HOME/Dropbox/vimWiki"
+export VIMWIKI_DIR="${NOTES_DIR}/vimWiki"
 export VIMWIKI_DIR_PERSONAL="${VIMWIKI_DIR}/Personal/wiki/"
 export VIMWIKI_DIR_WORK="${VIMWIKI_DIR}/Work/wiki/"
 export VIMWIKI_DIR_INTERVIEWS="${VIMWIKI_DIR}/InterviewsTaken/wiki/"
@@ -111,10 +114,10 @@ export VIMWIKI_DIR_ACTIVE_TASKS="${VIMWIKI_DIR}/ActiveTasks/wiki/"
 export MOST_USED_VIMWIKI_DIR="${VIMWIKI_DIR_WORK}"
 
 # Obsidian
-export OBSIDIAN_DIR="$HOME/Dropbox/Obsidian"
+export OBSIDIAN_DIR="${NOTES_DIR}/Obsidian"
 
 # Neorg
-export NEORG_DIR="$HOME/Dropbox/Neorg"
+export NEORG_DIR="${NOTES_DIR}/Neorg"
 export NEORG_DIR_PERSONAL="${NEORG_DIR}/Personal"
 export NEORG_DIR_WORK="${NEORG_DIR}/Work"
 export NEORG_DIR_INTERVIEWS="${NEORG_DIR}/InterviewsTaken"
