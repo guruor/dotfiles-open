@@ -4,6 +4,10 @@ M.border = vim.g.border_style -- border style for the window (e.g. "rounded", "s
 M.auto_install = true -- if enabled, install missing parsers when editing a new file
 M.highlight = true -- treesitter highlighting is enabled by default
 
+M.noauto_install = {
+  "norg", -- Installation issue on arm Macs
+}
+
 M.ensure_installed = {
   "python",
   "go",
