@@ -28,7 +28,7 @@ require("fzf-lua").setup {
       ["--ansi"] = "",
       ["--delimiter"] = ":",
       -- ["--with-nth"] = "2..", -- controls what fields are **displayed** (hides filepath)
-      ["--nth"] = "4..", -- controls what fields are **searched** (skips filepath, line, column)
+      ["--nth"] = "3..", -- controls what fields are **searched** (skips filepath, line, column)
     },
   },
   files = {
