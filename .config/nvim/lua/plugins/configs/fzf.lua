@@ -50,7 +50,7 @@ local function customGrepProject(text, cwd)
   local opts = {
     rg_glob = true,
     search = "",
-    fzf_cli_args = "--query=" .. text,
+    query = text, -- Handles the special chat excaping
   }
 
   if cwd ~= nil then
