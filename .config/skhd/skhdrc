@@ -10,60 +10,60 @@ fn + lalt - 3 : "${HOME}"/.config/yabai/scripts/show_bat.sh
 fn + lalt - 4 : "${HOME}"/.config/yabai/scripts/show_disk.sh
 fn + lalt - 5 : "${HOME}"/.config/yabai/scripts/show_song.sh
 
-# Shortcuts with hyper key
-hyper - q : yabai -m window --close
-hyper - j : yabai -m window --focus south
-hyper - k : yabai -m window --focus north
+# Shortcuts with meh key
+meh - q : yabai -m window --close
+meh - j : yabai -m window --focus south
+meh - k : yabai -m window --focus north
 
 # Shortcuts to some common GUI apps
 # hyper - b : yabai -m window --focus "$(yabai -m query --windows | jq 'map(select(.app == "Brave Browser")) | .[0].id')"
-meh - b : open -a "Brave Browser"
-meh - g : open -a "Google Chrome"
-meh - f : open -a "Firefox"
-meh - m : open -a "Miro"
-meh - n : open -a "Notion"
-meh - o : open -a "Microsoft Outlook"
-meh - s : open -a "Slack"
-meh - z : open -a "zoom.us"
+hyper - b : open -a "Brave Browser"
+hyper - g : open -a "Google Chrome"
+hyper - f : open -a "Firefox"
+hyper - m : open -a "Miro"
+hyper - n : open -a "Notion"
+hyper - o : open -a "Microsoft Outlook"
+hyper - s : open -a "Slack"
+hyper - z : open -a "zoom.us"
 
-# hyper - h : yabai -m window --focus west
-# hyper - l : yabai -m window --focus east
+# meh - h : yabai -m window --focus west
+# meh - l : yabai -m window --focus east
 
 # Toggle layout stacking/bsp
-hyper - t : yabai -m space --layout "$(yabai -m query --spaces --space | jq -r 'if .type == "bsp" then "stack" else "bsp" end')"
+meh - t : yabai -m space --layout "$(yabai -m query --spaces --space | jq -r 'if .type == "bsp" then "stack" else "bsp" end')"
 
 # Focus previous window
-hyper - h : yabai -m query --spaces --space \
+meh - h : yabai -m query --spaces --space \
   | jq -re ".index" \
   | xargs -I{} yabai -m query --windows --space {} \
   | jq -sre 'add | map(select(."is-minimized"==false)) | sort_by(.display, .frame.y, .frame.x, .id) | . as $array | length as $array_length | index(map(select(."has-focus"==true))) as $has_index | if $has_index > 0 then nth($has_index - 1).id else nth($array_length - 1).id end' \
   | xargs -I{} yabai -m window --focus {}
 
 # Focus next window
-hyper - l : yabai -m query --spaces --space \
+meh - l : yabai -m query --spaces --space \
   | jq -re ".index" \
   | xargs -I{} yabai -m query --windows --space {} \
   | jq -sre 'add | map(select(."is-minimized"==false)) | sort_by(.display, .frame.y, .frame.x, .id) | . as $array | length as $array_length | index(map(select(."has-focus"==true))) as $has_index | if $array_length - 1 > $has_index then nth($has_index + 1).id else nth(0).id end' \
   | xargs -I{} yabai -m window --focus {}
 
 
-# hyper - return : "${HOME}"/.config/yabai/scripts/open_iterm2.sh
-hyper - return : openterm --title "New window"
-hyper - space : yabai -m window --warp east; yabai -m window --focus west # Move window to left and focus
-hyper - 0x2B : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Pad1" "scratchpad Servers" # Mapping comma(,) to open floating terminal
-hyper - 0x2F : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Pad2" "scratchpad Pad" # Mapping comma(.) to open floating terminal
-hyper - 0x2C : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Pad3" "scratchpad Code" # Mapping question mark button (?)
-hyper - 0x29 : open -a "Brave Browser"  # Mapping semicolon(;) to open floating terminal
-hyper - 0x27 : open -a "zoom.us" # Mapping apostrophe(')
-hyper - o : openterm --title "File Manager" --shell "$SHELL" --cmd-str "yazi; $SHELL"
-hyper - n : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Notes" "notetaker"
-hyper - r : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Bottom" "btm -b" # Opens process monitoring tool
-hyper - m : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Ncmpcpp" "mopidy > /dev/null 2>&1 &; ncmpcpp" # Opens music player
-hyper - p : mpc toggle # Toggle play/pause for mpd
-hyper - 0x21 : mpc seek -10 # Seek music 10 seconds backward with hyper + [
-hyper - 0x1E : mpc seek +10 # Seek music 10 seconds forward with hyper + ]
-hyper - 0x1B : osascript -e 'set volume output volume (output volume of (get volume settings)) - 10' # Volume down with hyper + -
-hyper - 0x18 : osascript -e 'set volume output volume (output volume of (get volume settings)) + 10' # Volume down with hyper + +
+# meh - return : "${HOME}"/.config/yabai/scripts/open_iterm2.sh
+meh - return : openterm --title "New window"
+meh - space : yabai -m window --warp east; yabai -m window --focus west # Move window to left and focus
+meh - 0x2B : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Pad1" "scratchpad Servers" # Mapping comma(,) to open floating terminal
+meh - 0x2F : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Pad2" "scratchpad Pad" # Mapping comma(.) to open floating terminal
+meh - 0x2C : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Pad3" "scratchpad Code" # Mapping question mark button (?)
+meh - 0x29 : open -a "Brave Browser"  # Mapping semicolon(;) to open floating terminal
+meh - 0x27 : open -a "zoom.us" # Mapping apostrophe(')
+meh - o : openterm --title "File Manager" --shell "$SHELL" --cmd-str "yazi; $SHELL"
+meh - n : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Notes" "notetaker"
+meh - r : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Bottom" "btm -b" # Opens process monitoring tool
+meh - m : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Ncmpcpp" "mopidy > /dev/null 2>&1 &; ncmpcpp" # Opens music player
+meh - p : mpc toggle # Toggle play/pause for mpd
+meh - 0x21 : mpc seek -10 # Seek music 10 seconds backward with meh + [
+meh - 0x1E : mpc seek +10 # Seek music 10 seconds forward with meh + ]
+meh - 0x1B : osascript -e 'set volume output volume (output volume of (get volume settings)) - 10' # Volume down with meh + -
+meh - 0x18 : osascript -e 'set volume output volume (output volume of (get volume settings)) + 10' # Volume down with meh + +
 
 # Switch space, requires SIP to be disabled, handling the same with mac keyboard shortcuts for mission control
 # alt - 1 : yabai -m space --focus 1
