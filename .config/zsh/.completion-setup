@@ -449,10 +449,13 @@ function completion_init() {
   # Rebuild cache only once per day or if .zshrc is newer
   local zcompdump="${ZDOTDIR:-$HOME}/.zcompdump"
   local zshrc="${ZDOTDIR:-$HOME}/.zshrc"
+  local -a stale_zcompdump
+  zshrc=${zshrc:A}
+  stale_zcompdump=("$zcompdump"(N.mh+24))
 
   if [[ -f "$zcompdump" ]]; then
     # Check if cache is older than 24 hours or .zshrc is newer
-    if [[ -n ${zcompdump}(#qN.mh+24) ]] || [[ "$zshrc" -nt "$zcompdump" ]]; then
+    if (( ${#stale_zcompdump} )) || [[ "$zshrc" -nt "$zcompdump" ]]; then
       _completion_debug "Rebuilding completion cache (stale or outdated)"
       compinit -i -d "$zcompdump"
     else
