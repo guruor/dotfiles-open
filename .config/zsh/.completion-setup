@@ -97,6 +97,20 @@ function is_installed() {
   command -v "$1" &>/dev/null
 }
 
+function _completion_brew_prefix() {
+  if [[ -n ${BREW_PREFIX:-} ]]; then
+    print -r -- "$BREW_PREFIX"
+  elif (( ${+commands[brew]} )); then
+    print -r -- "${commands[brew]:h:h}"
+  elif [[ -x /opt/homebrew/bin/brew ]]; then
+    print -r -- /opt/homebrew
+  elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+    print -r -- /home/linuxbrew/.linuxbrew
+  elif [[ -x /usr/local/bin/brew ]]; then
+    print -r -- /usr/local
+  fi
+}
+
 function _completion_debug() {
   # Uncomment for debugging: export COMPLETION_DEBUG=1
   [[ -n "$COMPLETION_DEBUG" ]] && echo "[completion-setup] $*" >&2
@@ -159,6 +173,16 @@ function install_argcomplete() {
   else
     _completion_debug "argcomplete already installed"
   fi
+
+  if is_installed activate-global-python-argcomplete; then
+    activate-global-python-argcomplete \
+      --yes \
+      --dest "$ZSH_COMPLETIONS_PATH" >/dev/null || {
+        _completion_warn "Failed to install global Python completion"
+        return 1
+      }
+    _completion_success "global Python completion"
+  fi
 }
 
 function confirm_overwrite() {
@@ -181,6 +205,7 @@ function confirm_overwrite() {
 function setup_tool_completion() {
   local tool="$1"
   local completion_file="${ZSH_COMPLETIONS_PATH}/_${tool}"
+  [[ $tool == "rea-as" ]] && completion_file="${ZSH_COMPLETIONS_PATH}/_rea_as"
 
   _completion_debug "Processing: $tool"
 
@@ -219,7 +244,7 @@ function setup_tool_completion() {
 
     "fzf")
       # fzf uses its own installer
-      local fzf_path="$(brew --prefix)/opt/fzf/install"
+      local fzf_path="$(_completion_brew_prefix)/opt/fzf/install"
       if [[ -x "$fzf_path" ]]; then
         "$fzf_path" --completion --no-key-bindings --no-update-rc &>/dev/null
         _completion_success "fzf (via installer)"
@@ -257,6 +282,42 @@ function setup_tool_completion() {
       fi
       ;;
 
+    "gh")
+      if gh completion -s zsh >"${completion_file}" 2>/dev/null; then
+        _completion_success "gh"
+      else
+        _completion_error "Failed to generate gh completion"
+        rm -f "${completion_file}"
+      fi
+      ;;
+
+    "uv")
+      if uv generate-shell-completion zsh >"${completion_file}" 2>/dev/null; then
+        _completion_success "uv"
+      else
+        _completion_error "Failed to generate uv completion"
+        rm -f "${completion_file}"
+      fi
+      ;;
+
+    "uvx")
+      if uvx --generate-shell-completion zsh >"${completion_file}" 2>/dev/null; then
+        _completion_success "uvx"
+      else
+        _completion_error "Failed to generate uvx completion"
+        rm -f "${completion_file}"
+      fi
+      ;;
+
+    "rea-as")
+      if rea-as completion zsh >"${completion_file}" 2>/dev/null; then
+        _completion_success "rea-as"
+      else
+        _completion_error "Failed to generate rea-as completion"
+        rm -f "${completion_file}"
+      fi
+      ;;
+
     *)
       # Try standard `tool completion zsh` pattern
       if "${tool}" completion zsh >"${completion_file}" 2>/dev/null; then
@@ -283,7 +344,7 @@ function completion_install() {
   install_homebrew || return 1
 
   # Set completions path
-  ZSH_COMPLETIONS_PATH="$(brew --prefix)/share/zsh/site-functions"
+  ZSH_COMPLETIONS_PATH="$(_completion_brew_prefix)/share/zsh/site-functions"
 
   # Ensure directory exists
   if ! mkdir -p "${ZSH_COMPLETIONS_PATH}" 2>/dev/null; then
@@ -313,6 +374,9 @@ function completion_install() {
     "eza"
     "kubectl"
     "gh"
+    "uv"
+    "uvx"
+    "rea-as"
     "terraform"
     "ansible"
     "helm"
@@ -366,9 +430,11 @@ function completion_init() {
   autoload -Uz compinit bashcompinit
   zmodload -F zsh/complist
 
-  # Set up completions path for Homebrew-installed tools
-  if is_installed brew; then
-    ZSH_COMPLETIONS_PATH="$(brew --prefix)/share/zsh/site-functions"
+  # Set up completions path for Homebrew-installed tools. This runs after
+  # .zprofile, so login shells can reuse BREW_PREFIX without invoking brew.
+  local brew_prefix=$(_completion_brew_prefix)
+  if [[ -n $brew_prefix ]]; then
+    ZSH_COMPLETIONS_PATH="${brew_prefix}/share/zsh/site-functions"
 
     # Only add to fpath if directory exists and not already in fpath
     if [[ -d "$ZSH_COMPLETIONS_PATH" ]] && (( ! ${fpath[(I)$ZSH_COMPLETIONS_PATH]} )); then
@@ -399,6 +465,14 @@ function completion_init() {
   fi
 
   bashcompinit
+
+  _tmux_session() {
+    _arguments \
+      '--clean[remove existing sessions in create mode]' \
+      '--dry-run[print commands instead of executing them]' \
+      '1:mode:(merge create)'
+  }
+  compdef _tmux_session tmux-session
 
   # Completion styling and behavior
   zstyle ':completion:*' menu select
@@ -440,68 +514,29 @@ function completion_load() {
     # Continue anyway, some completions might still work
   fi
 
-  # Google Cloud SDK completions
-  if is_installed brew; then
-    local gcloud_sdk_path="$(brew --prefix)/share/google-cloud-sdk"
-    if [[ -f "$gcloud_sdk_path/completion.zsh.inc" ]]; then
-      source "$gcloud_sdk_path/completion.zsh.inc"
-      _completion_debug "Loaded: gcloud completions"
-    fi
-  fi
-
   # AWS CLI completions
   if is_installed aws_completer; then
     complete -C "$(command -v aws_completer)" aws
     _completion_debug "Loaded: aws completions"
   fi
 
-  # Python argcomplete-based tools
-  if is_installed register-python-argcomplete; then
-    # pipx completions
-    if is_installed pipx; then
-      eval "$(register-python-argcomplete pipx 2>/dev/null)"
-      _completion_debug "Loaded: pipx completions"
-    fi
+  # Argcomplete uses the static _python-argcomplete default completer from fpath.
+  # Per-command registration and global activation are install-time operations.
 
-    # tmux-session completions (if installed)
-    if is_installed tmux-session; then
-      eval "$(register-python-argcomplete tmux-session 2>/dev/null)"
-      _completion_debug "Loaded: tmux-session completions"
+  # The Google Cloud SDK ships bash-compatible completion setup rather than a
+  # directly autoloadable #compdef file. Loading it after compinit is cheap.
+  if is_installed gcloud; then
+    local gcloud_completion="$(_completion_brew_prefix)/share/google-cloud-sdk/completion.zsh.inc"
+    if [[ -r $gcloud_completion ]]; then
+      source "$gcloud_completion"
+      _completion_debug "Loaded: gcloud completions"
     fi
-
-    # Global argcomplete activation for all Python apps
-    if activate-global-python-argcomplete --yes &>/dev/null; then
-      _completion_debug "Loaded: global Python argcomplete"
-    fi
-  fi
-
-  # rea-as tool completions
-  if is_installed rea-as; then
-    source <(rea-as completion 2>/dev/null)
-    _completion_debug "Loaded: rea-as completions"
   fi
 
   # Syncthing completions
   if is_installed syncthing && is_installed brew; then
-    complete -C "$(brew --prefix)/bin/syncthing" syncthing
+    complete -C "$(_completion_brew_prefix)/bin/syncthing" syncthing
     _completion_debug "Loaded: syncthing completions"
-  fi
-
-  # uv tool completions
-  if is_installed uv; then
-    eval "$(uv generate-shell-completion zsh 2>/dev/null)"
-    _completion_debug "Loaded: uv completions"
-  fi
-
-  if is_installed uvx; then
-    eval "$(uvx --generate-shell-completion zsh 2>/dev/null)"
-    _completion_debug "Loaded: uvx completions"
-  fi
-
-  # GitHub CLI completions
-  if is_installed gh; then
-    eval "$(gh completion -s zsh 2>/dev/null)"
-    _completion_debug "Loaded: gh completions"
   fi
 
   # Terraform completions
@@ -552,7 +587,7 @@ function completion_status() {
 
   # Check installed completions
   if is_installed brew; then
-    local comp_dir="$(brew --prefix)/share/zsh/site-functions"
+    local comp_dir="$(_completion_brew_prefix)/share/zsh/site-functions"
     if [[ -d "$comp_dir" ]]; then
       echo
       echo "Installed completions in $comp_dir:"

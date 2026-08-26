@@ -8,9 +8,6 @@ import subprocess
 import sys
 import time
 
-import argcomplete
-
-
 class TmuxManager:
     ICON_TO_SESSION_NAME_MAP = {
         "": "Code",
@@ -365,8 +362,6 @@ def main():
         action="store_true",
         help="Print commands instead of executing them.",
     )
-
-    argcomplete.autocomplete(parser)
 
     args = parser.parse_args()
     tmux_default_session_file = os.getenv("TMUX_DEFAULT_SESSION_FILE")

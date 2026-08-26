@@ -1,13 +1,9 @@
 unsetopt PROMPT_SP
 
-(( ${+commands[direnv]} )) && emulate zsh -c "$(direnv export zsh)"
-
 # Install antidote zsh plugin manager if not present
 if [[ ! -d "${ZDOTDIR:-$HOME}/.antidote" ]]; then
   git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-$HOME}/.antidote
 fi
-
-(( ${+commands[direnv]} )) && emulate zsh -c "$(direnv hook zsh)"
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -89,6 +85,13 @@ if [[ -f "${ZDOTDIR}/.completion-setup" ]]; then
       echo "Warning: completion_init not found, using basic completions" >&2
     fi
   fi
+fi
+
+# REA defines interactive completion. Load it after compinit but before Mise
+# registers chpwd hooks because the generated initializer uses pushd/popd.
+if [[ -z ${REACLI_SHELL_INIT_LOADED:-} && -r "$HOME/.rea-cli/rea-shell-init.sh" ]]; then
+  source "$HOME/.rea-cli/rea-shell-init.sh"
+  typeset -g REACLI_SHELL_INIT_LOADED=1
 fi
 
 # vi mode
@@ -238,37 +241,34 @@ fi
 [ -f "${BREW_PREFIX}/bin/brew" ] && _evalcache "${BREW_PREFIX}/bin/brew" shellenv
 
 # Homebrew or linuxbrew specific config
-if [[ "$(command -v brew)" ]]; then
+if (( ${+commands[brew]} )); then
     export HOMEBREW_NO_AUTO_UPDATE=1
 
     # Make all GNU flavor commands available, may override same-name BSD flavor commands
-    export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:${PATH}"
-    export MANPATH="$(brew --prefix)/opt/coreutils/libexec/gnuman:${MANPATH}"
+    export PATH="${BREW_PREFIX}/opt/coreutils/libexec/gnubin:${PATH}"
+    export MANPATH="${BREW_PREFIX}/opt/coreutils/libexec/gnuman:${MANPATH}"
 
     # Appending brew binaries path at end to prioritize other binaries like mise/asdf binaries
-    export PATH="$PATH:$(brew --prefix)/bin"
+    export PATH="$PATH:${BREW_PREFIX}/bin"
 
     # [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ] && source $(brew --prefix asdf)/libexec/asdf.sh
 
-    export PATH="$(brew --prefix)/opt/openjdk@21/bin:$PATH"
+    export PATH="${BREW_PREFIX}/opt/openjdk@21/bin:$PATH"
 
-    GCLOUD_SDK_PATH="$(brew --prefix)/share/google-cloud-sdk"
+    GCLOUD_SDK_PATH="${BREW_PREFIX}/share/google-cloud-sdk"
     if [ -f "$GCLOUD_SDK_PATH/path.zsh.inc" ]; then . "$GCLOUD_SDK_PATH/path.zsh.inc"; fi
 fi
 
 [ -f "${CARGO_HOME}/env" ] && source "${CARGO_HOME}/env"
 
 # Critical tools - load immediately
-[ -x "$(command -v mise)" ] && eval "$(mise activate zsh)"
+(( ${+commands[mise]} )) && eval "$(mise activate zsh)"
 
 # Defer non-critical tools to after prompt
 autoload -Uz add-zsh-hook
 _load_deferred() {
   # Zoxide
-  [ -x "$(command -v zoxide)" ] && _evalcache zoxide init zsh
-
-  # REA CLI
-  [[ -f "$HOME/.rea-cli/rea-shell-init.sh" ]] && source "$HOME/.rea-cli/rea-shell-init.sh"
+  (( ${+commands[zoxide]} )) && _evalcache zoxide init zsh
 
   # [ -x "$(command -v starship)" ] && _evalcache starship init zsh
 
