@@ -28,8 +28,13 @@ function is_docker_container_running() {
 function get_docker_project_name() {
     compose_file="$1"
 
-    project_dir=$(dirname "${compose_file}")
-    project_name=$(basename "${project_dir}")
+    case "$compose_file" in
+        */*) project_dir="${compose_file%/*}" ;;
+        *) project_dir="." ;;
+    esac
+    [ -n "$project_dir" ] || project_dir="/"
+    project_name="${project_dir##*/}"
+    [ -n "$project_name" ] || project_name="/"
     print "$project_name"
 }
 
