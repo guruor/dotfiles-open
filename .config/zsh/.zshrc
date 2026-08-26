@@ -263,6 +263,8 @@ fi
 
 # Critical tools - load immediately
 (( ${+commands[mise]} )) && eval "$(mise activate zsh)"
+# Environment selection is directory-driven; avoid spawning Mise before every prompt.
+(( ${+functions[_mise_hook_precmd]} )) && add-zsh-hook -d precmd _mise_hook_precmd
 
 # Defer non-critical tools to after prompt
 autoload -Uz add-zsh-hook

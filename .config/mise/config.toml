@@ -3,6 +3,7 @@
 [settings]
 # experimental = true
 env_file = '.env'
+hook_env.chpwd_only = true
 
 [tools]
 # https://mise.jdx.dev/registry.html#tools
