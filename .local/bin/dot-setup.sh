@@ -209,9 +209,17 @@ After opening a new Zsh session so Antidote has loaded zsh-bitwarden:
   bwfile load --all
   bwssh load
 
+Load environment secrets when required:
+  bwenv export NAME
+  bwenv store NAME   # optional OS-keyring persistence
+  bwenv load NAME
+
 Optional manual maintenance after the machine is fully configured:
   $dotdir/Private/secrets.sh audit
   $dotdir/Private/secrets.sh restore-gpg
+
+Full setup and recovery guide:
+  $dotdir/Private/README.md
 EOF
 }
 
