@@ -203,6 +203,16 @@ main() {
   convert_https_to_ssh
 
   echo "Dotfiles have been successfully installed and converted to use SSH."
+  cat <<EOF
+
+After opening a new Zsh session so Antidote has loaded zsh-bitwarden:
+  bwfile load --all
+  bwssh load
+
+Optional manual maintenance after the machine is fully configured:
+  $dotdir/Private/secrets.sh audit
+  $dotdir/Private/secrets.sh restore-gpg
+EOF
 }
 
 # Run the main function with all script arguments
