@@ -1,7 +1,9 @@
 {
-  "mcpServers": [
-    
-  ],
+  "mcpServers": {
+   "glean-docs": {
+        "url": "https://rea-group-aws-be.glean.com/mcp/default"
+    }
+  },
   "nativeMCPServers": {
     "mcphub": {
       "disabled": false
