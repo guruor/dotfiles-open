@@ -59,6 +59,58 @@ The hook fails closed when Gitleaks is unavailable. Findings are redacted, and
 credential and private-key filenames are rejected even when their contents do
 not match a known token format.
 
+#### Historical secret review
+
+The generic `gitleaks-history-cleanup` command scans any local Git repository,
+records exact false-positive fingerprints, or creates and selectively rewrites
+a mirror of a chosen remote:
+
+```sh
+gitleaks-history-cleanup
+gitleaks-history-cleanup scan /path/to/repository
+gitleaks-history-cleanup scan /path/to/repository --strict
+gitleaks-history-cleanup ignore /path/to/repository
+gitleaks-history-cleanup clean /path/to/repository --remote origin
+```
+
+`scan` is read-only and returns status 1 when findings exist. Repository policy
+uses `.gitleaks.toml` and `.gitleaksignore` by default; `--strict` instead uses
+the maintained default rules and ignores repository bypasses. `ignore` uses
+`fzf` to append only selected finding fingerprints to `.gitleaksignore`.
+
+`clean` clones the selected remote into a mode-`0700` mirror, presents only
+redacted path/rule metadata in `fzf`, removes explicitly selected paths after a
+typed confirmation, and rescans every rewritten ref. A selected path that is
+absent from every branch tip is removed completely. When clean versions remain
+at branch tips, their blobs are checked with strict default rules, the old path
+history is purged, and each clean tip is restored in one explicit sanitized
+commit. A branch-tip copy that still triggers Gitleaks is listed before
+confirmation and remains removed on that branch. It never pushes. A
+successfully rewritten mirror is retained with a suggested
+`git push --force --mirror` command so it can be inspected first. Because the
+mirror is bare, the command prints a short history view, one absence check per
+removed path, and an optional normal-checkout command instead of suggesting
+`git status` directly. Rotate exposed credentials before pushing and remove the
+mirror afterward; remote caches,
+forks, pull-request refs, LFS objects, backups, and other clones may still retain
+old data.
+
+History rewrites can expose a renamed destination that Gitleaks did not flag in
+the original pure-rename diff. Newly surfaced findings fail verification; rerun
+with each reported exact path supplied as `--path PATH` to remove the complete
+rename chain.
+
+Git submodules are independent repositories. Cleaning and force-pushing a
+submodule updates only its own remote; the parent repository still needs a
+normal commit that records the rewritten submodule commit. When cleanup runs
+inside a submodule checkout, the command prints the parent `git add` and status
+commands separately.
+
+GitHub branch protection must be disabled temporarily before rewritten history
+can be force-pushed. A mirror push is expected to reject GitHub's read-only
+`refs/pull/*` refs; retry until those are the only failures, then contact GitHub
+Support when sensitive data remains referenced by affected pull requests.
+
 #### Other recommended programs
 
 ##### Mac Specific

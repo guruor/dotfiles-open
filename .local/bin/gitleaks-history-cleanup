@@ -1,0 +1,974 @@
+#!/usr/bin/env python3
+
+import argparse
+import json
+import os
+import re
+import shlex
+import shutil
+import subprocess
+import sys
+import tempfile
+from collections import defaultdict
+from dataclasses import dataclass
+from pathlib import Path
+from urllib.parse import urlsplit
+
+
+@dataclass(frozen=True)
+class Finding:
+    path: str
+    rule: str
+    fingerprint: str
+    commit: str
+    line: int
+    scope: str
+
+
+@dataclass(frozen=True)
+class ScanPolicy:
+    config: Path | None
+    ignore_file: Path | None
+    ignore_allow_comments: bool
+
+
+@dataclass(frozen=True)
+class PreservedFile:
+    path: str
+    mode: str
+    snapshot: Path
+
+
+@dataclass(frozen=True)
+class PreservedBranch:
+    ref: str
+    files: tuple[PreservedFile, ...]
+
+
+RESTORE_COMMIT_MESSAGE = "Restore sanitized current files after secret-history cleanup"
+
+
+def run(command, *, cwd=None, check=True, capture=False, env=None, input_text=None):
+    result = subprocess.run(
+        command,
+        cwd=cwd,
+        check=False,
+        text=True,
+        env=env,
+        input=input_text,
+        stdout=subprocess.PIPE if capture else None,
+        stderr=subprocess.PIPE if capture else None,
+    )
+    if check and result.returncode != 0:
+        raise SystemExit(f"Command failed: {command[0]}")
+    return result
+
+
+def output(command, *, cwd=None, env=None):
+    result = run(command, cwd=cwd, capture=True, env=env)
+    if result.returncode != 0:
+        raise SystemExit(f"Command failed: {command[0]}")
+    return result.stdout.strip()
+
+
+def require(*commands):
+    missing = [command for command in commands if shutil.which(command) is None]
+    if missing:
+        raise SystemExit("Missing required command(s): " + ", ".join(missing))
+
+
+def prerequisite_status():
+    print("\nPrerequisites:")
+    requirements = (
+        ("git", "scan and mirror repositories"),
+        ("gitleaks", "detect secrets"),
+        ("fzf", "select findings interactively"),
+        ("git-filter-repo", "rewrite selected paths"),
+    )
+    for command, purpose in requirements:
+        status = shutil.which(command) or "missing"
+        print(f"  {command:<16} {status} ({purpose})")
+
+
+def add_repository_policy_args(parser, *, include_strict=True):
+    parser.add_argument(
+        "--config",
+        type=Path,
+        help="Gitleaks config; defaults to REPOSITORY/.gitleaks.toml when present",
+    )
+    parser.add_argument(
+        "--ignore-file",
+        type=Path,
+        help="Gitleaks fingerprint file; defaults to REPOSITORY/.gitleaksignore",
+    )
+    if include_strict:
+        parser.add_argument(
+            "--strict",
+            action="store_true",
+            help="use default rules and ignore repository allow comments/ignore files",
+        )
+
+
+def build_parser():
+    parser = argparse.ArgumentParser(
+        prog="gitleaks-history-cleanup",
+        description="Scan and selectively remove secret-bearing paths from Git history.",
+        epilog=(
+            "No command mutates a remote. Rewritten mirrors are retained locally so "
+            "you can inspect them before using the suggested force-mirror push."
+        ),
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    scan = subparsers.add_parser("scan", help="redacted, read-only repository scan")
+    scan.add_argument("repository", nargs="?", type=Path, default=Path("."))
+    scan.add_argument(
+        "--skip-working-tree",
+        action="store_true",
+        help="scan reachable Git history only",
+    )
+    add_repository_policy_args(scan)
+
+    clean = subparsers.add_parser(
+        "clean", help="mirror a remote and selectively remove paths from every ref"
+    )
+    clean.add_argument("repository", nargs="?", type=Path, default=Path("."))
+    clean.add_argument(
+        "--remote",
+        help="remote name; defaults to origin or the repository's only remote",
+    )
+    clean.add_argument(
+        "--mirror-dir",
+        type=Path,
+        help="empty destination directory; defaults to a secure temporary directory",
+    )
+    clean.add_argument(
+        "--path",
+        dest="additional_paths",
+        action="append",
+        default=[],
+        help="additional exact history path to remove; repeat for renamed paths",
+    )
+    add_repository_policy_args(clean)
+
+    ignore = subparsers.add_parser(
+        "ignore", help="select exact historical findings for .gitleaksignore"
+    )
+    ignore.add_argument("repository", nargs="?", type=Path, default=Path("."))
+    ignore.add_argument(
+        "--output",
+        type=Path,
+        help="fingerprint file to update; defaults to REPOSITORY/.gitleaksignore",
+    )
+    add_repository_policy_args(ignore, include_strict=False)
+    return parser
+
+
+def repository_root(path):
+    require("git")
+    resolved = path.expanduser().resolve()
+    root = output(["git", "-C", str(resolved), "rev-parse", "--show-toplevel"])
+    return Path(root)
+
+
+def is_bare_repository(path):
+    return output(["git", "-C", str(path), "rev-parse", "--is-bare-repository"]) == "true"
+
+
+def resolve_optional_path(path):
+    return path.expanduser().resolve() if path is not None else None
+
+
+def make_policy(repository, args, policy_dir):
+    if getattr(args, "strict", False):
+        return make_strict_policy(policy_dir)
+
+    config = resolve_optional_path(getattr(args, "config", None))
+    if config is None and (repository / ".gitleaks.toml").is_file():
+        config = repository / ".gitleaks.toml"
+    if config is not None and not config.is_file():
+        raise SystemExit(f"Gitleaks config does not exist: {config}")
+
+    ignore_file = resolve_optional_path(getattr(args, "ignore_file", None))
+    if ignore_file is None and (repository / ".gitleaksignore").is_file():
+        ignore_file = repository / ".gitleaksignore"
+    if ignore_file is not None and not ignore_file.is_file():
+        raise SystemExit(f"Gitleaks ignore file does not exist: {ignore_file}")
+
+    return ScanPolicy(config, ignore_file, False)
+
+
+def make_strict_policy(policy_dir):
+    config = policy_dir / "gitleaks-default.toml"
+    ignore_file = policy_dir / "empty-gitleaksignore"
+    config.write_text("[extend]\nuseDefault = true\n")
+    ignore_file.write_text("")
+    os.chmod(config, 0o600)
+    os.chmod(ignore_file, 0o600)
+    return ScanPolicy(config, ignore_file, True)
+
+
+def gitleaks_base_command(policy, report_path):
+    command = [
+        "gitleaks",
+        "--redact",
+        "--no-banner",
+        "--no-color",
+        "--report-format",
+        "json",
+        "--report-path",
+        str(report_path),
+    ]
+    if policy.config is not None:
+        command.extend(["--config", str(policy.config)])
+    if policy.ignore_file is not None:
+        command.extend(["--gitleaks-ignore-path", str(policy.ignore_file)])
+    if policy.ignore_allow_comments:
+        command.append("--ignore-gitleaks-allow")
+    return command
+
+
+def prepare_report(path):
+    path.touch(mode=0o600)
+    os.chmod(path, 0o600)
+
+
+def load_report(path, scope):
+    try:
+        records = json.loads(path.read_text() or "[]")
+    except json.JSONDecodeError as error:
+        raise SystemExit(f"Gitleaks produced invalid JSON: {error}")
+    if not isinstance(records, list):
+        raise SystemExit("Gitleaks produced an unexpected report structure.")
+
+    findings = []
+    for record in records:
+        file_path = record.get("File")
+        if not file_path:
+            continue
+        findings.append(
+            Finding(
+                path=file_path,
+                rule=record.get("RuleID", "unknown"),
+                fingerprint=record.get("Fingerprint", ""),
+                commit=record.get("Commit", ""),
+                line=int(record.get("StartLine") or record.get("Line") or 0),
+                scope=scope,
+            )
+        )
+    return findings
+
+
+def scan_working_tree(repository, policy, report_path):
+    prepare_report(report_path)
+    command = gitleaks_base_command(policy, report_path)
+    command.extend(["dir", str(repository)])
+    working_directory = repository if repository.is_dir() else repository.parent
+    result = run(command, cwd=working_directory, check=False, capture=True)
+    if result.returncode not in (0, 1):
+        raise SystemExit("Gitleaks working-tree scan failed.")
+    return load_report(report_path, "working-tree")
+
+
+def scan_history(repository, policy, report_path):
+    prepare_report(report_path)
+    command = gitleaks_base_command(policy, report_path)
+    command.extend(["git", "--log-opts=--all --no-color", str(repository)])
+    result = run(command, cwd=repository, check=False, capture=True)
+    if result.returncode not in (0, 1):
+        raise SystemExit("Gitleaks history scan failed.")
+
+    combined_output = (result.stdout or "") + (result.stderr or "")
+    match = re.search(r"(\d+) commits scanned\.", combined_output)
+    reachable = int(output(["git", "-C", str(repository), "rev-list", "--all", "--count"]))
+    if reachable and (match is None or int(match.group(1)) == 0):
+        raise SystemExit(
+            "Gitleaks did not confirm scanning reachable commits; refusing a false clean result."
+        )
+    return load_report(report_path, "history")
+
+
+def display_text(value):
+    return "".join(
+        character if character.isprintable() and character not in "\t\r\n" else "?"
+        for character in value
+    )
+
+
+def print_findings(findings):
+    grouped = defaultdict(lambda: {"scopes": set(), "rules": set(), "count": 0, "commits": set()})
+    for finding in findings:
+        entry = grouped[finding.path]
+        entry["scopes"].add(finding.scope)
+        entry["rules"].add(finding.rule)
+        entry["count"] += 1
+        if finding.commit:
+            entry["commits"].add(finding.commit)
+
+    print(f"Gitleaks found {len(findings)} finding(s) across {len(grouped)} path(s):")
+    for path in sorted(grouped):
+        entry = grouped[path]
+        print(
+            f"  {display_text(path)} | rules={','.join(sorted(entry['rules']))} "
+            f"| scopes={','.join(sorted(entry['scopes']))} | findings={entry['count']} "
+            f"| commits={len(entry['commits'])}"
+        )
+
+
+def fzf_select(rows, *, prompt, header):
+    require("fzf")
+    result = subprocess.run(
+        [
+            "fzf",
+            "--multi",
+            "--no-sort",
+            "--layout=reverse",
+            "--delimiter=\t",
+            "--with-nth=2..",
+            f"--prompt={prompt}",
+            f"--header={header}",
+        ],
+        input="\n".join(rows) + "\n",
+        text=True,
+        stdout=subprocess.PIPE,
+        check=False,
+    )
+    if result.returncode in (1, 130):
+        return []
+    if result.returncode != 0:
+        raise SystemExit("fzf selection failed.")
+    return [line.split("\t", 1)[0] for line in result.stdout.splitlines() if line]
+
+
+def select_paths(findings):
+    grouped = defaultdict(lambda: {"rules": set(), "findings": 0, "commits": set()})
+    for finding in findings:
+        entry = grouped[finding.path]
+        entry["rules"].add(finding.rule)
+        entry["findings"] += 1
+        if finding.commit:
+            entry["commits"].add(finding.commit)
+
+    paths = sorted(grouped)
+    index_to_path = {}
+    rows = []
+    for index, path in enumerate(paths, start=1):
+        key = str(index)
+        index_to_path[key] = path
+        entry = grouped[path]
+        rows.append(
+            f"{key}\t{display_text(path)}\t{','.join(sorted(entry['rules']))}"
+            f"\tfindings={entry['findings']}\tcommits={len(entry['commits'])}"
+        )
+    selected = fzf_select(
+        rows,
+        prompt="Remove paths> ",
+        header="TAB toggles paths; ENTER confirms selection; ESC cancels",
+    )
+    return [index_to_path[index] for index in selected]
+
+
+def select_findings(findings):
+    selectable = [finding for finding in findings if finding.fingerprint]
+    index_to_finding = {}
+    rows = []
+    for index, finding in enumerate(selectable, start=1):
+        key = str(index)
+        index_to_finding[key] = finding
+        commit = finding.commit[:12] if finding.commit else "working-tree"
+        rows.append(
+            f"{key}\t{display_text(finding.path)}\t{finding.rule}"
+            f"\tcommit={commit}\tline={finding.line}"
+        )
+    selected = fzf_select(
+        rows,
+        prompt="Ignore findings> ",
+        header="TAB toggles exact fingerprints; ENTER confirms; ESC cancels",
+    )
+    return [index_to_finding[index] for index in selected]
+
+
+def resolve_remote(repository, requested):
+    remotes = output(["git", "-C", str(repository), "remote"]).splitlines()
+    if requested:
+        if requested not in remotes:
+            raise SystemExit(f"Remote does not exist: {requested}")
+        return requested
+    if "origin" in remotes:
+        return "origin"
+    if len(remotes) == 1:
+        return remotes[0]
+    if not remotes:
+        raise SystemExit("Repository has no remotes; provide one before cleanup.")
+
+    rows = [f"{index}\t{display_text(remote)}" for index, remote in enumerate(remotes, start=1)]
+    selected = fzf_select(rows, prompt="Remote> ", header="Select one remote")
+    if len(selected) != 1:
+        raise SystemExit("No remote selected.")
+    return remotes[int(selected[0]) - 1]
+
+
+def validate_remote_url(url):
+    if any(character in url for character in "\r\n\0"):
+        raise SystemExit("Refusing a remote URL containing control characters.")
+    parsed = urlsplit(url)
+    if parsed.scheme in {"http", "https"} and (
+        parsed.username is not None
+        or parsed.password is not None
+        or parsed.query
+        or parsed.fragment
+    ):
+        raise SystemExit(
+            "Refusing an HTTP remote URL containing user information, a query, or a fragment. "
+            "Use a credential helper and a credential-free URL."
+        )
+
+
+def mirror_destination(repository, requested):
+    if requested is not None:
+        destination = requested.expanduser().resolve()
+        if destination.exists() and any(destination.iterdir()):
+            raise SystemExit(f"Mirror destination is not empty: {destination}")
+        destination.mkdir(mode=0o700, parents=True, exist_ok=True)
+        os.chmod(destination, 0o700)
+        return destination
+
+    safe_name = re.sub(r"[^A-Za-z0-9_.-]+", "-", repository.name).strip("-") or "repository"
+    destination = Path(tempfile.mkdtemp(prefix=f"gitleaks-{safe_name}-"))
+    os.chmod(destination, 0o700)
+    return destination
+
+
+def configure_mirror_remote(mirror, fetch_url, push_url):
+    remotes = output(["git", "-C", str(mirror), "remote"]).splitlines()
+    if "origin" not in remotes:
+        run(["git", "-C", str(mirror), "remote", "add", "--mirror=fetch", "origin", fetch_url])
+    run(["git", "-C", str(mirror), "remote", "set-url", "--push", "origin", push_url])
+
+
+def create_mirror(repository, remote, destination):
+    fetch_url = output(["git", "-C", str(repository), "remote", "get-url", remote])
+    push_url = output(["git", "-C", str(repository), "remote", "get-url", "--push", remote])
+    validate_remote_url(fetch_url)
+    validate_remote_url(push_url)
+    result = run(
+        ["git", "clone", "--mirror", "--no-local", "--", fetch_url, str(destination)],
+        check=False,
+        capture=True,
+    )
+    if result.returncode != 0:
+        raise SystemExit("Failed to create the remote mirror.")
+    os.chmod(destination, 0o700)
+    configure_mirror_remote(destination, fetch_url, push_url)
+    return fetch_url, push_url
+
+
+def superproject_context(repository):
+    result = run(
+        ["git", "-C", str(repository), "rev-parse", "--show-superproject-working-tree"],
+        check=False,
+        capture=True,
+    )
+    if result.returncode != 0 or not result.stdout.strip():
+        return None
+    superproject = Path(result.stdout.strip()).resolve()
+    try:
+        submodule_path = repository.resolve().relative_to(superproject)
+    except ValueError:
+        return None
+    return superproject, submodule_path
+
+
+def tree_entry(repository, ref, path):
+    result = subprocess.run(
+        ["git", "-C", str(repository), "ls-tree", "-z", ref, "--", path],
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    if result.returncode != 0:
+        raise SystemExit("Failed to inspect a selected path at a branch tip.")
+    if not result.stdout:
+        return None
+
+    record = result.stdout.split(b"\0", 1)[0]
+    metadata, separator, returned_path = record.partition(b"\t")
+    if not separator:
+        raise SystemExit("Git returned an unexpected tree entry.")
+    mode, object_type, object_id = metadata.decode("ascii").split(" ")
+    if os.fsdecode(returned_path) != path:
+        raise SystemExit("Git returned an unexpected selected path.")
+    return mode, object_type, object_id
+
+
+def capture_tip_snapshots(mirror, selected_paths, snapshot_root, strict_policy):
+    refs = output(
+        ["git", "-C", str(mirror), "for-each-ref", "--format=%(refname)", "refs/heads"]
+    ).splitlines()
+    if not refs:
+        raise SystemExit("The remote mirror has no branch refs to preserve.")
+
+    branches = []
+    unsafe_findings = []
+    report_index = 0
+    for branch_index, ref in enumerate(refs):
+        preserved_files = []
+        for path in selected_paths:
+            entry = tree_entry(mirror, ref, path)
+            if entry is None:
+                continue
+            mode, object_type, object_id = entry
+            if object_type != "blob":
+                raise SystemExit(
+                    f"Cannot preserve non-file path at {display_text(ref)}: {display_text(path)}"
+                )
+
+            relative_path = Path(path)
+            if relative_path.is_absolute() or ".." in relative_path.parts:
+                raise SystemExit("Refusing an unsafe Git path in the preservation snapshot.")
+            snapshot = snapshot_root / str(branch_index) / relative_path
+            snapshot.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+            with snapshot.open("wb") as destination:
+                result = subprocess.run(
+                    ["git", "-C", str(mirror), "cat-file", "blob", object_id],
+                    check=False,
+                    stdout=destination,
+                    stderr=subprocess.PIPE,
+                )
+            if result.returncode != 0:
+                raise SystemExit("Failed to capture a clean branch-tip file.")
+            os.chmod(snapshot, 0o600)
+
+            report_index += 1
+            findings = scan_working_tree(
+                snapshot,
+                strict_policy,
+                snapshot_root / f"tip-{report_index}.json",
+            )
+            if findings:
+                unsafe_findings.extend(
+                    Finding(
+                        path=path,
+                        rule=finding.rule,
+                        fingerprint=finding.fingerprint,
+                        commit=ref,
+                        line=finding.line,
+                        scope=f"branch-tip:{ref.removeprefix('refs/heads/')}",
+                    )
+                    for finding in findings
+                )
+                continue
+            preserved_files.append(PreservedFile(path, mode, snapshot))
+
+        if preserved_files:
+            branches.append(PreservedBranch(ref, tuple(preserved_files)))
+
+    return branches, unsafe_findings
+
+
+def commit_identity(source_repository, mirror, fallback_ref):
+    name_result = run(
+        ["git", "-C", str(source_repository), "config", "user.name"],
+        check=False,
+        capture=True,
+    )
+    email_result = run(
+        ["git", "-C", str(source_repository), "config", "user.email"],
+        check=False,
+        capture=True,
+    )
+    name = name_result.stdout.strip() if name_result.returncode == 0 else ""
+    email = email_result.stdout.strip() if email_result.returncode == 0 else ""
+    if not name:
+        name = output(["git", "-C", str(mirror), "show", "-s", "--format=%cn", fallback_ref])
+    if not email:
+        email = output(["git", "-C", str(mirror), "show", "-s", "--format=%ce", fallback_ref])
+    return name, email
+
+
+def restore_tip_snapshots(mirror, source_repository, branches, temporary_path):
+    restored_paths = set()
+    for branch_index, branch in enumerate(branches):
+        tip = output(["git", "-C", str(mirror), "rev-parse", branch.ref])
+        index_path = temporary_path / f"restore-index-{branch_index}"
+        environment = os.environ.copy()
+        environment["GIT_INDEX_FILE"] = str(index_path)
+        run(["git", "-C", str(mirror), "read-tree", tip], env=environment)
+
+        for preserved in branch.files:
+            object_id = output(
+                ["git", "-C", str(mirror), "hash-object", "-w", "--", str(preserved.snapshot)]
+            )
+            run(
+                [
+                    "git",
+                    "-C",
+                    str(mirror),
+                    "update-index",
+                    "--add",
+                    "--cacheinfo",
+                    f"{preserved.mode},{object_id},{preserved.path}",
+                ],
+                env=environment,
+            )
+            restored_paths.add(preserved.path)
+
+        tree = output(["git", "-C", str(mirror), "write-tree"], env=environment)
+        name, email = commit_identity(source_repository, mirror, branch.ref)
+        commit_environment = os.environ.copy()
+        commit_environment.update(
+            {
+                "GIT_AUTHOR_NAME": name,
+                "GIT_AUTHOR_EMAIL": email,
+                "GIT_COMMITTER_NAME": name,
+                "GIT_COMMITTER_EMAIL": email,
+            }
+        )
+        commit = run(
+            ["git", "-C", str(mirror), "commit-tree", tree, "-p", tip],
+            capture=True,
+            env=commit_environment,
+            input_text=RESTORE_COMMIT_MESSAGE + "\n",
+        ).stdout.strip()
+        if not commit:
+            raise SystemExit("Failed to create a sanitized restoration commit.")
+        run(["git", "-C", str(mirror), "update-ref", branch.ref, commit, tip])
+    return restored_paths
+
+
+def remove_mirror(path):
+    if path.exists():
+        shutil.rmtree(path)
+
+
+def append_fingerprints(path, findings):
+    existing_text = path.read_text() if path.exists() else ""
+    existing = {
+        line.strip()
+        for line in existing_text.splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    }
+    fingerprints = sorted(
+        {finding.fingerprint for finding in findings if finding.fingerprint} - existing
+    )
+    if not fingerprints:
+        return 0
+
+    if path.exists():
+        mode = path.stat().st_mode & 0o777
+    else:
+        mode = 0o644
+    content = existing_text
+    if content and not content.endswith("\n"):
+        content += "\n"
+    if not content:
+        content = "# Exact false-positive fingerprints selected by gitleaks-history-cleanup.\n"
+    content += "\n".join(fingerprints) + "\n"
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile("w", dir=path.parent, delete=False) as temporary:
+        temporary.write(content)
+        temporary_path = Path(temporary.name)
+    os.chmod(temporary_path, mode)
+    os.replace(temporary_path, path)
+    return len(fingerprints)
+
+
+def command_scan(args):
+    require("git", "gitleaks")
+    repository = repository_root(args.repository)
+    with tempfile.TemporaryDirectory(prefix="gitleaks-scan-") as temporary:
+        temporary_path = Path(temporary)
+        os.chmod(temporary_path, 0o700)
+        policy = make_policy(repository, args, temporary_path)
+        findings = []
+        if not args.skip_working_tree and not is_bare_repository(repository):
+            findings.extend(scan_working_tree(repository, policy, temporary_path / "working.json"))
+        findings.extend(scan_history(repository, policy, temporary_path / "history.json"))
+
+    if findings:
+        print_findings(findings)
+        print("Secret values were redacted; no repository changes were made.")
+        return 1
+    print("Gitleaks found no secrets. No repository changes were made.")
+    return 0
+
+
+def command_ignore(args):
+    require("git", "gitleaks", "fzf")
+    repository = repository_root(args.repository)
+    with tempfile.TemporaryDirectory(prefix="gitleaks-ignore-") as temporary:
+        temporary_path = Path(temporary)
+        os.chmod(temporary_path, 0o700)
+        policy = make_policy(repository, args, temporary_path)
+        findings = scan_history(repository, policy, temporary_path / "history.json")
+
+    if not findings:
+        print("Gitleaks found no unignored historical findings.")
+        return 0
+
+    print_findings(findings)
+    selected = select_findings(findings)
+    if not selected:
+        print("No findings selected; no ignore file was changed.")
+        return 0
+    print(f"Selected {len(selected)} exact finding fingerprint(s).")
+    if input("Type IGNORE-FINDINGS to update the ignore file: ").strip() != "IGNORE-FINDINGS":
+        print("Ignore update cancelled.")
+        return 0
+
+    output_path = (
+        args.output.expanduser().resolve()
+        if args.output is not None
+        else repository / ".gitleaksignore"
+    )
+    added = append_fingerprints(output_path, selected)
+    print(f"Added {added} fingerprint(s) to {output_path}.")
+    print("Review and commit the ignore file only when every selected finding is a false positive.")
+    return 0
+
+
+def print_review_commands(mirror, removed_paths, restored_paths):
+    print("\nReview the rewritten history (`git status` does not apply to a bare mirror):")
+    print(f"  mirror={shlex.quote(str(mirror))}")
+    print()
+    print('  git -C "$mirror" log --all --oneline --decorate')
+    print()
+    if removed_paths:
+        print("Confirm fully removed paths have no remaining commits (expect no output):")
+    for path in sorted(removed_paths):
+        print(f'  git -C "$mirror" log --all --format=%H -- {shlex.quote(path)}')
+        print()
+
+    if restored_paths:
+        print("Confirm preserved paths contain only sanitized restoration commits:")
+    for path in sorted(restored_paths):
+        print(f'  git -C "$mirror" log --all --oneline -- {shlex.quote(path)}')
+        print()
+
+    print("Optional normal checkout for browsing the rewritten files:")
+    print('  git clone --no-local "$mirror" "${mirror}-review"')
+    print()
+    print('  git -C "${mirror}-review" status')
+    print()
+
+
+def print_submodule_guidance(repository):
+    context = superproject_context(repository)
+    if context is None:
+        return
+    superproject, submodule_path = context
+    print("Submodule handling:")
+    print("  This force-push updates only the submodule repository remote.")
+    print("  It does not rewrite or push the parent repository.")
+    print()
+    print(f"  superproject={shlex.quote(str(superproject))}")
+    print()
+    print("  After checking out the rewritten submodule tip, record its new commit in the parent:")
+    print(f'  git -C "$superproject" add -- {shlex.quote(str(submodule_path))}')
+    print()
+    print(f'  git -C "$superproject" status --short -- {shlex.quote(str(submodule_path))}')
+    print()
+
+
+def command_clean(args):
+    require("git", "gitleaks", "fzf", "git-filter-repo")
+    repository = repository_root(args.repository)
+    remote = resolve_remote(repository, args.remote)
+    mirror = mirror_destination(repository, args.mirror_dir)
+    rewritten = False
+
+    try:
+        fetch_url, push_url = create_mirror(repository, remote, mirror)
+        with tempfile.TemporaryDirectory(prefix="gitleaks-clean-policy-") as temporary:
+            temporary_path = Path(temporary)
+            os.chmod(temporary_path, 0o700)
+            policy = make_policy(repository, args, temporary_path)
+            findings = scan_history(mirror, policy, temporary_path / "history.json")
+            if not findings:
+                print("Gitleaks found no historical findings in the selected remote.")
+                return 0
+
+            print_findings(findings)
+            selected_paths = sorted(set(select_paths(findings)) | set(args.additional_paths))
+            if not selected_paths:
+                print("No paths selected; no history was rewritten.")
+                return 0
+            missing_paths = [
+                path
+                for path in args.additional_paths
+                if not output(
+                    ["git", "-C", str(mirror), "log", "--all", "--format=%H", "--", path]
+                )
+            ]
+            if missing_paths:
+                raise SystemExit("An additional cleanup path does not exist in remote history.")
+
+            strict_policy = make_strict_policy(temporary_path)
+            original_strict_findings = scan_history(
+                mirror,
+                strict_policy,
+                temporary_path / "strict-original.json",
+            )
+            original_strict_pairs = {
+                (finding.path, finding.rule) for finding in original_strict_findings
+            }
+            preserved_branches, unsafe_tip_findings = capture_tip_snapshots(
+                mirror,
+                selected_paths,
+                temporary_path / "tip-snapshots",
+                strict_policy,
+            )
+            preserved_paths = {
+                preserved.path
+                for branch in preserved_branches
+                for preserved in branch.files
+            }
+            removed_paths = set(selected_paths) - preserved_paths
+
+            if removed_paths:
+                print("Paths absent from every branch tip; remove completely:")
+            for path in sorted(removed_paths):
+                print(f"  {display_text(path)}")
+            if removed_paths:
+                print()
+            if preserved_paths:
+                print("Paths with clean branch-tip versions; purge old history and restore tips:")
+            for path in sorted(preserved_paths):
+                branches = [
+                    branch.ref.removeprefix("refs/heads/")
+                    for branch in preserved_branches
+                    if any(preserved.path == path for preserved in branch.files)
+                ]
+                print(f"  {display_text(path)} | branches={','.join(branches)}")
+            if preserved_paths:
+                print()
+            if unsafe_tip_findings:
+                print("Paths still detected at branch tips; keep removed on these branches:")
+                unsafe_by_path = defaultdict(lambda: {"branches": set(), "rules": set()})
+                for finding in unsafe_tip_findings:
+                    unsafe_by_path[finding.path]["branches"].add(
+                        finding.scope.removeprefix("branch-tip:")
+                    )
+                    unsafe_by_path[finding.path]["rules"].add(finding.rule)
+                for path in sorted(unsafe_by_path):
+                    entry = unsafe_by_path[path]
+                    print(
+                        f"  {display_text(path)} | branches={','.join(sorted(entry['branches']))} "
+                        f"| rules={','.join(sorted(entry['rules']))}"
+                    )
+                print()
+            if input("Type REMOVE-HISTORY to rewrite the mirror: ").strip() != "REMOVE-HISTORY":
+                print("History rewrite cancelled.")
+                return 0
+
+            command = [
+                "git",
+                "-C",
+                str(mirror),
+                "filter-repo",
+                "--sensitive-data-removal",
+                "--invert-paths",
+            ]
+            for path in selected_paths:
+                command.extend(["--path", path])
+            run(command)
+            rewritten = True
+            configure_mirror_remote(mirror, fetch_url, push_url)
+
+            remaining_paths = [
+                path
+                for path in selected_paths
+                if output(["git", "-C", str(mirror), "log", "--all", "--format=%H", "--", path])
+            ]
+            if remaining_paths:
+                raise SystemExit("Verification failed: selected paths remain in rewritten history.")
+
+            restored_paths = restore_tip_snapshots(
+                mirror,
+                repository,
+                preserved_branches,
+                temporary_path,
+            )
+            for path in removed_paths:
+                if output(
+                    ["git", "-C", str(mirror), "log", "--all", "--format=%H", "--", path]
+                ):
+                    raise SystemExit("Verification failed: a fully removed path remains.")
+            for path in restored_paths:
+                subjects = output(
+                    ["git", "-C", str(mirror), "log", "--all", "--format=%s", "--", path]
+                ).splitlines()
+                if not subjects or any(subject != RESTORE_COMMIT_MESSAGE for subject in subjects):
+                    raise SystemExit(
+                        "Verification failed: a preserved path has non-restoration history."
+                    )
+
+            verification_policy = make_strict_policy(temporary_path)
+            remaining_findings = scan_history(
+                mirror, verification_policy, temporary_path / "verification.json"
+            )
+            selected_findings = {
+                finding.path for finding in remaining_findings
+            } & set(selected_paths)
+            if selected_findings:
+                raise SystemExit("Verification failed: Gitleaks still reports a selected path.")
+            surfaced_findings = [
+                finding
+                for finding in remaining_findings
+                if (finding.path, finding.rule) not in original_strict_pairs
+            ]
+            if surfaced_findings:
+                print_findings(surfaced_findings)
+                raise SystemExit(
+                    "Verification failed: rewriting surfaced new findings, commonly from "
+                    "renamed files. Rerun cleanup with each reported path passed via --path."
+                )
+
+        print("\nRewritten mirror verified. No remote changes were made.")
+        if remaining_findings:
+            print_findings(remaining_findings)
+            print("Review remaining findings before pushing; rewritten fingerprints may have changed.")
+        print(f"Mirror retained at: {mirror}")
+        print_review_commands(mirror, removed_paths, restored_paths)
+        print_submodule_guidance(repository)
+        print("After completing those checks, update this repository's remote explicitly with:")
+        print('  git -C "$mirror" push --force --mirror origin')
+        print()
+        print("GitHub note:")
+        print("  Temporarily disable branch protection before pushing rewritten history.")
+        print("  Failures for refs/pull/* are expected because those refs are read-only.")
+        print("  Retry until refs/pull/* are the only failures, then contact GitHub Support")
+        print("  if sensitive data remains referenced by affected pull requests.")
+        print()
+        print("Rotate exposed credentials before pushing, then delete the mirror after verification.")
+        print("Forks, caches, pull-request refs, LFS objects, backups, and other clones may retain data.")
+        return 0
+    except BaseException:
+        if rewritten:
+            print(f"Rewritten mirror retained for inspection at: {mirror}", file=sys.stderr)
+        raise
+    finally:
+        if not rewritten:
+            remove_mirror(mirror)
+
+
+def main():
+    parser = build_parser()
+    if len(sys.argv) == 1:
+        parser.print_help()
+        prerequisite_status()
+        return 0
+
+    args = parser.parse_args()
+    if args.command == "scan":
+        return command_scan(args)
+    if args.command == "ignore":
+        return command_ignore(args)
+    if args.command == "clean":
+        return command_clean(args)
+    parser.error("unknown command")
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
