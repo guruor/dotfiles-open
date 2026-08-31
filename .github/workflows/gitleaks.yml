@@ -1,0 +1,52 @@
+name: Gitleaks
+
+on:
+  pull_request:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: Scan introduced commits
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan introduced commits
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            range="$BASE_SHA..$HEAD_SHA"
+          elif [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ] && \
+               git cat-file -e "$BEFORE_SHA^{commit}" 2>/dev/null; then
+            range="$BEFORE_SHA..$AFTER_SHA"
+          else
+            base=$(git merge-base "origin/$DEFAULT_BRANCH" "$AFTER_SHA")
+            range="$base..$AFTER_SHA"
+          fi
+
+          docker run --rm \
+            --volume "$GITHUB_WORKSPACE:/repo" \
+            --workdir /repo \
+            zricethezav/gitleaks:v8.30.1 \
+            git \
+            --redact \
+            --no-banner \
+            --no-color \
+            --config /repo/.gitleaks.toml \
+            --ignore-gitleaks-allow \
+            --log-opts="$range" \
+            /repo

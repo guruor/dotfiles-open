@@ -1,2 +1,19 @@
 
 *.DS_Store
+
+# Local credentials and private key material.
+.env
+.env.*
+!.env.example
+!.env.*.example
+**/credentials
+**/credentials.*
+.ssh/id_*
+!.ssh/*.pub
+*.key
+*.pem
+*.p12
+*.pfx
+.config/kube/config
+.config/sops/age/keys.txt
+**/mcp-auth.json

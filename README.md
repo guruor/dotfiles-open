@@ -39,6 +39,26 @@ For personal configs maintained I have `Private` repo, where I keep my personal 
 
 For few programs like `mopidy`, where you would often face some setup issues, Readme file is added inside individual program config directory.
 
+#### Secret scanning
+
+Gitleaks blocks staged secrets through `.githooks/pre-commit` and scans every
+commit introduced by a GitHub push or pull request. The private submodule has
+its own independent scan; the public workflow does not initialize or inspect
+its working tree.
+
+Install Gitleaks and enable the versioned hook before committing if `install.sh`
+has not already configured it:
+
+```sh
+brew install gitleaks
+git config core.hooksPath .githooks
+```
+
+The hook fails closed when Gitleaks is unavailable. Findings are redacted, and
+`gitleaks:allow` comments do not bypass the local or GitHub checks. Common
+credential and private-key filenames are rejected even when their contents do
+not match a known token format.
+
 #### Other recommended programs
 
 ##### Mac Specific

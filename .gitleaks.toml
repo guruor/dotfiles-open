@@ -1,0 +1,11 @@
+# Extend Gitleaks' maintained rules without allowlisting sensitive paths.
+[extend]
+useDefault = true
+
+[[rules]]
+id = "forbidden-private-file"
+description = "Private credential or key file"
+path = '''(?i)(^|/)(\.env(?:\.[^/]*)?|credentials(?:\.[^/]*)?|id_(?:rsa|dsa|ecdsa|ed25519)|[^/]+\.(?:key|pem|p12|pfx)|mcp-auth\.json|\.config/kube/config|\.config/sops/age/keys\.txt)$'''
+
+[[rules.allowlists]]
+paths = ['''(?i)\.env(?:\.[^/]*)?\.example$''']

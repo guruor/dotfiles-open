@@ -8,6 +8,9 @@ backup_dir="$HOME/.dotfiles.orig"
 dotfiles_home_dir=(.config .local .ssh .editorconfig .profile .xinitrc .xprofile .zshenv)
 dotfiles_xdg_config_dir=()
 
+# Git does not install hooks when a repository is cloned.
+git -C "$dotfiles_repo_dir" config core.hooksPath .githooks
+
 # Print usage message.
 usage() {
     local program_name

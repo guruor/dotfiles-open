@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+repo_root=$(git rev-parse --show-toplevel)
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  printf 'Gitleaks is required before committing. Install it and retry.\n' >&2
+  exit 1
+fi
+
+staged_tree=$(mktemp -d "${TMPDIR:-/tmp}/gitleaks-index.XXXXXX")
+trap 'rm -rf "$staged_tree"' EXIT HUP INT TERM
+chmod 700 "$staged_tree"
+
+has_staged_files=false
+while IFS= read -r -d '' path; do
+  IFS=' ' read -r mode _ < <(git -C "$repo_root" ls-files -s -- "$path")
+  [ "$mode" = "160000" ] && continue
+
+  has_staged_files=true
+  git -c core.symlinks=false -C "$repo_root" \
+    checkout-index --prefix="$staged_tree/" -- "$path"
+done < <(
+  git -C "$repo_root" diff --cached --name-only --diff-filter=ACMR -z
+)
+
+[ "$has_staged_files" = true ] || exit 0
+
+gitleaks dir \
+  --redact \
+  --no-banner \
+  --no-color \
+  --config "$repo_root/.gitleaks.toml" \
+  --ignore-gitleaks-allow \
+  "$staged_tree"
