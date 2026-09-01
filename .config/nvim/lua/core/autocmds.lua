@@ -189,6 +189,19 @@ autocmd("BufWritePost", {
   group = postSaveSettingsGroup,
 })
 
+
+-- Restart herdr config
+autocmd("BufWritePost", {
+  pattern = {
+    vim.fn.expand "$MY_DOTFILES_DIR" .. "/.config/herdr/config.toml",
+    vim.fn.expand "$HOME" .. "/.config/herdr/config.toml",
+  },
+  callback = function()
+    vim.cmd "!herdr server reload-config;"
+  end,
+  group = postSaveSettingsGroup,
+})
+
 autocmd("BufWritePost", {
   pattern = vim.fn.expand "$MY_DOTFILES_DIR" .. "/.config/borders/bordersrc",
   callback = function()
