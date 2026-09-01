@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -o pipefail
+
+cwd=$(pwd -P)
+
+if ! terminal_id=$(herdr pane list | jq -er --arg cwd "$cwd" '
+  .result.panes
+  | map(select(.foreground_cwd == $cwd or .cwd == $cwd))
+  | first
+  | .terminal_id
+'); then
+  printf 'herdr_attach: no Herdr terminal found for %s\n' "$cwd" >&2
+  exit 1
+fi
+
+exec herdr terminal attach "$terminal_id"
