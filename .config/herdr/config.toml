@@ -1,0 +1,10 @@
+# ~/.config/herdr/config.toml
+onboarding = false  # Skip first-run wizard on startup
+
+[theme]
+name = "nord"
+
+[ui.toast]
+delivery = "system"
+delay_seconds = 1
+# 'position' is determined globally by Herdr (defaults to "top"); omit this key to avoid errors.
