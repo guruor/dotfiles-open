@@ -10,4 +10,5 @@ path = '''(?i)(^|/)(\.env(?:\.[^/]*)?|credentials(?:\.[^/]*)?|id_(?:rsa|dsa|ecds
 [[rules.allowlists]]
 paths = [
   '''(?i)\.env(?:\.[^/]*)?\.example$''',
+  '''(?i)(^|/)\.config/kube/config$''',
 ]

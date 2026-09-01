@@ -121,7 +121,13 @@ def build_parser():
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     scan = subparsers.add_parser("scan", help="redacted, read-only repository scan")
-    scan.add_argument("repository", nargs="?", type=Path, default=Path("."))
+    scan.add_argument(
+        "repository",
+        nargs="?",
+        type=Path,
+        default=Path("."),
+        help="local repository to scan; defaults to the physical current directory",
+    )
     scan.add_argument(
         "--skip-working-tree",
         action="store_true",
@@ -677,6 +683,8 @@ def append_fingerprints(path, findings):
 def command_scan(args):
     require("git", "gitleaks")
     repository = repository_root(args.repository)
+    print(f"Repository: {repository}")
+    print("History source: local reachable refs (remotes are not fetched).")
     with tempfile.TemporaryDirectory(prefix="gitleaks-scan-") as temporary:
         temporary_path = Path(temporary)
         os.chmod(temporary_path, 0o700)
