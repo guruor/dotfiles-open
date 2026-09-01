@@ -67,7 +67,7 @@ local formatters_by_ft = {
   toml = { "taplo" },
   terraform = { "terraform_fmt" },
   yaml = { "yamlfmt", "dprint", "prettierd", "yq", stop_after_first = true },
-  nix = { "nixpkgs-fmt", "nixfmt" },
+  nix = { "nixpkgs_fmt" },
   markdown = { "dprint", "prettierd", "cbfmt" },
   vimwiki = { "dprint", "prettierd", "cbfmt" },
   -- Run formatter on all filetypes
