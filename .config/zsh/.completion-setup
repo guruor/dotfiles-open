@@ -374,6 +374,7 @@ function completion_install() {
     "eza"
     "kubectl"
     "gh"
+    "herdr"
     "uv"
     "uvx"
     "rea-as"
