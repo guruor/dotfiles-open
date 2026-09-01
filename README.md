@@ -95,6 +95,15 @@ mirror afterward; remote caches,
 forks, pull-request refs, LFS objects, backups, and other clones may still retain
 old data.
 
+Branch-tip preservation uses the repository's active Gitleaks policy, while a
+separate strict-default scan checks secret content and rename side effects. A
+selected custom-policy violation is therefore removed from every branch and is
+never restored merely because its contents pass default rules.
+
+Cleanup rewrites selected paths across every mirrored branch and tag but does
+not delete branch refs. Obsolete branches must be deleted explicitly as a
+separate repository-management decision.
+
 History rewrites can expose a renamed destination that Gitleaks did not flag in
 the original pure-rename diff. Newly surfaced findings fail verification; rerun
 with each reported exact path supplied as `--path PATH` to remove the complete

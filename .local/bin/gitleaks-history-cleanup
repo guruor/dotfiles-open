@@ -501,7 +501,7 @@ def tree_entry(repository, ref, path):
     return mode, object_type, object_id
 
 
-def capture_tip_snapshots(mirror, selected_paths, snapshot_root, strict_policy):
+def capture_tip_snapshots(mirror, selected_paths, snapshot_root, tip_policy):
     refs = output(
         ["git", "-C", str(mirror), "for-each-ref", "--format=%(refname)", "refs/heads"]
     ).splitlines()
@@ -542,7 +542,7 @@ def capture_tip_snapshots(mirror, selected_paths, snapshot_root, strict_policy):
             report_index += 1
             findings = scan_working_tree(
                 snapshot,
-                strict_policy,
+                tip_policy,
                 snapshot_root / f"tip-{report_index}.json",
             )
             if findings:
@@ -817,7 +817,7 @@ def command_clean(args):
                 mirror,
                 selected_paths,
                 temporary_path / "tip-snapshots",
-                strict_policy,
+                policy,
             )
             preserved_paths = {
                 preserved.path
@@ -858,6 +858,8 @@ def command_clean(args):
                         f"| rules={','.join(sorted(entry['rules']))}"
                     )
                 print()
+            print("Branch refs are preserved; cleanup removes selected path history, not branches.")
+            print()
             if input("Type REMOVE-HISTORY to rewrite the mirror: ").strip() != "REMOVE-HISTORY":
                 print("History rewrite cancelled.")
                 return 0
@@ -924,6 +926,34 @@ def command_clean(args):
                     "Verification failed: rewriting surfaced new findings, commonly from "
                     "renamed files. Rerun cleanup with each reported path passed via --path."
                 )
+
+            active_verification_policy = ScanPolicy(
+                policy.config,
+                verification_policy.ignore_file,
+                True,
+            )
+            active_remaining_findings = scan_history(
+                mirror,
+                active_verification_policy,
+                temporary_path / "active-policy-verification.json",
+            )
+            selected_policy_findings = [
+                finding
+                for finding in active_remaining_findings
+                if finding.path in selected_paths
+            ]
+            if selected_policy_findings:
+                print_findings(selected_policy_findings)
+                raise SystemExit(
+                    "Verification failed: the active repository policy still reports a "
+                    "selected path. No selected policy violation may be restored."
+                )
+
+            remaining_by_fingerprint = {
+                finding.fingerprint: finding
+                for finding in remaining_findings + active_remaining_findings
+            }
+            remaining_findings = list(remaining_by_fingerprint.values())
 
         print("\nRewritten mirror verified. No remote changes were made.")
         if remaining_findings:
