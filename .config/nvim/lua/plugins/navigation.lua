@@ -43,9 +43,10 @@ return {
     },
   },
   {
-    -- Only load whichkey after all the gui
     "folke/which-key.nvim",
-    keys = { "<leader>", "<localleader>", ",", "<c-r>", "<c-w>", '"', "'", "`", "c", "v", "g",
+    event = "VeryLazy",
+    opts = {},
+    keys = {
       {
         "<leader>?",
         function()
@@ -55,9 +56,10 @@ return {
       },
     },
     cmd = "WhichKey",
-    config = function()
+    config = function(_, opts)
+      require("which-key").setup(opts)
       require("plugins.configs.whichkey").load()
-    end
+    end,
   },
   {
     -- Vim subword movement with w, e, b
