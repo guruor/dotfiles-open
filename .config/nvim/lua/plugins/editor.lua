@@ -112,7 +112,6 @@ return {
       "fang2hou/blink-copilot",
       "Kaiser-Yang/blink-cmp-dictionary",
       "Kaiser-Yang/blink-cmp-git",
-      "rcarriga/cmp-dap",
       "garymjr/nvim-snippets",
     },
   },

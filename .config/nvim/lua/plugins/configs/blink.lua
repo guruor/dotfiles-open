@@ -52,7 +52,7 @@ return {
     ghost_text = { enabled = true },
   },
   sources = {
-    default = { "lsp", "path", "snippets", "buffer", "git", "copilot", "dictionary", "dap" },
+    default = { "lsp", "path", "snippets", "buffer", "git", "copilot", "dictionary" },
     per_filetype = {
       sql = { inherit_defaults = true, "dadbod" },
       lua = { inherit_defaults = true, "lazydev" },
