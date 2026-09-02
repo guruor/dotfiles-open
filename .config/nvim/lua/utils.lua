@@ -204,7 +204,7 @@ M.GetVisualorCursorText = function(delimeter, visual, cword)
     if cword == nil then cword = true end
 
     local text = ""
-    if visual == nil then
+    if visual then
         text = M.get_visual_selection(delimeter, true)
     end
 

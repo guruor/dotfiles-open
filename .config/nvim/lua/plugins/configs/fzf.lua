@@ -20,10 +20,10 @@ require("fzf-lua").setup {
   fzf_opts = {
     ["--history"] = vim.fn.stdpath "data" .. "/fzf-lua-history",
   },
-  -- RIPGREP_CONFIG_PATH is not respected anymore, so better update the rg_opts as needed
   grep = {
     hidden = true, -- enable hidden files
     follow = true, -- follow symlinks
+    stderr_to_stdout = false,
     fzf_opts = {
       ["--ansi"] = "",
       ["--delimiter"] = ":",
@@ -49,14 +49,13 @@ local function customGrepProject(text, cwd)
   -- })
   local opts = {
     rg_glob = true,
-    search = "",
-    query = text, -- Handles the special chat excaping
+    search = text,
   }
 
   if cwd ~= nil then
     opts["cwd"] = cwd
   end
-  require("fzf-lua").grep(opts)
+  require("fzf-lua").live_grep(opts)
 end
 
 local new_cmd = vim.api.nvim_create_user_command
