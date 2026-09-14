@@ -381,6 +381,7 @@ function completion_install() {
     "terraform"
     "ansible"
     "helm"
+    "opencode"
   )
 
   echo "Checking ${#tools[@]} tools for completion installation..."
