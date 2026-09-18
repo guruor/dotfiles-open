@@ -57,7 +57,7 @@ git config core.hooksPath .githooks
 The hook fails closed when Gitleaks is unavailable. Findings are redacted, and
 `gitleaks:allow` comments do not bypass the local or GitHub checks. Common
 credential and private-key filenames are rejected even when their contents do
-not match a known token format.
+not match a known token format, unless allowlisted.
 
 #### Historical secret review
 
