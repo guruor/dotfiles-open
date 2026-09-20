@@ -52,6 +52,21 @@ else
 fi
 
 echo
+echo "### reading guard"
+GUARD_LOG="$HOME/.hermes/logs/read-guard.log"
+if [ -f "$GUARD_LOG" ]; then
+    echo "blocks logged (total): $(grep -c '^[0-9-]*T[0-9:]* BLOCK' "$GUARD_LOG" 2>/dev/null || echo 0)"
+    echo "last entries:"
+    tail -3 "$GUARD_LOG" | cut -c1-140
+else
+    echo "no activity logged at $GUARD_LOG (guard not enabled, or nothing to block)"
+fi
+if command -v hermes >/dev/null 2>&1; then
+    echo "hook consent state:"
+    timeout 30 hermes hooks list 2>&1 | grep -iE "pre_tool_call|read-guard|consent|approved" | head -5 || echo "  (no hooks listed)"
+fi
+
+echo
 echo "### cron jobs"
 ls -1 "$HOME/.hermes/cron" 2>/dev/null | tr '\n' ' '
 echo
