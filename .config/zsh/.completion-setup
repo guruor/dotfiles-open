@@ -382,6 +382,7 @@ function completion_install() {
     "ansible"
     "helm"
     "opencode"
+    "hermes"
   )
 
   echo "Checking ${#tools[@]} tools for completion installation..."
