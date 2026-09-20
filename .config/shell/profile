@@ -266,6 +266,14 @@ export PATH="$ASDF_DATA_DIR/bin:$ASDF_DATA_DIR/shims:$PATH"
 # so its shims must come BEFORE asdf's. Without this line the asdf shims above intercept
 # python3/psql/node/pg_isready and fail with "No version is set for command X" (there is
 # no ~/.tool-versions), which silently breaks every script that shells out to them.
+#
+# Measured 2026-09-20, by simulating removal from PATH in a subshell (no file change):
+# commenting this line out restores the asdf failure for python3, psql, pg_isready and
+# yarn, AND drops 27 commands that nothing else provides (ansible + 7 ansible-*, whisper,
+# torchrun, torchfrtrace, locust, locust-cloud, actionlint, python3.10/pip3.10/pydoc3.10/
+# idle3.10/2to3-3.10, numba, flask, isympy, betterleaks, jnativescan, wsdump).
+# Migrate those to mise first. The list of affected commands and the migration plan live in
+# the agentic setup notes (see the AGENTIC_NOTES_DIR pointer in ~/.hermes/agentic-setup.conf).
 export PATH="${XDG_DATA_HOME:-$HOME/.local/share}/mise/shims:$PATH"
 
 export MISE_CARGO_HOME=$CARGO_HOME
