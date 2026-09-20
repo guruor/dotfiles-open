@@ -1,0 +1,222 @@
+#!/usr/bin/env python3
+"""promotion-candidates: deterministic facts for the daily promotion review.
+
+Prints a bounded report and writes the same facts as JSON to a state file, so a later
+run can diff against it. It reasons about nothing: candidate ranking and the selection
+question belong to the prompt that reads this output.
+
+Sources, all read-only:
+  - the draft directory the promoter resolves (agentic.drafts_dir, else a default)
+  - ~/.hermes/skills/.usage.json        (curator activity per skill)
+  - the workspace packages' .apm/skills (what a package already owns)
+
+Nothing here promotes, edits, or reads a credential.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+HOME = Path.home()
+HERMES_HOME = Path(os.environ.get("HERMES_HOME", HOME / ".hermes"))
+STATE_DIR = Path(os.environ.get("XDG_STATE_HOME", HOME / ".local/state")) / "promotion"
+CONF = HERMES_HOME / "agentic-setup.conf"
+TOP_N = 5
+
+
+def conf_value(key):
+    """Read a KEY=value from the agentic setup conf, if it exists."""
+    if not CONF.exists():
+        return None
+    for line in CONF.read_text(errors="replace").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, v = line.split("=", 1)
+        if k.strip() == key:
+            return v.strip().strip(chr(34)).strip(chr(39))
+    return None
+
+
+def hermes_config_get(key):
+    """Read one config key through the CLI; never open config.yaml."""
+    try:
+        out = subprocess.run(["hermes", "config", "get", key], capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    value = (out.stdout or "").strip()
+    if not value or "not set" in value.lower():
+        return None
+    return value
+
+
+def drafts_dir():
+    configured = hermes_config_get("agentic.drafts_dir")
+    if configured:
+        return Path(configured).expanduser(), "configured (agentic.drafts_dir)"
+    return HERMES_HOME / "skill-drafts", "default (agentic.drafts_dir unset)"
+
+
+def resolve_workspace():
+    for key in ("AGENTIC_WORKSPACE", "AGENTIC_WORKSPACE_DIR"):
+        value = conf_value(key)
+        if value:
+            return Path(value).expanduser(), key + " in agentic-setup.conf"
+    guess = HOME / "Workspace/Personal/agent-workspace"
+    if guess.is_dir():
+        return guess, "GUESSED path; add AGENTIC_WORKSPACE to agentic-setup.conf"
+    return None, "unresolved"
+
+
+def owned_skills(workspace):
+    """Skill names a package already owns, from the package tree itself."""
+    if not workspace:
+        return set()
+    owned = set()
+    for pkg_skills in (workspace / "packages").glob("*/.apm/skills/*"):
+        if pkg_skills.is_dir():
+            owned.add(pkg_skills.name)
+    return owned
+
+
+def pending_drafts(directory):
+    if not directory.is_dir():
+        return []
+    rows = []
+    for f in sorted(directory.glob("*.json")):
+        try:
+            r = json.loads(f.read_text())
+        except (OSError, json.JSONDecodeError) as exc:
+            rows.append({"id": f.stem, "status": "unreadable", "error": str(exc)[:80]})
+            continue
+        tgt = r.get("target") or {}
+        rows.append({
+            "id": r.get("id", f.stem),
+            "status": r.get("status", "?"),
+            "package": tgt.get("package", "?"),
+            "base_version": tgt.get("base_version", "?"),
+            "path": tgt.get("path", "?"),
+        })
+    return rows
+
+
+def ledger_writes():
+    """Improvement churn per skill, from the curator ledger.
+
+    Churn is a negative signal for adoption: a skill the curator is still rewriting
+    has not settled, and freezing it into a package stops the improvement.
+    """
+    counts = {}
+    path = HERMES_HOME / "skills/.curator_ledger.jsonl"
+    if not path.exists():
+        return counts
+    for line in path.read_text(errors="replace").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rec = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        name = rec.get("skill") or rec.get("name")
+        if name:
+            entry = counts.setdefault(name, {"writes": 0, "last_ts": "", "actors": set()})
+            entry["writes"] += 1
+            ts = rec.get("ts", "")
+            if ts > entry["last_ts"]:
+                entry["last_ts"] = ts
+            if rec.get("actor"):
+                entry["actors"].add(rec["actor"])
+    for entry in counts.values():
+        entry["actors"] = sorted(entry["actors"])
+    return counts
+
+
+def candidates(owned):
+    """Agent-created, unarchived skills that no package owns, with their signals.
+
+    Only agent-created skills are adoption candidates: bundled ones are refreshed from
+    their upstream, and a hub install has its own source of truth.
+    """
+    try:
+        usage = json.loads((HERMES_HOME / "skills/.usage.json").read_text())
+    except (OSError, json.JSONDecodeError):
+        return []
+    ledger = ledger_writes()
+    rows = []
+    for name, rec in usage.items():
+        if not isinstance(rec, dict) or name in owned:
+            continue
+        if rec.get("created_by") != "agent" or rec.get("archived_at"):
+            continue
+        churn = ledger.get(name, {})
+        rows.append({
+            "skill": name,
+            "use": rec.get("use_count", 0) or 0,
+            "view": rec.get("view_count", 0) or 0,
+            "patch": rec.get("patch_count", 0) or 0,
+            "pinned": bool(rec.get("pinned")),
+            "last_used": (rec.get("last_used_at") or "")[:10],
+            "ledger_writes": churn.get("writes", 0),
+            "last_write": (churn.get("last_ts") or "")[:10],
+        })
+    # Most used first: value to the user is the point of adoption. Churn is shown so
+    # the reader can judge whether the skill has settled.
+    rows.sort(key=lambda r: (r["use"], r["ledger_writes"]), reverse=True)
+    return rows
+
+
+def main():
+    ddir, dsrc = drafts_dir()
+    workspace, wsrc = resolve_workspace()
+    owned = owned_skills(workspace)
+    drafts = [d for d in pending_drafts(ddir) if d.get("status") != "applied"]
+    rows = candidates(owned)
+
+    facts = {
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "drafts_dir": str(ddir),
+        "drafts_dir_source": dsrc,
+        "workspace": str(workspace) if workspace else None,
+        "workspace_source": wsrc,
+        "pending_drafts": drafts,
+        "adoption_candidates": rows[:TOP_N],
+        "packages_owned_skills": len(owned),
+        "candidate_total": len(rows),
+    }
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    (STATE_DIR / "latest.json").write_text(json.dumps(facts, indent=2, sort_keys=True) + chr(10))
+
+    print("# Promotion review facts, " + facts["generated_at"])
+    print("")
+    print("workspace: %s (%s)" % (facts["workspace"], wsrc))
+    print("drafts dir: %s (%s)" % (ddir, dsrc))
+    print("skills already owned by a package: %d" % len(owned))
+    print("")
+    print("## Pending drafts (%d)" % len(drafts))
+    if not drafts:
+        print("none")
+    for d in drafts:
+        print("- %s  status=%s  target=%s  base=%s" % (d["id"], d.get("status"), d.get("package"), d.get("base_version")))
+    print("")
+    print("## Adoption candidates: agent-created local skills no package owns, top %d" % TOP_N)
+    print("   use = times loaded, writes = curator improvements (churn: high means not settled)")
+    if not rows:
+        print("none")
+    for c in rows[:TOP_N]:
+        print("- %s  use=%s view=%s patch=%s ledger_writes=%s last_write=%s last_used=%s%s"
+              % (c["skill"], c["use"], c["view"], c["patch"], c["ledger_writes"],
+                 c["last_write"] or "never", c["last_used"] or "never",
+                 "  [pinned]" if c["pinned"] else ""))
+    print("")
+    print("(state written to %s)" % (STATE_DIR / "latest.json"))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
