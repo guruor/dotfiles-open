@@ -2,9 +2,11 @@
 # resource-snapshot.sh - read-only resource ledger + watchdog for this Mac.
 #
 # Modes:
-#   (no args)       watchdog. Prints NOTHING when healthy. Prints a short report when a
-#                   threshold is breached. ALWAYS exits 0: cron delivers stdout verbatim, and
-#                   a non-zero exit would replace this report with the engine's own wording.
+#   (no args)       daily briefing: appends to the ledger, then prints the full report. This is
+#                   what a cron job's `script` field runs, so it deliberately takes no arguments.
+#   --alert         watchdog. Prints NOTHING when healthy, a short breach list otherwise.
+#                   ALWAYS exits 0: cron delivers stdout verbatim, and a non-zero exit would
+#                   replace this report with the engine's own wording.
 #   --record        append one snapshot to the ledger, print nothing. Cheap; safe frequently.
 #   --report        print the full current state, healthy or not.
 #   --drift [DAYS]  compare the last 24h with the preceding DAYS (default 7) and print what
@@ -41,8 +43,9 @@ TH_APP_SHARE_PCT="${TH_APP_SHARE_PCT:-25}"
 TH_DISK_GB="${TH_DISK_GB:-20}"
 TH_LOOP_RUNS="${TH_LOOP_RUNS:-200}"
 
-mode="alert"; drift_days=7; with_shell=0
+mode="daily"; drift_days=7; with_shell=0
 case "${1:-}" in
+    ""       )    mode="daily" ;;
     --record)     mode="record" ;;
     --report)     mode="report" ;;
     --drift)      mode="drift"; [ -n "${2:-}" ] && drift_days="$2" ;;
@@ -260,6 +263,7 @@ emit_drift() {
 
 collect
 case "$mode" in
+    daily)  record; emit_report ;;
     record) record ;;
     report) emit_report ;;
     drift)  emit_drift ;;
