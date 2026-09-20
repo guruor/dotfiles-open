@@ -58,15 +58,20 @@ def hermes_config_get(key):
 def drafts_dir():
     configured = hermes_config_get("agentic.drafts_dir")
     if configured:
-        return Path(configured).expanduser(), "configured (agentic.drafts_dir)"
+        return expand(configured), "configured (agentic.drafts_dir)"
     return HERMES_HOME / "skill-drafts", "default (agentic.drafts_dir unset)"
+
+
+def expand(value):
+    """Expand $HOME, ${HOME} and ~ the way the shell that wrote the conf would."""
+    return Path(os.path.expandvars(value)).expanduser() if value else None
 
 
 def resolve_workspace():
     for key in ("AGENTIC_WORKSPACE", "AGENTIC_WORKSPACE_DIR"):
         value = conf_value(key)
         if value:
-            return Path(value).expanduser(), key + " in agentic-setup.conf"
+            return expand(value), key + " in agentic-setup.conf"
     guess = HOME / "Workspace/Personal/agent-workspace"
     if guess.is_dir():
         return guess, "GUESSED path; add AGENTIC_WORKSPACE to agentic-setup.conf"
@@ -85,6 +90,7 @@ def owned_skills(workspace):
 
 
 def pending_drafts(directory):
+    directory = expand(str(directory)) or directory
     if not directory.is_dir():
         return []
     rows = []
