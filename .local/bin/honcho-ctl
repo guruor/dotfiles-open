@@ -1,0 +1,505 @@
+#!/usr/bin/env bash
+# honcho-ctl - control the self-hosted Honcho memory backend (API + deriver).
+#
+# One entry point on every OS: macOS uses launchd, Linux uses systemd --user.
+# Supervisor units are GENERATED per machine (they embed absolute paths), never
+# committed, so a fresh machine needs no hand-edited plist/service file.
+#
+# Usage: honcho-ctl <command> [args]
+#   status                supervisor + process + /health state (exit 1 if down)
+#   start                 register units if needed, start both, wait for readiness
+#   stop                  stop + unload/disable both (stays down until `start`)
+#   restart               bounce both via the supervisor
+#   health [--wait [secs]]  probe /health once, or poll until it answers ok
+#   logs [api|deriver] [-f] [-n N]   tail service logs (default: both, last 40)
+#   install               generate + register units, start, wait for readiness
+#   uninstall             stop both and remove the generated units
+#   help
+#
+# Env overrides: HONCHO_HOME (default ~/honcho), HONCHO_HOST, HONCHO_PORT,
+#                HONCHO_READY_TIMEOUT (default 90s), HONCHO_LABEL_PREFIX.
+set -uo pipefail
+
+HONCHO_HOME="${HONCHO_HOME:-$HOME/honcho}"
+HONCHO_HOST="${HONCHO_HOST:-127.0.0.1}"
+HONCHO_PORT="${HONCHO_PORT:-8000}"
+HONCHO_VENV_PY="${HONCHO_VENV_PY:-$HONCHO_HOME/.venv/bin/python}"
+HONCHO_READY_TIMEOUT="${HONCHO_READY_TIMEOUT:-180}"
+# launchd QoS. Measured on this Mac (import graph is I/O-bound on a ~full
+# volume): default QoS -> api ready in ~197s, Interactive -> ~34s. Empty value
+# omits the key entirely (macOS then assigns default QoS).
+HONCHO_PROCESS_TYPE="${HONCHO_PROCESS_TYPE:-Interactive}"
+LABEL_PREFIX="${HONCHO_LABEL_PREFIX:-com.honcho}"
+LOG_DIR="$HONCHO_HOME/logs"
+HEALTH_URL="http://$HONCHO_HOST:$HONCHO_PORT/health"
+SERVICES="api deriver"
+UID_NUM="$(id -u)"
+
+if [ -t 1 ]; then
+    C_OK=$'\033[32m'; C_BAD=$'\033[31m'; C_WARN=$'\033[33m'; C_OFF=$'\033[0m'
+else
+    C_OK=""; C_BAD=""; C_WARN=""; C_OFF=""
+fi
+ok()   { printf '%s%s%s' "$C_OK" "$1" "$C_OFF"; }
+bad()  { printf '%s%s%s' "$C_BAD" "$1" "$C_OFF"; }
+warn() { printf '%s%s%s' "$C_WARN" "$1" "$C_OFF"; }
+log()  { printf '%s\n' "$*"; }
+die()  { printf '%s\n' "$*" >&2; exit 1; }
+
+# ---------------------------------------------------------------- platform ---
+detect_platform() {
+    case "$(uname -s)" in
+        Darwin) PLATFORM=macos ;;
+        Linux)  PLATFORM=linux ;;
+        *)      PLATFORM=unknown ;;
+    esac
+    if [ "$PLATFORM" = linux ]; then
+        systemctl --user show-environment >/dev/null 2>&1 \
+            || die "systemd --user is not available; see the cross-platform plan in ~/notes/Personal/agentic-setup-portability.md"
+    fi
+    if [ "$PLATFORM" = unknown ]; then
+        die "unsupported platform: $(uname -s). Windows is unresolved by design (see the portability note)."
+    fi
+}
+
+label_for() { # svc -> supervisor unit label
+    case "$PLATFORM" in
+        macos) printf '%s.%s' "$LABEL_PREFIX" "$1" ;;
+        linux) printf 'honcho-%s.service' "$1" ;;
+    esac
+}
+
+unit_path() { # svc -> absolute path of the generated unit
+    case "$PLATFORM" in
+        macos) printf '%s/Library/LaunchAgents/%s.plist' "$HOME" "$(label_for "$1")" ;;
+        linux) printf '%s/.config/systemd/user/%s' "$HOME" "$(label_for "$1")" ;;
+    esac
+}
+
+# ------------------------------------------------------------ unit rendering ---
+unit_body() { # svc -> prints the generated unit to stdout
+    local svc="$1"
+    local -a prog_args
+    case "$svc" in
+        api)     prog_args=("$HONCHO_VENV_PY" -m uvicorn src.main:app --host "$HONCHO_HOST" --port "$HONCHO_PORT" --log-level info) ;;
+        deriver) prog_args=("$HONCHO_VENV_PY" -m src.deriver) ;;
+        *)       die "unknown service: $svc" ;;
+    esac
+
+    if [ "$PLATFORM" = macos ]; then
+        printf '%s\n' '<?xml version="1.0" encoding="UTF-8"?>'
+        printf '%s\n' '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">'
+        printf '%s\n' '<plist version="1.0">' '<dict>'
+        printf '    <key>Label</key>\n    <string>%s</string>\n' "$(label_for "$svc")"
+        printf '%s\n' '    <key>ProgramArguments</key>' '    <array>'
+        for a in "${prog_args[@]}"; do printf '        <string>%s</string>\n' "$a"; done
+        printf '%s\n' '    </array>'
+        printf '    <key>WorkingDirectory</key>\n    <string>%s</string>\n' "$HONCHO_HOME"
+        printf '%s\n' \
+            '    <key>RunAtLoad</key>' '    <true/>' \
+            '    <key>KeepAlive</key>' '    <true/>' \
+            '    <key>ThrottleInterval</key>' '    <integer>15</integer>'
+        printf '    <key>StandardOutPath</key>\n    <string>%s/%s.log</string>\n' "$LOG_DIR" "$svc"
+        printf '    <key>StandardErrorPath</key>\n    <string>%s/%s.err.log</string>\n' "$LOG_DIR" "$svc"
+        # NOTE: no ProcessType=Background here on purpose. Background QoS
+        # (PRI 4) throttles the I/O this import graph needs on this machine's
+        # ~full volume: measured 5+ minutes to a listening socket, vs ~34s
+        # at Interactive QoS.
+        if [ -n "$HONCHO_PROCESS_TYPE" ]; then
+            printf '%s\n' '    <key>ProcessType</key>'
+            printf '    <string>%s</string>\n' "$HONCHO_PROCESS_TYPE"
+        fi
+        printf '%s\n' '</dict>' '</plist>'
+    else
+        printf '%s\n' '[Unit]'
+        printf 'Description=Honcho %s (self-hosted memory backend)\n' "$svc"
+        printf '%s\n' 'After=network.target postgresql.service'
+        printf '%s\n' '' '[Service]' 'Type=simple'
+        printf 'WorkingDirectory=%s\n' "$HONCHO_HOME"
+        printf 'ExecStart=%s\n' "${prog_args[*]}"
+        printf '%s\n' 'Restart=always' 'RestartSec=15'
+        printf 'StandardOutput=append:%s/%s.log\n' "$LOG_DIR" "$svc"
+        printf 'StandardError=append:%s/%s.err.log\n' "$LOG_DIR" "$svc"
+        printf '%s\n' '' '[Install]' 'WantedBy=default.target'
+    fi
+}
+
+unit_is_current() { # svc -> 0 if the on-disk unit matches what would be generated
+    local unit
+    unit="$(unit_path "$1")"
+    [ -f "$unit" ] || return 1
+    unit_body "$1" | cmp -s - "$unit"
+}
+
+render_unit() { # svc -> writes the unit file; no-op if content is current
+    local svc="$1" unit tmp
+    unit="$(unit_path "$svc")"
+    mkdir -p "$(dirname "$unit")" "$LOG_DIR"
+    tmp="$(mktemp)"
+    unit_body "$svc" >"$tmp"
+
+    if [ -f "$unit" ] && cmp -s "$tmp" "$unit"; then
+        rm -f "$tmp"
+        log "unit unchanged: $unit"
+        return 0
+    fi
+    mv "$tmp" "$unit"
+    chmod 0644 "$unit"
+    log "wrote unit: $unit"
+}
+
+# ------------------------------------------------------------ supervisor ops ---
+is_loaded() { # svc
+    case "$PLATFORM" in
+        macos) launchctl print "gui/$UID_NUM/$(label_for "$1")" >/dev/null 2>&1 ;;
+        linux) systemctl --user is-enabled "$(label_for "$1")" >/dev/null 2>&1 ;;
+    esac
+}
+
+is_running() { # svc
+    case "$PLATFORM" in
+        macos)
+            launchctl print "gui/$UID_NUM/$(label_for "$1")" 2>/dev/null \
+                | grep -qE '^[[:space:]]+state = running' ;;
+        linux) systemctl --user is-active --quiet "$(label_for "$1")" ;;
+    esac
+}
+
+svc_pid() { # svc -> pid or empty
+    case "$PLATFORM" in
+        macos)
+            launchctl print "gui/$UID_NUM/$(label_for "$1")" 2>/dev/null \
+                | awk '/^[[:space:]]+pid = /{print $3; exit}' ;;
+        linux) systemctl --user show -p MainPID --value "$(label_for "$1")" 2>/dev/null ;;
+    esac
+}
+
+svc_register() { # svc - (re)load the unit so it starts now and after login
+    local unit label oldpid out i
+    unit="$(unit_path "$1")"
+    label="$(label_for "$1")"
+    case "$PLATFORM" in
+        macos)
+            # bootout first: launchd serves the loaded job definition, so a
+            # changed plist only takes effect after a fresh bootstrap.
+            oldpid="$(svc_pid "$1")"
+            if is_loaded "$1"; then
+                launchctl bootout "gui/$UID_NUM/$label" >/dev/null 2>&1 || true
+            fi
+            # bootstrap fails with "Input/output error" while the previous
+            # instance is still exiting, so wait for it to go first.
+            if [ -n "$oldpid" ]; then
+                i=0
+                while kill -0 "$oldpid" 2>/dev/null && [ "$i" -lt 20 ]; do sleep 1; i=$((i + 1)); done
+                if kill -0 "$oldpid" 2>/dev/null; then
+                    log "$(warn "old $1 pid $oldpid still alive after 20s; sending SIGTERM")"
+                    kill -TERM "$oldpid" 2>/dev/null
+                    i=0
+                    while kill -0 "$oldpid" 2>/dev/null && [ "$i" -lt 20 ]; do sleep 1; i=$((i + 1)); done
+                    if kill -0 "$oldpid" 2>/dev/null; then
+                        log "$(bad "pid $oldpid will not die; leaving it alone (a stray process can hold port $HONCHO_PORT)")"
+                    fi
+                fi
+            fi
+            i=0
+            while :; do
+                if out="$(launchctl bootstrap "gui/$UID_NUM" "$unit" 2>&1)"; then
+                    break
+                fi
+                i=$((i + 1))
+                if [ "$i" -ge 5 ]; then
+                    log "$(bad "failed to bootstrap $unit: $out")"
+                    return 1
+                fi
+                sleep 2
+            done
+            ;;
+        linux)
+            systemctl --user daemon-reload || return 1
+            systemctl --user enable "$label" >/dev/null 2>&1 || { log "$(bad "failed to enable $label")"; return 1; }
+            systemctl --user restart "$label" || { log "$(bad "failed to start $label")"; return 1; }
+            ;;
+    esac
+    return 0
+}
+
+svc_unregister() { # svc - stop now and do not come back until `start`
+    case "$PLATFORM" in
+        macos)
+            launchctl bootout "gui/$UID_NUM/$(label_for "$1")" >/dev/null 2>&1
+            ;;
+        linux)
+            systemctl --user disable --now "$(label_for "$1")" >/dev/null 2>&1
+            ;;
+    esac
+}
+
+svc_restart() { # svc
+    case "$PLATFORM" in
+        macos)
+            if is_loaded "$1"; then
+                launchctl kickstart -k "gui/$UID_NUM/$(label_for "$1")" >/dev/null 2>&1
+            else
+                svc_register "$1"
+            fi
+            ;;
+        linux)
+            if is_loaded "$1"; then
+                systemctl --user restart "$(label_for "$1")"
+            else
+                svc_register "$1"
+            fi
+            ;;
+    esac
+}
+
+# ------------------------------------------------------------------- probes ---
+health_probe() { # 0 if /health answers {"status":"ok"}
+    command -v curl >/dev/null 2>&1 || return 1
+    body="$(curl -fsS -m 5 "$HEALTH_URL" 2>/dev/null)" || return 1
+    case "$body" in *'"status"'*'ok'*) return 0 ;; *) return 1 ;; esac
+}
+
+postgres_probe() { # 0 ok, 1 down, 2 inconclusive
+    local host="${HONCHO_PG_HOST:-127.0.0.1}"
+    local port="${HONCHO_PG_PORT:-5432}"
+    local isr rc
+
+    isr="$(pg_isready_bin)"
+    if [ -n "$isr" ]; then
+        "$isr" -h "$host" -p "$port" -q
+        rc=$?
+        # pg_isready: 0 accepting, 1 rejecting, 2 no response, >2 = it never really ran
+        case "$rc" in 0) return 0 ;; 1|2) return 1 ;; *) return 2 ;; esac
+    fi
+
+    if command -v nc >/dev/null 2>&1; then
+        if nc -z -G 2 "$host" "$port" >/dev/null 2>&1 || nc -z -w 2 "$host" "$port" >/dev/null 2>&1; then
+            return 0
+        fi
+    fi
+    if [ -x "$HONCHO_VENV_PY" ]; then
+        "$HONCHO_VENV_PY" -c "import socket,sys; socket.create_connection((sys.argv[1], int(sys.argv[2])), 2).close()" "$host" "$port" >/dev/null 2>&1 \
+            && return 0 || return 1
+    fi
+    return 2
+}
+
+pg_isready_bin() { # first pg_isready that actually executes (asdf shims exit 126/127)
+    candidates="${HONCHO_PG_ISREADY:-}
+/opt/homebrew/opt/postgresql@17/bin/pg_isready
+/usr/local/opt/postgresql@17/bin/pg_isready
+$(command -v pg_isready 2>/dev/null)"
+    for c in $candidates; do
+        [ -n "$c" ] && [ -x "$c" ] || continue
+        "$c" --version >/dev/null 2>&1 && { printf '%s' "$c"; return 0; }
+    done
+    return 1
+}
+
+wait_ready() { # [secs] - poll /health, then confirm the deriver has a pid
+    local timeout="${1:-$HONCHO_READY_TIMEOUT}"
+    local elapsed=0
+    log "waiting up to ${timeout}s for $HEALTH_URL (cold start on this machine: ~40s warm cache, minutes when I/O-stalled)..."
+    while [ "$elapsed" -lt "$timeout" ]; do
+        if health_probe && is_running deriver; then
+            log "memory backend ready after ${elapsed}s ($HEALTH_URL -> ok, deriver pid $(svc_pid deriver))"
+            return 0
+        fi
+        sleep 2
+        elapsed=$((elapsed + 2))
+        printf '.'
+        if [ $((elapsed % 20)) -eq 0 ]; then
+            printf ' %ss (api=%s deriver=%s)\n' "$elapsed" \
+                "$(is_running api && echo up || echo starting)" \
+                "$(is_running deriver && echo up || echo starting)"
+        fi
+    done
+    printf '\n'
+    log "$(bad "not ready after ${timeout}s")"
+    show_recent_logs 15
+    return 1
+}
+
+show_recent_logs() { # [n]
+    n="${1:-15}"
+    for svc in $SERVICES; do
+        log "--- $svc (last $n) ---"
+        tail -n "$n" "$LOG_DIR/$svc.err.log" "$LOG_DIR/$svc.log" 2>/dev/null || true
+    done
+}
+
+# ---------------------------------------------------------------- commands ---
+cmd_health() {
+    wait=0
+    [ "${1:-}" = "--wait" ] && wait=1 && shift
+    if [ "$wait" -eq 1 ]; then
+        wait_ready "${1:-$HONCHO_READY_TIMEOUT}"
+        return $?
+    fi
+    if health_probe; then
+        log "$(ok ok)   $HEALTH_URL"
+        return 0
+    fi
+    log "$(bad down) $HEALTH_URL did not answer"
+    return 1
+}
+
+cmd_status() {
+    local rc=0 stale=0 svc unit u_state r_state pid
+    log "platform : $PLATFORM ($(uname -m))"
+    log "honcho   : $HONCHO_HOME  (python: $HONCHO_VENV_PY)"
+    log "endpoint : $HEALTH_URL"
+    log ""
+
+    stale=0
+    for svc in $SERVICES; do
+        unit="$(unit_path "$svc")"
+        if [ ! -f "$unit" ]; then
+            u_state=missing; rc=1
+        elif unit_is_current "$svc"; then
+            u_state=installed
+        else
+            u_state=outdated; stale=1
+        fi
+        if is_running "$svc"; then r_state="$(ok running)"; pid="$(svc_pid "$svc")"; else r_state="$(bad stopped)"; pid="-"; rc=1; fi
+        printf '%-8s unit=%-10s %s  pid=%-7s %s\n' "$svc" "$u_state" "$r_state" "$pid" \
+            "$([ -f "$unit" ] && echo "$unit")"
+    done
+
+    log ""
+    if health_probe; then log "health   : $(ok ok)"; else log "health   : $(bad unreachable)"; rc=1; fi
+    postgres_probe
+    case $? in
+        0) log "postgres : $(ok ok)  ($(pg_isready_bin 2>/dev/null || echo 'tcp check') on ${HONCHO_PG_HOST:-127.0.0.1}:${HONCHO_PG_PORT:-5432})" ;;
+        1) log "postgres : $(bad not ready)  (${HONCHO_PG_HOST:-127.0.0.1}:${HONCHO_PG_PORT:-5432})"; rc=1 ;;
+        *) log "postgres : $(warn unknown)  (no usable pg_isready; install postgresql@17 client tools)" ;;
+    esac
+
+    if [ "$rc" -ne 0 ]; then
+        log ""
+        log "$(warn "something is down. Try: honcho-ctl start   (logs: honcho-ctl logs)")"
+    fi
+    if [ "$stale" -eq 1 ]; then
+        log "$(warn "a unit is outdated vs what honcho-ctl generates. Run: honcho-ctl install")"
+    fi
+    return "$rc"
+}
+
+cmd_start() {
+    local svc rc=0
+    [ -x "$HONCHO_VENV_PY" ] || die "no venv python at $HONCHO_VENV_PY - create the venv first (see the portability note)."
+    postgres_probe || log "$(warn "postgres did not answer on 127.0.0.1:5432 - start it first (brew services start postgresql@17)")"
+    for svc in $SERVICES; do
+        if [ ! -f "$(unit_path "$svc")" ]; then
+            render_unit "$svc" || rc=1
+        elif ! unit_is_current "$svc"; then
+            log "$(warn "$svc: unit on disk differs from the generated one - 'honcho-ctl install' applies it (start leaves units alone)")"
+        fi
+        if svc_register "$svc"; then
+            log "$svc: registered and starting"
+        else
+            log "$svc: $(bad "failed to start")"
+            rc=1
+        fi
+    done
+    [ "$rc" -eq 0 ] || return 1
+    wait_ready "$HONCHO_READY_TIMEOUT"
+}
+
+cmd_stop() {
+    for svc in $SERVICES; do
+        if is_loaded "$svc"; then
+            svc_unregister "$svc"
+            log "$svc: stopped and unloaded (will not restart until 'honcho-ctl start')"
+        else
+            log "$svc: already unloaded"
+        fi
+    done
+    if [ "$PLATFORM" = macos ] && lsof -nP -iTCP:"$HONCHO_PORT" -sTCP:LISTEN >/dev/null 2>&1; then
+        log "$(warn "note: something still listens on $HONCHO_PORT - a hand-started process outside the supervisor?")"
+        lsof -nP -iTCP:"$HONCHO_PORT" -sTCP:LISTEN | tail -n +2
+    fi
+}
+
+cmd_restart() {
+    for svc in $SERVICES; do
+        svc_restart "$svc"
+        log "$svc: restarted"
+    done
+    wait_ready "$HONCHO_READY_TIMEOUT"
+}
+
+cmd_logs() {
+    svc=""; follow=0; lines=40
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            api|deriver) svc="$1" ;;
+            -f|--follow) follow=1 ;;
+            -n) shift; lines="${1:-40}" ;;
+            *) die "usage: honcho-ctl logs [api|deriver] [-f] [-n N]" ;;
+        esac
+        shift
+    done
+    [ -n "$svc" ] || svc="$SERVICES"
+    [ -d "$LOG_DIR" ] || die "no log dir at $LOG_DIR"
+
+    if [ "$PLATFORM" = linux ] && command -v journalctl >/dev/null 2>&1; then
+        # shellcheck disable=SC2086
+        for s in $svc; do
+            if [ "$follow" -eq 1 ]; then journalctl --user -f -n "$lines" -u "$(label_for "$s")"
+            else journalctl --user -n "$lines" -u "$(label_for "$s")"; fi
+        done
+        return 0
+    fi
+
+    if [ "$follow" -eq 1 ]; then
+        # shellcheck disable=SC2086
+        tail -f -n "$lines" $(for s in $svc; do printf '%s/%s.log %s/%s.err.log ' "$LOG_DIR" "$s" "$LOG_DIR" "$s"; done)
+    else
+        for s in $svc; do
+            log "--- $s ---"
+            tail -n "$lines" "$LOG_DIR/$s.log" "$LOG_DIR/$s.err.log" 2>/dev/null
+        done
+    fi
+}
+
+cmd_install() {
+    log "generating supervisor units for this machine ($PLATFORM)"
+    for svc in $SERVICES; do render_unit "$svc"; done
+    cmd_start
+}
+
+cmd_uninstall() {
+    cmd_stop
+    for svc in $SERVICES; do
+        unit="$(unit_path "$svc")"
+        if [ -f "$unit" ]; then rm -f "$unit"; log "removed $unit"; fi
+    done
+    if [ "$PLATFORM" = linux ]; then systemctl --user daemon-reload; fi
+    log "units removed. Logs left in $LOG_DIR."
+}
+
+usage() {
+    awk 'NR>1 && /^#/ {sub(/^# ?/, ""); print; next} NR>1 {exit}' "$0"
+}
+
+main() {
+    [ $# -gt 0 ] || { usage; exit 1; }
+    cmd="$1"; shift
+    detect_platform
+    case "$cmd" in
+        status)    cmd_status "$@" ;;
+        start)     cmd_start "$@" ;;
+        stop)      cmd_stop "$@" ;;
+        restart)   cmd_restart "$@" ;;
+        health)    cmd_health "$@" ;;
+        logs)      cmd_logs "$@" ;;
+        install)   cmd_install "$@" ;;
+        uninstall) cmd_uninstall "$@" ;;
+        help|-h|--help) usage ;;
+        *) usage; exit 1 ;;
+    esac
+}
+
+main "$@"
