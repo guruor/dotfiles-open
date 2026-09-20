@@ -262,6 +262,12 @@ export PATH="$PATH:${CARGO_HOME}/bin"
 # Adds asdf installed binaries to $PATH
 export PATH="$ASDF_DATA_DIR/bin:$ASDF_DATA_DIR/shims:$PATH"
 
+# mise is the version manager this repo actually configures (.config/mise/config.toml),
+# so its shims must come BEFORE asdf's. Without this line the asdf shims above intercept
+# python3/psql/node/pg_isready and fail with "No version is set for command X" (there is
+# no ~/.tool-versions), which silently breaks every script that shells out to them.
+export PATH="${XDG_DATA_HOME:-$HOME/.local/share}/mise/shims:$PATH"
+
 export MISE_CARGO_HOME=$CARGO_HOME
 export MISE_RUSTUP_HOME=$RUSTUP_HOME
 
