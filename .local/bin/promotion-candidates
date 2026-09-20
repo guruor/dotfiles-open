@@ -89,6 +89,33 @@ def owned_skills(workspace):
     return owned
 
 
+def local_skill_names():
+    """Skills in the runtime's own tree: these are the ones it curates."""
+    names = set()
+    for p in (HERMES_HOME / "skills").glob("*/*"):
+        if (p / "SKILL.md").is_file():
+            names.add(p.name)
+    return names
+
+
+def deployed_skills(workspace):
+    """Skills APM has deployed into a harness-visible root, and where."""
+    out = {}
+    if not workspace:
+        return out
+    for d in (workspace / ".agents/skills").glob("*"):
+        if (d / "SKILL.md").is_file():
+            out[d.name] = str(d.relative_to(workspace))
+    return out
+
+
+def collisions(workspace):
+    """Names that exist both curated and deployed: the harness cannot load those."""
+    local = local_skill_names()
+    deployed = deployed_skills(workspace)
+    return [{"skill": n, "deployed": deployed[n]} for n in sorted(set(deployed) & local)]
+
+
 def pending_drafts(directory):
     directory = expand(str(directory)) or directory
     if not directory.is_dir():
@@ -183,6 +210,7 @@ def main():
     owned = owned_skills(workspace)
     drafts = [d for d in pending_drafts(ddir) if d.get("status") != "applied"]
     rows = candidates(owned)
+    collides = collisions(workspace)
 
     facts = {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -194,6 +222,7 @@ def main():
         "adoption_candidates": rows[:TOP_N],
         "packages_owned_skills": len(owned),
         "candidate_total": len(rows),
+        "collisions": collides,
     }
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     (STATE_DIR / "latest.json").write_text(json.dumps(facts, indent=2, sort_keys=True) + chr(10))
@@ -209,6 +238,13 @@ def main():
         print("none")
     for d in drafts:
         print("- %s  status=%s  target=%s  base=%s" % (d["id"], d.get("status"), d.get("package"), d.get("base_version")))
+    print("")
+    print("## Collisions (%d): a name that is both curated locally and deployed" % len(collides))
+    if not collides:
+        print("none")
+    for c in collides:
+        print("- %s  deployed=%s  (the runtime cannot load this skill by name while both exist;"
+              " remove the package from the consumer manifest)" % (c["skill"], c["deployed"]))
     print("")
     print("## Adoption candidates: agent-created local skills no package owns, top %d" % TOP_N)
     print("   use = times loaded, writes = curator improvements (churn: high means not settled)")
