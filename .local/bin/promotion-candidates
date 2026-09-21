@@ -24,7 +24,7 @@ from pathlib import Path
 
 HOME = Path.home()
 HERMES_HOME = Path(os.environ.get("HERMES_HOME", HOME / ".hermes"))
-STATE_DIR = Path(os.environ.get("XDG_STATE_HOME", HOME / ".local/state")) / "promotion"
+STATE_DIR = Path(os.environ.get("XDG_STATE_HOME", HOME / ".local/state")) / "hermes-skill-promoter"
 CONF = HERMES_HOME / "agentic-setup.conf"
 TOP_N = 5
 
