@@ -1,0 +1,161 @@
+#!/usr/bin/env bash
+#
+# rmpc-library-import - bring a track that rmpc downloaded from YouTube into the
+# mpd library, under a name you can actually read.
+#
+# Why this exists: rmpc downloads to ~/.cache/rmpc/youtube/<video-id>.<ext> and
+# queues that cache path directly. It never writes to ~/Music, and rmpc 0.11 has
+# no setting to change that, so the library has to be fed by hand. Symlinking the
+# cache into ~/Music is the tempting shortcut and it goes wrong: bare video-id
+# names in the library, the same file indexed twice, and pruning the cache takes
+# library entries with it.
+#
+# Usage:
+#   rmpc-library-import                  newest download in the cache
+#   rmpc-library-import <id|file|path>   a video id, a cache file name, or a path
+#   rmpc-library-import --list           show the cache and what is already imported
+#   rmpc-library-import --dry-run ...    resolve the name, write nothing
+#   rmpc-library-import --move ...       move instead of hardlink (see below)
+#
+# By default the file is HARD LINKED: the same bytes get a second name in the
+# library at no extra disk cost and with no copies, so a track that mpd is still
+# playing or still holding in its queue keeps working from the cache path. The
+# cache entry can be pruned later, once the queue no longer references it.
+
+set -euo pipefail
+
+cache_dir="$HOME/.cache/rmpc/youtube"
+library_dir="$HOME/Music/YouTube"
+mpd_socket="${MPD_HOST:-$HOME/.local/state/mpd/socket}"
+music_directory="$HOME/Music"
+# Audio only: rmpc drops thumbnails next to the audio in the same directory, and a
+# thumbnail must never be picked as "the newest download".
+audio_re='.*\.(opus|m4a|mp3|ogg|flac|webm|mp4|m4b|aac|wav)$'
+
+mode="link"
+dry_run=0
+target=""
+
+say() { printf '%s\n' "$1"; }
+die() { printf 'error: %s\n' "$1" >&2; exit 1; }
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --list)    mode="list" ;;
+        --move)    mode="move" ;;
+        --dry-run) dry_run=1 ;;
+        -h|--help) sed -n '2,30p' "$0" | sed 's/^# //; s/^#$//'; exit 0 ;;
+        -*)        die "unknown option $1" ;;
+        *)         target="$1" ;;
+    esac
+    shift
+done
+
+[ -d "$cache_dir" ] || die "no rmpc cache at $cache_dir (nothing downloaded yet)"
+
+# --list: the cache next to the library, with the inode telling you the truth
+# about what is already imported.
+if [ "$mode" = "list" ]; then
+    printf '%-16s %-10s %s\n' "FILE" "SIZE" "STATE"
+    find -E "$cache_dir" -type f -regex "$audio_re" -print0 2>/dev/null | while IFS= read -r -d '' f; do
+        size="$(du -h "$f" | awk '{print $1}')"
+        state="not imported"
+        for lib in "$library_dir"/*; do
+            [ -f "$lib" ] || continue
+            if [ "$(stat -f %i "$f")" = "$(stat -f %i "$lib")" ]; then
+                state="imported as $(basename "$lib")"
+                break
+            fi
+        done
+        printf '%-16s %-10s %s\n' "$(basename "$f")" "$size" "$state"
+    done
+    exit 0
+fi
+
+# Resolve the source file: an explicit id/name/path, or the newest download.
+if [ -z "$target" ]; then
+    src="$(find -E "$cache_dir" -type f -regex "$audio_re" -exec stat -f '%m %N' {} + 2>/dev/null | sort -rn | head -1 | cut -d' ' -f2-)"
+    [ -n "$src" ] || die "no finished download in $cache_dir"
+else
+    case "$target" in
+        /*) src="$target" ;;
+        *)  src="$cache_dir/$(basename "$target")" ;;
+    esac
+    # Allow a bare video id, with or without extension.
+    if [ ! -f "$src" ]; then
+        match="$(find -E "$cache_dir" -maxdepth 1 -regex "$cache_dir/${target%.*}\.[a-z0-9]+" 2>/dev/null | head -1)"
+        [ -n "$match" ] || die "no cache file matches '$target' (try --list)"
+        src="$match"
+    fi
+fi
+[ -f "$src" ] || die "$src does not exist"
+[ -s "$src" ] || die "$src is empty"
+
+base="$(basename "$src")"
+ext="${base##*.}"
+video_id="${base%.*}"
+
+# rmpc's downloads carry no metadata tags, so ask YouTube for the name and fall
+# back to the video id when there is no network. That keeps this script working
+# offline, just with an uglier file name.
+name=""
+if command -v ffprobe >/dev/null 2>&1; then
+    tags="$(ffprobe -v error -show_entries format_tags=artist,title -of default=noprint_wrappers=1:nokey=1 "$src" 2>/dev/null | tr '\n' ' ' | sed 's/ *$//')"
+    [ -n "$tags" ] && name="$tags"
+fi
+if [ -z "$name" ] && command -v yt-dlp >/dev/null 2>&1; then
+    meta="$(yt-dlp --no-warnings --skip-download --print '%(uploader)s@@%(title)s' \
+        "https://www.youtube.com/watch?v=$video_id" 2>/dev/null | head -1 || true)"
+    up="${meta%%@@*}"
+    ti="${meta##*@@}"
+    case "$ti" in
+        "$up"*) name="$ti" ;;                        # title already carries the channel
+        *)      if [ -n "$up" ] && [ "$up" != "$ti" ]; then name="$up - $ti"; else name="$ti"; fi ;;
+    esac
+fi
+[ -n "$name" ] || name="$video_id"
+name="$(printf '%s' "$name" | tr '/:' '--' | tr -s ' ' | sed 's/^ *//; s/ *$//')"
+
+dst="$library_dir/$name.$ext"
+
+if [ -e "$dst" ] && [ "$(stat -f %i "$src")" = "$(stat -f %i "$dst")" ]; then
+    say "already imported: $dst"
+    exit 0
+fi
+[ -e "$dst" ] && die "$dst already exists and is a different file"
+
+if [ "$dry_run" = "1" ]; then
+    say "would write: $dst"
+    say "from:        $src"
+    exit 0
+fi
+
+mkdir -p "$library_dir"
+if [ "$mode" = "move" ]; then
+    mv "$src" "$dst"
+    how="moved"
+else
+    if ln "$src" "$dst" 2>/dev/null; then
+        how="linked"
+    else
+        cp -p "$src" "$dst"
+        how="copied (hard link not possible across these paths)"
+    fi
+fi
+say "$how $base"
+say "  -> $dst"
+
+# Tell mpd about just this directory, then confirm it indexed the file. macOS mpd
+# has no auto_update, so a download is invisible until somebody rescans.
+command -v mpc >/dev/null 2>&1 || die "mpc is not installed; run :update in rmpc instead"
+MPD_HOST="$mpd_socket" mpc update "${library_dir#$music_directory/}" >/dev/null 2>&1 || true
+i=0
+while [ "$i" -lt 10 ]; do
+    if MPD_HOST="$mpd_socket" mpc search filename "$name" 2>/dev/null | grep -q "$name"; then
+        say "indexed by mpd"
+        exit 0
+    fi
+    sleep 1
+    i=$((i + 1))
+done
+say "warning: mpd has not indexed it yet; run 'rmpc update' or ':update' in the TUI"

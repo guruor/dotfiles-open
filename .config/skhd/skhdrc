@@ -58,10 +58,11 @@ meh - 0x27 : open -a "zoom.us" # Mapping apostrophe(')
 meh - o : openterm --title "File Manager" --shell "$SHELL" --cmd-str "yazi; $SHELL"
 meh - n : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Notes" "notetaker"
 meh - r : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Bottom" "btm -b" # Opens process monitoring tool
-meh - m : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Ncmpcpp" "ncmpcpp" # Opens music player; mopidy runs as a boot service (brew services)
-meh - p : mpc toggle # Toggle play/pause for mpd
-meh - 0x21 : mpc seek -10 # Seek music 10 seconds backward with meh + [
-meh - 0x1E : mpc seek +10 # Seek music 10 seconds forward with meh + ]
+# meh - m : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "TermMusic" "ncmpcpp" # Opens music player; mopidy runs as a boot service (brew services)
+meh - m : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "TermMusic" "rmpc" # Opens music player;
+meh - p : rmpc togglepause # Toggle play/pause for mpd
+meh - 0x21 : rmpc seek -10 # Seek music 10 seconds backward with meh + [
+meh - 0x1E : rmpc seek +10 # Seek music 10 seconds forward with meh + ]
 meh - 0x1B : osascript -e 'set volume output volume (output volume of (get volume settings)) - 10' # Volume down with meh + -
 meh - 0x18 : osascript -e 'set volume output volume (output volume of (get volume settings)) + 10' # Volume down with meh + +
 
