@@ -5,7 +5,7 @@ red=$(tput setaf 1)
 white=$(tput setaf 7)
 dotfiles_repo_dir=$(pwd)
 backup_dir="$HOME/.dotfiles.orig"
-dotfiles_home_dir=(.config .local .ssh .editorconfig .profile .xinitrc .xprofile .zshenv)
+dotfiles_home_dir=(.config .local .ssh .editorconfig .profile .mpdconf .xinitrc .xprofile .zshenv)
 dotfiles_xdg_config_dir=()
 
 # Git does not install hooks when a repository is cloned.
