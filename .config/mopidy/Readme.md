@@ -104,9 +104,16 @@ Using host and port instead of `fifo`: https://wiki.archlinux.org/title/ncmpcpp#
 #### Visualizer shows nothing
 
 `visualizer_data_source = "localhost:5555"` needs mopidy to emit a raw PCM feed with
-`[audio] output` teeing into `udpsink`. Verify mopidy actually opened the socket:
-`lsof -nP -a -iUDP -p $(lsof -nP -iTCP:6600 -sTCP:LISTEN -t)` must show a UDP socket
-while playing. If it does not, the feed is dead regardless of what ncmpcpp does.
+`[audio] output` teeing into `udpsink`. Verify mopidy actually opened the socket, **while a
+track is playing**:
+```sh
+lsof -nP -a -iUDP -p $(lsof -nP -iTCP:6600 -sTCP:LISTEN -t)   # must show a UDP socket
+lsof -nP -iUDP:5555                                            # must show ncmpcpp
+```
+The udpsink socket exists only while the playback pipeline runs; it is closed when playback
+stops, so checking at idle proves nothing. Note the pair ncmpcpp binds `[::1]:5555` while
+mopidy is configured with `host=localhost`, which resolves to `::1` first; changing that to
+`host=127.0.0.1` would break the feed.
 
 ### Troubleshooting mopidy-youtube
 
