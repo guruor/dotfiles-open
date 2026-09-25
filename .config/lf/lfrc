@@ -35,7 +35,7 @@ cmd open-choose ${{
 
 cmd edit ${{
     if [ -d "$fx" ]; then
-        nvim -u /Users/govind.r/.config/nvim/lua/initlsp.lua -- $fx
+        nvim -u "${MYVIMRCLSP:-$HOME/.config/nvim/lua/initlsp.lua}" -- $fx
     else
         $EDITOR "$fx"
     fi

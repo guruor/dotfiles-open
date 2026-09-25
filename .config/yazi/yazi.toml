@@ -19,10 +19,21 @@ max_height = 1500
 cursor_blink = true
 
 [opener]
-sc-im = [{ run = 'sc-im "$1"', desc = "sc-im", block = true, for = "unix" }]
+sc-im = [{ run = 'sc-im %s', desc = "sc-im", block = true, for = "unix" }]
+# `edit` is not overridden here on purpose: yazi's preset already is
+# `${EDITOR:-vi} %s` with block = true, so files open in $EDITOR (nvim) as-is.
+# Directories are opened as a neovim *project*: cwd = the directory and no file
+# argument, so nvim does not load the folder as a buffer. Uses the LSP entry
+# point (initlsp.lua), matching the `lf` config; drop `-u ...` for init.lua.
+nvim-project = [
+    { run = 'cd %s && exec ${EDITOR:-nvim} -u "${MYVIMRCLSP:-$HOME/.config/nvim/lua/initlsp.lua}"', desc = "nvim (project)", block = true, for = "unix" }
+]
 
 [open]
 prepend_rules = [
+  # Directories -> neovim project (must come before the preset `mime = "folder/*"` rule)
+  { url = "*/", use = "nvim-project" },
+
   # Mime types
   # { mime = "application/pdf", use = "pdf" },
 
