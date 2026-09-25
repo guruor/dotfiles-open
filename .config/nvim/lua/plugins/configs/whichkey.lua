@@ -83,6 +83,7 @@ local leader_mappings = {
   { leader .. "fld", ":FzfLua diagnostics_document<CR>", desc = "LSP diagnostics" },
   { leader .. "flr", ":FzfLua lsp_references<CR>", desc = "Find references" },
   { leader .. "flq", ":FzfLua quickfix<CR>", desc = "Find quickfix" },
+  { leader .. "fz", ":FzfLua zoxide<CR>", desc = "Switch frequent projects" },
 
   { leader .. "g", group = "Git" },
   { leader .. "ga", ":Git commit --amend<CR>", desc = "Ammend Commit" },
