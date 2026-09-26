@@ -329,7 +329,7 @@ local filetype_mappings = {
     },
     {
       localleader .. "rca",
-      "<Cmd>edit " .. vim.fn.getenv "DB_CONNECTIONS_FILEPATH" .. "/connections.yaml<Cr>",
+      "<Cmd>edit " .. (vim.env.DB_CONNECTIONS_FILEPATH or "") .. "/connections.yaml<Cr>",
       desc = "Edit DB config",
     },
     -- { localleader .. "rce", "<Cmd>cd $DB_CONNECTIONS_FILEPATH; sops --encrypt --in-place connections.yaml<Cr>", desc = "Encrypt DB config" },
