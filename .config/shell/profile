@@ -298,3 +298,11 @@ alias q="exit"
 
 # opencode
 export PATH=${HOME}/.opencode/bin:$PATH
+
+# Program-facing environment kept in the private submodule (credentials-adjacent
+# values stay out of the public repo). Loaded by the login shell so children that
+# never read .zshrc - nvim, cli tools - inherit it. Guarded: a missing file must
+# not break a login shell.
+if [ -r "$HOME/.config/shell/profile-private" ]; then
+  . "$HOME/.config/shell/profile-private"
+fi
