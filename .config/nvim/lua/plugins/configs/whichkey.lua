@@ -319,12 +319,12 @@ local filetype_mappings = {
     -- { localleader .. "rcd", "<Cmd>cd $DB_CONNECTIONS_FILEPATH; sops --decrypt --in-place connections.yaml<Cr>", desc = "Decrypt DB config" },
     {
       localleader .. "rcd",
-      "<Cmd>lua vim.fn.system('cd ' .. vim.fn.getenv('DB_CONNECTIONS_FILEPATH') .. ' && sops --decrypt --in-place connections.yaml')<Cr>",
+      "<Cmd>lua vim.fn.system('cd ' .. (vim.env.DB_CONNECTIONS_FILEPATH or \"\") .. ' && sops --decrypt --in-place connections.yaml')<Cr>",
       desc = "Decrypt DB config",
     },
     {
       localleader .. "rce",
-      "<Cmd>lua vim.fn.system('cd ' .. vim.fn.getenv('DB_CONNECTIONS_FILEPATH') .. ' && sops --encrypt --in-place connections.yaml')<Cr>",
+      "<Cmd>lua vim.fn.system('cd ' .. (vim.env.DB_CONNECTIONS_FILEPATH or \"\") .. ' && sops --encrypt --in-place connections.yaml')<Cr>",
       desc = "Encrypt DB config",
     },
     {
