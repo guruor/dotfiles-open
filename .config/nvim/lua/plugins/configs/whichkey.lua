@@ -80,6 +80,7 @@ local leader_mappings = {
   { leader .. "fgf", ":FzfLua git_files<CR>", desc = "Git files" },
   { leader .. "fgb", ":FzfLua git_branches<CR>", desc = "Git branches" },
   { leader .. "fgs", ":FzfLua git_status<CR>", desc = "Git status" },
+  { leader .. "fgw", ":FzfLua git_worktrees<CR>", desc = "Git worktrees" },
   { leader .. "fld", ":FzfLua diagnostics_document<CR>", desc = "LSP diagnostics" },
   { leader .. "flr", ":FzfLua lsp_references<CR>", desc = "Find references" },
   { leader .. "flq", ":FzfLua quickfix<CR>", desc = "Find quickfix" },
