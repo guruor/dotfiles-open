@@ -47,11 +47,11 @@ meh - space : yabai -m window --warp east; yabai -m window --focus west # Move w
 # and what the key means changes without editing this file; hyper + the same key
 # edits it from a floating terminal. A slot never launches: opening an app is
 # Raycast's job, this one only moves you to a window that is already there.
-meh - 0x29 : hop semicolon          # ;
+meh - 0x29 : hop semicolon
 hyper - 0x29 : hop edit semicolon
-meh - 0x27 : hop quote              # '
+meh - 0x27 : hop quote
 hyper - 0x27 : hop edit quote
-meh - 0x2A : hop backslash          # \
+meh - 0x2A : hop backslash
 hyper - 0x2A : hop edit backslash
 
 # Pads and single window tools: one hop entry each, same titles and commands as the
