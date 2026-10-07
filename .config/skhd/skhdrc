@@ -15,17 +15,6 @@ meh - q : yabai -m window --close
 meh - j : yabai -m window --focus south
 meh - k : yabai -m window --focus north
 
-# Shortcuts to some common GUI apps
-# hyper - b : yabai -m window --focus "$(yabai -m query --windows | jq 'map(select(.app == "Brave Browser")) | .[0].id')"
-hyper - b : open -a "Brave Browser"
-hyper - g : open -a "Google Chrome"
-hyper - f : open -a "Firefox"
-hyper - m : open -a "Miro"
-hyper - n : open -a "Notion"
-hyper - o : open -a "Microsoft Outlook"
-hyper - s : open -a "Slack"
-hyper - z : open -a "zoom.us"
-
 # meh - h : yabai -m window --focus west
 # meh - l : yabai -m window --focus east
 
@@ -50,16 +39,30 @@ meh - l : yabai -m query --spaces --space \
 # meh - return : "${HOME}"/.config/yabai/scripts/open_iterm2.sh
 meh - return : openterm --title "New window"
 meh - space : yabai -m window --warp east; yabai -m window --focus west # Move window to left and focus
-meh - 0x2B : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Pad1" "scratchpad Servers" # Mapping comma(,) to open floating terminal
-meh - 0x2F : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Pad2" "scratchpad Pad" # Mapping comma(.) to open floating terminal
-meh - 0x2C : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Pad3" "scratchpad Code" # Mapping question mark button (?)
-meh - 0x29 : open -a "Brave Browser"  # Mapping semicolon(;) to open floating terminal
-meh - 0x27 : open -a "zoom.us" # Mapping apostrophe(')
-meh - o : openterm --title "File Manager" --shell "$SHELL" --cmd-str "yazi; $SHELL"
-meh - n : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Notes" "notetaker"
-meh - r : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "Bottom" "btm -b" # Opens process monitoring tool
-# meh - m : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "TermMusic" "ncmpcpp" # Opens music player; mopidy runs as a boot service (brew services)
-meh - m : "${HOME}"/.config/yabai/scripts/toggle_terminal_window.sh "TermMusic" "rmpc" # Opens music player;
+# App and window keys, resolved by hop at press time (~/.config/hop/hops.conf).
+# `hop key ';'` prints any of these lines, keycode included.
+
+# The punctuation row: three swappable slots. Fill one from the picker with
+#   hop pick semicolon
+# and what the key means changes without editing this file; hyper + the same key
+# edits it from a floating terminal. A slot never launches: opening an app is
+# Raycast's job, this one only moves you to a window that is already there.
+meh - 0x29 : hop semicolon          # ;
+hyper - 0x29 : hop edit semicolon
+meh - 0x27 : hop quote              # '
+hyper - 0x27 : hop edit quote
+meh - 0x2A : hop backslash          # \
+hyper - 0x2A : hop edit backslash
+
+# Pads and single window tools: one hop entry each, same titles and commands as the
+# toggle script they replace, with the on-miss policy declared in hops.conf.
+meh - 0x2B : hop pad1     # ,  Servers
+meh - 0x2F : hop pad2     # .  Pad
+meh - 0x2C : hop pad3     # /  Code
+meh - n : hop padnotes
+meh - r : hop padbottom   # process monitoring
+meh - m : hop padmusic    # music
+meh - o : hop padfiles    # was openterm direct, which spawned a new window every press
 meh - p : rmpc togglepause # Toggle play/pause for mpd
 meh - 0x21 : rmpc seek -10 # Seek music 10 seconds backward with meh + [
 meh - 0x1E : rmpc seek +10 # Seek music 10 seconds forward with meh + ]
