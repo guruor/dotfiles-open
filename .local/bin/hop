@@ -691,7 +691,11 @@ pick_lines() {
   # 2. presets, in config order, minus whatever is already selected
   while IFS="$US" read -r _ name a ti _ _; do
     in_file "$CUR_KEYS" "$a|$ti" && continue
-    printf 'P%s%s%s%s%s\t  %s\n' "$US" "$a" "$US" "$ti" "" "$name"
+    # The label carries the app and title, not just the entry name: --with-nth
+    # restricts what fzf matches on to the printed field, so an app named only in
+    # the hidden key cannot be searched for ("firefox" returned nothing while the
+    # entry was called personal-browser). App first, entry name after it.
+    printf 'P%s%s%s%s%s\t  %s  %s\n' "$US" "$a" "$US" "$ti" "" "$(hop_label "$a" "$ti")" "$name"
   done < <(entry_rows)
 
   # 3. other open windows: one row per window, except a single-window app, which
@@ -729,11 +733,13 @@ cmd_pick() {
 
   new_tmp; list="$T"
   pick_lines "$slot" > "$list"
-  # --with-nth hides the match key and shows the label. Do not add --nth here:
-  # with --with-nth in play fzf resolves --nth against the TRANSFORMED line, so
-  # --nth=2.. points past the end of a one-field label and every query matches
-  # nothing (measured on fzf 0.73.1: --nth=2.. --with-nth=2.. returns 0 rows for
-  # any query, --with-nth=2.. alone returns the match).
+  # --with-nth hides the match key and shows the label, and it also restricts what
+  # fzf MATCHES on to that printed field, so anything a user might type has to be
+  # in the label (measured on fzf 0.73.1: a word present only in the hidden field
+  # returns 0 rows with --with-nth=2.. and 1 row without it). Do not add --nth here
+  # either: with --with-nth in play fzf resolves --nth against the TRANSFORMED
+  # line, so --nth=2.. points past the end of a one-field label and every query
+  # matches nothing.
   sel="$(fzf --multi --delimiter='\t' --with-nth=2.. --height=60% --reverse \
              --header="$(printf '%s  max %s. TAB marks, ENTER applies, ESC cancels. * = in the slot.' "$slot" "$max")" \
              < "$list")" || return 0
