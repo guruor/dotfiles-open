@@ -1,0 +1,1064 @@
+#!/usr/bin/env bash
+#
+# hop - one key, one place.
+#
+# A key points at a slot. A slot holds up to two targets. Pressing the key walks
+# the targets that are open right now: nothing is launched, no window id is baked
+# in, and no config edit is needed to change what a key means.
+#
+#   hop <slot>                      use it: walk the targets that are open
+#   hop -n|--dry-run <slot>         show what a press would do, change nothing
+#   hop pick <slot>                 fzf: pick and remove in one gesture (a tty)
+#   hop edit <slot>                 the same, in a floating terminal
+#   hop set <slot> [APP[|TITLE]]... set the contents, at most two
+#   hop slots                       what each slot holds, and what is open
+#   hop list                        every named entry and what it matches now
+#   hop windows                     every window the backend can see
+#   hop help
+#
+# WINDOW ORDER, which is the point of the whole thing.
+# yabai assigns window ids from a monotonic counter, so the highest id is the
+# window created most recently. Candidates are therefore ordered NEWEST FIRST.
+# When you are not on the app at all, a press lands on its newest window: the
+# Slack huddle or Zoom meeting window that just spawned, in one press, even when
+# the app already had other windows. Press again to walk older ones, wrapping.
+#
+# Config: $HOP_CONFIG, else ~/.config/hop/hops.conf
+# State:  $HOP_STATE,  else ~/.local/state/hop/slots   (written by `hop pick`)
+#
+# Portability: everything that knows about this platform lives in the BACKEND
+# block below and nothing else does. The slots, the matching, the picking and the
+# verbs are platform neutral.
+set -u
+
+# Every string comparison here is case-insensitive: nocasematch covers `case` and
+# `[[ =~ ]]` in bash 3.2, which has no ${x,,}.
+shopt -s nocasematch
+
+HOP_VERSION="0.2.0"
+DRY=0
+DEBUG="${HOP_DEBUG:-0}"
+# Internal field delimiter: ASCII unit separator. A tab will not do, because
+# bash treats tab as whitespace and collapses a run of them, so a window with an
+# empty title shifts every field after it.
+US="$(printf '\037')"
+HOP_WIN_CACHE=""      # set only once a populated cache exists at that path
+HOP_SLOT_MAX=2        # a slot holds at most this many targets
+HOP_PICK_TITLE="hop-pick"
+
+# ------------------------------------------------------------------ BACKEND --
+# macOS via yabai. Porting hop means replacing everything between here and
+# END BACKEND. Nothing below this block calls yabai or open or kitty directly.
+
+# Window records, one per line, unit separated:
+#   id <US> space <US> app <US> title <US> focused <US> minimised <US> y <US> x
+BE_WINDOWS_RAW() { yabai -m query --windows; }
+
+BE_PARSE() {
+  jq -r '.[] | [ .id, .space,
+                 ((.app   // "") | gsub("[\t\n]"; " ")),
+                 ((.title // "") | gsub("[\t\n]"; " ")),
+                 (."has-focus"   | tostring),
+                 (."is-minimized"| tostring),
+                 ((.frame.y // 0) | tostring),
+                 ((.frame.x // 0) | tostring) ]
+         | map(tostring) | join("\u001f")'
+}
+
+BE_SPACE_CURRENT() { yabai -m query --spaces --space | jq -r '.index'; }
+BE_FOCUS()         { yabai -m window --focus "$1"; }   # crosses spaces, restores a minimised window
+BE_PULL()          { yabai -m window "$1" --space mouse; }
+BE_MINIMIZE()      { yabai -m window "$1" --minimize; }
+BE_OPEN_APP()      { open -a "$1"; }
+
+# A terminal, because skhd has no tty and fzf needs one.
+BE_PICK_TERMINAL() { openterm --title "$1" --shell "${SHELL:-/bin/zsh}" --cmd-str "$2"; }
+BE_WINDOW_BY_TITLE() { yabai -m query --windows | jq -r --arg t "$1" '.[] | select(.title == $t) | .id' | head -1; }
+
+# -------------------------------------------------------------- END BACKEND --
+
+die()  { printf 'hop: %s\n' "$*" >&2; exit 1; }
+warn() { printf 'hop: %s\n' "$*" >&2; }
+note() { if [ "$DEBUG" = "1" ]; then printf 'hop: %s\n' "$*" >&2; fi; return 0; }
+# Assigns T_OUT rather than printing: `$(trim ...)` would fork a subshell.
+trim_set() { local s="$1"; s="${s#"${s%%[![:space:]]*}"}"; s="${s%"${s##*[![:space:]]}"}"; T_OUT="$s"; }
+trim() { trim_set "$1"; printf '%s' "$T_OUT"; }
+
+# ------------------------------------------------------- temporary files ----
+# Every temp file is registered here, so one EXIT trap cleans all of them and
+# nothing leaks when a hop dies halfway through.
+TMP_FILES=""
+# Sets T rather than printing it: a path returned through $( ) is registered in a
+# subshell, so the trap never learns about it and every run leaks the file.
+new_tmp() {
+  # An explicit XXXXXX template, never `mktemp -t`: under skhd the coreutils
+  # gnubin comes first on PATH and GNU mktemp rejects a bare -t template. TMPDIR is
+  # normalised to exactly one separator because macOS hands it a trailing slash and
+  # `TMPDIR=/tmp` does not, and /tmphop.XXXXXX cannot be created at all.
+  local d="${TMPDIR:-/tmp}"
+  T="$(mktemp "${d%/}/hop.XXXXXX")" || die "cannot create a temporary file"
+  TMP_FILES="$TMP_FILES $T"
+}
+# One rm for the lot, which is one process instead of one per file. `set --`
+# keeps each path a word without an array self-reference: bash 3.2 rejects
+# `"${a[@]}"` under `set -u` when the array is empty.
+cleanup() {
+  local f
+  [ -n "$TMP_FILES" ] || return 0
+  set --
+  for f in $TMP_FILES; do set -- "$@" "$f" "${f}.n"; done
+  rm -f "$@"
+  return 0
+}
+trap cleanup EXIT INT TERM
+
+usage() {
+  cat <<'EOF'
+hop - one key, one place.
+
+  hop <slot>                        use it: walk the targets that are open
+  hop -n|--dry-run <slot>           show what a press would do, change nothing
+  hop pick <slot>                   fzf pick and remove (needs a terminal)
+  hop edit <slot>                   the same, in a floating terminal
+  hop set <slot> [APP[|TITLE]]...   set contents, at most 2
+  hop slots                         what each slot holds and what is open
+  hop list                          every entry and what it matches right now
+  hop windows                       every window the backend can see
+  hop key [KEY]                     the keycode for a key, and the binding line
+  hop help
+
+A slot is named after its key, using Apple's ANSI key name:  ; = semicolon,
+' = quote,  \ = backslash,  and letters or digits as themselves. A target is APP,
+or APP|TITLE to pin one window or a group of them by title:
+  hop set semicolon Hermes
+  hop set semicolon "kitty|^Pad2$" "kitty|^Notes$"
+  hop set quote Telegram
+
+Picking: rows already in the slot come first and are marked with *. Select a
+marked row to remove it, an unmarked row to add it. TAB marks several, ENTER
+applies, ESC leaves everything alone. A slot never holds more than two targets:
+with two, every press reaches the other one.
+
+Config: $HOP_CONFIG, else ~/.config/hop/hops.conf
+State:  $HOP_STATE,  else ~/.local/state/hop/slots
+EOF
+}
+
+# -------------------------------------------------------------------- config --
+# Blocks, not columns. A value runs to the end of its line, so it may contain
+# | , spaces and quotes; there are no positions for a field to shift out of.
+
+cfg_path() {
+  if [ -n "${HOP_CONFIG:-}" ]; then printf '%s' "$HOP_CONFIG"; return 0; fi
+  printf '%s' "${HOME}/.config/hop/hops.conf"
+}
+
+# Resolve the path once, in the main shell: a `die` inside a command
+# substitution only kills the substitution.
+HOP_CFG=""
+# The config is parsed once per process into this buffer; every lookup scans the
+# buffer instead of re-reading the file.
+CFG_ROWS=""
+cfg_init() {
+  [ -n "$CFG_ROWS" ] && return 0
+  HOP_CFG="$(cfg_path)"
+  [ -f "$HOP_CFG" ] || die "no config at $HOP_CFG (set HOP_CONFIG to point somewhere else)"
+  CFG_ROWS="$(cfg_rows)"
+}
+
+# INI in, machine rows out:
+#   entry <US> name <US> app <US> title <US> action <US> miss
+#   slot  <US> name <US> mode <US> max
+cfg_rows() {
+  local line t sec kind name k v
+  local e_name="" e_app="" e_title="" e_action="" e_miss=""
+  local s_name="" s_mode="" s_max=""
+  _flush_entry() {
+    [ -n "$e_name" ] || return 0
+    printf 'entry%s%s%s%s%s%s%s%s%s%s\n' \
+      "$US" "$e_name" "$US" "$e_app" "$US" "$e_title" "$US" "${e_action:-focus}" "$US" "${e_miss:-nothing}"
+    e_name=""; e_app=""; e_title=""; e_action=""; e_miss=""
+  }
+  _flush_slot() {
+    [ -n "$s_name" ] || return 0
+    printf 'slot%s%s%s%s%s%s\n' "$US" "$s_name" "$US" "${s_mode:-focus}" "$US" "${s_max:-$HOP_SLOT_MAX}"
+    s_name=""; s_mode=""; s_max=""
+  }
+  [ -n "$HOP_CFG" ] || cfg_init
+  while IFS= read -r line || [ -n "$line" ]; do
+    trim_set "$line"; t="$T_OUT"
+    case "$t" in
+      ''|'#'*) continue ;;
+      \[*\])
+        _flush_entry; _flush_slot
+        sec="$t"; sec="${sec#[}"; sec="${sec%]}"
+        case "$sec" in
+          slot:*) kind="slot";  name="${sec#slot:}" ;;
+          *)      kind="entry"; name="$sec" ;;
+        esac
+        case "$kind" in
+          entry) e_name="$name" ;;
+          slot)  s_name="$name" ;;
+        esac
+        continue ;;
+    esac
+    # A line with no = lands here with the whole line as the key, and warns.
+    trim_set "${line%%=*}"; k="$T_OUT"
+    trim_set "${line#*=}"; v="$T_OUT"
+    case "$kind" in
+      entry)
+        case "$k" in
+          app)    e_app="$v" ;;
+          title)  e_title="$v" ;;
+          action) e_action="$v" ;;
+          miss)   e_miss="$v" ;;
+          *) printf 'hop: [%s] unknown key "%s" (known: app, title, action, miss)\n' "$e_name" "$k" >&2 ;;
+        esac ;;
+      slot)
+        case "$k" in
+          mode) s_mode="$v" ;;
+          max)  s_max="$v" ;;
+          *) printf 'hop: [slot:%s] unknown key "%s" (known: mode, max)\n' "$s_name" "$k" >&2 ;;
+        esac ;;
+    esac
+  done < "$HOP_CFG"
+  _flush_entry; _flush_slot
+}
+
+# Scans of the buffered parse: no re-parse, no grep, no awk, no subshell.
+cfg_ready() { [ -n "$CFG_ROWS" ] || cfg_init; }
+entry_rows() {
+  local r
+  cfg_ready
+  while IFS= read -r r; do case "$r" in "entry$US"*) printf '%s\n' "$r" ;; esac; done <<< "$CFG_ROWS"
+}
+slot_rows() {
+  local r
+  cfg_ready
+  while IFS= read -r r; do case "$r" in "slot$US"*) printf '%s\n' "$r" ;; esac; done <<< "$CFG_ROWS"
+}
+entry_row() {
+  local r
+  cfg_ready
+  while IFS= read -r r; do
+    case "$r" in "entry$US$1$US"*) printf '%s\n' "$r"; return 0 ;; esac
+  done <<< "$CFG_ROWS"
+  return 1
+}
+slot_row() {
+  local r
+  cfg_ready
+  while IFS= read -r r; do
+    case "$r" in "slot$US$1$US"*) printf '%s\n' "$r"; return 0 ;; esac
+  done <<< "$CFG_ROWS"
+  return 1
+}
+
+# --------------------------------------------------------------------- state --
+# Written by `hop pick`. Unit separated, one line per target, in slot order:
+#   slot <US> app <US> title
+# A target is a matcher pair, never a window id, so a slot survives every window
+# closing and reopening.
+
+state_path() {
+  if [ -n "${HOP_STATE:-}" ]; then printf '%s' "$HOP_STATE"; return 0; fi
+  printf '%s' "${HOME}/.local/state/hop/slots"
+}
+
+slot_targets() {   # $1 = slot -> app <US> title, in order
+  local f
+  f="$(state_path)"
+  [ -f "$f" ] || return 0
+  awk -F"$US" -v s="$1" '$1 == s { print $2 FS $3 }' "$f"
+}
+
+slot_set() {       # $1 = slot, rest = targets, each APP or APP|TITLE
+  local f tmp s="$1" t app ti
+  shift
+  f="$(state_path)"
+  mkdir -p "$(dirname "$f")" || die "cannot create $(dirname "$f")"
+  tmp="${f}.tmp"
+  if [ -f "$f" ]; then
+    awk -F"$US" -v s="$s" '$1 != s' "$f" > "$tmp" || : > "$tmp"
+  else
+    : > "$tmp"
+  fi
+  for t in "$@"; do
+    [ -n "$t" ] || continue
+    case "$t" in
+      *'|'*) app="$(trim "${t%%|*}")"; ti="$(trim "${t#*|}")" ;;
+      *)     app="$(trim "$t")";        ti="" ;;
+    esac
+    printf '%s%s%s%s%s\n' "$s" "$US" "$app" "$US" "$ti" >> "$tmp"
+  done
+  mv "$tmp" "$f"
+}
+
+# ------------------------------------------------------------------- windows --
+
+windows_tsv() {
+  local raw
+  if [ -n "$HOP_WIN_CACHE" ] && [ -f "$HOP_WIN_CACHE" ]; then cat "$HOP_WIN_CACHE"; return 0; fi
+  raw="$(BE_WINDOWS_RAW 2>/dev/null)" || die "window query failed; is yabai running? (try: hop windows)"
+  [ -n "$raw" ] || die "the window backend returned nothing (try: hop windows)"
+  printf '%s' "$raw" | BE_PARSE
+}
+
+# Fetch the window list once, in the main shell.
+#
+# find_matches runs inside substitutions, where a `die` only kills the
+# substitution. A backend failure would then be indistinguishable from "no window
+# matched", and because the on-miss path is where spawning lives, a broken
+# backend would quietly open duplicates on every press. Caching in the main shell
+# turns that into one clean abort, and makes `hop list` a single query.
+windows_cache() {
+  local t
+  if [ -n "$HOP_WIN_CACHE" ]; then return 0; fi
+  # The temp file is created here but the cache variable is not set until the
+  # fetch has populated it: windows_tsv takes its own "cache is warm" branch the
+  # moment HOP_WIN_CACHE is non-empty, and mktemp creates an empty file, so
+  # setting it first would hand every caller an empty window list.
+  new_tmp; t="$T"
+  windows_tsv > "$t" || return 1
+  [ -s "$t" ] || die "the window backend returned no windows"
+  HOP_WIN_CACHE="$t"
+  return 0
+}
+
+# The cached window list as a path to redirect from: a redirect forks nothing,
+# unlike `windows_tsv | ...`, which spends a cat at every call site.
+windows_file() {
+  if [ -z "$HOP_WIN_CACHE" ] || [ ! -f "$HOP_WIN_CACHE" ]; then
+    windows_cache || return 1
+  fi
+  printf '%s' "$HOP_WIN_CACHE"
+}
+
+# The focused window's id, out of the cached list.
+focused_id() {
+  local src id space app title focused minimised wy wx
+  src="$(windows_file)" || return 1
+  while IFS="$US" read -r id space app title focused minimised wy wx; do
+    if [ "$focused" = "true" ]; then printf '%s' "$id"; return 0; fi
+  done < "$src"
+  return 1
+}
+
+# bash returns 0 matched, 1 no match, 2 invalid pattern: only 2 is bad news.
+re_ok() {
+  local rc
+  ( [[ "probe" =~ $1 ]] ) >/dev/null 2>&1
+  rc=$?
+  [ "$rc" -eq 0 ] || [ "$rc" -eq 1 ]
+}
+
+# A comma separated list of patterns, OR-matched. Split by hand rather than by
+# word splitting, so a pattern containing * or ? is never glob expanded.
+any_match() {
+  local rest="$1" subject="$2" p
+  while [ -n "$rest" ]; do
+    case "$rest" in
+      *,*) p="${rest%%,*}"; rest="${rest#*,}" ;;
+      *)   p="$rest"; rest="" ;;
+    esac
+    trim_set "$p"; p="$T_OUT"
+    [ -z "$p" ] && continue
+    [[ "$subject" =~ $p ]] && return 0
+  done
+  return 1
+}
+
+pat_list_ok() {
+  local rest="$1" p
+  while [ -n "$rest" ]; do
+    case "$rest" in
+      *,*) p="${rest%%,*}"; rest="${rest#*,}" ;;
+      *)   p="$rest"; rest="" ;;
+    esac
+    trim_set "$p"; p="$T_OUT"
+    [ -z "$p" ] && continue
+    re_ok "$p" || return 1
+  done
+  return 0
+}
+
+app_is_literal() {
+  local s="$1" i c
+  for (( i = 0; i < ${#s}; i++ )); do
+    c="${s:$i:1}"
+    case "$c" in '|'|'('|')'|'^'|'$'|'*'|'?'|'+'|'['|']'|',') return 1 ;; esac
+  done
+  return 0
+}
+
+# Candidate windows for a pattern pair, NEWEST FIRST: see the header. This is the
+# ordering that puts a freshly spawned Slack or Zoom window at the front.
+#
+# Patterns and window fields are compared raw: nocasematch does the case folding,
+# so nothing in this loop forks a process.
+find_matches() {
+  local src
+  src="$(windows_file)" || return 1
+  while IFS="$US" read -r id space app title focused minimised wy wx; do
+    if [ -n "$1" ]; then any_match "$1" "$app" || continue; fi
+    if [ -n "$2" ]; then any_match "$2" "$title" || continue; fi
+    printf '%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n' \
+      "$id" "$US" "$space" "$US" "$app" "$US" "$title" "$US" \
+      "$focused" "$US" "$minimised" "$US" "$wy" "$US" "$wx"
+  done < "$src" | sort -t "$US" -k1,1nr
+}
+
+split_row() {
+  IFS="$US" read -r W_ID W_SPACE W_APP W_TITLE W_FOCUSED W_MIN W_Y W_X <<< "$1"
+}
+
+# Does any entry already own this window? Print the entry name if so.
+matched_by_entry() {
+  local n a ti ok
+  while IFS="$US" read -r _ n a ti _ _; do
+    ok=1
+    if [ -n "$a" ]; then any_match "$a" "$1" || ok=0; fi
+    if [ "$ok" = "1" ] && [ -n "$ti" ]; then any_match "$ti" "$2" || ok=0; fi
+    if [ "$ok" = "1" ]; then printf '%s' "$n"; return 0; fi
+  done < <(entry_rows)
+  return 1
+}
+
+in_file() { [ -f "$1" ] && grep -qxF -- "$2" "$1"; }
+
+# --------------------------------------------------------------- the chain ---
+# The ordered list of windows a press walks, in a temp file so the walk needs no
+# arrays (bash 3.2 has none worth relying on).
+#
+#   focus mode: every window of every target, targets in slot order, newest first
+#   swap mode:  one row per target, its newest window, so a press moves between
+#               targets and every other target gets minimised
+
+build_chain() {
+  local slot mode a ti row line first=1
+  slot="$1"
+  row="$(slot_row "$slot")"
+  IFS="$US" read -r _ _ mode _ <<< "$row"
+  new_tmp; CHAIN="$T"
+  while IFS="$US" read -r a ti; do
+    [ -n "$a" ] || continue
+    if [ "$mode" = "swap" ]; then
+      find_matches "$a" "$ti" | head -1 >> "$CHAIN"
+    else
+      find_matches "$a" "$ti" >> "$CHAIN"
+    fi
+  done < <(slot_targets "$slot")
+  # A window title can contain a newline, so blank rows are dropped here. The
+  # trailing newline is kept: a plain `while read` would drop the last row.
+  : > "${CHAIN}.n"
+  while IFS= read -r line || [ -n "$line" ]; do
+    [ -n "$line" ] || continue
+    printf '%s\n' "$line" >> "${CHAIN}.n"
+  done < "$CHAIN"
+  mv "${CHAIN}.n" "$CHAIN"
+  return 0
+}
+
+# Walk the chain. Prints the chosen row, or fails if the chain is empty. Pure bash
+# over the chain file and the cached window list, so it forks nothing.
+walk_chain() {
+  local f="$1" cnt=0 foc_id pos=0 i=0 next line id rest first=""
+  foc_id="$(focused_id)"
+  while IFS= read -r line || [ -n "$line" ]; do
+    [ -n "$line" ] || continue
+    i=$(( i + 1 ))
+    [ "$i" -eq 1 ] && first="$line"
+    IFS="$US" read -r id rest <<< "$line"
+    [ "$id" = "$foc_id" ] && pos="$i"
+  done < "$f"
+  cnt="$i"
+  [ "$cnt" -gt 0 ] || return 1
+  if [ "$cnt" -eq 1 ]; then printf '%s\n' "$first"; return 0; fi
+  if [ "$pos" -gt 0 ]; then
+    next=$(( pos + 1 ))
+    [ "$next" -gt "$cnt" ] && next=1
+  else
+    # Nothing in the chain is focused, so take the first row: the newest window of
+    # the first target. Do not add a prefer-a-window-on-this-space rule here; it
+    # would send you to an older window when the new one spawned elsewhere.
+    next=1
+  fi
+  i=0
+  while IFS= read -r line || [ -n "$line" ]; do
+    i=$(( i + 1 ))
+    [ "$i" -eq "$next" ] && { printf '%s\n' "$line"; return 0; }
+  done < "$f"
+  return 1
+}
+
+# ------------------------------------------------------------------ actions --
+
+act_focus() {
+  if [ "$DRY" = "1" ]; then printf '  would: focus %s (%s %s)\n' "$W_ID" "$W_APP" "${W_TITLE:--}"; return 0; fi
+  BE_FOCUS "$W_ID"
+}
+
+act_toggle() {
+  local cur
+  cur="$(BE_SPACE_CURRENT)"
+  if [ "$DRY" = "1" ]; then
+    if [ "$W_MIN" = "true" ]; then
+      printf '  would: pull %s here, then focus it   (minimised, bring it back)\n' "$W_ID"
+    elif [ "$W_FOCUSED" = "true" ]; then
+      printf '  would: minimise %s   (already on it)\n' "$W_ID"
+    elif [ "$W_SPACE" = "$cur" ]; then
+      printf '  would: focus %s\n' "$W_ID"
+    else
+      printf '  would: pull %s to space %s, then focus it\n' "$W_ID" "$cur"
+    fi
+    return 0
+  fi
+  if [ "$W_MIN" = "true" ]; then
+    BE_PULL "$W_ID"; BE_FOCUS "$W_ID"
+  elif [ "$W_FOCUSED" = "true" ]; then
+    BE_MINIMIZE "$W_ID"
+  elif [ "$W_SPACE" = "$cur" ]; then
+    BE_FOCUS "$W_ID"
+  else
+    BE_PULL "$W_ID"; BE_FOCUS "$W_ID"
+  fi
+}
+
+# swap mode: exactly one target visible. Hide the other targets' windows, then
+# show this one, pulling it here if it lives elsewhere.
+act_swap() {
+  local keep_id="$1" id space app title focused minimised wy wx did=0
+  if [ "$DRY" = "1" ]; then
+    printf '  would: minimise the other targets, then focus %s\n' "$keep_id"
+    return 0
+  fi
+  while IFS="$US" read -r id space app title focused minimised wy wx; do
+    [ -n "$id" ] || continue
+    [ "$minimised" = "true" ] && continue
+    BE_MINIMIZE "$id"
+    did=1
+  done <<< "$OTHERS"
+  # Each minimise fires window_minimized, whose handler in yabai_utils.sh:24 ends
+  # by focusing a window of its own choosing, asynchronously. Focusing ours before
+  # it has finished loses the race, hence the settle.
+  if [ "$did" = "1" ]; then sleep 0.3; fi
+  # Pull the kept window to the space you are on: it belongs with you, not
+  # wherever it was left.
+  BE_PULL "$W_ID"
+  BE_FOCUS "$W_ID"
+}
+
+# ------------------------------------------------------------------ spawning --
+
+spawn_and_focus() {
+  local cmd="$1" m i
+  if [ "$DRY" = "1" ]; then printf '  would: %s\n' "$cmd"; return 0; fi
+  ( "${SHELL:-/bin/zsh}" -c "$cmd" >/dev/null 2>&1 & )
+  i=0
+  while [ "$i" -lt 12 ]; do
+    sleep 0.2
+    HOP_WIN_CACHE=""; windows_cache
+    m="$(find_matches "$H_APP" "$H_TITLE" | head -1)"
+    if [ -n "$m" ]; then
+      split_row "$m"
+      act_focus
+      note "spawned and focused window $W_ID"
+      return 0
+    fi
+    i=$(( i + 1 ))
+  done
+  note "spawned, but no matching window appeared within 2.4s"
+  return 0
+}
+
+on_miss() {
+  case "$H_ONMISS" in
+    nothing)
+      note "no window matches $H_NAME; on-miss nothing, doing nothing"
+      return 0 ;;
+    open-app)
+      if [ "$DRY" = "1" ]; then printf '  would: open -a %s\n' "$H_APP"; return 0; fi
+      note "no window matches $H_NAME; opening $H_APP"
+      BE_OPEN_APP "$H_APP" ;;
+    spawn:*)
+      note "no window matches $H_NAME; spawning"
+      spawn_and_focus "${H_ONMISS#spawn:}" ;;
+    *)
+      die "$H_NAME: refusing on-miss \"$H_ONMISS\"" ;;
+  esac
+}
+
+# ---------------------------------------------------------------- the verbs --
+
+cmd_slot() {
+  local slot="$1" row mode max picked
+  windows_cache
+  row="$(slot_row "$slot")"
+  [ -n "$row" ] || die "no slot named \"$slot\" (slots: $(slot_rows | cut -d"$US" -f2 | tr '\n' ' '))"
+  IFS="$US" read -r _ _ mode max _ <<< "$row"
+
+  if [ -z "$(slot_targets "$slot")" ]; then
+    warn "$slot is empty; fill it with: hop pick $slot"
+    return 0
+  fi
+
+  build_chain "$slot"
+  if [ "$DRY" = "1" ]; then
+    printf 'hop %s: mode=%s max=%s\n' "$slot" "$mode" "$max"
+    while IFS="$US" read -r a ti; do
+      printf '  target: app=%s title=%s\n' "$a" "${ti:--}"
+    done < <(slot_targets "$slot")
+    printf '  open, newest first:\n'
+    while IFS= read -r l; do
+      split_row "$l"
+      printf '    id=%-7s %-24s %s\n' "$W_ID" "$W_APP" "${W_TITLE:--}"
+    done < "$CHAIN"
+  fi
+
+  picked="$(walk_chain "$CHAIN")" || { warn "nothing in $slot is open"; return 0; }
+  [ -n "$picked" ] || { warn "nothing in $slot is open"; return 0; }
+  split_row "$picked"
+  if [ "$DRY" = "1" ]; then
+    printf '  picked: id=%s %s %s\n' "$W_ID" "$W_APP" "${W_TITLE:--}"
+  fi
+  case "$mode" in
+    swap)
+      OTHERS="$(awk -F"$US" -v id="$W_ID" '$1 != id' "$CHAIN")"
+      act_swap "$W_ID" ;;
+    *) act_focus ;;
+  esac
+}
+
+cmd_entry() {
+  local name="$1" row m target
+  windows_cache
+  row="$(entry_row "$name")"
+  if [ -z "$row" ]; then
+    printf 'hop: no slot or entry named "%s"\n' "$name" >&2
+    printf 'hop: slots: %s\n' "$(slot_rows | cut -d"$US" -f2 | tr '\n' ' ')" >&2
+    printf 'hop: entries: %s\n' "$(entry_rows | cut -d"$US" -f2 | tr '\n' ' ')" >&2
+    exit 1
+  fi
+  IFS="$US" read -r _ H_NAME H_APP H_TITLE H_ACTION H_ONMISS <<< "$row"
+  new_tmp; CHAIN="$T"
+  find_matches "$H_APP" "$H_TITLE" > "$CHAIN"
+  if [ "$DRY" = "1" ]; then
+    printf 'hop %s: app=%s title=%s action=%s miss=%s\n' \
+      "$H_NAME" "${H_APP:--}" "${H_TITLE:--}" "$H_ACTION" "$H_ONMISS"
+    printf '  open, newest first: %s\n' "$(grep -c . "$CHAIN")"
+  fi
+  if [ ! -s "$CHAIN" ]; then
+    on_miss
+    return 0
+  fi
+  target="$(walk_chain "$CHAIN")"
+  split_row "$target"
+  case "$H_ACTION" in
+    focus)  act_focus ;;
+    toggle) act_toggle ;;
+    *)      die "$H_NAME: unknown action \"$H_ACTION\"" ;;
+  esac
+}
+
+# ------------------------------------------------------------------ picking --
+# One gesture for pick and remove. Rows already in the slot are marked; selecting
+# a marked row removes it, selecting an unmarked row adds it.
+#
+# List order, as asked: current selections first, then the presets from the
+# config, then the other open windows. Anything already listed above is not
+# repeated below, so an open preset appears exactly once, as a preset.
+
+# Display label: app and title side by side, no separator glyph to collide with
+# a title that already contains one.
+hop_label() {
+  local a="$1" t="$2" s
+  s="${t#^}"; s="${s%\$}"
+  if [ -n "$s" ]; then printf '%-22s %s' "$a" "$s"; else printf '%s' "$a"; fi
+}
+
+pick_lines() {
+  local slot="$1" cur a ti key id space app title nw
+  new_tmp; CUR_KEYS="$T"
+  new_tmp; COUNTED="$T"
+
+  # 1. current selections, marked
+  while IFS="$US" read -r a ti; do
+    [ -n "$a" ] || continue
+    printf '%s\n' "$a|$ti" >> "$CUR_KEYS"
+    printf 'T%s%s%s%s%s\t%s %s\n' "$US" "$a" "$US" "$ti" "" "*" "$(hop_label "$a" "$ti")"
+  done < <(slot_targets "$slot")
+
+  # 2. presets, in config order, minus whatever is already selected
+  while IFS="$US" read -r _ name a ti _ _; do
+    in_file "$CUR_KEYS" "$a|$ti" && continue
+    printf 'P%s%s%s%s%s\t  %s\n' "$US" "$a" "$US" "$ti" "" "$name"
+  done < <(entry_rows)
+
+  # 3. other open windows: one row per window, except a single-window app, which
+  # is offered as the bare app name (the robust matcher).
+  windows_tsv | awk -F"$US" '{ c[$3]++ } END { for (k in c) print k FS c[k] }' > "$COUNTED"
+  while IFS="$US" read -r id space app title _ _ _ _; do
+    matched_by_entry "$app" "$title" >/dev/null && continue
+    nw="$(awk -F"$US" -v a="$app" '$1 == a { print $2 }' "$COUNTED")"
+    if [ "${nw:-1}" -le 1 ]; then
+      # the only window of this app: the bare app name is exact
+      key="$app|"
+      in_file "$CUR_KEYS" "$key" && continue
+      printf 'O%s%s%s%s%s\t  %s\n' "$US" "$app" "$US" "" "" "$app"
+    elif [ -z "$title" ]; then
+      # several windows and no title to tell them apart: the app name is the only
+      # matcher there is, so say so rather than pretending it is one window
+      key="$app|"
+      in_file "$CUR_KEYS" "$key" && continue
+      printf 'O%s%s%s%s%s\t  %s\n' "$US" "$app" "$US" "" "" "$app (no title: all $app windows)"
+    else
+      key="$app|^$title\$"
+      in_file "$CUR_KEYS" "$key" && continue
+      printf 'O%s%s%s%s%s\t  %s\n' "$US" "$app" "$US" "^$title\$" "" "$(hop_label "$app" "^$title\$")"
+    fi
+  done < <(windows_tsv)
+}
+
+cmd_pick() {
+  local slot="$1" max list sel line keypart kind a ti cur new merged key n
+  windows_cache
+  [ -n "$(slot_row "$slot")" ] || die "no slot named \"$slot\""
+  [ -t 0 ] || die "the picker needs a terminal; from a keybinding use: hop edit $slot"
+  max="$(slot_row "$slot" | cut -d"$US" -f4)"
+  [ -n "$max" ] || max="$HOP_SLOT_MAX"
+
+  new_tmp; list="$T"
+  pick_lines "$slot" > "$list"
+  # --with-nth hides the match key and shows the label. Do not add --nth here:
+  # with --with-nth in play fzf resolves --nth against the TRANSFORMED line, so
+  # --nth=2.. points past the end of a one-field label and every query matches
+  # nothing (measured on fzf 0.73.1: --nth=2.. --with-nth=2.. returns 0 rows for
+  # any query, --with-nth=2.. alone returns the match).
+  sel="$(fzf --multi --delimiter='\t' --with-nth=2.. --height=60% --reverse \
+             --header="$(printf '%s  max %s. TAB marks, ENTER applies, ESC cancels. * = in the slot.' "$slot" "$max")" \
+             < "$list")" || return 0
+  [ -n "$sel" ] || { printf 'hop: %s unchanged\n' "$slot"; return 0; }
+
+  new_tmp; cur="$T"; new_tmp; new="$T"; new_tmp; merged="$T"
+  slot_targets "$slot" | awk -F"$US" '{ print $1 "|" $2 }' > "$cur"
+  while IFS= read -r line; do
+    [ -n "$line" ] || continue
+    keypart="${line%%$'\t'*}"
+    IFS="$US" read -r kind a ti _ <<< "$keypart"
+    key="$a|$ti"
+    if in_file "$cur" "$key"; then
+      grep -vxF -- "$key" "$cur" > "${cur}.n" || : > "${cur}.n"
+      mv "${cur}.n" "$cur"
+    else
+      printf '%s\n' "$key" >> "$new"
+    fi
+  done <<< "$sel"
+
+  cat "$cur" "$new" | awk '!seen[$0]++' | grep . > "$merged" || true
+  n="$(grep -c . "$merged")"
+  if [ "$n" -gt "$max" ]; then
+    warn "$slot would hold $n targets and its max is $max (with two, every press reaches the other one)"
+    printf 'hop: nothing changed. Press a key to close. ' >&2
+    read -r _ || true
+    return 1
+  fi
+  set --
+  while IFS= read -r key; do
+    [ -n "$key" ] || continue
+    set -- "$@" "${key%%|*}|${key#*|}"
+  done < "$merged"
+  slot_set "$slot" "$@"
+  printf 'hop: %s now holds %s target(s)\n' "$slot" "$n"
+  while IFS="$US" read -r a ti; do
+    [ -n "$a" ] || continue
+    printf 'hop:   %s\n' "$(hop_label "$a" "$ti")"
+  done < <(slot_targets "$slot")
+}
+
+# The picker in a floating window, for a keybinding. One per slot: if it is
+# already open, focus it rather than stacking another.
+cmd_edit() {
+  local slot="$1" title id
+  windows_cache
+  [ -n "$(slot_row "$slot")" ] || die "no slot named \"$slot\""
+  title="$HOP_PICK_TITLE:$slot"
+  id="$(BE_WINDOW_BY_TITLE "$title")"
+  if [ -n "$id" ]; then
+    BE_FOCUS "$id"
+    note "focused the picker already open for $slot"
+    return 0
+  fi
+  BE_PICK_TERMINAL "$title" "hop pick $slot"
+}
+
+cmd_set() {
+  local slot="$1" t app ti i=0
+  shift
+  [ -n "$(slot_row "$slot")" ] || die "no slot named \"$slot\""
+  [ "$#" -gt 0 ] || die "usage: hop set $slot TARGET [TARGET]"
+  [ "$#" -le "$HOP_SLOT_MAX" ] || die "at most $HOP_SLOT_MAX targets per slot, got $#"
+  for t in "$@"; do
+    case "$t" in
+      *'|'*) app="$(trim "${t%%|*}")"; ti="$(trim "${t#*|}")" ;;
+      *)     app="$(trim "$t")";        ti="" ;;
+    esac
+    [ -n "$app" ] || die "empty target"
+    pat_list_ok "$app" || die "invalid app pattern: $app"
+    [ -n "$ti" ] && { pat_list_ok "$ti" || die "invalid title pattern: $ti"; }
+    i=$(( i + 1 ))
+  done
+  slot_set "$slot" "$@"
+  printf 'hop: %s set to %s target(s)\n' "$slot" "$i"
+}
+
+cmd_slots() {
+  local name mode max a ti first where cnt empty
+  windows_cache
+  printf '%-10s %-6s %-4s %s\n' SLOT MODE MAX TARGET
+  while IFS="$US" read -r _ name mode max; do
+    cnt="$(slot_targets "$name" | grep -c .)"
+    if [ "$cnt" -eq 0 ]; then
+      printf '%-10s %-6s %-4s %s\n' "$name" "$mode" "$max" "(empty)"
+      continue
+    fi
+    while IFS="$US" read -r a ti; do
+      [ -n "$a" ] || continue
+      first="$(find_matches "$a" "$ti" | head -1)"
+      if [ -n "$first" ]; then where="open"; else where="closed"; fi
+      printf '%-10s %-6s %-4s %s  [%s]\n' "$name" "$mode" "$max" \
+        "$(hop_label "$a" "$ti")" "$where"
+      name=""; mode=""; max=""
+    done < <(slot_targets "$name")
+  done < <(slot_rows)
+}
+
+cmd_list() {
+  local n a ti act om cnt where first
+  windows_cache
+  printf '%-12s %-28s %-16s %-7s %-10s %s\n' NAME APP TITLE ACTION ON-MISS NOW
+  while IFS="$US" read -r _ n a ti act om; do
+    first="$(find_matches "$a" "$ti")"
+    if [ -z "$first" ]; then
+      where="nothing"
+    else
+      cnt="$(printf '%s\n' "$first" | grep -c .)"
+      where="$cnt open, newest $(printf '%s\n' "$first" | head -1 | cut -d"$US" -f1)"
+    fi
+    printf '%-12s %-28.28s %-16.16s %-7s %-10.10s %s\n' "$n" "${a:--}" "${ti:--}" "$act" "$om" "$where"
+  done < <(entry_rows)
+}
+
+cmd_windows() {
+  local id space app title focused minimised wy wx mark
+  # Fetch first, in the main shell: inside a pipeline a backend failure would kill
+  # only the subshell, so this verb exited 0 having printed nothing but a header.
+  windows_cache
+  printf '%-7s %-6s %-3s %-22s %s\n' ID SPACE '' APP TITLE
+  windows_tsv | sort -t "$US" -k2,2n -k7,7n -k8,8n -k1,1n | \
+  while IFS="$US" read -r id space app title focused minimised wy wx; do
+    mark=""
+    [ "$focused" = "true" ]   && mark="*"
+    [ "$minimised" = "true" ] && mark="${mark}m"
+    printf '%-7s %-6s %-3s %-22.22s %s\n' "$id" "$space" "$mark" "$app" "$title"
+  done
+}
+
+# ---------------------------------------------------------------------- key --
+# Apple's ANSI key names, lowercased with the kVK_ANSI_ prefix stripped, taken from
+# HIToolbox/Events.h in the CommandLineTools SDK. Slot names use these names, so this
+# is how a key becomes the keycode a binding needs. Keypad and F keys are left out;
+# regenerate the whole thing after an SDK change with:
+#   H=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/HIToolbox.framework/Versions/A/Headers/Events.h
+#   grep -oE 'kVK_[A-Za-z0-9]+[[:space:]]*=[[:space:]]*0x[0-9A-Fa-f]+' "$H" \
+#     | sed -E 's/kVK_(ANSI_)?//; s/[[:space:]]*=[[:space:]]*/ /'
+
+key_table() {
+  cat <<'EOF'
+a               0x00  a
+s               0x01  s
+d               0x02  d
+f               0x03  f
+h               0x04  h
+g               0x05  g
+z               0x06  z
+x               0x07  x
+c               0x08  c
+v               0x09  v
+b               0x0B  b
+q               0x0C  q
+w               0x0D  w
+e               0x0E  e
+r               0x0F  r
+y               0x10  y
+t               0x11  t
+1               0x12  1
+2               0x13  2
+3               0x14  3
+4               0x15  4
+6               0x16  6
+5               0x17  5
+equal           0x18  =
+9               0x19  9
+7               0x1A  7
+minus           0x1B  -
+8               0x1C  8
+0               0x1D  0
+rightbracket    0x1E  ]
+o               0x1F  o
+u               0x20  u
+leftbracket     0x21  [
+i               0x22  i
+p               0x23  p
+l               0x25  l
+j               0x26  j
+quote           0x27  '
+k               0x28  k
+semicolon       0x29  ;
+backslash       0x2A  \
+comma           0x2B  ,
+slash           0x2C  /
+n               0x2D  n
+m               0x2E  m
+period          0x2F  .
+grave           0x32  `
+return          0x24  return
+tab             0x30  tab
+space           0x31  space
+delete          0x33  delete
+escape          0x35  escape
+capslock        0x39  capslock
+left            0x7B  left
+right           0x7C  right
+down            0x7D  down
+up              0x7E  up
+EOF
+}
+
+cmd_key() {
+  local want="${1:-}" nm cd sy
+  if [ -z "$want" ]; then
+    printf '%-16s %-6s %s\n' name code symbol
+    key_table | awk '{ printf "%-16s %-6s %s\n", $1, $2, $3 }'
+    printf '\nhop key <name|symbol|0xNN>   e.g.  hop key semicolon   hop key ";"   hop key 0x29\n'
+    printf 'To capture a key you actually pressed, use skhd --observe.\n'
+    return 0
+  fi
+  read -r nm cd sy <<< "$(key_table | awk -v w="$want" '
+    { if ($1 == w || $2 == w || $3 == w || toupper($1) == toupper(w)) { print $1, $2, $3; exit } }')"
+  [ -n "${nm:-}" ] || die "no key named \"$want\"; run 'hop key' with no arguments to list them"
+  printf '%s  %s  %s\n' "$nm" "$cd" "$sy"
+  printf '  meh   - %s : hop %s   # %s\n' "$cd" "$nm" "$sy"
+  printf '  hyper - %s : hop edit %s   # %s\n' "$cd" "$nm" "$sy"
+}
+
+# ----------------------------------------------------------------- validate --
+
+state_path_contents() {
+  local f
+  f="$(state_path)"
+  [ -f "$f" ] && cat "$f" || true
+}
+
+cfg_validate() {
+  local line kind x1 x2 x3 x4 x5 n a ti act om mode max bad=0 rows=0 srows=0 seen=""
+  cfg_init
+  while IFS= read -r line; do
+    IFS="$US" read -r kind x1 x2 x3 x4 x5 <<< "$line"
+    case "$kind" in
+      entry)
+        rows=$(( rows + 1 ))
+        n="$x1"; a="$x2"; ti="$x3"; act="$x4"; om="$x5"
+        [ -n "$n" ] || { warn "an entry has no name"; bad=1; continue; }
+        case " $seen " in *" $n "*) warn "duplicate name: $n"; bad=1 ;; esac
+        seen="$seen $n"
+        case "$act" in
+          focus|toggle) ;;
+          *) warn "$n: action must be focus or toggle, got \"$act\""; bad=1 ;;
+        esac
+        case "$om" in
+          nothing) ;;
+          open-app)
+            if [ -z "$a" ]; then warn "$n: on-miss open-app needs an app"; bad=1
+            elif ! app_is_literal "$a"; then
+              warn "$n: on-miss open-app needs a literal app name, but app is a pattern ($a)"
+              bad=1
+            fi ;;
+          spawn:?*) ;;
+          *) warn "$n: on-miss must be nothing, open-app or spawn:CMD, got \"$om\""; bad=1 ;;
+        esac
+        if [ -z "$a" ] && [ -z "$ti" ]; then warn "$n: needs an app, a title or both"; bad=1; fi
+        [ -n "$a" ]  && { pat_list_ok "$a"  || { warn "$n: invalid app pattern: $a";  bad=1; }; }
+        [ -n "$ti" ] && { pat_list_ok "$ti" || { warn "$n: invalid title pattern: $ti"; bad=1; }; }
+        ;;
+      slot)
+        srows=$(( srows + 1 ))
+        n="$x1"; mode="$x2"; max="$x3"
+        case " $seen " in *" $n "*) warn "duplicate name: $n"; bad=1 ;; esac
+        seen="$seen $n"
+        case "$mode" in
+          focus|swap) ;;
+          *) warn "slot $n: mode must be focus or swap, got \"$mode\""; bad=1 ;;
+        esac
+        case "$max" in
+          ''|*[!0-9]*) warn "slot $n: max must be a number, got \"$max\""; bad=1 ;;
+          *) { [ "$max" -ge 1 ] && [ "$max" -le 4 ]; } || { warn "slot $n: max must be 1..4, got $max"; bad=1; } ;;
+        esac
+        ;;
+    esac
+  done < <(cfg_rows)
+  if [ "$rows" -eq 0 ] && [ "$srows" -eq 0 ]; then warn "$HOP_CFG has no entries and no slots"; bad=1; fi
+  # State problems warn, they never fail. State is runtime data that legitimately outlives a
+  # rename in the config above, and failing here would take every key down at once, with
+  # stderr from a keypress going nowhere. Config problems above stay fatal: those are
+  # declarations, and a broken pattern would misbehave silently.
+  while IFS="$US" read -r s a ti; do
+    [ -n "$s" ] || continue
+    if [ -z "$(slot_row "$s")" ]; then
+      warn "state: ignoring targets for undeclared slot \"$s\" (renamed in $HOP_CFG?)"
+      continue
+    fi
+    [ -n "$a" ] || warn "state: slot $s has a target with no app"
+    [ -n "$a" ]  && { pat_list_ok "$a"  || warn "state: slot $s: invalid app pattern: $a"; }
+    [ -n "$ti" ] && { pat_list_ok "$ti" || warn "state: slot $s: invalid title pattern: $ti"; }
+  done < <(state_path_contents)
+  return "$bad"
+}
+
+# --------------------------------------------------------------------- main --
+
+CHAIN=""
+OTHERS=""
+CUR_KEYS=""
+COUNTED=""
+T=""
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -n|--dry-run) DRY=1; shift ;;
+    -h|--help|help) usage; exit 0 ;;
+    --version) printf 'hop %s\n' "$HOP_VERSION"; exit 0 ;;
+    *) break ;;
+  esac
+done
+
+[ "$#" -ge 1 ] || { usage; exit 1; }
+verb="$1"; shift
+
+case "$verb" in
+  list)    cfg_validate || exit 1; cmd_list ;;
+  windows) cmd_windows ;;
+  slots)   cfg_validate || exit 1; cmd_slots ;;
+  set)     [ "$#" -ge 2 ] || die "usage: hop set <slot> TARGET [TARGET]"
+           cfg_validate || exit 1
+           cmd_set "$@" ;;
+  pick)    [ "$#" -ge 1 ] || die "usage: hop pick <slot>"
+           cfg_validate || exit 1
+           cmd_pick "$1" ;;
+  edit)    [ "$#" -ge 1 ] || die "usage: hop edit <slot>"
+           cfg_validate || exit 1
+           cmd_edit "$1" ;;
+  key)     cmd_key "$@" ;;
+  *)
+    cfg_validate || exit 1
+    if [ -n "$(slot_row "$verb")" ]; then cmd_slot "$verb"; else cmd_entry "$verb"; fi ;;
+esac
